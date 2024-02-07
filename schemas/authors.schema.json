@@ -1,0 +1,19 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Patchouli authors",
+    "description": "File containing all information on Patchouli authors",
+    "type": "object",
+    "additionalProperties": {
+        "type": "object",
+        "properties": {
+            "display_name": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": ["display_name", "bio"]
+    }
+}

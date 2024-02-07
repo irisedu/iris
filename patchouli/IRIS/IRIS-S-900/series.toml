@@ -1,0 +1,16 @@
+type = "series"
+code = "IRIS-S-900"
+title = "Iris internals"
+description = "Internal documentation for Iris and Patchouli"
+authors = [
+    "kyo"
+]
+tags = [ "iris" ]
+
+[[chapters]]
+
+top_level = true
+articles = [
+    "series-numbering",
+    "patchouli"
+]

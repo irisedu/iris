@@ -132,7 +132,7 @@ export async function buildSeries(directory, renderer) {
 export async function buildAll(renderer) {
     await fs.ensureDir(buildDir);
 
-    console.log(' == Authors file == ');
+    console.log(' == Authors and categories files == ');
 
     const authorsTomlPath = path.join(baseDir, 'authors.toml');
     const authorsToml = await parseToml(authorsTomlPath, 'authors.schema.json', 'authors.toml');
@@ -140,12 +140,18 @@ export async function buildAll(renderer) {
         await fs.writeFile(path.join(buildDir, 'authors.json'), JSON.stringify(authorsToml.data.parsed));
     }
 
-    console.log(reporter([authorsToml]) + '\n');
+    const categoriesTomlPath = path.join(baseDir, 'categories.toml');
+    const categoriesToml = await parseToml(categoriesTomlPath, 'categories.schema.json', 'categories.toml');
+    if (!categoriesToml.messages.length) {
+        await fs.writeFile(path.join(buildDir, 'categories.json'), JSON.stringify(categoriesToml.data.parsed.categories));
+    }
+
+    console.log(reporter([authorsToml, categoriesToml]) + '\n');
 
     const categoryDirs = await fs.readdir(baseDir);
 
     for (const categoryDir of categoryDirs) {
-        if (['authors.toml'].includes(categoryDir))
+        if (['authors.toml', 'categories.toml'].includes(categoryDir))
             continue;
 
         const categoryPath = path.join(baseDir, categoryDir);

@@ -1,0 +1,9 @@
+[[categories]]
+
+displayName = "Iris"
+code = "IRIS"
+description = "All about Iris"
+series = [
+    "IRIS-S-1",
+    "IRIS-S-900"
+]

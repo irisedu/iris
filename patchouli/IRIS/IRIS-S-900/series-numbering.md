@@ -45,4 +45,6 @@ Each series number contains 4 sections in the format `ABCD-X-123YZ`:
 
 ## Extension letters
 
-No extension letters have been assigned yet.
+| Extension letter | Usage                      |
+|------------------|----------------------------|
+| X                | Extension/companion series |

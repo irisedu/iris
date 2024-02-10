@@ -11,7 +11,6 @@ import remarkExtractFrontmatter from 'remark-extract-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 import remarkProcessDirectives from './directives.js';
-import remarkPrism from 'remark-prism';
 import remarkSmartypants from 'remark-smartypants';
 import remarkGemoji from 'remark-gemoji';
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
@@ -23,6 +22,9 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
 import rehypeMathjax from 'rehype-mathjax';
+import rehypeStarryNight from '@microflash/rehype-starry-night';
+import starryNightLanguageExtension from '@microflash/rehype-starry-night/header-language-extension';
+import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-caption-extension';
 import rehypePresetMinify from 'rehype-preset-minify';
 import rehypeStringify from 'rehype-stringify';
 
@@ -87,12 +89,6 @@ export default class MarkdownRenderer {
             .use(remarkGfm)
             .use(remarkDirective)
             .use(remarkProcessDirectives)
-            .use(remarkPrism, {
-                plugins: [
-                    'line-numbers',
-                    'autolinker',
-                ]
-            })
             .use(remarkSmartypants, { dashes: 'oldschool' })
             .use(remarkGemoji)
             .use(remarkA11yEmoji)
@@ -109,12 +105,39 @@ export default class MarkdownRenderer {
                     type: 'element',
                     tagName: 'span',
                     properties: {
-                        'class': 'anchor-link'
+                        className: ['anchor-link'],
                     },
                 },
             })
             .use(rehypeExtractToc)
-            .use(rehypeMathjax)
+            .use(rehypeMathjax, {
+                tex: {
+                    tags: 'ams'
+                }
+            })
+            .use(rehypeStarryNight, {
+                headerExtensions: [
+                    starryNightLanguageExtension,
+                    starryNightCaptionExtension,
+                    // https://github.com/Microflash/rehype-starry-night
+                    (headerOptions, children) => {
+                        children.push({
+                            type: 'element',
+                            tagName: 'button',
+                            properties: {
+                                className: ['highlight-copy'],
+                                for: headerOptions.id,
+                            },
+                            children: [
+                                {
+                                    type: 'text',
+                                    value: 'Copy'
+                                }
+                            ],
+                        });
+                    }
+                ]
+            })
             .use(rehypePresetMinify)
             .use(rehypeStringify, { allowDangerousHtml: true });
     }

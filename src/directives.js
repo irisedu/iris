@@ -53,6 +53,12 @@ function handleContainerDirective(node, file) {
         return h('div', { class: `note ${className}` });
     }
 
+    case 'figure':
+        return h('figure');
+
+    case 'figcaption':
+        return h('figcaption');
+
     default:
         vfileMessage(file, node, 'invalid-directive', `Unknown container directive \`${node.name}\``);
     }

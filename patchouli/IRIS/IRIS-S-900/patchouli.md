@@ -23,6 +23,24 @@ guidelines include:
   to line up with the beginning of the first line.
 - All headings should begin at the second level `##`. The topmost heading `#` is
   handled by the frontmatter.
+- Don't use heading levels greater than four (`####`).
+- Capitalization rules:
+  - Series titles should use Title Case.
+  - Chapter titles, article titles, and headings should use Sentence case.
+
+## File structure
+
+Series must follow the following file structure:
+
+- The folder's name must be the same as the series code.
+- `series.toml`, which contains series metadata, must be present and follow the
+  schema provided in `schema/`.
+- `series.toml` links chapters to articles; the articles should be placed in
+  folders corresponding to their chapter (or optionally at the series root if
+  the chapter they are in is top-level).
+- `assets/`, if present, should contain any assets which will be copied without
+  alteration when the series is built. You can refer to these assets using the
+  [link system](#links-and-assets-within-iris) explained below.
 
 ## Markdown extensions
 
@@ -84,6 +102,8 @@ directives are supported:
   - `info` (`:::note{.info}`)
   - `warning` (`:::note{.warning}`)
   - `tip` (`:::note{.tip}`)
+- `figure`: labeled figures. To be used with `figcaption`.
+- `figcaption`: the caption for a figure. To be used inside `figure`.
 
 ### Smartypants
 
@@ -96,6 +116,11 @@ characters:
 - `...` becomes ellipsis.
 
 These symbols should be used according to proper typography rules.
+
+:::note{.warning}
+Smartypants will not convert punctuation in the frontmatter (i.e. the title).
+You will need to use the proper symbols manually.
+:::
 
 ### Gemoji
 

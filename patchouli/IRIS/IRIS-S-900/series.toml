@@ -1,6 +1,6 @@
 type = "series"
 code = "IRIS-S-900"
-title = "Iris internals"
+title = "Iris Internals"
 description = "Internal documentation for Iris and Patchouli"
 authors = [
     "kyo"

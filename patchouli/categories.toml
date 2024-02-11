@@ -1,5 +1,14 @@
 [[categories]]
 
+displayName = "Mathematics"
+code = "MATH"
+description = "Everyone's favorite subject"
+series = [
+    "MATH-M-900"
+]
+
+[[categories]]
+
 displayName = "Iris"
 code = "IRIS"
 description = "All about Iris"

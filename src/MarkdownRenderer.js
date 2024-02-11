@@ -3,6 +3,7 @@ import { unified } from 'unified';
 import remarkPresetLintRecommended from 'remark-preset-lint-recommended';
 import remarkPresetLintMarkdownStyleGuide from 'remark-preset-lint-markdown-style-guide';
 import remarkLintListItemSpacing from 'remark-lint-list-item-spacing';
+import remarkLintMaximumLineLength from 'remark-lint-maximum-line-length';
 
 import remarkParse from 'remark-parse';
 import remarkRemoveComments from 'remark-remove-comments';
@@ -28,11 +29,10 @@ import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-
 import rehypePresetMinify from 'rehype-preset-minify';
 import rehypeStringify from 'rehype-stringify';
 
-import crypto from 'crypto';
 import path from 'path';
 import toml from '@iarna/toml';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
-import { vfileMessage, resolveInternalLink, internalLinkToPageLink } from './utils.js';
+import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag } from './utils.js';
 import { visit } from 'unist-util-visit';
 
 function rehypeAddReferencesHeading(opts) {
@@ -79,6 +79,7 @@ export default class MarkdownRenderer {
             .use(remarkPresetLintRecommended)
             .use(remarkPresetLintMarkdownStyleGuide)
             .use(remarkLintListItemSpacing, false)
+            .use(remarkLintMaximumLineLength, false) // Directives can be longer
 
             // remark
             .use(remarkParse)
@@ -88,7 +89,7 @@ export default class MarkdownRenderer {
             .use(remarkCheckFrontmatter)
             .use(remarkGfm)
             .use(remarkDirective)
-            .use(remarkProcessDirectives)
+            .use(remarkProcessDirectives, this)
             .use(remarkSmartypants, { dashes: 'oldschool' })
             .use(remarkGemoji)
             .use(remarkA11yEmoji)
@@ -169,11 +170,11 @@ export default class MarkdownRenderer {
 
                     const internalLink = resolveInternalLink(link, this.currentSeries);
                     if (internalLink) {
-                        const assetId = 'asset-' + crypto.createHash('md5').update(internalLink).digest('hex').slice(0, 12);
-                        node.properties[linkProperty] = `####${assetId}####`;
+                        const assetTag = internalLinkToAssetTag(internalLink);
+                        node.properties[linkProperty] = `####${assetTag}####`;
 
-                        const assetMap = file.data.assets || (file.data.assets = {});
-                        assetMap[assetId] = internalLink;
+                        const assets = file.data.assets || (file.data.assets = {});
+                        assets[assetTag] = internalLink;
                     }
                 }
             });

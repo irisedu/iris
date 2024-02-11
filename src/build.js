@@ -1,4 +1,5 @@
-import { vfileMessage } from './utils.js';
+import { vfileMessage, shouldBuild } from './utils.js';
+import { buildCompiledAssets } from './compiledAssets.js';
 
 import path from 'path';
 import fs from 'fs-extra';
@@ -11,13 +12,13 @@ import reflect from '@alumna/reflect';
 const baseDir = path.join(import.meta.dirname, '../patchouli');
 const buildDir = path.join(import.meta.dirname, '../build');
 
-async function parseToml(filePath, schema, displayName) {
-    const vfile = new VFile({ path: filePath });
+async function buildToml(inPath, outPath, schema, outKey) {
+    const vfile = new VFile({ path: inPath });
 
     try {
-        vfile.value = await fs.readFile(filePath, 'utf-8');
+        vfile.value = await fs.readFile(inPath, 'utf-8');
     } catch (e) {
-        vfileMessage(vfile, null, 'toml-not-found', `Failed to read ${displayName}: ${e.toString()}`);
+        vfileMessage(vfile, null, 'toml-not-found', `Failed to read file: ${e.toString()}`);
         return vfile;
     }
 
@@ -26,50 +27,38 @@ async function parseToml(filePath, schema, displayName) {
     try {
         tomlParsed = toml.parse(vfile.value);
     } catch (e) {
-        vfileMessage(vfile, null, 'toml-invalid', `Failed to parse ${displayName}: ${e.toString()}`);
+        vfileMessage(vfile, null, 'toml-invalid', `Failed to parse file: ${e.toString()}`);
         return vfile;
     }
 
     const validateResult = await validate(path.join(import.meta.dirname, '../schemas', schema), tomlParsed);
-
-    if (!validateResult.valid)
-        vfileMessage(vfile, null, 'toml-schema', 'series.toml violates schema');
-
-    vfile.data.parsed = tomlParsed;
-    return vfile;
-}
-
-async function shouldBuild(inPath, outPath) {
-    try {
-        const res = await Promise.all([
-            fs.stat(inPath),
-            fs.stat(outPath)
-        ]);
-
-        return res[0].mtime > res[1].mtime;
-    } catch {
-        return true;
+    if (validateResult.valid) {
+        vfile.data.parsed = tomlParsed;
+        await fs.writeFile(outPath, JSON.stringify(outKey ? tomlParsed[outKey] : tomlParsed));
+    } else {
+        vfileMessage(vfile, null, 'toml-schema', 'File violates schema');
     }
+
+    return vfile;
 }
 
 export async function buildSeries(directory, renderer) {
     renderer.currentSeries = path.basename(directory);
 
+    const seriesBuildDir = path.join(buildDir, renderer.currentSeries.toLowerCase());
+    await fs.ensureDir(seriesBuildDir);
+
     console.log(` == ${renderer.currentSeries} == `);
 
     // Series metadata
     const seriesTomlPath = path.join(directory, 'series.toml');
-    const seriesToml = await parseToml(seriesTomlPath, 'series.schema.json', 'series.toml');
+    const seriesToml = await buildToml(seriesTomlPath, path.join(seriesBuildDir, 'series.json'), 'series.schema.json');
     const files = [seriesToml];
 
     if (seriesToml.messages.length)
         return files;
 
-    const seriesBuildDir = path.join(buildDir, renderer.currentSeries.toLowerCase());
-    await fs.ensureDir(seriesBuildDir);
-
     const seriesMetadata = seriesToml.data.parsed;
-    await fs.writeFile(path.join(seriesBuildDir, 'series.json'), JSON.stringify(seriesMetadata));
 
     // Bibliography
     const bibliographyPath = path.join(directory, 'bibliography.bib');
@@ -83,8 +72,8 @@ export async function buildSeries(directory, renderer) {
             const inPath = path.join(directory, articlePath) + '.md';
             const outPath = path.join(seriesBuildDir, articlePath) + '.md.json';
 
-            const promise = shouldBuild(inPath, outPath).then(shouldBuild => {
-                if (!shouldBuild)
+            const promise = shouldBuild(inPath, outPath).then(build => {
+                if (!build)
                     return;
 
                 return fs.readFile(inPath).catch(() => {
@@ -115,6 +104,8 @@ export async function buildSeries(directory, renderer) {
         }
     }
 
+    const vfiles = (await Promise.all(buildTasks)).filter(f => f);
+
     // Assets
     await reflect({
         src: path.join(directory, 'assets'),
@@ -125,8 +116,9 @@ export async function buildSeries(directory, renderer) {
         only_newer: true,
     });
 
-    const vfiles = (await Promise.all(buildTasks)).filter(f => f);
-    return files.concat(vfiles);
+    const compiledAssets = await buildCompiledAssets(directory, seriesBuildDir);
+
+    return files.concat(vfiles).concat(compiledAssets);
 }
 
 export async function buildAll(renderer) {
@@ -135,26 +127,20 @@ export async function buildAll(renderer) {
     console.log(' == Authors and categories files == ');
 
     const authorsTomlPath = path.join(baseDir, 'authors.toml');
-    const authorsToml = await parseToml(authorsTomlPath, 'authors.schema.json', 'authors.toml');
-    if (!authorsToml.messages.length) {
-        await fs.writeFile(path.join(buildDir, 'authors.json'), JSON.stringify(authorsToml.data.parsed));
-    }
+    const authorsToml = await buildToml(authorsTomlPath, path.join(buildDir, 'authors.json'), 'authors.schema.json');
 
     const categoriesTomlPath = path.join(baseDir, 'categories.toml');
-    const categoriesToml = await parseToml(categoriesTomlPath, 'categories.schema.json', 'categories.toml');
-    if (!categoriesToml.messages.length) {
-        await fs.writeFile(path.join(buildDir, 'categories.json'), JSON.stringify(categoriesToml.data.parsed.categories));
-    }
+    const categoriesToml = await buildToml(categoriesTomlPath, path.join(buildDir, 'categories.json'), 'categories.schema.json', 'categories');
 
     console.log(reporter([authorsToml, categoriesToml]) + '\n');
 
-    const categoryDirs = await fs.readdir(baseDir);
+    const categoryDirs = await fs.readdir(baseDir, { withFileTypes: true });
 
-    for (const categoryDir of categoryDirs) {
-        if (['authors.toml', 'categories.toml'].includes(categoryDir))
+    for (const dirent of categoryDirs) {
+        if (!dirent.isDirectory())
             continue;
 
-        const categoryPath = path.join(baseDir, categoryDir);
+        const categoryPath = path.join(baseDir, dirent.name);
         const seriesDirs = await fs.readdir(categoryPath);
 
         for (const seriesDir of seriesDirs) {

@@ -1,9 +1,25 @@
+import fs from 'fs-extra';
+import crypto from 'crypto';
+
 export function vfileMessage(file, node, id, msg) {
     file.message(msg, {
         place: node && node.position,
         ruleId: id,
         source: 'patchouli',
     });
+}
+
+export async function shouldBuild(inPath, outPath) {
+    try {
+        const res = await Promise.all([
+            fs.stat(inPath),
+            fs.stat(outPath)
+        ]);
+
+        return res[0].mtime > res[1].mtime;
+    } catch {
+        return true;
+    }
 }
 
 export function resolveInternalLink(link, currentSeries) {
@@ -18,4 +34,8 @@ export function resolveInternalLink(link, currentSeries) {
 
 export function internalLinkToPageLink(link) {
     return '/series' + link;
+}
+
+export function internalLinkToAssetTag(link) {
+    return 'asset-' + crypto.createHash('md5').update(link).digest('hex').slice(0, 12);
 }

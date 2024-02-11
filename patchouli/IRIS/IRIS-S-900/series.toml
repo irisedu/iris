@@ -12,5 +12,6 @@ tags = [ "iris" ]
 top_level = true
 articles = [
     "series-numbering",
-    "patchouli"
+    "patchouli",
+    "tex"
 ]

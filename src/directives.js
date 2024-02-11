@@ -1,8 +1,9 @@
 import { h } from 'hastscript';
 import { visit } from 'unist-util-visit';
-import { vfileMessage } from './utils.js';
+import { vfileMessage, resolveInternalLink, internalLinkToAssetTag } from './utils.js';
+import { resolveCompiledPath } from './compiledAssets.js';
 
-function handleTextDirective(node, file) {
+function handleTextDirective(node, file, opts) {
     const attrs = node.attributes || {};
 
     switch (node.name) {
@@ -14,16 +15,36 @@ function handleTextDirective(node, file) {
     }
 }
 
-function handleLeafDirective(node, file) {
+function handleLeafDirective(node, file, opts) {
     const attrs = node.attributes || {};
 
     switch (node.name) {
+    case 'teximg': {
+        const { src, alt } = attrs;
+        if (!src || !alt) {
+            vfileMessage(file, node, 'tex-directive-src', 'The `teximg` directive requires `src` and `alt` attributes.');
+            return;
+        }
+
+        const internalLink = resolveInternalLink(src, opts.currentSeries);
+        if (!internalLink) {
+            vfileMessage(file, node, 'tex-directive-src', 'The `teximg` directive requires a `src` within Iris.');
+            return;
+        }
+
+        const assetTag = internalLinkToAssetTag(internalLink);
+        const assets = file.data.assets || (file.data.assets = {});
+        assets[assetTag] = resolveCompiledPath(internalLink);
+
+        return h('img', { src: `####${assetTag}####`, alt });
+    }
+
     default:
         vfileMessage(file, node, 'invalid-directive', `Unknown leaf directive \`${node.name}\``);
     }
 }
 
-function handleContainerDirective(node, file) {
+function handleContainerDirective(node, file, opts) {
     const attrs = node.attributes || {};
 
     switch (node.name) {
@@ -64,20 +85,20 @@ function handleContainerDirective(node, file) {
     }
 }
 
-export default function remarkProcessDirectives() {
+export default function remarkProcessDirectives(opts) {
     return (tree, file) => {
         visit(tree, node => {
             let hast;
 
             switch (node.type) {
             case 'textDirective':
-                hast = handleTextDirective(node, file);
+                hast = handleTextDirective(node, file, opts);
                 break;
             case 'leafDirective':
-                hast = handleLeafDirective(node, file);
+                hast = handleLeafDirective(node, file, opts);
                 break;
             case 'containerDirective':
-                hast = handleContainerDirective(node, file);
+                hast = handleContainerDirective(node, file, opts);
                 break;
             }
 

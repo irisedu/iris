@@ -7,7 +7,6 @@ unless otherwise noted.
 
 - Code editor: [CodeSandbox](https://codemirror.net/)
 - Code running: [glot](https://github.com/glotcode/glot)
-- Static plots: PGF/Ti*k*Z and pgfplots with [standalone](https://ctan.org/pkg/standalone)
 - Static math videos: [manim](https://www.manim.community/)
 - Interactive math content: [CindyJS](https://cindyjs.org/)
 - 2D visualizations: [p5.js](https://p5js.org/get-started/)

@@ -16,6 +16,7 @@ guidelines include:
 - Long lines should break *before* they reach past 80 columns in length.
   - Links can reach past 80 columns if their display content fits within 80
     columns.
+  - Directives and code blocks can reach past 80 columns.
   - Many code editors such as [Emacs](https://www.gnu.org/software/emacs/) and
     [Visual Studio Code](https://code.visualstudio.com/) allow visual column
     lines to be added.
@@ -41,6 +42,8 @@ Series must follow the following file structure:
 - `assets/`, if present, should contain any assets which will be copied without
   alteration when the series is built. You can refer to these assets using the
   [link system](#links-and-assets-within-iris) explained below.
+- `assets-compiled/`, if present, should contain any assets which require
+  compilation before use (e.g. TeX files).
 
 ## Markdown extensions
 
@@ -90,8 +93,10 @@ A text directive, designed to be used within sentences, has syntax
   attribute will be shown on hover.
 
 A leaf directive, designed to be used as a standalone block with no content, has
-syntax `::name[label]{attributes}`. There are currently no supported leaf
-directives.
+syntax `::name[label]{attributes}`. The following leaf directives are supported:
+
+- `teximg`: a $$\TeX$$ image, with `src` attribute for the $$\TeX$$ source path
+  in `assets-compiled/` and an `alt` attribute for the image's alt text.
 
 A container directive, designed to be a block with content, begins with
 `:::name[label]{attributes}` with the end of the block indicated by `:::`.

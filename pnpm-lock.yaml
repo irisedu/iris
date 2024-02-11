@@ -65,6 +65,9 @@ dependencies:
   remark-lint-list-item-spacing:
     specifier: ^4.1.2
     version: 4.1.2
+  remark-lint-maximum-line-length:
+    specifier: ^3.1.3
+    version: 3.1.3
   remark-math:
     specifier: ^6.0.0
     version: 6.0.0

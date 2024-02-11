@@ -1,0 +1,14 @@
+type = "series"
+code = "MATH-M-900"
+title = "Miscellaneous Mathematics"
+description = "Various articles about mathematics"
+authors = [
+    "kyo"
+]
+
+[[chapters]]
+
+top_level = true
+articles = [
+    "unit-circle"
+]

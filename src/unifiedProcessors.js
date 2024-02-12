@@ -72,3 +72,14 @@ export function rehypeTransformIrisLinks(opts) {
         });
     };
 }
+
+export function rehypeImageLazyLoading() {
+    return tree => {
+        visit(tree, node => {
+            if (node.type !== 'element' || node.tagName !== 'img')
+                return;
+
+            node.properties.loading = 'lazy';
+        });
+    };
+}

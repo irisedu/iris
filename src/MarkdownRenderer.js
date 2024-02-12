@@ -104,6 +104,7 @@ export default class MarkdownRenderer {
                     }
                 ]
             })
+            .use(unifiedProcessors.rehypeImageLazyLoading)
             .use(rehypePresetMinify)
             .use(rehypeStringify, { allowDangerousHtml: true });
     }

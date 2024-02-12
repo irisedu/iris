@@ -29,40 +29,9 @@ import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-
 import rehypePresetMinify from 'rehype-preset-minify';
 import rehypeStringify from 'rehype-stringify';
 
-import path from 'path';
 import toml from '@iarna/toml';
-import { validate } from '@hyperjump/json-schema/draft-2020-12';
-import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag } from './utils.js';
-import { visit } from 'unist-util-visit';
 
-function rehypeAddReferencesHeading(opts) {
-    return tree => {
-        if (!opts.bibliography || !opts.bibliography.length)
-            return;
-
-        tree.children.push({
-            type: 'element',
-            tagName: 'h2',
-            properties: {},
-            children: [
-                {
-                    type: 'text',
-                    value: 'References'
-                }
-            ]
-        });
-    };
-}
-
-function remarkCheckFrontmatter() {
-    return async (_, file) => {
-        const frontmatter = file.data.frontmatter;
-        const result = await validate(path.join(import.meta.dirname, '../schemas/frontmatter.schema.json'), frontmatter);
-
-        if (!result.valid)
-            vfileMessage(file, null, 'frontmatter-schema', 'Frontmatter violates schema');
-    };
-}
+import * as unifiedProcessors from './unifiedProcessors.js';
 
 export default class MarkdownRenderer {
     currentSeries = 'IRIS-S-999X';
@@ -86,7 +55,7 @@ export default class MarkdownRenderer {
             .use(remarkRemoveComments)
             .use(remarkFrontmatter, { type: 'toml', marker: '-' })
             .use(remarkExtractFrontmatter, { name: 'frontmatter', toml: toml.parse })
-            .use(remarkCheckFrontmatter)
+            .use(unifiedProcessors.remarkCheckFrontmatter)
             .use(remarkGfm)
             .use(remarkDirective)
             .use(remarkProcessDirectives, this)
@@ -97,8 +66,8 @@ export default class MarkdownRenderer {
             .use(remarkRehype, { allowDangerousHtml: true })
 
             // rehype
-            .use(this.rehypeTransformLinks.bind(this))
-            .use(rehypeAddReferencesHeading, this.#citationOptions)
+            .use(unifiedProcessors.rehypeTransformIrisLinks, this)
+            .use(unifiedProcessors.rehypeAddReferencesHeading, this.#citationOptions)
             .use(rehypeCitation, this.#citationOptions)
             .use(rehypeSlug)
             .use(rehypeAutolinkHeadings, {
@@ -137,44 +106,6 @@ export default class MarkdownRenderer {
             })
             .use(rehypePresetMinify)
             .use(rehypeStringify, { allowDangerousHtml: true });
-    }
-
-    rehypeTransformLinks() {
-        return (tree, file) => {
-            visit(tree, node => {
-                if (node.type !== 'element')
-                    return;
-
-                const assetTags = {
-                    img: 'src',
-                };
-
-                if (node.tagName === 'a') {
-                    const href = node.properties.href;
-                    if (!href)
-                        return;
-
-                    const internalLink = resolveInternalLink(href, this.currentSeries);
-                    if (internalLink)
-                        node.properties.href = internalLinkToPageLink(internalLink);
-                } else if (assetTags[node.tagName]) {
-                    // Replace asset links to make handling with web frameworks (e.g. SvelteKit) easier
-                    const linkProperty = assetTags[node.tagName];
-                    const link = node.properties[linkProperty];
-                    if (!link)
-                        return;
-
-                    const internalLink = resolveInternalLink(link, this.currentSeries);
-                    if (internalLink) {
-                        const assetTag = internalLinkToAssetTag(internalLink);
-                        node.properties[linkProperty] = `####${assetTag}####`;
-
-                        const assets = file.data.assets || (file.data.assets = {});
-                        assets[assetTag] = internalLink;
-                    }
-                }
-            });
-        };
     }
 
     set bibliography(bib) {

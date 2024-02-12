@@ -97,6 +97,8 @@ syntax `::name[label]{attributes}`. The following leaf directives are supported:
 
 - `teximg`: a $$\TeX$$ image, with `src` attribute for the $$\TeX$$ source path
   in `assets-compiled/` and an `alt` attribute for the image's alt text.
+- `iframe`: an generic embedded page, with `src` attribute for the embed URL and
+  `width` and `height` attributes for sizing.
 
 A container directive, designed to be a block with content, begins with
 `:::name[label]{attributes}` with the end of the block indicated by `:::`.

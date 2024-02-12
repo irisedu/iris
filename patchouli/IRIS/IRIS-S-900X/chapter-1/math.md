@@ -1,5 +1,5 @@
 ---
-title = "Math with MathJax"
+title = "Math with KaTeX"
 authors = [ "kyo" ]
 tags = [ "testing" ]
 ---

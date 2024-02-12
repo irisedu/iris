@@ -22,7 +22,7 @@ import rehypeCitation from 'rehype-citation';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
-import rehypeMathjax from 'rehype-mathjax';
+import rehypeKatex from 'rehype-katex';
 import rehypeStarryNight from '@microflash/rehype-starry-night';
 import starryNightLanguageExtension from '@microflash/rehype-starry-night/header-language-extension';
 import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-caption-extension';
@@ -111,11 +111,7 @@ export default class MarkdownRenderer {
                 },
             })
             .use(rehypeExtractToc)
-            .use(rehypeMathjax, {
-                tex: {
-                    tags: 'ams'
-                }
-            })
+            .use(rehypeKatex)
             .use(rehypeStarryNight, {
                 headerExtensions: [
                     starryNightLanguageExtension,

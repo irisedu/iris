@@ -8,7 +8,6 @@ unless otherwise noted.
 - Code editor: [CodeSandbox](https://codemirror.net/)
 - Code running: [glot](https://github.com/glotcode/glot)
 - Static math videos: [manim](https://www.manim.community/)
-- Interactive math content: [CindyJS](https://cindyjs.org/)
 - 2D visualizations: [p5.js](https://p5js.org/get-started/)
 - 3D math visualization: [MathBox](https://github.com/unconed/mathbox)
 - Data visualization: [D3](https://d3js.org/)

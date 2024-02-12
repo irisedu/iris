@@ -39,6 +39,25 @@ function handleLeafDirective(node, file, opts) {
         return h('img', { src: `####${assetTag}####`, alt });
     }
 
+    case 'iframe': {
+        let { src, width, height } = attrs;
+        if (!src) {
+            vfileMessage(file, node, 'iframe-src', 'The `iframe` directive requires a `src` attribute.');
+            return;
+        }
+
+        const internalLink = resolveInternalLink(src, opts.currentSeries);
+        if (internalLink) {
+            const assetTag = internalLinkToAssetTag(internalLink);
+            const assets = file.data.assets || (file.data.assets = {});
+            assets[assetTag] = resolveCompiledPath(internalLink);
+
+            src = `####${assetTag}####`;
+        }
+
+        return h('iframe', { src, width, height });
+    }
+
     default:
         vfileMessage(file, node, 'invalid-directive', `Unknown leaf directive \`${node.name}\``);
     }

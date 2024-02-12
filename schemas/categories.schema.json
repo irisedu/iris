@@ -18,10 +18,6 @@
                         "description": "The category abbreviation",
                         "type": "string"
                     },
-                    "description": {
-                        "description": "A description of the category",
-                        "type": "string"
-                    },
                     "series": {
                         "description": "The codes of the series in the category",
                         "type": "array",
@@ -31,7 +27,7 @@
                     }
                 },
                 "additionalProperties": false,
-                "required": ["displayName", "code", "description", "series"]
+                "required": ["displayName", "code", "series"]
             }
         }
     },

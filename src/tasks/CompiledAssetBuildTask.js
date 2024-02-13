@@ -6,6 +6,7 @@ import util from 'node:util';
 import { execFile as execFileCb } from 'node:child_process';
 
 import BuildTask from './BuildTask.js';
+import AssetOptimizeTask from './AssetOptimizeTask.js';
 import { vfileMessage, shouldBuild } from '../utils.js';
 
 const execFile = util.promisify(execFileCb);
@@ -65,6 +66,9 @@ export default class CompiledAssetBuildTask extends BuildTask {
 
         signale.await(`Building compiled asset at ${this.#inPath}...`);
         await task;
+
+        const optimizeTask = new AssetOptimizeTask(this.#outPath);
+        await optimizeTask.build();
 
         return vfile;
     }

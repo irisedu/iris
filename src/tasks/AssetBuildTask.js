@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import BuildTask from './BuildTask.js';
+import AssetOptimizeTask from './AssetOptimizeTask.js';
 import { shouldBuild } from '../utils.js';
 
 export default class AssetBuildTask extends BuildTask {
@@ -26,5 +27,8 @@ export default class AssetBuildTask extends BuildTask {
 
         await fs.ensureDir(path.dirname(this.#outPath));
         await fs.copyFile(this.#inPath, this.#outPath);
+
+        const optimizeTask = new AssetOptimizeTask(this.#outPath);
+        await optimizeTask.build();
     }
 }

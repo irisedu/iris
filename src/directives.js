@@ -1,7 +1,7 @@
 import { h } from 'hastscript';
 import { visit } from 'unist-util-visit';
 import { vfileMessage, resolveInternalLink, internalLinkToAssetTag } from './utils.js';
-import { resolveCompiledPath } from './compiledAssets.js';
+import CompiledAssetBuildTask from './tasks/CompiledAssetBuildTask.js';
 
 function handleTextDirective(node, file, opts) {
     const attrs = node.attributes || {};
@@ -34,7 +34,7 @@ function handleLeafDirective(node, file, opts) {
 
         const assetTag = internalLinkToAssetTag(internalLink);
         const assets = file.data.assets || (file.data.assets = {});
-        assets[assetTag] = resolveCompiledPath(internalLink);
+        assets[assetTag] = CompiledAssetBuildTask.resolveCompiledPath(internalLink);
 
         return h('img', { src: `####${assetTag}####`, alt });
     }
@@ -50,7 +50,7 @@ function handleLeafDirective(node, file, opts) {
         if (internalLink) {
             const assetTag = internalLinkToAssetTag(internalLink);
             const assets = file.data.assets || (file.data.assets = {});
-            assets[assetTag] = resolveCompiledPath(internalLink);
+            assets[assetTag] = internalLink;
 
             src = `####${assetTag}####`;
         }

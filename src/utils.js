@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import path from 'path';
 import crypto from 'crypto';
 
 export function vfileMessage(file, node, id, msg) {
@@ -19,6 +20,24 @@ export async function shouldBuild(inPath, outPath) {
         return res[0].mtime > res[1].mtime;
     } catch {
         return true;
+    }
+}
+
+export async function recurseDirectory(dir, cb, curr) {
+    if (!curr)
+        curr = '';
+
+    const directory = await fs.readdir(path.join(dir, curr), { withFileTypes: true });
+
+    for (const dirent of directory) {
+        const filePath = path.join(curr, dirent.name);
+
+        if (dirent.isDirectory()) {
+            await recurseDirectory(dir, cb, filePath);
+            continue;
+        }
+
+        await cb(filePath);
     }
 }
 

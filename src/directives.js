@@ -93,6 +93,34 @@ function handleContainerDirective(node, file, opts) {
         return h('div', { class: `note ${className}` });
     }
 
+    case 'comment': {
+        const className = attrs.class;
+        if (!className) {
+            vfileMessage(file, node, 'invalid-note-directive', 'The `comment` directive requires a class name.');
+            return;
+        }
+
+        const characters = {
+            iris: 'Iris',
+        };
+
+        const firstClass = className.split(' ')[0];
+
+        if (!characters[firstClass]) {
+            vfileMessage(file, node, 'invalid-note-directive', `Invalid comment class name \`${className}\``);
+            return;
+        }
+
+        const charactersPage = '/series/iris-s-1/characters';
+
+        node.children.unshift({
+            type: 'html',
+            value: `<span class="comment__character"><a href="${charactersPage}#${className}">${characters[firstClass]}</a></span>`,
+        });
+
+        return h('div', { class: `comment ${className}` });
+    }
+
     case 'figure':
         return h('figure');
 

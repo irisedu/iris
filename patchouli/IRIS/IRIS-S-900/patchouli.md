@@ -105,12 +105,34 @@ A container directive, designed to be a block with content, begins with
 Additional colons may be used for nested blocks. The following container
 directives are supported:
 
-- `note`: special notes. The type of note is determined by the class name:
-  - `info` (`:::note{.info}`)
-  - `warning` (`:::note{.warning}`)
-  - `tip` (`:::note{.tip}`)
+- [`note`](#notes)
+- [`comment`](#comments)
 - `figure`: labeled figures. To be used with `figcaption`.
 - `figcaption`: the caption for a figure. To be used inside `figure`.
+
+#### Notes
+
+Container directive for special notes determined by class name.
+
+:::note{.info}
+`:::note{.info}`
+:::
+
+:::note{.warning}
+`:::note{.warning}`
+:::
+
+:::note{.tip}
+`:::note{.tip}`
+:::
+
+#### Comments
+
+Container directive for comments from the author as various characters.
+
+:::comment{.iris.thinking}
+`:::comment{.iris.thinking}`
+:::
 
 ### Smartypants
 

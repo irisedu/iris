@@ -13,5 +13,6 @@ top_level = true
 articles = [
     "welcome",
     "how-to-use",
+    "characters",
     "acknowledgments"
 ]

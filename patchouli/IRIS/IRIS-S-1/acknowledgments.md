@@ -15,3 +15,4 @@ authors = [ "kyo" ]
 - Some of Iris' math interactives are powered by the lovely freeware project
   [Cinderella](https://cinderella.de/) and its open-source sister project
   [CindyJS](https://cindyjs.org/).
+- The usage of character interjections is inspired by [Xe Isao's blog](https://xeiaso.net/).

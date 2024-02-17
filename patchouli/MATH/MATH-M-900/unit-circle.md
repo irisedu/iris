@@ -47,7 +47,7 @@ $$
 \end{align*}
 $$
 
-:::note{.tip}
+:::comment{.iris.thinking}
 This rather remarkable identity, called the Pythagorean identity, is arguably
 the most important concept in trigonometry. Remember it!
 :::

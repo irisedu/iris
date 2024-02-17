@@ -6,6 +6,9 @@ authors = [
     "kyo"
 ]
 tags = [ "iris" ]
+prerequisites = [
+    "IRIS-S-1"
+]
 
 [[chapters]]
 

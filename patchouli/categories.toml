@@ -12,6 +12,5 @@ displayName = "Iris"
 code = "IRIS"
 series = [
     "IRIS-S-1",
-    "IRIS-S-900",
-    "IRIS-S-900X"
+    "IRIS-S-900"
 ]

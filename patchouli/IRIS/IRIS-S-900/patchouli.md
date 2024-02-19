@@ -99,6 +99,7 @@ syntax `::name[label]{attributes}`. The following leaf directives are supported:
   in `assets-compiled/` and an `alt` attribute for the image's alt text.
 - `iframe`: an generic embedded page, with `src` attribute for the embed URL and
   `width` and `height` attributes for sizing.
+- `summary`: the summary for a `details` directive.
 
 A container directive, designed to be a block with content, begins with
 `:::name[label]{attributes}` with the end of the block indicated by `:::`.
@@ -109,6 +110,7 @@ directives are supported:
 - [`comment`](#comments)
 - `figure`: labeled figures. To be used with `figcaption`.
 - `figcaption`: the caption for a figure. To be used inside `figure`.
+- `details`: content which is hidden by default. To be used with `summary`.
 
 #### Notes
 
@@ -124,6 +126,32 @@ Container directive for special notes determined by class name.
 
 :::note{.tip}
 `:::note{.tip}`
+:::
+
+::::note{.problem}
+`:::note{.problem}`
+
+:::details
+::summary[Hint 1]
+
+Here is a hint:
+
+```md
+**What?**
+```
+:::
+
+:::details
+::summary[Hint 2]
+
+No spoonfeeding here...
+:::
+
+Got it?
+::::
+
+:::note{.exercise}
+`:::note{.exercise}`
 :::
 
 #### Comments

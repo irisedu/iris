@@ -6,7 +6,7 @@ unless otherwise noted.
 ## Future tasks
 
 - Code editor: [CodeSandbox](https://codemirror.net/)
-- Code running: [glot](https://github.com/glotcode/glot)
+- Code running: Docker, Nix, [gVisor](https://gvisor.dev/)
 - Static math videos: [manim](https://www.manim.community/)
 - 2D visualizations: [p5.js](https://p5js.org/get-started/)
 - 3D math visualization: [MathBox](https://github.com/unconed/mathbox)

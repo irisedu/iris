@@ -58,6 +58,9 @@ function handleLeafDirective(node, file, opts) {
         return h('iframe', { src, width, height });
     }
 
+    case 'summary':
+        return h('summary');
+
     default:
         vfileMessage(file, node, 'invalid-directive', `Unknown leaf directive \`${node.name}\``);
     }
@@ -78,6 +81,8 @@ function handleContainerDirective(node, file, opts) {
             info: 'Note',
             warning: 'Warning',
             tip: 'Tip',
+            problem: 'Problem',
+            exercise: 'Exercise',
         };
 
         if (!messages[className]) {
@@ -126,6 +131,9 @@ function handleContainerDirective(node, file, opts) {
 
     case 'figcaption':
         return h('figcaption');
+
+    case 'details':
+        return h('details');
 
     default:
         vfileMessage(file, node, 'invalid-directive', `Unknown container directive \`${node.name}\``);

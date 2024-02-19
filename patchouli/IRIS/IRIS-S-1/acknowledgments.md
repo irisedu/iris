@@ -11,6 +11,7 @@ authors = [ "kyo" ]
 ::::
 
 - The Iris logo is based on the picture above.
+- Iris' math is typeset using [$$\KaTeX$$](https://katex.org/).
 - Some of Iris' diagrams/drawings are created using [PGF/Ti*k*z](https://ctan.org/pkg/pgf).
 - Some of Iris' math interactives are powered by the lovely freeware project
   [Cinderella](https://cinderella.de/) and its open-source sister project

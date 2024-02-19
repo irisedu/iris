@@ -120,7 +120,7 @@ function handleContainerDirective(node, file, opts) {
 
         node.children.unshift({
             type: 'html',
-            value: `<span class="comment__character"><a href="${charactersPage}#${className}">${characters[firstClass]}</a></span>`,
+            value: `<span class="comment__character"><a href="${charactersPage}#${firstClass}">${characters[firstClass]}</a></span>`,
         });
 
         return h('div', { class: `comment ${className}` });

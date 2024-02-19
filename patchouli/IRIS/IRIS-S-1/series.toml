@@ -12,7 +12,13 @@ tags = [ "iris" ]
 top_level = true
 articles = [
     "welcome",
-    "how-to-use",
     "characters",
     "acknowledgments"
+]
+
+[[chapters]]
+
+title = "About the authors"
+articles = [
+    "authors/kyo"
 ]

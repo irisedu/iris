@@ -9,11 +9,11 @@
             "display_name": {
                 "type": "string"
             },
-            "bio": {
+            "page": {
                 "type": "string"
             }
         },
         "additionalProperties": false,
-        "required": ["display_name", "bio"]
+        "required": ["display_name"]
     }
 }

@@ -51,8 +51,12 @@ export function rehypeTransformIrisLinks(opts) {
                     return;
 
                 const internalLink = resolveInternalLink(href, opts.currentSeries);
-                if (internalLink)
+                if (internalLink) {
+                    const links = file.data.links || (file.data.links = []);
+                    links.push(internalLink.slice(1).split('#').slice(0, -1).join('#'));
+
                     node.properties.href = internalLinkToPageLink(internalLink);
+                }
             } else if (assetTags[node.tagName]) {
                 // Replace asset links to make handling with web frameworks (e.g. SvelteKit) easier
                 const linkProperty = assetTags[node.tagName];

@@ -1,6 +1,5 @@
 ---
 title = "Welcome to Iris!"
-authors = [ "kyo" ]
 ---
 
 Welcome to Iris, your no-nonsense, open source knowledge base!

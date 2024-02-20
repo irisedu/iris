@@ -1,6 +1,5 @@
 ---
 title = "kyo"
-authors = [ "kyo" ]
 ---
 
 Hi! I'm kyo, the maintainer of Iris and all [ksk](https://kyo.seki.pw) services.

@@ -7,6 +7,7 @@ import MetadataBuildTask from '../tasks/MetadataBuildTask.js';
 import SeriesBuildTask from '../tasks/SeriesBuildTask.js';
 import AssetsBuildTask from '../tasks/AssetsBuildTask.js';
 import CompiledAssetsBuildTask from '../tasks/CompiledAssetsBuildTask.js';
+import NetworkBuildTask from '../tasks/NetworkBuildTask.js';
 import TaskRunner from '../tasks/TaskRunner.js';
 
 const baseDir = path.join(import.meta.dirname, '../../patchouli');
@@ -60,6 +61,7 @@ const buildDir = path.join(import.meta.dirname, '../../build');
 
     console.log();
     const vfiles = await taskRunner.run();
+    await new NetworkBuildTask(buildDir).build();
     console.log();
 
     signale.timeEnd('build');

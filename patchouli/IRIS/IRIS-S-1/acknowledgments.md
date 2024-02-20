@@ -1,6 +1,5 @@
 ---
 title = "Acknowledgments"
-authors = [ "kyo" ]
 ---
 
 ::::figure
@@ -16,4 +15,6 @@ authors = [ "kyo" ]
 - Some of Iris' math interactives are powered by the lovely freeware project
   [Cinderella](https://cinderella.de/) and its open-source sister project
   [CindyJS](https://cindyjs.org/).
+- Data visualizations, including the [network view](/network), are powered by
+  [D3](https://d3js.org/).
 - The usage of character interjections is inspired by [Xe Isao's blog](https://xeiaso.net/).

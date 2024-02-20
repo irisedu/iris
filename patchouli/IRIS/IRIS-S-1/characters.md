@@ -1,6 +1,5 @@
 ---
 title = "Characters"
-authors = [ "kyo" ]
 ---
 
 Articles on Iris may use various characters providing dialogue or commentary on

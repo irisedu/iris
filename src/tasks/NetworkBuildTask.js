@@ -16,6 +16,7 @@ export default class NetworkBuildTask extends BuildTask {
     async build() {
         signale.await('Building network data...');
 
+        const groups = [];
         const network = {
             nodes: [],
             links: []
@@ -30,12 +31,32 @@ export default class NetworkBuildTask extends BuildTask {
                 return;
 
             const id = filePath.slice(0, -ext.length);
+            const groupLower = filePath.split(path.sep)[0];
+            const group = groupLower.toUpperCase();
             const articleData = JSON.parse(await fs.readFile(path.join(this.#buildPath, filePath)));
+
+            if (!groups.includes(group)) {
+                const seriesMeta = JSON.parse(await fs.readFile(path.join(this.#buildPath, groupLower, 'series.json')));
+
+                network.nodes.push({
+                    id: groupLower,
+                    title: seriesMeta.title,
+                    href: `/series/${groupLower}`
+                });
+
+                groups.push(group);
+            }
 
             network.nodes.push({
                 id,
-                group: filePath.split(path.sep)[0].toUpperCase(),
+                group,
+                href: `/series/${id}`,
                 title: articleData.data.frontmatter.title
+            });
+
+            network.links.push({
+                source: id,
+                target: groupLower
             });
 
             if (articleData.data.links) {

@@ -53,7 +53,11 @@ export function rehypeTransformIrisLinks(opts) {
                 const internalLink = resolveInternalLink(href, opts.currentSeries);
                 if (internalLink) {
                     const links = file.data.links || (file.data.links = []);
-                    links.push(internalLink.slice(1).split('#').slice(0, -1).join('#'));
+                    const hashSplit = internalLink.slice(1).split('#');
+                    if (hashSplit.length > 1)
+                        links.push(hashSplit.slice(0, -1).join('#'));
+                    else
+                        links.push(hashSplit[0]);
 
                     node.properties.href = internalLinkToPageLink(internalLink);
                 }

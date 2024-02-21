@@ -186,7 +186,7 @@ converted to accessible emojis.
 
 ### KaTeX
 
-Math typesetting through [KaTeX](https://www.katex.org/) is supported with
+Math typesetting through [$$\KaTeX$$](https://www.katex.org/) is supported with
 the `$$` delimiter. When `$$` is present on separate lines, the math is typeset
 in display mode. Otherwise, it is typeset as inline. Proper best practices for
 TeX-style code and math typesetting should be followed.

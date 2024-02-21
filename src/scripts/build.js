@@ -8,6 +8,7 @@ import SeriesBuildTask from '../tasks/SeriesBuildTask.js';
 import AssetsBuildTask from '../tasks/AssetsBuildTask.js';
 import CompiledAssetsBuildTask from '../tasks/CompiledAssetsBuildTask.js';
 import NetworkBuildTask from '../tasks/NetworkBuildTask.js';
+import SearchIndexBuildTask from '../tasks/SearchIndexBuildTask.js';
 import TaskRunner from '../tasks/TaskRunner.js';
 
 const baseDir = path.join(import.meta.dirname, '../../patchouli');
@@ -56,12 +57,16 @@ const buildDir = path.join(import.meta.dirname, '../../build');
         }
     }
 
+    const postTaskRunner = new TaskRunner();
+    postTaskRunner.push(new NetworkBuildTask(buildDir));
+    postTaskRunner.push(new SearchIndexBuildTask(buildDir));
+
     signale.start(`Running ${taskRunner.count()} tasks...`);
     signale.time('build');
 
     console.log();
     const vfiles = await taskRunner.run();
-    await new NetworkBuildTask(buildDir).build();
+    await postTaskRunner.run();
     console.log();
 
     signale.timeEnd('build');

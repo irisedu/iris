@@ -80,7 +80,14 @@ export default class MarkdownRenderer {
                 },
             })
             .use(rehypeExtractToc)
-            .use(rehypeKatex)
+            .use(rehypeKatex, {
+                macros: {
+                    '\\vect': '\\mathbf{#1}',
+                    '\\uveci': '\\mathbf{\\hat{\\textbf{\\i}}}',
+                    '\\uvecj': '\\mathbf{\\hat{\\textbf{\\j}}}',
+                    '\\uveck': '\\mathbf{\\hat{k}}'
+                }
+            })
             .use(rehypeStarryNight, {
                 headerExtensions: [
                     starryNightLanguageExtension,

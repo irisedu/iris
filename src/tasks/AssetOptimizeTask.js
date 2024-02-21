@@ -39,6 +39,11 @@ export default class AssetOptimizeTask extends BuildTask {
     }
 
     async build() {
+        if (!await fs.exists(this.#inPath)) {
+            signale.warn(`Optimization skipped: file does not exist ${this.#inPath}`);
+            return;
+        }
+
         switch (path.extname(this.#inPath)) {
         case '.svg':
             await this.#optimizeSvg();

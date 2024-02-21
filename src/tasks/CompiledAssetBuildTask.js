@@ -4,6 +4,7 @@ import path from 'path';
 import { VFile } from 'vfile';
 import util from 'node:util';
 import { execFile as execFileCb } from 'node:child_process';
+import nunjucks from 'nunjucks';
 
 import BuildTask from './BuildTask.js';
 import AssetOptimizeTask from './AssetOptimizeTask.js';
@@ -40,8 +41,35 @@ export default class CompiledAssetBuildTask extends BuildTask {
         } catch {
             vfileMessage(vfile, null, 'latex-compile', 'LaTeX failed to compile');
         }
+    }
 
-        return vfile;
+    async #buildNjk(vfile) {
+        const njkBase = path.join(import.meta.dirname, '../../njk-templates');
+        const env = nunjucks.configure(njkBase, {
+            autoescape: false
+        });
+
+        // https://github.com/mozilla/nunjucks/issues/788#issuecomment-332183033
+        env.addGlobal('includeRaw', src => {
+            let filePath;
+
+            if (src.startsWith('.')) {
+                filePath = path.join(path.dirname(this.#inPath), src);
+            } else {
+                filePath = path.join(njkBase, src);
+            }
+
+            return fs.readFileSync(filePath);
+        });
+
+        const contents = await fs.readFile(this.#inPath, 'utf-8');
+
+        try {
+            const res = nunjucks.renderString(contents);
+            await fs.writeFile(this.#outPath, res);
+        } catch {
+            vfileMessage(vfile, null, 'njk-compile', 'Failed to compile Nunjucks file');
+        }
     }
 
     async build() {
@@ -57,7 +85,11 @@ export default class CompiledAssetBuildTask extends BuildTask {
 
         switch (path.extname(this.#inPath)) {
         case '.tex':
-            task = await this.#buildTeX(vfile);
+            task = this.#buildTeX(vfile);
+            break;
+
+        case '.njk':
+            task = this.#buildNjk(vfile);
             break;
         }
 
@@ -76,6 +108,10 @@ export default class CompiledAssetBuildTask extends BuildTask {
     static resolveCompiledPath(filePath) {
         if (filePath.endsWith('.tex')) {
             return filePath.slice(0, -4) + '.svg';
+        }
+
+        if (filePath.endsWith('.njk')) {
+            return filePath.slice(0, -4) + '.html';
         }
 
         return filePath;

@@ -47,7 +47,11 @@ export function resolveInternalLink(link, currentSeries) {
         return `/${link.slice(1)}`;
     } else if (link.startsWith('$')) {
         // Current series
-        return `/${currentSeries.toLowerCase()}/${link.slice(1)}`;
+        const target = link.slice(1);
+        if (target.length)
+            return `/${currentSeries.toLowerCase()}/${target}`;
+
+        return `/${currentSeries.toLowerCase()}`;
     }
 }
 

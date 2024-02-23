@@ -20,9 +20,8 @@ import remarkRehype from 'remark-rehype';
 
 import rehypeCitation from 'rehype-citation';
 import rehypeSlug from 'rehype-slug';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeExtractToc from '@stefanprobst/rehype-extract-toc';
 import rehypeKatex from 'rehype-katex';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeStarryNight from '@microflash/rehype-starry-night';
 import starryNightLanguageExtension from '@microflash/rehype-starry-night/header-language-extension';
 import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-caption-extension';
@@ -70,6 +69,15 @@ export default class MarkdownRenderer {
             .use(unifiedProcessors.rehypeAddReferencesHeading, this.#citationOptions)
             .use(rehypeCitation, this.#citationOptions)
             .use(rehypeSlug)
+            .use(rehypeKatex, {
+                macros: {
+                    '\\vect': '\\mathbf{#1}',
+                    '\\uveci': '\\mathbf{\\hat{\\textbf{\\i}}}',
+                    '\\uvecj': '\\mathbf{\\hat{\\textbf{\\j}}}',
+                    '\\uveck': '\\mathbf{\\hat{k}}'
+                }
+            })
+            .use(unifiedProcessors.rehypeExtractToc)
             .use(rehypeAutolinkHeadings, {
                 content: {
                     type: 'element',
@@ -78,15 +86,6 @@ export default class MarkdownRenderer {
                         className: ['anchor-link'],
                     },
                 },
-            })
-            .use(rehypeExtractToc)
-            .use(rehypeKatex, {
-                macros: {
-                    '\\vect': '\\mathbf{#1}',
-                    '\\uveci': '\\mathbf{\\hat{\\textbf{\\i}}}',
-                    '\\uvecj': '\\mathbf{\\hat{\\textbf{\\j}}}',
-                    '\\uveck': '\\mathbf{\\hat{k}}'
-                }
             })
             .use(rehypeStarryNight, {
                 headerExtensions: [

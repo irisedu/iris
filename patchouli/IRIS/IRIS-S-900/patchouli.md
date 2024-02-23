@@ -184,7 +184,7 @@ You will need to use the proper symbols manually.
 [GitHub emoji codes](https://github.com/ikatyang/emoji-cheat-sheet/) are
 converted to accessible emojis.
 
-### KaTeX
+### $$\KaTeX$$
 
 Math typesetting through [$$\KaTeX$$](https://www.katex.org/) is supported with
 the `$$` delimiter. When `$$` is present on separate lines, the math is typeset

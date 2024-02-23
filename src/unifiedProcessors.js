@@ -1,6 +1,8 @@
 import path from 'path';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
 import { visit } from 'unist-util-visit';
+import { headingRank } from 'hast-util-heading-rank';
+import { toHtml } from 'hast-util-to-html';
 
 import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag  } from './utils.js';
 
@@ -89,5 +91,41 @@ export function rehypeImageLazyLoading() {
 
             node.properties.loading = 'lazy';
         });
+    };
+}
+
+export function rehypeExtractToc() {
+    return (tree, file) => {
+        const toc = [];
+        const currentStack = [];
+
+        visit(tree, node => {
+            const rank = headingRank(node);
+            if (!rank)
+                return;
+
+            const heading = {
+                rank,
+                data: {
+                    id: node.properties.id,
+                    value: toHtml(node.children),
+                }
+            };
+
+            while (currentStack.length && currentStack.at(-1).rank >= rank) {
+                currentStack.pop();
+            }
+
+            if (currentStack.length) {
+                const children = currentStack.at(-1).data.children || (currentStack.at(-1).data.children = []);
+                children.push(heading.data);
+            } else {
+                toc.push(heading.data);
+            }
+
+            currentStack.push(heading);
+        });
+
+        file.data.toc = toc;
     };
 }

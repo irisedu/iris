@@ -26,6 +26,13 @@
             "items": {
                 "type": "string"
             }
+        },
+        "cite": {
+            "description": "List of citation keys to include in references even if not present in the article",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     },
     "additionalProperties": false,

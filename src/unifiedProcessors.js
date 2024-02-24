@@ -3,26 +3,30 @@ import { validate } from '@hyperjump/json-schema/draft-2020-12';
 import { visit } from 'unist-util-visit';
 import { headingRank } from 'hast-util-heading-rank';
 import { toHtml } from 'hast-util-to-html';
+import { select } from 'hast-util-select';
 
 import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag  } from './utils.js';
 
-export function remarkCheckFrontmatter() {
+// Expects the same options as rehype-citation
+export function remarkCheckFrontmatter(opts) {
     return async (_, file) => {
         const frontmatter = file.data.frontmatter;
         const result = await validate(path.join(import.meta.dirname, '../schemas/frontmatter.schema.json'), frontmatter);
+
+        opts.noCite = frontmatter.cite;
 
         if (!result.valid)
             vfileMessage(file, null, 'frontmatter-schema', 'Frontmatter violates schema');
     };
 }
 
-// Expects the same options as rehype-citation
-export function rehypeAddReferencesHeading(opts) {
+export function rehypeAddReferencesHeading() {
     return tree => {
-        if (!opts.bibliography || !opts.bibliography.length)
+        const references = select('div.references', tree);
+        if (!references)
             return;
 
-        tree.children.push({
+        references.children.unshift({
             type: 'element',
             tagName: 'h2',
             properties: {},

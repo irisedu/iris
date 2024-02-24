@@ -1,0 +1,4 @@
+---
+title = "Object"
+authors = [ "kyo" ]
+---

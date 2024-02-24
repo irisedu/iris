@@ -54,12 +54,12 @@ Each series number contains 4 sections in the format `ABCD-X-123YZ`:
 
 ### COMP
 
-| Code       | Description                    |
-|------------|--------------------------------|
-| COMP-*-0   | Hello, World!                  |
-|            | Data Structures and Algorithms |
-| COMP-M-900 | Miscellaneous Computer Science |
-| COMP-M-999 | Computer Science Glossary      |
+| Code                      | Description                    |
+|---------------------------|--------------------------------|
+| COMP-*-0                  | Hello, World!                  |
+|                           | Data Structures and Algorithms |
+| COMP-M-900                | Miscellaneous Computer Science |
+| [COMP-M-999](@comp-m-999) | Computer Science Glossary      |
 
 ### IRIS
 
@@ -89,7 +89,7 @@ Each series number contains 4 sections in the format `ABCD-X-123YZ`:
 | MATH-*-350                | Linear Algebra                 |
 | MATH-*-360                | Calculus in Multiple Variables |
 | [MATH-M-900](@math-m-900) | Miscellaneous Mathematics      |
-| MATH-M-999                | Math Glossary                  |
+| [MATH-M-999](@math-m-999) | Mathematics Glossary           |
 
 ### TECH
 

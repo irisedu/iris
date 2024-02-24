@@ -1,12 +1,12 @@
 ---
-title = "The unit circle"
+title = "Guide: the unit circle"
 authors = [ "kyo" ]
 tags = [ "interactive" ]
 ---
 
-The unit circle is a circle with radius $$1$$. Geometric interpretations of the
-six trigonometric functions follow from various right triangles with one side
-along the radius of the unit circle.
+The [unit circle](@math-m-999/u/unit-circle) is a circle with radius $$1$$.
+Geometric interpretations of the six trigonometric functions follow from various
+right triangles with one side along the radius of the unit circle.
 
 ## Sine and cosine
 

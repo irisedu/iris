@@ -54,7 +54,7 @@ export default class MarkdownRenderer {
             .use(remarkRemoveComments)
             .use(remarkFrontmatter, { type: 'toml', marker: '-' })
             .use(remarkExtractFrontmatter, { name: 'frontmatter', toml: toml.parse })
-            .use(unifiedProcessors.remarkCheckFrontmatter)
+            .use(unifiedProcessors.remarkCheckFrontmatter, this.#citationOptions)
             .use(remarkGfm)
             .use(remarkDirective)
             .use(remarkProcessDirectives, this)
@@ -66,8 +66,8 @@ export default class MarkdownRenderer {
 
             // rehype
             .use(unifiedProcessors.rehypeTransformIrisLinks, this)
-            .use(unifiedProcessors.rehypeAddReferencesHeading, this.#citationOptions)
             .use(rehypeCitation, this.#citationOptions)
+            .use(unifiedProcessors.rehypeAddReferencesHeading)
             .use(rehypeSlug)
             .use(rehypeKatex, {
                 macros: {

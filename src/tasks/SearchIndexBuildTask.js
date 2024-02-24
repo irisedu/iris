@@ -55,6 +55,7 @@ export default class SearchIndexBuildTask extends BuildTask {
                 doc.add({
                     id,
                     type: 'article',
+                    series: seriesLower.toUpperCase(),
                     title: articleData.data.frontmatter.title,
                     tags: articleData.data.frontmatter.tags,
                     contents: htmlToText(articleData.contents, {

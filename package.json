@@ -18,6 +18,7 @@
         "flexsearch": "^0.7.43",
         "fs-extra": "^11.2.0",
         "hast-util-heading-rank": "^3.0.0",
+        "hast-util-select": "^6.0.2",
         "hast-util-to-html": "^9.0.0",
         "hastscript": "^9.0.0",
         "html-to-text": "^9.0.5",

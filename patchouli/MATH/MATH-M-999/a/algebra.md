@@ -1,0 +1,4 @@
+---
+title = "Algebra"
+authors = [ "kyo" ]
+---

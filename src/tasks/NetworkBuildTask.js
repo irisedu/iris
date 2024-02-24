@@ -55,8 +55,8 @@ export default class NetworkBuildTask extends BuildTask {
             });
 
             network.links.push({
-                source: id,
-                target: groupLower
+                source: groupLower,
+                target: id
             });
 
             if (articleData.data.links) {

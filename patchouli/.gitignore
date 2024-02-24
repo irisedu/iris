@@ -1,5 +1,5 @@
 # TeX
-**/assets-compiled/**/auto/
+auto/
 **/assets-compiled/**/*.dvi
 **/assets-compiled/**/*.aux
 **/assets-compiled/**/*.log

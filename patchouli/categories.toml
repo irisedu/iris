@@ -3,7 +3,16 @@
 displayName = "Mathematics"
 code = "MATH"
 series = [
-    "MATH-M-900"
+    "MATH-M-900",
+    "MATH-M-999"
+]
+
+[[categories]]
+
+displayName = "Computer Science"
+code = "COMP"
+series = [
+    "COMP-M-999"
 ]
 
 [[categories]]

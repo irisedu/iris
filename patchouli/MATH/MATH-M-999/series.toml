@@ -1,0 +1,90 @@
+type = "series"
+code = "MATH-M-999"
+title = "Mathematics Glossary"
+description = "Definitions of mathematics terms"
+authors = [
+    "kyo"
+]
+
+[[chapters]]
+
+title = "A"
+articles = [
+    "a/algebra"
+]
+
+[[chapters]]
+
+title = "C"
+articles = [
+    "c/calculus"
+]
+
+[[chapters]]
+
+title = "D"
+articles = [
+    "d/diagonal-matrix"
+]
+
+[[chapters]]
+
+title = "L"
+articles = [
+    "l/limit",
+    "l/linear-algebra",
+    "l/linear-equation"
+]
+
+[[chapters]]
+
+title = "M"
+articles = [
+    "m/matrix"
+]
+
+[[chapters]]
+
+title = "P"
+articles = [
+    "p/point",
+    "p/position-vector"
+]
+
+[[chapters]]
+
+title = "R"
+articles = [
+    "r/real-numbers"
+]
+
+[[chapters]]
+
+title = "S"
+articles = [
+    "s/set",
+    "s/square-matrix",
+    "s/standard-basis"
+]
+
+[[chapters]]
+
+title = "T"
+articles = [
+    "t/triangular-matrix"
+]
+
+[[chapters]]
+
+title = "U"
+articles = [
+    "u/unit-circle"
+]
+
+[[chapters]]
+
+title = "V"
+articles = [
+    "v/vector",
+    "v/vector-space"
+]

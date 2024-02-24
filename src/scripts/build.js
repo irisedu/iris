@@ -9,6 +9,7 @@ import AssetsBuildTask from '../tasks/AssetsBuildTask.js';
 import CompiledAssetsBuildTask from '../tasks/CompiledAssetsBuildTask.js';
 import NetworkBuildTask from '../tasks/NetworkBuildTask.js';
 import SearchIndexBuildTask from '../tasks/SearchIndexBuildTask.js';
+import StatsBuildTask from '../tasks/StatsBuildTask.js';
 import TaskRunner from '../tasks/TaskRunner.js';
 
 const baseDir = path.join(import.meta.dirname, '../../patchouli');
@@ -60,6 +61,7 @@ const buildDir = path.join(import.meta.dirname, '../../build');
     const postTaskRunner = new TaskRunner();
     postTaskRunner.push(new NetworkBuildTask(buildDir));
     postTaskRunner.push(new SearchIndexBuildTask(buildDir));
+    postTaskRunner.push(new StatsBuildTask(buildDir));
 
     signale.start(`Running ${taskRunner.count()} tasks...`);
     signale.time('build');

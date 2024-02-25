@@ -87,6 +87,24 @@ export function rehypeTransformIrisLinks(opts) {
     };
 }
 
+export function rehypeExternalLinkHandler() {
+    return tree => {
+        visit(tree, node => {
+            if (node.type !== 'element' || node.tagName !== 'a')
+                return;
+
+            const href = node.properties.href;
+            try {
+                new URL(href);
+                const className = node.properties.className || (node.properties.className = []);
+                className.push('external');
+            } catch {
+                // Nothing
+            }
+        });
+    };
+}
+
 export function rehypeImageLazyLoading() {
     return tree => {
         visit(tree, node => {

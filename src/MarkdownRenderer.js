@@ -66,6 +66,7 @@ export default class MarkdownRenderer {
 
             // rehype
             .use(unifiedProcessors.rehypeTransformIrisLinks, this)
+            .use(unifiedProcessors.rehypeExternalLinkHandler)
             .use(rehypeCitation, this.#citationOptions)
             .use(unifiedProcessors.rehypeAddReferencesHeading)
             .use(rehypeSlug)

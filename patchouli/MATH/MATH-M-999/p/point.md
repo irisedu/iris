@@ -1,4 +1,0 @@
----
-title = "Point"
-authors = [ "kyo" ]
----

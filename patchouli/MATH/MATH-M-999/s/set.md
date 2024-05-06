@@ -1,4 +1,0 @@
----
-title = "Set"
-authors = [ "kyo" ]
----

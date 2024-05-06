@@ -1,4 +1,0 @@
----
-title = "Limit"
-authors = [ "kyo" ]
----

@@ -1,11 +1,10 @@
 # Patchouli
 
-Source files for all articles on Iris. Content is licensed under CC BY-SA 4.0
-unless otherwise noted.
+Modular, rich document processor
 
 ## Future tasks
 
-- Code editor: [CodeSandbox](https://codemirror.net/)
+- Code editor: [CodeMirror](https://codemirror.net/)
 - Code running: Docker, Nix, [gVisor](https://gvisor.dev/)
 - Static math videos: [manim](https://www.manim.community/)
 - 2D visualizations: [p5.js](https://p5js.org/get-started/)

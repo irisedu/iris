@@ -1,6 +1,0 @@
-# TeX
-auto/
-**/assets-compiled/**/*.dvi
-**/assets-compiled/**/*.aux
-**/assets-compiled/**/*.log
-**/assets-compiled/**/*.pdf

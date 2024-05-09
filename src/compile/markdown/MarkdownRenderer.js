@@ -22,9 +22,6 @@ import rehypeCitation from 'rehype-citation'
 import rehypeSlug from 'rehype-slug'
 import rehypeKatex from 'rehype-katex'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
-import rehypeStarryNight from '@microflash/rehype-starry-night'
-import starryNightLanguageExtension from '@microflash/rehype-starry-night/header-language-extension'
-import starryNightCaptionExtension from '@microflash/rehype-starry-night/header-caption-extension'
 import rehypePresetMinify from 'rehype-preset-minify'
 import rehypeStringify from 'rehype-stringify'
 
@@ -89,29 +86,6 @@ export default class MarkdownRenderer {
             className: ['anchor-link']
           }
         }
-      })
-      .use(rehypeStarryNight, {
-        headerExtensions: [
-          starryNightLanguageExtension,
-          starryNightCaptionExtension,
-          // https://github.com/Microflash/rehype-starry-night
-          (headerOptions, children) => {
-            children.push({
-              type: 'element',
-              tagName: 'button',
-              properties: {
-                className: ['hl-copy'],
-                for: headerOptions.id
-              },
-              children: [
-                {
-                  type: 'text',
-                  value: 'Copy'
-                }
-              ]
-            })
-          }
-        ]
       })
       .use(unifiedProcessors.rehypeImageLazyLoading)
       .use(rehypePresetMinify)

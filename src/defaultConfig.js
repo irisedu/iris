@@ -1,6 +1,7 @@
 export default `
 ignoredPaths = [
     "build/**",
+    "**/.#*",
     "templates/**",
     "**/*.bib",
     "**/*.aux",

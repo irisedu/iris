@@ -4,7 +4,7 @@ import { recurseDirectory } from '../utils.js'
 import CollectionProcessor from './CollectionProcessor.js'
 
 export default class NetworkCollectionProcessor extends CollectionProcessor {
-  async process ({ outDir }) {
+  async process ({ outDir, handledFiles }) {
     const network = {
       nodes: [],
       links: []
@@ -46,7 +46,14 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
       }
     })
 
-    await fs.writeFile(path.join(outDir, 'network.json'), JSON.stringify(network))
-    await fs.writeFile(path.join(outDir, 'backlinks.json'), JSON.stringify(backlinks))
+    const networkPath = path.join(outDir, 'network.json')
+    const backlinksPath = path.join(outDir, 'backlinks.json')
+
+    await fs.writeFile(networkPath, JSON.stringify(network))
+    await fs.writeFile(backlinksPath, JSON.stringify(backlinks))
+
+    // Prevent garbage collection
+    handledFiles[networkPath] = true
+    handledFiles[backlinksPath] = true
   }
 }

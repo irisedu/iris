@@ -61,20 +61,7 @@ async function compileStep (config, inDir, outDir) {
 }
 
 /**
- * Step 2: remove files whose source has been deleted
- */
-async function cleanStep (handledFiles, outDir) {
-  await recurseDirectory(outDir, async (filePath) => {
-    const fullPath = path.join(outDir, filePath)
-    if (!handledFiles[fullPath]) {
-      signale.note('Removing file', filePath, '(original removed)')
-      await fs.rm(fullPath)
-    }
-  })
-}
-
-/**
- * Step 3: per-file post-compilation/optimization
+ * Step 2: per-file post-compilation/optimization
  */
 async function postCompileStep (config, inDir, outDir, vfiles, handledFiles) {
   const processors = [
@@ -113,7 +100,7 @@ async function postCompileStep (config, inDir, outDir, vfiles, handledFiles) {
 }
 
 /**
- * Step 4: general collection processing
+ * Step 3: general collection processing
  */
 async function collectionProcessStep (config, inDir, outDir, vfiles, handledFiles) {
   const processors = [
@@ -134,14 +121,27 @@ async function collectionProcessStep (config, inDir, outDir, vfiles, handledFile
   await Promise.all(tasks)
 }
 
+/**
+ * Step 4: remove files whose source has been deleted
+ */
+async function cleanStep (handledFiles, outDir) {
+  await recurseDirectory(outDir, async (filePath) => {
+    const fullPath = path.join(outDir, filePath)
+    if (!handledFiles[fullPath]) {
+      signale.note('Removing file', filePath, '(original removed)')
+      await fs.rm(fullPath)
+    }
+  })
+}
+
 export default async function build (config, projectPath) {
   const inDir = projectPath
   const outDir = path.join(projectPath, 'build')
 
   const { vfiles, handledFiles } = await compileStep(config, inDir, outDir)
-  await cleanStep(handledFiles, outDir)
   await postCompileStep(config, inDir, outDir, vfiles, handledFiles)
   await collectionProcessStep(config, inDir, outDir, vfiles, handledFiles)
+  await cleanStep(handledFiles, outDir)
 
   console.log(reporter(vfiles))
 }

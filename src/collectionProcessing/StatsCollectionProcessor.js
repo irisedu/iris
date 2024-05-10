@@ -4,7 +4,7 @@ import { recurseDirectory } from '../utils.js'
 import CollectionProcessor from './CollectionProcessor.js'
 
 export default class StatsCollectionProcessor extends CollectionProcessor {
-  async process ({ outDir }) {
+  async process ({ outDir, handledFiles }) {
     const stats = {
       articleCount: 0,
       stubs: []
@@ -26,6 +26,11 @@ export default class StatsCollectionProcessor extends CollectionProcessor {
       }
     })
 
-    await fs.writeFile(path.join(outDir, 'stats.json'), JSON.stringify(stats))
+    const statsPath = path.join(outDir, 'stats.json')
+
+    await fs.writeFile(statsPath, JSON.stringify(stats))
+
+    // Prevent garbage collection
+    handledFiles[statsPath] = true
   }
 }

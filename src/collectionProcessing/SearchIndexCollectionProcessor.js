@@ -6,7 +6,7 @@ import { recurseDirectory } from '../utils.js'
 import CollectionProcessor from './CollectionProcessor.js'
 
 export default class SearchIndexCollectionProcessor extends CollectionProcessor {
-  async process ({ outDir }) {
+  async process ({ outDir, handledFiles }) {
     const searchIndexOpts = {
       tokenize: 'forward',
       document: {
@@ -51,7 +51,14 @@ export default class SearchIndexCollectionProcessor extends CollectionProcessor 
       index[key] = data
     })
 
-    await fs.writeFile(path.join(outDir, 'searchIndexOpts.json'), JSON.stringify(searchIndexOpts))
-    await fs.writeFile(path.join(outDir, 'searchIndex.json'), JSON.stringify(index))
+    const optsPath = path.join(outDir, 'searchIndexOpts.json')
+    const indexPath = path.join(outDir, 'searchIndex.json')
+
+    await fs.writeFile(optsPath, JSON.stringify(searchIndexOpts))
+    await fs.writeFile(indexPath, JSON.stringify(index))
+
+    // Prevent garbage collection
+    handledFiles[optsPath] = true
+    handledFiles[indexPath] = true
   }
 }

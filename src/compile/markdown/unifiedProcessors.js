@@ -4,6 +4,8 @@ import { toHtml } from 'hast-util-to-html'
 import { select } from 'hast-util-select'
 import { VFile } from 'vfile'
 import { location } from 'vfile-location'
+import { retext } from 'retext'
+import retextSmartypants from 'retext-smartypants'
 import { compose as composeAnnotated, defaults as annotationDefaultOptions } from 'annotatedtext'
 import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag, langtoolCheck } from '../../utils.js'
 
@@ -70,6 +72,17 @@ export function remarkLanguageTool (opts) {
       msg.name = `${start.line}:${start.column}-${end.line}:${end.column}`
       msg.replacements = match.replacements
       msg.rule = match.rule
+    }
+  }
+}
+
+// Expects MarkdownRenderer as opts
+export function remarkSmartypantsFrontmatter (opts) {
+  return async (_, file) => {
+    for (const key of opts.config.markdown.smartypantsFrontmatter) {
+      file.data.frontmatter[key] = file.data.frontmatter[key] && (await retext()
+        .use(retextSmartypants, opts.smartypantsOptions)
+        .process(file.data.frontmatter[key])).value
     }
   }
 }

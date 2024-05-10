@@ -110,6 +110,12 @@ dependencies:
   remark-smartypants:
     specifier: ^3.0.1
     version: 3.0.1
+  retext:
+    specifier: ^9.0.0
+    version: 9.0.0
+  retext-smartypants:
+    specifier: ^6.1.0
+    version: 6.1.0
   signale:
     specifier: ^1.4.0
     version: 1.4.0

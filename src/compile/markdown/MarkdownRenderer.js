@@ -33,6 +33,10 @@ export default class MarkdownRenderer {
   fileContents
   config
 
+  #smartypantsOptions = {
+    dashes: 'oldschool'
+  }
+
   #processor
   #citationOptions = {
     linkCitations: true,
@@ -56,7 +60,8 @@ export default class MarkdownRenderer {
       .use(remarkGfm)
       .use(remarkDirective)
       .use(remarkProcessDirectives, this)
-      .use(remarkSmartypants, { dashes: 'oldschool' })
+      .use(remarkSmartypants, this.#smartypantsOptions)
+      .use(unifiedProcessors.remarkSmartypantsFrontmatter, this)
       .use(remarkGemoji)
       .use(remarkA11yEmoji)
       .use(remarkMath, { singleDollarTextMath: false })
@@ -90,6 +95,10 @@ export default class MarkdownRenderer {
       .use(unifiedProcessors.rehypeImageLazyLoading)
       .use(rehypePresetMinify)
       .use(rehypeStringify, { allowDangerousHtml: true })
+  }
+
+  get smartypantsOptions () {
+    return this.#smartypantsOptions
   }
 
   /**

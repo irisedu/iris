@@ -9,6 +9,10 @@ ignoredPaths = [
     "**/auto/**"
 ]
 
+[markdown]
+
+smartypantsFrontmatter = []
+
 [markdown.messageTypes]
 
 info = "Note"

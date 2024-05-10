@@ -49,6 +49,8 @@
         "remark-rehype": "^11.1.0",
         "remark-remove-comments": "^1.0.1",
         "remark-smartypants": "^3.0.1",
+        "retext": "^9.0.0",
+        "retext-smartypants": "^6.1.0",
         "signale": "^1.4.0",
         "svgo": "^3.2.0",
         "unified": "^11.0.4",

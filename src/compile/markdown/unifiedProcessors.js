@@ -8,6 +8,7 @@ import { retext } from 'retext'
 import retextSmartypants from 'retext-smartypants'
 import { compose as composeAnnotated, defaults as annotationDefaultOptions } from 'annotatedtext'
 import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag, langtoolCheck } from '../../utils.js'
+import TeXFileProcessor from '../assets/TeXFileProcessor.js'
 
 // Expects the same options as rehype-citation
 export function remarkSetNoCite (opts) {
@@ -106,7 +107,7 @@ export function rehypeAddReferencesHeading () {
   }
 }
 
-// Expects MarkdownRenderer (filePath) as opts
+// Expects MarkdownRenderer as opts
 export function rehypeTransformLinks (opts) {
   return (tree, file) => {
     visit(tree, node => {
@@ -134,7 +135,11 @@ export function rehypeTransformLinks (opts) {
         const link = node.properties[linkProperty]
         if (!link) { return }
 
-        const internalLink = resolveInternalLink(link, opts.filePath)
+        let internalLink = resolveInternalLink(link, opts.filePath)
+        if (new TeXFileProcessor(opts.config).handlesFile(internalLink)) {
+          internalLink = TeXFileProcessor.getOutputPath(internalLink)
+        }
+
         if (internalLink) {
           const assetTag = internalLinkToAssetTag(internalLink)
           node.properties[linkProperty] = `####${assetTag}####`

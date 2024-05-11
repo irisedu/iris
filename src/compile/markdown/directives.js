@@ -1,7 +1,6 @@
 import { h } from 'hastscript'
 import { visit } from 'unist-util-visit'
 import { vfileMessage, resolveInternalLink, internalLinkToAssetTag } from '../../utils.js'
-import TeXFileProcessor from '../assets/TeXFileProcessor.js'
 
 function handleTextDirective (node, file, opts) {
   const attrs = node.attributes || {}
@@ -19,26 +18,6 @@ function handleLeafDirective (node, file, opts) {
   const attrs = node.attributes || {}
 
   switch (node.name) {
-    case 'teximg': {
-      const { src, alt } = attrs
-      if (!src || !alt) {
-        vfileMessage(file, node, 'tex-directive-src', 'The `teximg` directive requires `src` and `alt` attributes.')
-        return
-      }
-
-      const internalLink = resolveInternalLink(src, opts.filePath)
-      if (!internalLink) {
-        vfileMessage(file, node, 'tex-directive-src', 'The `teximg` directive requires a `src` within the project.')
-        return
-      }
-
-      const assetTag = internalLinkToAssetTag(internalLink)
-      const assets = file.data.assets || (file.data.assets = {})
-      assets[assetTag] = TeXFileProcessor.getOutputPath(internalLink)
-
-      return h('img', { src: `####${assetTag}####`, alt })
-    }
-
     case 'iframe': {
       let { src, width, height } = attrs
       if (!src) {

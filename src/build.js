@@ -15,10 +15,9 @@ import SvgFileProcessor from './postCompile/SvgFileProcessor.js'
 import HtmlFileProcessor from './postCompile/HtmlFileProcessor.js'
 
 import StatsCollectionProcessor from './collectionProcessing/StatsCollectionProcessor.js'
-import SearchIndexCollectionProcessor from './collectionProcessing/SearchIndexCollectionProcessor.js'
 import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor.js'
 import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor.js'
-import MessagesCollectionProcessor from './collectionProcessing/MessagesCollectionProcessor.js'
+import MarkdownAuxCollectionProcessor from './collectionProcessing/MarkdownAuxCollectionProcessor.js'
 
 /**
  * Step 1: per-file compilation
@@ -105,10 +104,9 @@ async function postCompileStep (config, inDir, outDir, vfiles, handledFiles) {
 async function collectionProcessStep (config, inDir, outDir, vfiles, handledFiles) {
   const processors = [
     new StatsCollectionProcessor(config),
-    new SearchIndexCollectionProcessor(config),
     new NetworkCollectionProcessor(config),
     new SchemaCollectionProcessor(config),
-    new MessagesCollectionProcessor(config)
+    new MarkdownAuxCollectionProcessor(config)
   ]
 
   const tasks = []

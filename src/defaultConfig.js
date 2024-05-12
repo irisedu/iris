@@ -36,11 +36,6 @@ port = 51293
 
 templatePath = "templates"
 
-[flexsearch]
-
-store = []
-index = []
-
 [network]
 
 store = []

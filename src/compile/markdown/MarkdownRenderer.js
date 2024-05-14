@@ -65,8 +65,8 @@ export default class MarkdownRenderer {
       .use(remarkGemoji)
       .use(remarkA11yEmoji)
       .use(remarkMath, { singleDollarTextMath: false })
-      .use(remarkRehype, { allowDangerousHtml: true })
       .use(unifiedProcessors.remarkLanguageTool, this)
+      .use(remarkRehype, { allowDangerousHtml: true })
 
       // rehype
       .use(unifiedProcessors.rehypeTransformLinks, this)

@@ -181,6 +181,82 @@ export function rehypeImageLazyLoading () {
   }
 }
 
+export function rehypeExtractSummary () {
+  return (tree, file) => {
+    const summaryNode = select('#patchouli-summary', tree)
+    if (!summaryNode) { return }
+
+    const summary = []
+    let section
+
+    function processList (listNode, children) {
+      for (const li of listNode.children) {
+        if (li.type !== 'element') { continue }
+        if (li.tagName !== 'li') {
+          vfileMessage(file, li, 'summary-invalid-element', `Unexpected element in summary list: '${li.tagName}'`)
+        }
+
+        let link
+
+        for (const liChild of li.children) {
+          if (liChild.type !== 'element') { continue }
+
+          if (liChild.tagName === 'a') {
+            if (link) { children.push(link) }
+
+            link = {
+              title: toHtml(liChild.children),
+              href: liChild.properties.href ? liChild.properties.href : undefined
+            }
+          } else if (liChild.tagName === 'ul') {
+            if (!link) {
+              vfileMessage(file, liChild, 'summary-list-before-link', 'Unexpected child list before any links in summary list item')
+            }
+
+            const linkChildren = link.children || (link.children = [])
+            processList(liChild, linkChildren)
+          } else {
+            vfileMessage(file, liChild, 'summary-invalid-element', `Unexpected element in summary list item: '${liChild.tagName}'`)
+          }
+        }
+
+        children.push(link)
+      }
+    }
+
+    for (const child of summaryNode.children) {
+      if (child.type !== 'element') {
+        vfileMessage(file, child, 'summary-invalid-child-type', `Invalid child type for summary directive: expected 'element', got '${child.type}'`)
+        return
+      }
+
+      if (child.tagName === 'h2') {
+        if (section) { summary.push(section) }
+
+        section = {
+          title: toHtml(child.children)
+        }
+      } else if (child.tagName === 'ul') {
+        if (!section) {
+          section = {
+            topLevel: true
+          }
+        }
+
+        const children = section.children || (section.children = [])
+        processList(child, children)
+      } else {
+        vfileMessage(file, child, 'summary-invalid-element', `Unexpected element in summary directive: '${child.tagName}'`)
+      }
+    }
+
+    summary.push(section)
+    summaryNode.children = []
+
+    file.data.summary = summary
+  }
+}
+
 export function rehypeExtractToc () {
   return (tree, file) => {
     const toc = []

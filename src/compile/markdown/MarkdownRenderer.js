@@ -82,6 +82,7 @@ export default class MarkdownRenderer {
           '\\uveck': '\\mathbf{\\hat{k}}'
         }
       })
+      .use(unifiedProcessors.rehypeExtractSummary)
       .use(unifiedProcessors.rehypeExtractToc)
       .use(rehypeAutolinkHeadings, {
         content: {

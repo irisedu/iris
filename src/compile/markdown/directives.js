@@ -103,6 +103,9 @@ function handleContainerDirective (node, file, opts) {
     case 'details':
       return h('details')
 
+    case 'summary':
+      return h('div', { id: 'patchouli-summary' })
+
     default:
       vfileMessage(file, node, 'invalid-directive', `Unknown container directive \`${node.name}\``)
   }

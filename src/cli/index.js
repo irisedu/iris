@@ -3,6 +3,8 @@
 import { Command } from 'commander'
 import handleBuild from './build.js'
 
+import initIrisCli from '../iris/cli.js'
+
 const program = new Command()
 
 program.name('patchouli')
@@ -13,5 +15,7 @@ program.command('build')
   .option('-w, --watch', 'Whether to watch and serve development server')
   .option('-p, --port <number>', 'Port to use for development server', 58064)
   .action(handleBuild)
+
+initIrisCli(program)
 
 await program.parseAsync()

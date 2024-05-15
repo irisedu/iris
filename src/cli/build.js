@@ -3,7 +3,7 @@ import path from 'path'
 import express from 'express'
 import { WebSocket, WebSocketServer } from 'ws'
 import chokidar from 'chokidar'
-import { findProject, langtoolStart, handleExit } from '../utils.js'
+import { findProject, langtoolStart, handleExit, getIgnoredPaths } from '../utils.js'
 import build from '../build.js'
 
 function startDevServer (config, projectPath, port) {
@@ -25,7 +25,7 @@ function startDevServer (config, projectPath, port) {
   })
 
   const watcher = chokidar.watch('.', {
-    ignored: config.user.ignoredPaths,
+    ignored: getIgnoredPaths(config),
     ignoreInitial: true,
     cwd: projectPath
   })

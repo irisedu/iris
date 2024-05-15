@@ -1,15 +1,12 @@
-export default `
-platform = "iris"
+export default `platform = "iris"
 
 ignoredPaths = [
-    "build/**",
-    "**/.#*",
     "templates/**",
-    "**/*.bib",
+    "**/auto/**",
     "**/*.aux",
     "**/*.log",
     "**/*.dvi",
-    "**/auto/**"
+    "**/.#*"
 ]
 
 [languagetool]

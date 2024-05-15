@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import anymatch from 'anymatch'
 import { reporter } from 'vfile-reporter'
-import { shouldBuild, recurseDirectory } from './utils.js'
+import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils.js'
 
 import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor.js'
 import TeXFileProcessor from './compile/assets/TeXFileProcessor.js'
@@ -36,7 +36,7 @@ async function compileStep (config, inDir, outDir) {
   const handledFiles = {}
 
   await recurseDirectory(inDir, async (filePath) => {
-    if (anymatch(config.user.ignoredPaths, filePath)) { return }
+    if (anymatch(getIgnoredPaths(config), filePath)) { return }
 
     for (const processor of processors) {
       if (!processor.handlesFile(filePath)) { continue }

@@ -161,3 +161,11 @@ export function handleExit (cb) {
   process.on('SIGUSR1', cb)
   process.on('SIGUSR2', cb)
 }
+
+export function getIgnoredPaths (config) {
+  return config.user.ignoredPaths.concat([
+    'patchouli.toml',
+    'build/**',
+    '**/*.bib'
+  ])
+}

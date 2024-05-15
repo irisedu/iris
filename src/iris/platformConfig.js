@@ -1,6 +1,8 @@
+import './schemas.js'
+
 export default {
   markdown: {
-    smartypantsFrontmatter: [],
+    smartypantsFrontmatter: ['title'],
     messageTypes: {
       info: 'Note',
       warning: 'Warning',
@@ -17,9 +19,9 @@ export default {
     noCiteKey: 'cite'
   },
   network: {
-    store: []
+    store: ['title']
   },
   schemas: {
-
+    FRONTMATTER: 'https://iris.seki.pw/frontmatter.schema.json'
   }
 }

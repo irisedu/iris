@@ -28,7 +28,8 @@ async function compileStep (config, inDir, outDir) {
     new TeXFileProcessor(config),
     new NunjucksFileProcessor(config),
     new TomlFileProcessor(config),
-    new CatchAllFileProcessor(config)
+    new CatchAllFileProcessor(config),
+    ...config.platform.pipeline.compile.map(C => new C(config))
   ]
 
   const tasks = []
@@ -65,7 +66,8 @@ async function compileStep (config, inDir, outDir) {
 async function postCompileStep (config, inDir, outDir, vfiles, handledFiles) {
   const processors = [
     new SvgFileProcessor(config),
-    new HtmlFileProcessor(config)
+    new HtmlFileProcessor(config),
+    ...config.platform.pipeline.postCompile.map(C => new C(config))
   ]
 
   const tasks = []
@@ -106,7 +108,8 @@ async function collectionProcessStep (config, inDir, outDir, vfiles, handledFile
     new StatsCollectionProcessor(config),
     new NetworkCollectionProcessor(config),
     new SchemaCollectionProcessor(config),
-    new MarkdownAuxCollectionProcessor(config)
+    new MarkdownAuxCollectionProcessor(config),
+    ...config.platform.pipeline.collectionProcessors.map(C => new C(config))
   ]
 
   const tasks = []

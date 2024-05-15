@@ -1,4 +1,5 @@
 import './schemas.js'
+import SeriesCollectionProcessor from './SeriesCollectionProcessor.js'
 
 export default {
   markdown: {
@@ -23,5 +24,10 @@ export default {
   },
   schemas: {
     FRONTMATTER: 'https://iris.seki.pw/frontmatter.schema.json'
+  },
+  pipeline: {
+    compile: [],
+    postCompile: [],
+    collectionProcessors: [SeriesCollectionProcessor]
   }
 }

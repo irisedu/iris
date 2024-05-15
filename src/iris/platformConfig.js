@@ -3,7 +3,7 @@ import SeriesCollectionProcessor from './SeriesCollectionProcessor.js'
 
 export default {
   markdown: {
-    smartypantsFrontmatter: ['title'],
+    smartypantsFrontmatter: ['title', 'category'],
     messageTypes: {
       info: 'Note',
       warning: 'Warning',

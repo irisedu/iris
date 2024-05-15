@@ -6,8 +6,17 @@ registerSchema({
   description: 'Schema for Iris article and series summary frontmatter',
   type: 'object',
   properties: {
+    type: {
+      description: 'The type of document',
+      default: 'article',
+      enum: ['article', 'series']
+    },
     title: {
       description: 'The title of the article/series',
+      type: 'string'
+    },
+    category: {
+      description: 'The category the series belongs to',
       type: 'string'
     },
     authors: {
@@ -32,6 +41,22 @@ registerSchema({
       }
     }
   },
+  allOf: [
+    {
+      if: {
+        properties: {
+          type: { const: 'series' }
+        },
+        required: ['type']
+      },
+      then: {
+        required: ['category']
+      },
+      else: {
+        not: { required: ['category'] }
+      }
+    }
+  ],
   additionalProperties: false,
   required: ['title']
 }, 'https://iris.seki.pw/frontmatter.schema.json')

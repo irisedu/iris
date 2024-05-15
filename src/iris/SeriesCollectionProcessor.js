@@ -23,6 +23,9 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 
       const frontmatter = summaryData.data.frontmatter
       if (!frontmatter) { continue }
+      if (frontmatter.type !== 'series') {
+        signale.warn(`[Iris] Series '${dirent.name}' has SUMMARY.md which is not of type 'series'`)
+      }
 
       series.push({
         title: frontmatter.title,

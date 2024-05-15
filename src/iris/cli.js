@@ -36,11 +36,13 @@ async function handleNew () {
     await fs.mkdir(seriesDir)
 
     await fs.writeFile(path.join(seriesDir, 'SUMMARY.md'), `---
-title = 'Title of your new series! (path: ${seriesName})'
+type = "series"
+title = "Title of your new series! (path: ${seriesName})"
+category = "Test Category"
 
 # Below are optional
-authors = [ 'author1', 'author2' ]
-tags = [ 'tag1', 'tag2' ]
+authors = [ "author1", "author2" ]
+tags = [ "tag1", "tag2" ]
 ---
 
 You can insert a description of your series here.

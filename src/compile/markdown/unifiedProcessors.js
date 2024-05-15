@@ -10,12 +10,16 @@ import { compose as composeAnnotated, defaults as annotationDefaultOptions } fro
 import { vfileMessage, resolveInternalLink, internalLinkToPageLink, internalLinkToAssetTag, langtoolCheck } from '../../utils.js'
 import TeXFileProcessor from '../assets/TeXFileProcessor.js'
 
-// Expects the same options as rehype-citation
-export function remarkSetNoCite (opts) {
+// citeOpts is the same options as rehype-citation
+export function remarkSetNoCite ({ renderer, citeOpts }) {
   return async (_, file) => {
     const frontmatter = file.data.frontmatter
 
-    if (frontmatter) { opts.noCite = frontmatter.cite }
+    if (frontmatter) {
+      citeOpts.noCite = frontmatter[renderer.config.platform.markdown.noCiteKey]
+    } else {
+      delete citeOpts.noCite
+    }
   }
 }
 
@@ -48,7 +52,7 @@ export function remarkLanguageTool (opts) {
       }
     }))
 
-    const checkResponse = await langtoolCheck(opts.config.markdown.languagetool, { language: 'en-US', data: JSON.stringify(annotated) })
+    const checkResponse = await langtoolCheck(opts.config.user.languagetool, { language: 'en-US', data: JSON.stringify(annotated) })
     if (checkResponse.status !== 200) { vfileMessage(file, null, 'langtool-failed', 'LanguageTool check failed') }
 
     // https://languagetool.org/http-api/swagger-ui/#!/default/post_check
@@ -80,7 +84,7 @@ export function remarkLanguageTool (opts) {
 // Expects MarkdownRenderer as opts
 export function remarkSmartypantsFrontmatter (opts) {
   return async (_, file) => {
-    for (const key of opts.config.markdown.smartypantsFrontmatter) {
+    for (const key of opts.config.platform.markdown.smartypantsFrontmatter) {
       file.data.frontmatter[key] = file.data.frontmatter[key] && (await retext()
         .use(retextSmartypants, opts.smartypantsOptions)
         .process(file.data.frontmatter[key])).value

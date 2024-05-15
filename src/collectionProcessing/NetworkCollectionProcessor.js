@@ -25,7 +25,7 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
         href: `/page/${id}`
       }
 
-      for (const key of this.config.network.store) {
+      for (const key of this.config.platform.network.store) {
         node[key] = articleData.data.frontmatter[key]
       }
 

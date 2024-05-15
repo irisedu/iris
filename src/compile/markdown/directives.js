@@ -56,7 +56,7 @@ function handleContainerDirective (node, file, opts) {
         return
       }
 
-      const messages = opts.config.markdown.messageTypes
+      const messages = opts.config.platform.markdown.messageTypes
 
       if (!messages[className]) {
         vfileMessage(file, node, 'invalid-note-directive', `Invalid note class name \`${className}\``)
@@ -79,7 +79,7 @@ function handleContainerDirective (node, file, opts) {
       }
 
       const firstClass = className.split(' ')[0]
-      const character = opts.config.markdown.characters[firstClass]
+      const character = opts.config.platform.markdown.characters[firstClass]
 
       if (!character) {
         vfileMessage(file, node, 'invalid-note-directive', `Invalid comment class name \`${className}\``)

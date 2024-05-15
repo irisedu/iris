@@ -11,24 +11,24 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
   async process ({ inDir, outDir, vfiles }) {
     for (const vf of vfiles) {
       let obj
-      let schemaPath
+      let schemaUri
       let msg
 
       if (vf.path.endsWith('.toml')) {
-        for (const [key, schema] of Object.entries(this.config.schemas)) {
+        for (const [key, schema] of Object.entries(this.config.platform.schemas)) {
           if (!anymatch(key, vf.path)) { continue }
 
-          schemaPath = schema
+          schemaUri = schema
           break
         }
 
-        if (!schemaPath) { continue }
+        if (!schemaUri) { continue }
 
         obj = JSON.parse(await fs.readFile(path.join(outDir, TomlFileProcessor.getOutputPath(vf.path))))
         msg = 'File violates schema'
       } else if (vf.path.endsWith('.md')) {
-        schemaPath = this.config.schemas.FRONTMATTER
-        if (!schemaPath) { continue }
+        schemaUri = this.config.platform.schemas.FRONTMATTER
+        if (!schemaUri) { continue }
 
         const articleData = JSON.parse(await fs.readFile(path.join(outDir, MarkdownFileProcessor.getOutputPath(vf.path))))
         obj = articleData.data.frontmatter
@@ -37,13 +37,7 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
         continue
       }
 
-      const fullSchemaPath = path.join(inDir, schemaPath)
-      if (!await fs.exists(fullSchemaPath)) {
-        vfileMessage(vf, null, 'schema-not-found', `Schema file ${schemaPath} does not exist`)
-        continue
-      }
-
-      const validateResult = await validate(fullSchemaPath, obj)
+      const validateResult = await validate(schemaUri, obj)
 
       if (!validateResult.valid) {
         vfileMessage(vf, null, 'schema-validate', msg)

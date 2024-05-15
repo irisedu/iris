@@ -25,7 +25,7 @@ function startDevServer (config, projectPath, port) {
   })
 
   const watcher = chokidar.watch('.', {
-    ignored: config.ignoredPaths,
+    ignored: config.user.ignoredPaths,
     ignoreInitial: true,
     cwd: projectPath
   })
@@ -46,7 +46,7 @@ function startDevServer (config, projectPath, port) {
 
 export default async function handleBuild () {
   const { config, projectPath } = await findProject()
-  const langtoolProcess = await langtoolStart(config.markdown.languagetool)
+  const langtoolProcess = await langtoolStart(config.user.languagetool)
 
   await build(config, projectPath)
 

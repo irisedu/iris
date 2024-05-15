@@ -35,7 +35,7 @@ async function compileStep (config, inDir, outDir) {
   const handledFiles = {}
 
   await recurseDirectory(inDir, async (filePath) => {
-    if (anymatch(config.ignoredPaths, filePath)) { return }
+    if (anymatch(config.user.ignoredPaths, filePath)) { return }
 
     for (const processor of processors) {
       if (!processor.handlesFile(filePath)) { continue }

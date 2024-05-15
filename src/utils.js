@@ -4,7 +4,9 @@ import fs from 'fs-extra'
 import path from 'path'
 import { spawn } from 'node:child_process'
 import toml from '@iarna/toml'
-import defaultConfig from './defaultConfig.js'
+import defaultUserConfig from './defaultUserConfig.js'
+
+import irisPlatformConfig from './iris/platformConfig.js'
 
 export async function findFileInParents (filePath, fileName) {
   const searchPath = path.join(filePath, fileName)
@@ -15,7 +17,7 @@ export async function findFileInParents (filePath, fileName) {
 }
 
 export async function findProject () {
-  let configContents = defaultConfig
+  let configContents = defaultUserConfig
   let projectPath = process.cwd()
   const configPath = await findFileInParents(process.cwd(), 'patchouli.toml')
 
@@ -25,10 +27,10 @@ export async function findProject () {
     projectPath = path.dirname(configPath)
   }
 
-  let config
+  let userConfig
 
   try {
-    config = toml.parse(configContents)
+    userConfig = toml.parse(configContents)
   } catch (e) {
     signale.error('Failed to read configuration:')
     console.error(e)
@@ -38,7 +40,26 @@ export async function findProject () {
 
   signale.info(`Project path: ${projectPath}`)
 
-  return { config, projectPath }
+  let platformConfig
+
+  if (userConfig.platform === 'iris') {
+    platformConfig = irisPlatformConfig
+  }
+
+  if (platformConfig) {
+    signale.info(`Using platform '${userConfig.platform}'`)
+  } else {
+    signale.warn(`Invalid platform: ${userConfig.platform}; falling back to 'iris'`)
+    platformConfig = irisPlatformConfig
+  }
+
+  return {
+    config: {
+      user: userConfig,
+      platform: platformConfig
+    },
+    projectPath
+  }
 }
 
 export function vfileMessage (file, node, id, msg) {

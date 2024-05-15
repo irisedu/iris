@@ -12,7 +12,7 @@ export default class NunjucksFileProcessor extends FileProcessor {
 
     const vfile = new VFile({ path: filePath })
 
-    const njkBase = path.join(inDir, this.config.nunjucks.templatePath)
+    const njkBase = path.join(inDir, this.config.user.nunjucks.templatePath)
     const env = nunjucks.configure(njkBase, {
       autoescape: false
     })

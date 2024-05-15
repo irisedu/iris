@@ -56,7 +56,7 @@ export default class MarkdownRenderer {
       .use(remarkRemoveComments)
       .use(remarkFrontmatter, { type: 'toml', marker: '-' })
       .use(remarkExtractFrontmatter, { name: 'frontmatter', toml: toml.parse })
-      .use(unifiedProcessors.remarkSetNoCite, this.#citationOptions)
+      .use(unifiedProcessors.remarkSetNoCite, { renderer: this, citeOpts: this.#citationOptions })
       .use(remarkGfm)
       .use(remarkDirective)
       .use(remarkProcessDirectives, this)

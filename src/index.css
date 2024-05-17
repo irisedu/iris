@@ -1,0 +1,138 @@
+@import "@fontsource/vollkorn/400.css";
+@import "@fontsource/vollkorn/400-italic.css";
+@import "@fontsource/vollkorn/700.css";
+@import "@fontsource/vollkorn/700-italic.css";
+
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/400-italic.css";
+@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource/ibm-plex-sans/700-italic.css";
+
+@import "@fontsource/fira-mono";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		@apply scroll-smooth font-serif;
+
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+	}
+
+	h1 {
+		@apply text-2xl font-bold my-3;
+	}
+
+	h2 {
+		@apply text-xl font-bold my-3;
+	}
+
+	h3 {
+		@apply text-lg font-bold my-2.5;
+	}
+
+	h4 {
+		@apply font-bold my-2.5;
+	}
+
+	h5,
+	h6 {
+		@apply font-bold after:font-bold after:font-sans after:text-red-600 after:ml-3 after:content-['Don\'t_use_headings_with_depth_>4!'];
+	}
+
+	p {
+		@apply mb-3 last:mb-0;
+	}
+
+	a, .react-aria-Link {
+		@apply text-iris-900 hover:text-iris-800 hover:underline decoration-2 underline-offset-2;
+	}
+
+	blockquote {
+		@apply pl-3 my-1 text-gray-700 border-l-4 border-iris-700 dark:border-iris-300;
+	}
+
+	p code,
+	li code {
+		/* Try to match font sizes */
+		@apply text-sm;
+	}
+
+	ul {
+		@apply list-disc list-outside pl-5 my-2;
+
+		> li > ul {
+			@apply list-circle;
+		}
+	}
+
+	ol {
+		@apply list-decimal list-outside pl-5 my-2;
+
+		> li > ol {
+			@apply list-lower-alpha;
+
+			> li > ol {
+				@apply list-lower-roman;
+			}
+		}
+	}
+
+	ul ul,
+	ol ol,
+	ol ul {
+		@apply my-0;
+	}
+
+	table {
+		@apply inline-block overflow-x-scroll max-w-full border-[1px] border-iris-300;
+	}
+
+	th {
+		@apply bg-iris-150;
+	}
+
+	th,
+	td {
+		@apply px-4 py-1;
+	}
+
+	thead {
+		@apply bg-iris-50;
+	}
+
+	tbody tr {
+		@apply bg-iris-100 border-t-[1px] border-iris-200;
+	}
+
+	abbr {
+		@apply underline-offset-2;
+	}
+
+	details {
+		@apply mb-2 px-2 py-1 border-iris-700 border-l-[3px] rounded-md open:block;
+	}
+
+	details summary {
+		@apply inline-block font-bold text-iris-900 hover:underline decoration-[0.9px] underline-offset-2 decoration-wavy cursor-pointer;
+	}
+
+	button {
+		@apply px-2 py-1 rounded-md bg-iris-150 border-2 border-iris-300 active:bg-iris-200 active:duration-100;
+	}
+
+	input {
+		@apply outline outline-iris-200 focus:outline-iris-300 focus-visible:outline-iris-300;
+	}
+
+	kbd {
+		@apply text-sm rounded-md bg-iris-50 px-1;
+	}
+}
+
+a.external {
+	@apply after:content-['↗'];
+}

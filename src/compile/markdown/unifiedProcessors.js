@@ -52,8 +52,15 @@ export function remarkLanguageTool (opts) {
       }
     }))
 
-    const checkResponse = await langtoolCheck(opts.config.user.languagetool, { language: 'en-US', data: JSON.stringify(annotated) })
-    if (checkResponse.status !== 200) { vfileMessage(file, null, 'langtool-failed', 'LanguageTool check failed') }
+    let checkResponse
+
+    try {
+      checkResponse = await langtoolCheck(opts.config.user.languagetool, { language: 'en-US', data: JSON.stringify(annotated) })
+      if (checkResponse.status !== 200) { throw new Error() }
+    } catch {
+      vfileMessage(file, null, 'langtool-failed', 'LanguageTool check failed')
+      return
+    }
 
     // https://languagetool.org/http-api/swagger-ui/#!/default/post_check
     const result = await checkResponse.json()

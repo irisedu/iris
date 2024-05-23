@@ -12,8 +12,16 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '@assets',
+        find: '$assets',
         replacement: path.join(import.meta.dirname, 'src/assets')
+      },
+      {
+        find: '$hooks',
+        replacement: path.join(import.meta.dirname, 'src/hooks')
+      },
+      {
+        find: '$components',
+        replacement: path.join(import.meta.dirname, 'src/components')
       }
     ]
   }

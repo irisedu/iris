@@ -1,14 +1,21 @@
+import { useContext } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { Link as AriaLink } from 'react-aria-components'
+import DevAlert from '$components/DevAlert.jsx'
+import { DevContext } from './main.jsx'
+
 import Git from '~icons/tabler/brand-git'
 import React from '~icons/tabler/brand-react'
+import Braces from '~icons/tabler/braces'
 import Heart from '~icons/tabler/heart-filled'
-import irisWord from '@assets/iris-word.svg'
-import irisFlower from '@assets/iris.svg'
+import irisWord from '$assets/iris-word.svg'
+import irisFlower from '$assets/iris.svg'
 
 function Layout () {
+  const { devEnabled, setDevEnabled } = useContext(DevContext)
+
   return (
-    <div className='flex flex-col bg-iris-50 min-h-screen'>
+    <div className='relative flex flex-col bg-iris-50 min-h-screen'>
       <div className='h-1 w-screen bg-iris-600' />
 
       <nav className='flex flex-col items-center md:flex-row'>
@@ -25,6 +32,8 @@ function Layout () {
           </Link>
         </div>
       </nav>
+
+      <DevAlert className='m-4 md:absolute md:top-0 md:right-0' />
 
       <div className='grow p-8'>
         <Outlet />
@@ -46,6 +55,7 @@ function Layout () {
           <div className='flex flex-row flex-wrap items-center gap-1'>
             <AriaLink href='https://github.com/irisedu/' aria-label='GitHub'><Git className='w-5 h-5' /></AriaLink>
             <AriaLink href='https://react.dev/' aria-label='React'><React className='w-5 h-5' /></AriaLink>
+            <AriaLink aria-label='Developer mode' onPress={() => setDevEnabled(!devEnabled)}><Braces className='w-5 h-5' /></AriaLink>
             <Heart className='w-5 h-5 text-iris-900' />
           </div>
         </div>

@@ -9,6 +9,14 @@ import build from '../build.js'
 function startDevServer (config, projectPath, port) {
   const app = express()
 
+  app.use((_, res, next) => {
+    res.set({
+      'Access-Control-Allow-Origin': '*'
+    })
+
+    next()
+  })
+
   app.use('/page', express.static(path.join(projectPath, 'build')))
 
   const server = app.listen(port, '127.0.0.1', () => {
@@ -19,7 +27,6 @@ function startDevServer (config, projectPath, port) {
 
   server.on('upgrade', (req, socket, head) => {
     wss.handleUpgrade(req, socket, head, ws => {
-      signale.info(`WebSocket connected from ${req.socket.remoteAddress}`)
       wss.emit('connection', ws, socket)
     })
   })

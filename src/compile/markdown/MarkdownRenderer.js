@@ -76,10 +76,9 @@ export default class MarkdownRenderer {
       .use(rehypeSlug)
       .use(rehypeKatex, {
         macros: {
-          '\\vect': '\\mathbf{#1}',
-          '\\uveci': '\\mathbf{\\hat{\\textbf{\\i}}}',
-          '\\uvecj': '\\mathbf{\\hat{\\textbf{\\j}}}',
-          '\\uveck': '\\mathbf{\\hat{k}}'
+          '\\uveci': '\\hat{\\imath}',
+          '\\uvecj': '\\hat{\\jmath}',
+          '\\uveck': '\\hat{k}'
         }
       })
       .use(unifiedProcessors.rehypeExtractSummary)

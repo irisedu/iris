@@ -11,6 +11,7 @@ export const DevContext = createContext(null)
 const router = createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<Layout />}>
     <Route index lazy={() => import('./routes/Landing.jsx')} />
+    <Route path='/page/*' lazy={() => import('./routes/Article.jsx')} />
   </Route>
 ))
 
@@ -21,7 +22,7 @@ function Main () {
   const [devRetry, setDevRetry] = useState(0)
   const maxRetry = 10
 
-  const [, setRefresh] = useState(0)
+  const [refresh, setRefresh] = useState(0)
 
   useEffect(() => {
     if (!devEnabled) { return }
@@ -65,7 +66,7 @@ function Main () {
 
   return (
     <React.StrictMode>
-      <DevContext.Provider value={{ devEnabled, setDevEnabled, devHost, setDevHost, devState }}>
+      <DevContext.Provider value={{ devEnabled, setDevEnabled, devHost, setDevHost, devState, refresh }}>
         <RouterProvider router={router} />
       </DevContext.Provider>
     </React.StrictMode>

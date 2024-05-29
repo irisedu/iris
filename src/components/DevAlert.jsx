@@ -13,8 +13,8 @@ const devStates = {
 function DevAlert ({ className }) {
   const { devEnabled, devHost, devState } = useContext(DevContext)
 
-  return devEnabled
-    ? (
+  return devEnabled &&
+    (
       <div className={`dev-alert relative font-sans bg-red-200 p-2 after:contents-[''] after:absolute after:-bottom-1 after:right-1 after:w-24 after:h-2 ${className || ''}`}>
         <p className='my-0 text-red-600'><strong>Developer mode is enabled.</strong></p>
         <p className='my-0'>Host: <code>{devHost}</code></p>
@@ -23,8 +23,7 @@ function DevAlert ({ className }) {
           <span>{devStates[devState][0]}</span>
         </div>
       </div>
-      )
-    : <></>
+    )
 }
 
 export default DevAlert

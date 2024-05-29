@@ -1,0 +1,125 @@
+article {
+	@apply hyphens-auto;
+
+	/* FIGURES */
+
+	img {
+		@apply max-w-full sm:max-w-72 mx-auto my-3;
+	}
+
+	figure {
+		@apply mb-2;
+	}
+
+	figure img {
+		@apply mb-1;
+	}
+
+	figure figcaption {
+		@apply text-center;
+	}
+
+	/* HEADINGS */
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		@apply relative;
+	}
+
+	a:has(> .anchor-link) {
+		@apply absolute right-[calc(100%+0.75ch)] hover:no-underline;
+	}
+
+	.anchor-link {
+		@apply text-iris-500 font-mono text-sm align-top after:content-['¶'] opacity-0 hover:opacity-100 transition-opacity duration-200;
+	}
+
+	/* NOTES AND COMMENTS */
+
+	.note,
+	.comment {
+		--color-sat: 70%;
+		@apply p-3 rounded-lg border-2 my-2;
+	}
+
+	.comment {
+		@apply relative overflow-hidden pr-24 after:absolute after:content-[''] after:w-20 after:min-h-20 after:max-h-full after:right-2 after:top-2 after:bg-cover after:rounded-full;
+	}
+
+	.note__label {
+		@apply before:mr-1;
+	}
+
+	.comment__character {
+		@apply before:content-['<'] after:content-['>'];
+	}
+
+	.note.info {
+		--color-hue: 215;
+		@apply bg-blue-100 border-blue-400;
+	}
+
+	.note.info .note__label {
+		@apply text-blue-800 before:content-['ⓘ'];
+	}
+
+	.note.warning {
+		--color-hue: 43;
+		@apply bg-amber-100 border-amber-400;
+	}
+
+	.note.warning .note__label {
+		@apply text-amber-800 before:content-['⚠'];
+	}
+
+	.note.tip {
+		--color-hue: 158;
+		@apply bg-emerald-100 border-emerald-400;
+	}
+
+	.note.tip .note__label {
+		@apply text-emerald-800 before:content-['☆'];
+	}
+
+	.note.problem {
+		--color-hue: 328;
+		@apply bg-pink-100 border-pink-400;
+	}
+
+	.note.problem .note__label {
+		@apply text-pink-800 before:content-['🯄'];
+	}
+
+	.note.exercise {
+		--color-hue: 234;
+		@apply bg-indigo-100 border-indigo-400;
+	}
+
+	.note.exercise .note__label {
+		@apply text-indigo-800 before:content-['🖉'];
+	}
+
+	.comment.iris {
+		@apply bg-iris-150 border-iris-400;
+	}
+
+	.comment.iris.thinking {
+		@apply after:bg-[url('/stickers/iris-think.png')];
+	}
+
+	.comment.iris .comment__character {
+		@apply text-iris-800;
+	}
+
+	/* MISC */
+
+	iframe {
+		@apply mx-auto my-3 max-w-full;
+	}
+
+	.footnotes {
+		@apply text-sm;
+	}
+}

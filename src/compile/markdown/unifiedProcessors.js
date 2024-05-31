@@ -268,6 +268,10 @@ export function rehypeExtractSummary () {
   }
 }
 
+function isFootnote (node) {
+  return node.type === 'element' && node.tagName === 'sup' && node.children.some(c => c.type === 'element' && c.tagName === 'a' && c.properties.dataFootnoteRef)
+}
+
 export function rehypeExtractToc () {
   return (tree, file) => {
     const toc = []
@@ -281,7 +285,7 @@ export function rehypeExtractToc () {
         rank,
         data: {
           id: node.properties.id,
-          value: toHtml(node.children)
+          value: toHtml(node.children.filter(c => !isFootnote(c)))
         }
       }
 

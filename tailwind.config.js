@@ -4,7 +4,7 @@ export default {
     fontFamily: {
       serif: ['Vollkorn'],
       sans: ['IBM\\ Plex\\ Sans'],
-      mono: ['Fira\\ Mono']
+      mono: ['JetBrains\\ Mono']
     },
     extend: {
       colors: {

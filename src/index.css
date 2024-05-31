@@ -8,7 +8,10 @@
 @import "@fontsource/ibm-plex-sans/700.css";
 @import "@fontsource/ibm-plex-sans/700-italic.css";
 
-@import "@fontsource/fira-mono";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/400-italic.css";
+@import "@fontsource/jetbrains-mono/700.css";
+@import "@fontsource/jetbrains-mono/700-italic.css";
 
 @tailwind base;
 @tailwind components;
@@ -48,11 +51,15 @@
 	}
 
 	a, .react-aria-Link {
-		@apply text-iris-900 hover:text-iris-800 hover:underline decoration-2 underline-offset-2;
+		@apply text-iris-900 hover:text-iris-800 hover:underline decoration-2 underline-offset-2 cursor-pointer;
 	}
 
 	blockquote {
 		@apply pl-3 my-1 text-gray-700 border-l-4 border-iris-700 dark:border-iris-300;
+	}
+
+	pre code {
+		@apply my-2;
 	}
 
 	p code,
@@ -87,7 +94,7 @@
 		@apply my-0;
 	}
 
-	table {
+	table:not(.hljs-ln) {
 		@apply inline-block overflow-x-scroll max-w-full border-[1px] border-iris-300;
 	}
 
@@ -96,7 +103,7 @@
 	}
 
 	th,
-	td {
+	td:not(.hljs-ln-line) {
 		@apply px-4 py-1;
 	}
 
@@ -104,7 +111,7 @@
 		@apply bg-iris-50;
 	}
 
-	tbody tr {
+	tbody:not(> .hljs-ln) tr {
 		@apply bg-iris-100 border-t-[1px] border-iris-200;
 	}
 
@@ -135,4 +142,12 @@
 
 a.external {
 	@apply after:content-['↗'];
+}
+
+.hljs-ln-numbers {
+	@apply text-gray-400;
+}
+
+.hljs-ln-n {
+	@apply mr-3;
 }

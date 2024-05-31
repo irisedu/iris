@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "highlight.js": "^11.9.0",
+    "highlightjs-line-numbers.js": "^2.8.0",
     "html-react-parser": "^5.1.10",
     "react": "^18.2.0",
     "react-aria-components": "^1.2.0",
@@ -19,8 +21,8 @@
     "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
-    "@fontsource/fira-mono": "^5.0.13",
     "@fontsource/ibm-plex-sans": "^5.0.20",
+    "@fontsource/jetbrains-mono": "^5.0.20",
     "@fontsource/vollkorn": "^5.0.20",
     "@iconify-json/tabler": "^1.1.111",
     "@svgr/core": "^8.1.0",

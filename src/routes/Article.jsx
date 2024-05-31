@@ -4,9 +4,21 @@ import { useMediaQuery } from 'react-responsive'
 import { Link as AriaLink } from 'react-aria-components'
 import { DevContext } from '../main.jsx'
 import parse, { domToReact } from 'html-react-parser'
+import hljs from 'highlight.js'
+import mergeHTMLPlugin from './highlightMergeHTMLPlugin.js'
 
 import './Article.css'
 import 'katex/dist/katex.css'
+import 'highlight.js/styles/xcode.css'
+
+hljs.configure({
+  ignoreUnescapedHTML: true
+})
+
+hljs.addPlugin(mergeHTMLPlugin)
+
+window.hljs = hljs
+await import('highlightjs-line-numbers.js') // Don't Ask
 
 async function getPageData (fullPath) {
   if (localStorage.getItem('dev.enabled') === 'true') {
@@ -38,13 +50,27 @@ function parseHtml (src) {
 
       switch (domNode.name) {
         case 'a': {
-          if (domNode.children && domNode.children.some(c => c.attribs && c.attribs.class === 'anchor-link')) {
+          if (domNode.attribs && domNode.attribs.href && domNode.attribs.href.startsWith('#')) {
             const anchor = domNode.attribs.href.slice(1)
-            return <a onClick={() => { goToAnchor(anchor) }} {...domNode.attribs}>{domToReact(domNode.children, options)}</a>
+
+            const attribs = Object.assign({}, domNode.attribs)
+
+            attribs.className = attribs.class
+            delete attribs.class
+            attribs.tabIndex = attribs.tabindex
+            delete attribs.tabindex
+
+            return <a onClick={() => { goToAnchor(anchor) }} {...attribs}>{domToReact(domNode.children, options)}</a>
           }
 
-          const className = (domNode.attribs && domNode.attribs.href) ? '' : 'react-aria-Link cursor-pointer'
-          return <AriaLink className={className} {...domNode.attribs}>{domToReact(domNode.children, options)}</AriaLink>
+          const origClass = (domNode.attribs && domNode.attribs.class) ? ' ' + domNode.attribs.class : ''
+          return <AriaLink className={`react-aria-link${origClass}`} {...domNode.attribs}>{domToReact(domNode.children, options)}</AriaLink>
+        }
+
+        case 'pre': {
+          if (domNode.children && domNode.children.length === 1 && domNode.children[0].name === 'code') {
+            return <pre key={Math.floor(Math.random() * 10000)}>{domToReact(domNode.children, options)}</pre>
+          }
         }
       }
     }
@@ -141,6 +167,14 @@ export function Component () {
       document.title = `${articleData.data.frontmatter.title} • Iris`
     }
   }, [articleData, seriesData])
+
+  useEffect(() => {
+    document.querySelectorAll('pre code').forEach(elem => {
+      delete elem.dataset.highlighted
+      hljs.highlightElement(elem)
+      hljs.lineNumbersBlock(elem)
+    })
+  })
 
   return articleData && (
     <article className='flex flex-col md:flex-row gap-8 mb-8'>

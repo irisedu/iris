@@ -29,11 +29,11 @@ article {
 	}
 
 	a:has(> .anchor-link) {
-		@apply absolute right-[calc(100%+0.75ch)] hover:no-underline;
+		@apply absolute top-0 bottom-0 my-auto h-6 right-[calc(100%+0.75ch)] hover:no-underline;
 	}
 
 	.anchor-link {
-		@apply text-iris-500 font-mono text-sm align-top after:content-['¶'] opacity-0 hover:opacity-100 transition-opacity duration-200;
+		@apply text-iris-500 text-sm align-top after:content-['¶'] opacity-0 hover:opacity-100 transition-opacity duration-200;
 	}
 
 	/* NOTES AND COMMENTS */

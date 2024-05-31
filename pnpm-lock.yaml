@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  highlight.js:
+    specifier: ^11.9.0
+    version: 11.9.0
+  highlightjs-line-numbers.js:
+    specifier: ^2.8.0
+    version: 2.8.0
   html-react-parser:
     specifier: ^5.1.10
     version: 5.1.10(@types/react@18.3.2)(react@18.3.1)
@@ -25,10 +31,10 @@ dependencies:
     version: 6.23.1(react-dom@18.3.1)(react@18.3.1)
 
 devDependencies:
-  '@fontsource/fira-mono':
-    specifier: ^5.0.13
-    version: 5.0.13
   '@fontsource/ibm-plex-sans':
+    specifier: ^5.0.20
+    version: 5.0.20
+  '@fontsource/jetbrains-mono':
     specifier: ^5.0.20
     version: 5.0.20
   '@fontsource/vollkorn':
@@ -557,12 +563,12 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fontsource/fira-mono@5.0.13:
-    resolution: {integrity: sha512-fZDjR2BdAqmauEbTjcIT62zYzbOgDa5+IQH34D2k8Pxmy1T815mAqQkZciWZVQ9dc/BgdTtTUV9HJ2ulBNwchg==}
-    dev: true
-
   /@fontsource/ibm-plex-sans@5.0.20:
     resolution: {integrity: sha512-svcHbwKbeDBoxrAVlcZ7hRbeAcMp7bXrftoJxTRKg8vedVqYfVGccEITrCwqD04PFbhmcqScOI34ClHTBxQFvQ==}
+    dev: true
+
+  /@fontsource/jetbrains-mono@5.0.20:
+    resolution: {integrity: sha512-QkrihYWqftzs+04TinulIhnFqNwO6990HR07iCUae/6daOZAMy7urUPzytrRT9M8KLTTHBeHOY0CKqOs1+o2OQ==}
     dev: true
 
   /@fontsource/vollkorn@5.0.20:
@@ -3776,6 +3782,15 @@ packages:
     dependencies:
       function-bind: 1.1.2
     dev: true
+
+  /highlight.js@11.9.0:
+    resolution: {integrity: sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
+  /highlightjs-line-numbers.js@2.8.0:
+    resolution: {integrity: sha512-TEf1gw0c8mb8nan0QwliqS7obT4cpUd9hzsGzsZLweteNnWea/VIqy5/aQqsa5wnz9lnvmtAkS1ZtDTjB/goYQ==}
+    dev: false
 
   /html-dom-parser@5.0.8:
     resolution: {integrity: sha512-vuWiX9EXgu8CJ5m9EP5c7bvBmNSuQVnrY8tl0z0ZX96Uth1IPlYH/8W8VZ/hBajFf18EN+j2pukbCNd01HEd1w==}

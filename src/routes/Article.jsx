@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive'
 import { Link as AriaLink } from 'react-aria-components'
 import { DevContext } from '../main.jsx'
-import parse, { domToReact } from 'html-react-parser'
+import parse, { domToReact, attributesToProps } from 'html-react-parser'
 import hljs from 'highlight.js'
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin.js'
 
@@ -52,19 +52,12 @@ function parseHtml (src) {
         case 'a': {
           if (domNode.attribs && domNode.attribs.href && domNode.attribs.href.startsWith('#')) {
             const anchor = domNode.attribs.href.slice(1)
-
-            const attribs = Object.assign({}, domNode.attribs)
-
-            attribs.className = attribs.class
-            delete attribs.class
-            attribs.tabIndex = attribs.tabindex
-            delete attribs.tabindex
-
-            return <a onClick={() => { goToAnchor(anchor) }} {...attribs}>{domToReact(domNode.children, options)}</a>
+            return <a onClick={() => { goToAnchor(anchor) }} {...attributesToProps(domNode.attribs)}>{domToReact(domNode.children, options)}</a>
           }
 
           const origClass = (domNode.attribs && domNode.attribs.class) ? ' ' + domNode.attribs.class : ''
-          return <AriaLink className={`react-aria-link${origClass}`} {...domNode.attribs}>{domToReact(domNode.children, options)}</AriaLink>
+          const attribs = domNode.attribs ? attributesToProps(domNode.attribs) : {}
+          return <AriaLink className={`react-aria-link${origClass}`} {...attribs}>{domToReact(domNode.children, options)}</AriaLink>
         }
 
         case 'pre': {

@@ -55,9 +55,8 @@ function parseHtml (src) {
             return <a onClick={() => { goToAnchor(anchor) }} {...attributesToProps(domNode.attribs)}>{domToReact(domNode.children, options)}</a>
           }
 
-          const origClass = (domNode.attribs && domNode.attribs.class) ? ' ' + domNode.attribs.class : ''
           const attribs = domNode.attribs ? attributesToProps(domNode.attribs) : {}
-          return <AriaLink className={`react-aria-link${origClass}`} {...attribs}>{domToReact(domNode.children, options)}</AriaLink>
+          return <AriaLink {...attribs}>{domToReact(domNode.children, options)}</AriaLink>
         }
 
         case 'pre': {
@@ -75,7 +74,7 @@ function parseHtml (src) {
 export function loader ({ params }) {
   const { routePath, routePathSegments } = parsePath(params['*'])
 
-  if (routePath === 'SUMMARY' || routePath.endsWith('/SUMMARY') || routePathSegments.at(-1).split('.').length > 1) {
+  if (!routePath || routePath === 'SUMMARY' || routePath.endsWith('/SUMMARY') || routePathSegments.at(-1).split('.').length > 1) {
     throw new Response('', { status: 404 })
   }
 
@@ -113,7 +112,7 @@ function ArticleOutline ({ outline }) {
     <ul className='list-none pl-2 my-0'>
       {outline.map(heading => (
         <Fragment key={heading.id}>
-          <li className='mb-1 text-gray-800'><AriaLink className='react-aria-Link cursor-pointer' onPress={() => goToAnchor(heading.id)}>{parseHtml(heading.value)}</AriaLink></li>
+          <li className='mb-1 text-gray-800'><AriaLink onPress={() => goToAnchor(heading.id)}>{parseHtml(heading.value)}</AriaLink></li>
           {heading.children && <ArticleOutline outline={heading.children} />}
         </Fragment>
       ))}
@@ -143,6 +142,14 @@ export function Component () {
   const { refresh } = useContext(DevContext)
   const [articleData, setArticleData] = useState(null)
   const [seriesData, setSeriesData] = useState(null)
+
+  useEffect(() => {
+    if (window.location.hash) {
+      setTimeout(() => {
+        goToAnchor(window.location.hash.slice(1))
+      }, 500)
+    }
+  }, [])
 
   useEffect(() => {
     load(params['*']).then(([newArticleData, newSeriesData]) => {

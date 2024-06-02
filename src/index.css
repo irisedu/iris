@@ -50,6 +50,20 @@
 		@apply mb-3 last:mb-0;
 	}
 
+	a,
+	.react-aria-Button,
+	.react-aria-Link {
+		@apply outline-none;
+
+		&[data-focus-visible] {
+			@apply outline outline-2 outline-iris-500;
+		}
+	}
+
+	a:not(.react-aria-Link) {
+		@apply outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-iris-500;
+	}
+
 	a, .react-aria-Link {
 		@apply text-iris-900 hover:text-iris-800 hover:underline decoration-2 underline-offset-2 cursor-pointer;
 	}

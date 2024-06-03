@@ -1,29 +1,31 @@
 export default class FileProcessor {
-  config
+	config;
 
-  constructor (config) {
-    this.config = config
-  }
+	constructor(config) {
+		this.config = config;
+	}
 
-  /**
-   * Process the given file path relative to the project root. Optionally
-   * returns a VFile representing the file processed.
-   */
-  async process ({ inDir, outDir, filePath }) {}
+	/**
+	 * Process the given file path relative to the project root. Optionally
+	 * returns a VFile representing the file processed.
+	 */
+	// eslint-disable-next-line no-unused-vars
+	async process({ inDir, outDir, filePath }) {}
 
-  /**
-    * Returns whether this processor handles the given file path relative to
-    * the project root.
-    */
-  handlesFile (filePath) {
-    return false
-  }
+	/**
+	 * Returns whether this processor handles the given file path relative to
+	 * the project root.
+	 */
+	// eslint-disable-next-line no-unused-vars
+	handlesFile(filePath) {
+		return false;
+	}
 
-  /**
-    * Accepts a file path relative to the project root and returns its
-    * corresponding output path relative to the output root.
-    */
-  static getOutputPath (filePath) {
-    return filePath
-  }
+	/**
+	 * Accepts a file path relative to the project root and returns its
+	 * corresponding output path relative to the output root.
+	 */
+	static getOutputPath(filePath) {
+		return filePath;
+	}
 }

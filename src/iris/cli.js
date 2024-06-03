@@ -1,41 +1,48 @@
-import signale from 'signale'
-import fs from 'fs-extra'
-import path from 'path'
-import defaultUserConfig from '../defaultUserConfig.js'
+import signale from 'signale';
+import fs from 'fs-extra';
+import path from 'path';
+import defaultUserConfig from '../defaultUserConfig.js';
 
-async function handleNew () {
-  const projectName = this.args[0]
-  const seriesNames = this.args.slice(1)
+async function handleNew() {
+	const projectName = this.args[0];
+	const seriesNames = this.args.slice(1);
 
-  signale.await(`Creating new project '${projectName}' with series ${seriesNames.map(s => `'${s}'`).join(', ')}`)
+	signale.await(
+		`Creating new project '${projectName}' with series ${seriesNames.map((s) => `'${s}'`).join(', ')}`
+	);
 
-  // Name validation
-  for (const seriesName of seriesNames) {
-    if (['patchouli.toml'].includes(seriesName)) {
-      signale.error(`Series name '${seriesName}' is reserved`)
-      return
-    }
-  }
+	// Name validation
+	for (const seriesName of seriesNames) {
+		if (['patchouli.toml'].includes(seriesName)) {
+			signale.error(`Series name '${seriesName}' is reserved`);
+			return;
+		}
+	}
 
-  const projectDir = path.join(process.cwd(), projectName)
+	const projectDir = path.join(process.cwd(), projectName);
 
-  if (await fs.exists(projectDir)) {
-    signale.error('Project directory already exists!')
-    return
-  }
+	if (await fs.exists(projectDir)) {
+		signale.error('Project directory already exists!');
+		return;
+	}
 
-  // Project dir
-  await fs.mkdir(projectDir)
+	// Project dir
+	await fs.mkdir(projectDir);
 
-  // User configuration
-  await fs.writeFile(path.join(projectDir, 'patchouli.toml'), defaultUserConfig)
+	// User configuration
+	await fs.writeFile(
+		path.join(projectDir, 'patchouli.toml'),
+		defaultUserConfig
+	);
 
-  // Series
-  for (const seriesName of seriesNames) {
-    const seriesDir = path.join(projectDir, seriesName)
-    await fs.mkdir(seriesDir)
+	// Series
+	for (const seriesName of seriesNames) {
+		const seriesDir = path.join(projectDir, seriesName);
+		await fs.mkdir(seriesDir);
 
-    await fs.writeFile(path.join(seriesDir, 'SUMMARY.md'), `---
+		await fs.writeFile(
+			path.join(seriesDir, 'SUMMARY.md'),
+			`---
 type = "series"
 title = "Title of your new series! (path: ${seriesName})"
 category = "Test Category"
@@ -59,19 +66,20 @@ You can insert a description of your series here.
 :::
 
 You can also place additional markup here.
-`)
-  }
+`
+		);
+	}
 
-  signale.success('Done!')
+	signale.success('Done!');
 }
 
-export default function initCli (program) {
-  const iris = program.command('iris')
-    .description('Iris-specific commands')
+export default function initCli(program) {
+	const iris = program.command('iris').description('Iris-specific commands');
 
-  iris.command('new')
-    .description('Create a new Iris project')
-    .argument('<project>', 'The name of the project folder')
-    .argument('<series...>', 'The names of the series folders to initialize')
-    .action(handleNew)
+	iris
+		.command('new')
+		.description('Create a new Iris project')
+		.argument('<project>', 'The name of the project folder')
+		.argument('<series...>', 'The names of the series folders to initialize')
+		.action(handleNew);
 }

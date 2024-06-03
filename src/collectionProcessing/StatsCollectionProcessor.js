@@ -1,36 +1,40 @@
-import fs from 'fs-extra'
-import path from 'path'
-import { recurseDirectory } from '../utils.js'
-import CollectionProcessor from './CollectionProcessor.js'
+import fs from 'fs-extra';
+import path from 'path';
+import { recurseDirectory } from '../utils.js';
+import CollectionProcessor from './CollectionProcessor.js';
 
 export default class StatsCollectionProcessor extends CollectionProcessor {
-  async process ({ outDir, handledFiles }) {
-    const stats = {
-      articleCount: 0,
-      stubs: []
-    }
+	async process({ outDir, handledFiles }) {
+		const stats = {
+			articleCount: 0,
+			stubs: []
+		};
 
-    const articleExt = '.md.json'
+		const articleExt = '.md.json';
 
-    await recurseDirectory(outDir, async filePath => {
-      if (!filePath.endsWith(articleExt)) { return }
+		await recurseDirectory(outDir, async (filePath) => {
+			if (!filePath.endsWith(articleExt)) {
+				return;
+			}
 
-      stats.articleCount++
+			stats.articleCount++;
 
-      const articleData = JSON.parse(await fs.readFile(path.join(outDir, filePath)))
-      if (!articleData.contents.length) {
-        stats.stubs.push({
-          title: articleData.data.frontmatter.title,
-          href: `/page/${filePath.slice(0, -articleExt.length)}`
-        })
-      }
-    })
+			const articleData = JSON.parse(
+				await fs.readFile(path.join(outDir, filePath))
+			);
+			if (!articleData.contents.length) {
+				stats.stubs.push({
+					title: articleData.data.frontmatter.title,
+					href: `/page/${filePath.slice(0, -articleExt.length)}`
+				});
+			}
+		});
 
-    const statsPath = path.join(outDir, 'stats.json')
+		const statsPath = path.join(outDir, 'stats.json');
 
-    await fs.writeFile(statsPath, JSON.stringify(stats))
+		await fs.writeFile(statsPath, JSON.stringify(stats));
 
-    // Prevent garbage collection
-    handledFiles[statsPath] = true
-  }
+		// Prevent garbage collection
+		handledFiles[statsPath] = true;
+	}
 }

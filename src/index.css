@@ -1,17 +1,17 @@
-@import "@fontsource/vollkorn/400.css";
-@import "@fontsource/vollkorn/400-italic.css";
-@import "@fontsource/vollkorn/700.css";
-@import "@fontsource/vollkorn/700-italic.css";
+@import '@fontsource/vollkorn/400.css';
+@import '@fontsource/vollkorn/400-italic.css';
+@import '@fontsource/vollkorn/700.css';
+@import '@fontsource/vollkorn/700-italic.css';
 
-@import "@fontsource/ibm-plex-sans/400.css";
-@import "@fontsource/ibm-plex-sans/400-italic.css";
-@import "@fontsource/ibm-plex-sans/700.css";
-@import "@fontsource/ibm-plex-sans/700-italic.css";
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/400-italic.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/ibm-plex-sans/700-italic.css';
 
-@import "@fontsource/jetbrains-mono/400.css";
-@import "@fontsource/jetbrains-mono/400-italic.css";
-@import "@fontsource/jetbrains-mono/700.css";
-@import "@fontsource/jetbrains-mono/700-italic.css";
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/400-italic.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/jetbrains-mono/700-italic.css';
 
 @tailwind base;
 @tailwind components;
@@ -21,8 +21,8 @@
 	:root {
 		@apply scroll-smooth font-serif;
 
-        font-synthesis: none;
-        text-rendering: optimizeLegibility;
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
 	}
 
 	h1 {
@@ -65,7 +65,8 @@
 		@apply outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-iris-500;
 	}
 
-	a, .react-aria-Link {
+	a,
+	.react-aria-Link {
 		@apply text-iris-900 hover:text-iris-800 hover:underline decoration-2 underline-offset-2 cursor-pointer;
 	}
 

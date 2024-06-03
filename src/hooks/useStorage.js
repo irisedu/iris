@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-export default function useStorage (storage, key, defaultValue, parseFunc) {
-  let storageValue = storage.getItem(key)
-  if (storageValue === null) {
-    storage.setItem(key, defaultValue)
-    storageValue = defaultValue
-  } else if (parseFunc) {
-    storageValue = parseFunc(storageValue)
-  }
+export default function useStorage(storage, key, defaultValue, parseFunc) {
+	let storageValue = storage.getItem(key);
+	if (storageValue === null) {
+		storage.setItem(key, defaultValue);
+		storageValue = defaultValue;
+	} else if (parseFunc) {
+		storageValue = parseFunc(storageValue);
+	}
 
-  const [state, setState] = useState(storageValue)
+	const [state, setState] = useState(storageValue);
 
-  function setStateWithStorage (value) {
-    storage.setItem(key, value)
-    setState(value)
-  }
+	function setStateWithStorage(value) {
+		storage.setItem(key, value);
+		setState(value);
+	}
 
-  return [state, setStateWithStorage]
+	return [state, setStateWithStorage];
 }

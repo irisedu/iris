@@ -10,8 +10,8 @@
 	"description": "Modular, rich document processor",
 	"license": "MIT",
 	"scripts": {
-		"lint": "prettier --check src/ && eslint src/",
-		"format": "prettier --write src/"
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",

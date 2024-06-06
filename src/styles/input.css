@@ -1,0 +1,7 @@
+button {
+	@apply px-2 py-1 rounded-md bg-iris-150 border-2 border-iris-300 active:bg-iris-200 active:duration-100;
+}
+
+input {
+	@apply outline outline-iris-200 focus:outline-iris-300 focus-visible:outline-iris-300;
+}

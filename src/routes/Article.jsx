@@ -1,7 +1,13 @@
 import { useState, useEffect, useContext, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-import { Link as AriaLink } from 'react-aria-components';
+import {
+	Link as AriaLink,
+	TagGroup,
+	TagList,
+	Tag,
+	Label
+} from 'react-aria-components';
 import { DevContext } from '../main.jsx';
 import parse, { domToReact, attributesToProps } from 'html-react-parser';
 import hljs from 'highlight.js';
@@ -247,6 +253,30 @@ export function Component() {
 							<p>This article is a stub.</p>
 						</div>
 					)}
+
+					<hr className="my-3 last:mb-0" />
+
+					{articleData.data.frontmatter.authors &&
+						articleData.data.frontmatter.authors.length && (
+							<p className="text-sm mb-0">
+								By {articleData.data.frontmatter.authors.join(', ')}
+							</p>
+						)}
+
+					{articleData.data.frontmatter.tags &&
+						articleData.data.frontmatter.tags.length && (
+							<TagGroup
+								selectionMode="none"
+								className="react-aria-TagGroup my-2"
+							>
+								<Label>Tags:</Label>
+								<TagList>
+									{articleData.data.frontmatter.tags.map((t) => (
+										<Tag key={t}>{t}</Tag>
+									))}
+								</TagList>
+							</TagGroup>
+						)}
 				</div>
 			</article>
 		)

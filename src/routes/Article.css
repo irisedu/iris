@@ -113,6 +113,20 @@ article {
 		@apply text-iris-800;
 	}
 
+	/* MATH */
+
+	.katex {
+		@apply whitespace-nowrap;
+	}
+
+	.katex-display {
+		@apply max-w-full overflow-x-scroll overflow-y-hidden p-2;
+	}
+
+	.katex-display::-webkit-scrollbar {
+		@apply hidden;
+	}
+
 	/* MISC */
 
 	iframe {
@@ -122,16 +136,4 @@ article {
 	.footnotes {
 		@apply text-sm;
 	}
-}
-
-.katex {
-	@apply whitespace-nowrap;
-}
-
-.katex-display {
-	@apply max-w-full overflow-x-scroll overflow-y-hidden p-2;
-}
-
-.katex-display::-webkit-scrollbar {
-	@apply hidden;
 }

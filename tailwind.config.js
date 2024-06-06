@@ -29,7 +29,9 @@ export default {
 			listStyleType: {
 				circle: 'circle',
 				'lower-alpha': 'lower-alpha',
-				'lower-roman': 'lower-roman'
+				'lower-roman': 'lower-roman',
+				'upper-alpha': 'upper-alpha',
+				square: 'square'
 			}
 		}
 	},

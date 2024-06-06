@@ -183,11 +183,12 @@ export function rehypeTransformLinks(opts) {
 				}
 
 				let internalLink = resolveInternalLink(link, opts.filePath);
-				if (new TeXFileProcessor(opts.config).handlesFile(internalLink)) {
-					internalLink = TeXFileProcessor.getOutputPath(internalLink);
-				}
 
 				if (internalLink) {
+					if (new TeXFileProcessor(opts.config).handlesFile(internalLink)) {
+						internalLink = TeXFileProcessor.getOutputPath(internalLink);
+					}
+
 					const assetTag = internalLinkToAssetTag(internalLink);
 					node.properties[linkProperty] = `####${assetTag}####`;
 

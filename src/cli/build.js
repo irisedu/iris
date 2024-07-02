@@ -3,12 +3,7 @@ import path from 'path';
 import express from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import {
-	findProject,
-	langtoolStart,
-	handleExit,
-	getIgnoredPaths
-} from '../utils.js';
+import { findProject, getIgnoredPaths } from '../utils.js';
 import build from '../build.js';
 
 function startDevServer(config, projectPath, port) {
@@ -58,29 +53,10 @@ function startDevServer(config, projectPath, port) {
 
 export default async function handleBuild() {
 	const { config, projectPath } = await findProject();
-	const langtoolProcess = await langtoolStart(config.user.languagetool);
 
 	await build(config, projectPath);
 
 	if (this.opts().watch) {
 		startDevServer(config, projectPath, this.opts().port);
-	}
-
-	let exiting = false;
-
-	handleExit(() => {
-		if (exiting) {
-			return;
-		}
-
-		exiting = true;
-
-		signale.info('Exiting...');
-		langtoolProcess.kill();
-		process.exit(0);
-	});
-
-	if (!this.opts().watch) {
-		process.exit(0);
 	}
 }

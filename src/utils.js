@@ -2,7 +2,6 @@ import signale from 'signale';
 import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
-import { spawn } from 'node:child_process';
 import toml from '@iarna/toml';
 import defaultUserConfig from './defaultUserConfig.js';
 
@@ -132,48 +131,6 @@ export function internalLinkToAssetTag(link) {
 	return (
 		'asset-' + crypto.createHash('md5').update(link).digest('hex').slice(0, 12)
 	);
-}
-
-export async function langtoolStart(config) {
-	signale.await('Starting LanguageTool server...');
-
-	const langtoolProcess = spawn(config.serverPath, ['--port', config.port]);
-
-	await (async function wait() {
-		try {
-			const res = await langtoolCheck(config, {
-				language: 'en-US',
-				text: 'This is a test.'
-			});
-			if (res.status !== 200) {
-				await wait();
-			}
-		} catch (e) {
-			await wait();
-		}
-	})();
-
-	signale.success('LanguageTool server started.');
-
-	return langtoolProcess;
-}
-
-export function langtoolCheck(config, params = {}) {
-	return fetch(`http://127.0.0.1:${config.port}/v2/check`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			Accept: 'application/json'
-		},
-		body: new URLSearchParams(params)
-	});
-}
-
-export function handleExit(cb) {
-	process.on('exit', cb);
-	process.on('SIGINT', cb);
-	process.on('SIGUSR1', cb);
-	process.on('SIGUSR2', cb);
 }
 
 export function getIgnoredPaths(config) {

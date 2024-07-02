@@ -2,20 +2,13 @@ import { visit } from 'unist-util-visit';
 import { headingRank } from 'hast-util-heading-rank';
 import { toHtml } from 'hast-util-to-html';
 import { select } from 'hast-util-select';
-import { VFile } from 'vfile';
-import { location } from 'vfile-location';
 import { retext } from 'retext';
 import retextSmartypants from 'retext-smartypants';
-import {
-	compose as composeAnnotated,
-	defaults as annotationDefaultOptions
-} from 'annotatedtext';
 import {
 	vfileMessage,
 	resolveInternalLink,
 	internalLinkToPageLink,
-	internalLinkToAssetTag,
-	langtoolCheck
+	internalLinkToAssetTag
 } from '../../utils.js';
 import TeXFileProcessor from '../assets/TeXFileProcessor.js';
 
@@ -29,81 +22,6 @@ export function remarkSetNoCite({ renderer, citeOpts }) {
 				frontmatter[renderer.config.platform.markdown.noCiteKey];
 		} else {
 			delete citeOpts.noCite;
-		}
-	};
-}
-
-// Expects MarkdownRenderer as opts
-export function remarkLanguageTool(opts) {
-	return async (tree, file) => {
-		const annotated = composeAnnotated(
-			opts.fileContents.toString(),
-			tree,
-			Object.assign(annotationDefaultOptions, {
-				// Based on:
-				// - https://github.com/prosegrinder/annotatedtext/blob/main/src/index.ts
-				// - https://github.com/prosegrinder/annotatedtext-remark/blob/main/src/index.ts
-				// Copyright (c) 2018 David L. Day, MIT License
-				annotatetextnode(node, text) {
-					if (node.type === 'text' && node.position) {
-						return {
-							offset: {
-								end: node.position.end.offset,
-								start: node.position.start.offset
-							},
-							text: text
-								.substring(node.position.start.offset, node.position.end.offset)
-								.replace(/\n/g, ' ')
-						};
-					} else {
-						return null;
-					}
-				},
-				interpretmarkup(text) {
-					return '\n'.repeat(Math.min(2, (text.match(/\n/g) || []).length));
-				}
-			})
-		);
-
-		let checkResponse;
-
-		try {
-			checkResponse = await langtoolCheck(opts.config.user.languagetool, {
-				language: 'en-US',
-				data: JSON.stringify(annotated)
-			});
-			if (checkResponse.status !== 200) {
-				throw new Error();
-			}
-		} catch {
-			vfileMessage(file, null, 'langtool-failed', 'LanguageTool check failed');
-			return;
-		}
-
-		// https://languagetool.org/http-api/swagger-ui/#!/default/post_check
-		const result = await checkResponse.json();
-		if (!result.matches) {
-			return;
-		}
-
-		const place = location(new VFile(opts.fileContents));
-
-		for (const match of result.matches) {
-			const start = place.toPoint(match.offset);
-			const end = place.toPoint(match.offset + match.length);
-
-			const msg = file.message(match.message, {
-				source: 'languagetool',
-				place: {
-					start,
-					end
-				},
-				ruleId: match.rule && match.rule.id
-			});
-
-			msg.name = `${start.line}:${start.column}-${end.line}:${end.column}`;
-			msg.replacements = match.replacements;
-			msg.rule = match.rule;
 		}
 	};
 }

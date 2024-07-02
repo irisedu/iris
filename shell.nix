@@ -9,7 +9,5 @@ pkgs.mkShell {
       inherit (pkgs.texlive) scheme-basic
         standalone dvisvgm pgfplots mathtools;
     })
-
-    languagetool
   ];
 }

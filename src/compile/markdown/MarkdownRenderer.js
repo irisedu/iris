@@ -1,10 +1,5 @@
 import { unified } from 'unified';
 
-import remarkPresetLintRecommended from 'remark-preset-lint-recommended';
-import remarkPresetLintMarkdownStyleGuide from 'remark-preset-lint-markdown-style-guide';
-import remarkLintListItemSpacing from 'remark-lint-list-item-spacing';
-import remarkLintMaximumLineLength from 'remark-lint-maximum-line-length';
-
 import remarkParse from 'remark-parse';
 import remarkRemoveComments from 'remark-remove-comments';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -45,12 +40,6 @@ export default class MarkdownRenderer {
 
 	constructor() {
 		this.#processor = unified()
-			// lint
-			.use(remarkPresetLintRecommended)
-			.use(remarkPresetLintMarkdownStyleGuide)
-			.use(remarkLintListItemSpacing, false)
-			.use(remarkLintMaximumLineLength, false) // Directives can be longer
-
 			// remark
 			.use(remarkParse)
 			.use(remarkRemoveComments)

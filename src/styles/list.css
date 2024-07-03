@@ -32,3 +32,13 @@ ol ul,
 ul ol {
 	@apply my-0;
 }
+
+dl {
+	dt {
+		@apply font-bold;
+	}
+
+	dd {
+		@apply ml-4;
+	}
+}

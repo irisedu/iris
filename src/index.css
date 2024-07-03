@@ -16,22 +16,10 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 
-@import './styles/focus.css';
-@import './styles/input.css';
-@import './styles/hljs.css';
-@import './styles/link.css';
-@import './styles/list.css';
-@import './styles/table.css';
-@import './styles/tags.css';
-@import './styles/text.css';
-
-@import './styles/misc.css';
+@import 'styles/index.css';
 
 @import 'tailwindcss/utilities';
 
 :root {
 	@apply scroll-smooth font-serif;
-
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
 }

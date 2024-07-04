@@ -2,7 +2,7 @@ import signale from 'signale';
 import path from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
-import { reporter } from 'vfile-reporter';
+import { reporterPretty } from 'vfile-reporter-pretty';
 import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils.js';
 
 import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor.js';
@@ -106,7 +106,7 @@ async function postCompileStep(config, inDir, outDir, vfiles, handledFiles) {
 				processor.process({
 					inDir: outDir,
 					outDir,
-					filePath: path.basename(outPath)
+					filePath: vf.path
 				})
 			);
 			break;
@@ -166,5 +166,5 @@ export default async function build(config, projectPath) {
 	await collectionProcessStep(config, inDir, outDir, vfiles, handledFiles);
 	await cleanStep(handledFiles, outDir);
 
-	console.log(reporter(vfiles));
+	console.log(reporterPretty(vfiles));
 }

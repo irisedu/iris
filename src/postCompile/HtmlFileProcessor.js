@@ -1,6 +1,9 @@
 import fs from 'fs-extra';
 import path from 'path';
-import minifyHtml from '@minify-html/node';
+import { unified } from 'unified';
+import rehypeParse from 'rehype-parse';
+import { rehypeMinifyNoJs } from '../compile/markdown/unifiedProcessors.js';
+import rehypeStringify from 'rehype-stringify';
 import FileProcessor from '../FileProcessor.js';
 
 export default class HtmlFileProcessor extends FileProcessor {
@@ -9,12 +12,13 @@ export default class HtmlFileProcessor extends FileProcessor {
 		const outPath = path.join(outDir, filePath);
 
 		const contents = await fs.readFile(inPath);
-		const minified = minifyHtml.minify(contents, {
-			keep_spaces_between_attributes: false,
-			minify_css: true
-		});
+		const minified = await unified()
+			.use(rehypeParse)
+			.use(rehypeMinifyNoJs)
+			.use(rehypeStringify)
+			.process(contents);
 
-		await fs.writeFile(outPath, minified);
+		await fs.writeFile(outPath, minified.value);
 	}
 
 	handlesFile(filePath) {

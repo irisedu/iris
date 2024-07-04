@@ -17,7 +17,6 @@ import rehypeCitation from 'rehype-citation';
 import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePresetMinify from 'rehype-preset-minify';
 import rehypeStringify from 'rehype-stringify';
 
 import toml from '@iarna/toml';
@@ -84,7 +83,7 @@ export default class MarkdownRenderer {
 				}
 			})
 			.use(unifiedProcessors.rehypeImageLazyLoading)
-			.use(rehypePresetMinify)
+			.use(unifiedProcessors.rehypeMinifyNoJs)
 			.use(rehypeStringify, { allowDangerousHtml: true });
 	}
 

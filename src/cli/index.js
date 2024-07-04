@@ -14,4 +14,6 @@ program
 	.option('-p, --port <number>', 'Port to use for development server', 58064)
 	.action(handleBuild);
 
-await program.parseAsync();
+(async function () {
+	await program.parseAsync();
+})();

@@ -12,7 +12,7 @@
 	"scripts": {
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"package": "esbuild --platform=node --bundle src/cli/index.js --outfile=build/bundle.cjs && pkg -t node20-linux,node20-win,node20-macos --no-bytecode --public-packages '*' --public build/bundle.cjs -o build/patchouli"
+		"package": "esbuild --platform=node --bundle src/cli/index.js --outfile=build/bundle.cjs && pkg -t node20-linux,node20-win,node20-macos build/bundle.cjs -o build/patchouli"
 	},
 	"dependencies": {
 		"@fec/remark-a11y-emoji": "^4.0.2",

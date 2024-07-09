@@ -1,0 +1,12 @@
+.react-aria-TextField {
+	@apply flex flex-col;
+
+	.react-aria-Input,
+	.react-aria-TextArea {
+		@apply p-1 rounded-md bg-iris-200;
+	}
+}
+
+.react-aria-Button {
+	@apply rounded-md px-2 py-1 border-2;
+}

@@ -1,5 +1,6 @@
 export default {
 	content: ['./src/**/*.jsx'],
+	important: true,
 	theme: {
 		fontFamily: {
 			serif: ['Vollkorn'],

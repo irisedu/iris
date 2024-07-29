@@ -42,3 +42,7 @@ dl {
 		@apply ml-4;
 	}
 }
+
+li p {
+	@apply mb-0;
+}

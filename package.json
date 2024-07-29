@@ -4,7 +4,8 @@
 	"version": "0.0.0",
 	"type": "module",
 	"exports": {
-		"./styles/*.css": "./src/styles/*.css"
+		"./styles/*.css": "./src/styles/*.css",
+		"./aria-components": "./src/components/aria/index.js"
 	},
 	"scripts": {
 		"dev": "vite",

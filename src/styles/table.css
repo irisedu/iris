@@ -1,5 +1,9 @@
 table {
-	@apply inline-block overflow-x-scroll max-w-full;
+	@apply overflow-x-scroll max-w-full my-3;
+
+	p {
+		@apply m-0;
+	}
 }
 
 th,

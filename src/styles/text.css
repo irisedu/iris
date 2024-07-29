@@ -25,7 +25,7 @@ h6 {
 }
 
 p {
-	@apply mb-3 last:mb-0;
+	@apply my-3 first:mt-0 last:mb-0;
 }
 
 blockquote {

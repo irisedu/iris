@@ -6,7 +6,8 @@ export function SubmenuItem({ children }) {
 	return (
 		<MenuItem className="react-aria-MenuItem flex flex-row items-center">
 			{children}
-			<ChevronRight className="w-4 h-4 ml-auto" />
+			<div className="grow" />
+			<ChevronRight className="w-4 h-4" />
 		</MenuItem>
 	);
 }

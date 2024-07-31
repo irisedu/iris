@@ -10,3 +10,23 @@
 .react-aria-Button {
 	@apply rounded-md px-2 py-1 border-2;
 }
+
+.react-aria-Select {
+	@apply my-2;
+
+	.react-aria-Button {
+		@apply bg-iris-100 border-iris-300;
+	}
+}
+
+.react-aria-ListBox {
+	@apply font-sans min-w-44 max-h-[30vh] overflow-auto;
+}
+
+.react-aria-ListBoxItem {
+	@apply m-1 px-2 py-0.5 rounded-lg cursor-pointer;
+
+	&[data-focused] {
+		@apply bg-iris-200 outline-none;
+	}
+}

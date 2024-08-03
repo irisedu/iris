@@ -1,9 +1,13 @@
+.react-aria-Label {
+	@apply text-sm;
+}
+
 .react-aria-TextField {
-	@apply flex flex-col;
+	@apply flex flex-col my-2;
 
 	.react-aria-Input,
 	.react-aria-TextArea {
-		@apply p-1 rounded-md bg-iris-200;
+		@apply p-1 rounded-md bg-iris-200 border-2 border-iris-300;
 	}
 }
 

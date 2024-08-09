@@ -4,12 +4,21 @@ import {
 	Button,
 	SelectValue,
 	Popover,
-	ListBox
+	ListBox,
+	type SelectProps
 } from 'react-aria-components';
 
 import ChevronDown from '~icons/tabler/chevron-down';
 
-export function Dropdown({ label, children, ...props }) {
+interface DropdownProps<T extends object> extends SelectProps<T> {
+	label: string;
+}
+
+export function Dropdown<T extends object>({
+	label,
+	children,
+	...props
+}: DropdownProps<T>) {
 	return (
 		<Select {...props}>
 			<Label>{label}</Label>

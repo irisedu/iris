@@ -1,8 +1,13 @@
+import { type ReactNode } from 'react';
 import { MenuItem, SubmenuTrigger, Popover, Menu } from 'react-aria-components';
 
 import ChevronRight from '~icons/tabler/chevron-right';
 
-export function SubmenuItem({ children }) {
+interface SubmenuItemProps {
+	children: ReactNode;
+}
+
+export function SubmenuItem({ children }: SubmenuItemProps) {
 	return (
 		<MenuItem className="react-aria-MenuItem flex flex-row items-center">
 			{children}
@@ -12,7 +17,12 @@ export function SubmenuItem({ children }) {
 	);
 }
 
-export function Submenu({ children, label }) {
+interface SubmenuProps {
+	label: string;
+	children: ReactNode;
+}
+
+export function Submenu({ children, label }: SubmenuProps) {
 	return (
 		<SubmenuTrigger>
 			<SubmenuItem>{label}</SubmenuItem>

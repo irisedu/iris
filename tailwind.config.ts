@@ -1,5 +1,5 @@
 export default {
-	content: ['./src/**/*.jsx'],
+	content: ['./src/**/*.jsx', './src/**/*.tsx'],
 	important: true,
 	theme: {
 		fontFamily: {

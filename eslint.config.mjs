@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
 
@@ -19,12 +20,13 @@ const compat = new FlatCompat({
 
 export default [
 	js.configs.recommended,
+	...tseslint.configs.strict,
 	prettier,
 	react.configs.flat.recommended,
 	react.configs.flat['jsx-runtime'],
 	...fixupConfigRules(compat.extends('plugin:react-hooks/recommended')),
 	{
-		files: ['**/*.js', '**/*.jsx']
+		files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx']
 	},
 	{
 		ignores: ['**/dist/*']

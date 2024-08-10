@@ -13,6 +13,10 @@
 
 .react-aria-Button {
 	@apply rounded-md px-2 py-1 border-2;
+
+	&[data-disabled] {
+		@apply text-gray-500;
+	}
 }
 
 .react-aria-Select {

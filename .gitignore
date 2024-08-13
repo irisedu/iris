@@ -22,3 +22,5 @@ out
 *.njsproj
 *.sln
 *.sw?
+
+.direnv/

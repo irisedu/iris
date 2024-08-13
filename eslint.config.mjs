@@ -24,13 +24,13 @@ export default [
 	prettier,
 	react.configs.flat.recommended,
 	react.configs.flat['jsx-runtime'],
+	...fixupConfigRules(compat.extends('plugin:react-hooks/recommended')),
 	{
 		files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx']
 	},
 	{
 		ignores: ['**/dist/', '**/out/', '**/.eslintrc.cjs']
 	},
-	...fixupConfigRules(compat.extends('plugin:react-hooks/recommended')),
 	{
 		plugins: {
 			'react-refresh': reactRefresh
@@ -38,15 +38,8 @@ export default [
 
 		languageOptions: {
 			globals: {
-				...globals.browser,
-				process: true,
-				win: true,
-				os: true,
-				app: true,
-				fs: true,
-				shell: true
+				...globals.browser
 			},
-
 			ecmaVersion: 'latest',
 			sourceType: 'module'
 		},
@@ -63,6 +56,20 @@ export default [
 			'react-refresh/only-export-components': 'off',
 			'import/no-absolute-path': 'off',
 			'@typescript-eslint/no-non-null-assertion': 'off'
+		}
+	},
+	{
+		files: ['packages/iris-studio/**/*.tsx'],
+
+		languageOptions: {
+			globals: {
+				process: true,
+				win: true,
+				os: true,
+				app: true,
+				fs: true,
+				shell: true
+			}
 		}
 	}
 ];

@@ -137,7 +137,6 @@ export function rehypeExternalLinkHandler() {
 			const href = node.properties.href;
 
 			try {
-				// eslint-disable-next-line no-new
 				new URL(href);
 				const className =
 					node.properties.className || (node.properties.className = []);

@@ -37,9 +37,6 @@ export default [
 		},
 
 		languageOptions: {
-			globals: {
-				...globals.browser
-			},
 			ecmaVersion: 'latest',
 			sourceType: 'module'
 		},
@@ -59,16 +56,35 @@ export default [
 		}
 	},
 	{
-		files: ['packages/iris-studio/**/*.tsx'],
+		files: ['packages/iris-frontend/src/**'],
 
 		languageOptions: {
 			globals: {
+				...globals.browser
+			}
+		}
+	},
+	{
+		files: ['packages/iris-studio/src/renderer/**'],
+
+		languageOptions: {
+			globals: {
+				...globals.browser,
 				process: true,
 				win: true,
 				os: true,
 				app: true,
 				fs: true,
 				shell: true
+			}
+		}
+	},
+	{
+		files: ['packages/patchouli/**'],
+
+		languageOptions: {
+			globals: {
+				...globals.node
 			}
 		}
 	}

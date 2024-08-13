@@ -9,6 +9,6 @@ export default class CollectionProcessor {
 	 * Process the collection at the given directory with the given VFiles and
 	 * file map.
 	 */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async process({ inDir, outDir, vfiles, handledFiles }) {}
 }

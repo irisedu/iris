@@ -9,14 +9,14 @@ export default class FileProcessor {
 	 * Process the given file path relative to the project root. Optionally
 	 * returns a VFile representing the file processed.
 	 */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	async process({ inDir, outDir, filePath }) {}
 
 	/**
 	 * Returns whether this processor handles the given file path relative to
 	 * the project root.
 	 */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	handlesFile(filePath) {
 		return false;
 	}

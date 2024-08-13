@@ -1,0 +1,11 @@
+.react-aria-TagGroup {
+	@apply flex flex-col text-sm gap-1;
+}
+
+.react-aria-TagList {
+	@apply flex flex-row gap-1 flex-wrap;
+}
+
+.react-aria-Tag {
+	@apply bg-iris-200 rounded-full px-2 border-2 border-iris-300;
+}

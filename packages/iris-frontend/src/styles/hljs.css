@@ -1,0 +1,16 @@
+.hljs-ln {
+	/* Revert table styles */
+	@apply border-0;
+
+	tr {
+		@apply border-0;
+	}
+}
+
+.hljs-ln-numbers {
+	@apply text-gray-400;
+}
+
+.hljs-ln-n {
+	@apply mr-3;
+}

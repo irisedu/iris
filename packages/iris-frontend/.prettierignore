@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+/dist
+
+pnpm-lock.yaml
+
+src/routes/highlightMergeHTMLPlugin.js

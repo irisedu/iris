@@ -1,0 +1,48 @@
+ul {
+	@apply list-disc list-outside pl-5 my-2;
+
+	ul {
+		@apply list-circle;
+
+		ul {
+			@apply list-square;
+		}
+	}
+}
+
+ol {
+	@apply list-decimal list-outside pl-5 my-2;
+
+	ol {
+		@apply list-lower-alpha;
+
+		ol {
+			@apply list-lower-roman;
+
+			ol {
+				@apply list-upper-alpha;
+			}
+		}
+	}
+}
+
+ul ul,
+ol ol,
+ol ul,
+ul ol {
+	@apply my-0;
+}
+
+dl {
+	dt {
+		@apply font-bold;
+	}
+
+	dd {
+		@apply ml-4;
+	}
+}
+
+li p {
+	@apply mb-0;
+}

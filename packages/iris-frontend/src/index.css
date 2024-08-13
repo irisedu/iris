@@ -1,0 +1,25 @@
+@import '@fontsource/vollkorn/400.css';
+@import '@fontsource/vollkorn/400-italic.css';
+@import '@fontsource/vollkorn/700.css';
+@import '@fontsource/vollkorn/700-italic.css';
+
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/400-italic.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/ibm-plex-sans/700-italic.css';
+
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/400-italic.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/jetbrains-mono/700-italic.css';
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+
+@import 'styles/index.css';
+
+@import 'tailwindcss/utilities';
+
+:root {
+	@apply scroll-smooth font-serif;
+}

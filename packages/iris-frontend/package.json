@@ -1,0 +1,57 @@
+{
+	"name": "iris",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"exports": {
+		"./styles/*.css": "./src/styles/*.css",
+		"./aria-components": "./src/components/aria/index.ts"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"lint": "prettier --check . && tsc --noEmit && eslint . --report-unused-disable-directives --max-warnings 0",
+		"format": "prettier --write .",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"highlight.js": "^11.10.0",
+		"highlightjs-line-numbers.js": "^2.8.0",
+		"html-react-parser": "^5.1.12",
+		"react": "^18.3.1",
+		"react-aria-components": "^1.2.1",
+		"react-dom": "^18.3.1",
+		"react-responsive": "^10.0.0",
+		"react-router-dom": "^6.26.0"
+	},
+	"devDependencies": {
+		"@eslint/compat": "^1.1.1",
+		"@eslint/eslintrc": "^3.1.0",
+		"@eslint/js": "^9.8.0",
+		"@fontsource/ibm-plex-sans": "^5.0.20",
+		"@fontsource/jetbrains-mono": "^5.0.20",
+		"@fontsource/vollkorn": "^5.0.20",
+		"@iconify-json/tabler": "^1.1.118",
+		"@svgr/core": "^8.1.0",
+		"@svgr/plugin-jsx": "^8.1.0",
+		"@types/eslint__js": "^8.42.3",
+		"@types/react": "^18.3.3",
+		"@types/react-dom": "^18.3.0",
+		"@vitejs/plugin-react-swc": "^3.7.0",
+		"autoprefixer": "^10.4.20",
+		"eslint": "^9.8.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-react": "^7.35.0",
+		"eslint-plugin-react-hooks": "^4.6.2",
+		"eslint-plugin-react-refresh": "^0.4.9",
+		"globals": "^15.9.0",
+		"katex": "^0.16.11",
+		"postcss": "^8.4.40",
+		"prettier": "^3.3.3",
+		"tailwindcss": "^3.4.7",
+		"typescript": "^5.5.4",
+		"typescript-eslint": "^8.0.1",
+		"unplugin-icons": "^0.19.1",
+		"vite": "^5.3.5"
+	}
+}

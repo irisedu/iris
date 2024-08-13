@@ -26,7 +26,6 @@
 		"hast-util-select": "^6.0.2",
 		"hast-util-to-html": "^9.0.1",
 		"hastscript": "^9.0.0",
-		"html-to-text": "^9.0.5",
 		"nunjucks": "^3.2.4",
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-citation": "^2.0.0",

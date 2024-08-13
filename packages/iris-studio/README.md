@@ -1,3 +1,3 @@
 # Iris Studio
 
-WYSIWYG editor for Iris documents
+WYSIWYM editor for Iris documents

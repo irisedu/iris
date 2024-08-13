@@ -25,10 +25,10 @@ export default [
 	react.configs.flat.recommended,
 	react.configs.flat['jsx-runtime'],
 	{
-		files: ['**/*.js', '**/*.ts', '**/*.tsx']
+		files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx']
 	},
 	{
-		ignores: ['**/dist', '**/.eslintrc.cjs', 'dist/', 'out/']
+		ignores: ['**/dist/', '**/out/', '**/.eslintrc.cjs']
 	},
 	...fixupConfigRules(compat.extends('plugin:react-hooks/recommended')),
 	{

@@ -11,7 +11,7 @@ import {
 } from 'react-aria-components';
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
-import { Submenu } from 'iris/aria-components';
+import { Submenu } from 'iris-common/components';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState, type AppDispatch } from '$state/store';

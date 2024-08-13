@@ -1,0 +1,20 @@
+{
+	"name": "iris-common",
+	"description": "Common components and styles for Iris",
+	"version": "0.0.0",
+	"type": "module",
+	"exports": {
+		"./styles": "./src/styles/index.css",
+		"./components": "./src/components/index.ts"
+	},
+	"scripts": {
+		"tsc": "tsc --noEmit"
+	},
+	"dependencies": {
+		"react": "^18.3.1",
+		"react-aria-components": "1.2.1"
+	},
+	"devDependencies": {
+		"unplugin-icons": "^0.19.2"
+	}
+}

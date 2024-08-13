@@ -19,7 +19,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 
-@import 'iris/styles/index.css';
+@import 'iris-common/styles';
 
 @import 'tailwindcss/utilities';
 

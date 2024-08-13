@@ -6,7 +6,7 @@ import {
 	Heading,
 	ListBoxItem
 } from 'react-aria-components';
-import { Dropdown } from 'iris/aria-components';
+import { Dropdown } from 'iris-common/components';
 
 interface CodeLanguageDialogProps {
 	isOpen: boolean;

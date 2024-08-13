@@ -1,12 +1,8 @@
 {
-	"name": "iris",
+	"name": "iris-frontend",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
-	"exports": {
-		"./styles/*.css": "./src/styles/*.css",
-		"./aria-components": "./src/components/aria/index.ts"
-	},
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
@@ -17,8 +13,9 @@
 		"highlight.js": "^11.10.0",
 		"highlightjs-line-numbers.js": "^2.8.0",
 		"html-react-parser": "^5.1.12",
+		"iris-common": "workspace:^",
 		"react": "^18.3.1",
-		"react-aria-components": "^1.2.1",
+		"react-aria-components": "1.2.1",
 		"react-dom": "^18.3.1",
 		"react-responsive": "^10.0.0",
 		"react-router-dom": "^6.26.0"

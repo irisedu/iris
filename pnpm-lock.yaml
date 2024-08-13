@@ -48,6 +48,19 @@ importers:
         specifier: ^8.0.1
         version: 8.1.0(eslint@9.9.0(jiti@1.21.6))(typescript@5.5.4)
 
+  packages/iris-common:
+    dependencies:
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-aria-components:
+        specifier: 1.2.1
+        version: 1.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+    devDependencies:
+      unplugin-icons:
+        specifier: ^0.19.2
+        version: 0.19.2(@svgr/core@8.1.0(typescript@5.5.4))
+
   packages/iris-frontend:
     dependencies:
       highlight.js:
@@ -59,11 +72,14 @@ importers:
       html-react-parser:
         specifier: ^5.1.12
         version: 5.1.12(@types/react@18.3.3)(react@18.3.1)
+      iris-common:
+        specifier: workspace:^
+        version: link:../iris-common
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-aria-components:
-        specifier: ^1.2.1
+        specifier: 1.2.1
         version: 1.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
@@ -204,9 +220,9 @@ importers:
       electron-vite:
         specifier: ^2.3.0
         version: 2.3.0(@swc/core@1.7.10)(vite@5.4.0(@types/node@22.2.0))
-      iris:
-        specifier: github:irisedu/iris
-        version: https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1(@types/react@18.3.3)
+      iris-common:
+        specifier: workspace:^
+        version: link:../iris-common
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -2930,10 +2946,6 @@ packages:
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
-
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1:
-    resolution: {tarball: https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1}
-    version: 0.0.0
 
   is-array-buffer@3.0.4:
     resolution: {integrity: sha512-wcjaerHw0ydZwfhiKbXJWLDY8A7yV7KhjQOpb83hGgGfId/aQa4TOvwyzn2PuswW2gPCYEL/nEAiSVpdOj1lXw==}
@@ -8059,19 +8071,6 @@ snapshots:
   ip-regex@4.3.0: {}
 
   ipaddr.js@1.9.1: {}
-
-  iris@https://codeload.github.com/irisedu/iris/tar.gz/2f7f4524761677527f084bc3c0ccef96db7d36d1(@types/react@18.3.3):
-    dependencies:
-      highlight.js: 11.10.0
-      highlightjs-line-numbers.js: 2.8.0
-      html-react-parser: 5.1.12(@types/react@18.3.3)(react@18.3.1)
-      react: 18.3.1
-      react-aria-components: 1.2.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-dom: 18.3.1(react@18.3.1)
-      react-responsive: 10.0.0(react@18.3.1)
-      react-router-dom: 6.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
 
   is-array-buffer@3.0.4:
     dependencies:

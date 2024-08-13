@@ -1,4 +1,4 @@
-import './schemas.js';
+import './schemas';
 import SeriesCollectionProcessor from './SeriesCollectionProcessor';
 
 export default {

@@ -3,10 +3,10 @@ import path from 'path';
 import express from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import { findProject, getIgnoredPaths } from '../utils';
-import build from '../build';
+import { getIgnoredPaths } from './utils';
+import build from './build';
 
-function startDevServer(config, projectPath, port) {
+export default function watch(config, projectPath, port = 58064) {
 	const app = express();
 
 	app.use((_, res, next) => {
@@ -49,14 +49,4 @@ function startDevServer(config, projectPath, port) {
 			}
 		});
 	});
-}
-
-export default async function handleBuild() {
-	const { config, projectPath } = await findProject();
-
-	await build(config, projectPath);
-
-	if (this.opts().watch) {
-		startDevServer(config, projectPath, this.opts().port);
-	}
 }

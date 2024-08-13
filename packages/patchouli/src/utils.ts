@@ -3,9 +3,9 @@ import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
 import toml from '@iarna/toml';
-import defaultUserConfig from './defaultUserConfig.js';
+import defaultUserConfig from './defaultUserConfig';
 
-import irisPlatformConfig from './iris/platformConfig.js';
+import irisPlatformConfig from './iris/platformConfig';
 
 export async function findFileInParents(filePath, fileName) {
 	const searchPath = path.join(filePath, fileName);

@@ -9,8 +9,8 @@ import {
 	resolveInternalLink,
 	internalLinkToPageLink,
 	internalLinkToAssetTag
-} from '../../utils.js';
-import TeXFileProcessor from '../assets/TeXFileProcessor.js';
+} from '../../utils';
+import TeXFileProcessor from '../assets/TeXFileProcessor';
 
 import rehypeMinifyAttributeWhitespace from 'rehype-minify-attribute-whitespace';
 import rehypeMinifyCssStyle from 'rehype-minify-css-style';

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { recurseDirectory } from '../utils.js';
-import CollectionProcessor from './CollectionProcessor.js';
+import { recurseDirectory } from '../utils';
+import CollectionProcessor from './CollectionProcessor';
 
 export default class NetworkCollectionProcessor extends CollectionProcessor {
 	async process({ outDir, handledFiles }) {

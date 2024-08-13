@@ -2,8 +2,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import { VFile } from 'vfile';
 import toml from '@iarna/toml';
-import { vfileMessage } from '../utils.js';
-import FileProcessor from '../FileProcessor.js';
+import { vfileMessage } from '../utils';
+import FileProcessor from '../FileProcessor';
 
 export default class TomlFileProcessor extends FileProcessor {
 	async process({ inDir, outDir, filePath }) {

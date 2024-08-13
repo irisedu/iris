@@ -2,9 +2,9 @@ import fs from 'fs-extra';
 import path from 'path';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
-import { rehypeMinifyNoJs } from '../compile/markdown/unifiedProcessors.js';
+import { rehypeMinifyNoJs } from '../compile/markdown/unifiedProcessors';
 import rehypeStringify from 'rehype-stringify';
-import FileProcessor from '../FileProcessor.js';
+import FileProcessor from '../FileProcessor';
 
 export default class HtmlFileProcessor extends FileProcessor {
 	async process({ inDir, outDir, filePath }) {

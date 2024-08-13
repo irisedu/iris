@@ -4,7 +4,7 @@ import {
 	vfileMessage,
 	resolveInternalLink,
 	internalLinkToAssetTag
-} from '../../utils.js';
+} from '../../utils';
 
 function handleTextDirective(node, file, opts) {
 	const attrs = node.attributes || {};

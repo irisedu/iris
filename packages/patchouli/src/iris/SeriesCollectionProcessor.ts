@@ -1,7 +1,7 @@
 import signale from 'signale';
 import fs from 'fs-extra';
 import path from 'path';
-import CollectionProcessor from '../collectionProcessing/CollectionProcessor.js';
+import CollectionProcessor from '../collectionProcessing/CollectionProcessor';
 
 export default class SeriesCollectionProcessor extends CollectionProcessor {
 	async process({ outDir, handledFiles }) {

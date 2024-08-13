@@ -2,10 +2,10 @@ import fs from 'fs-extra';
 import path from 'path';
 import anymatch from 'anymatch';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
-import CollectionProcessor from './CollectionProcessor.js';
-import MarkdownFileProcessor from '../compile/markdown/MarkdownFileProcessor.js';
-import TomlFileProcessor from '../compile/TomlFileProcessor.js';
-import { vfileMessage } from '../utils.js';
+import CollectionProcessor from './CollectionProcessor';
+import MarkdownFileProcessor from '../compile/markdown/MarkdownFileProcessor';
+import TomlFileProcessor from '../compile/TomlFileProcessor';
+import { vfileMessage } from '../utils';
 
 export default class SchemaCollectionProcessor extends CollectionProcessor {
 	async process({ outDir, vfiles }) {

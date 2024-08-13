@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import handleBuild from './build.js';
+import handleBuild from './build';
 
 const program = new Command();
 

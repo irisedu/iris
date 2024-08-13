@@ -3,8 +3,8 @@ import path from 'path';
 import express from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
-import { findProject, getIgnoredPaths } from '../utils.js';
-import build from '../build.js';
+import { findProject, getIgnoredPaths } from '../utils';
+import build from '../build';
 
 function startDevServer(config, projectPath, port) {
 	const app = express();

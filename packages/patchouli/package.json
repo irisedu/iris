@@ -10,7 +10,7 @@
 	"description": "Modular, rich document processor",
 	"license": "MIT",
 	"scripts": {
-		"build": "tsc",
+		"cli:build": "esbuild --platform=node --bundle src/cli/index.ts --outfile=out/cli.cjs",
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -60,5 +60,11 @@
 		"vfile": "^6.0.1",
 		"vfile-reporter-pretty": "^7.0.0",
 		"ws": "^8.17.1"
+	},
+	"devDependencies": {
+		"@types/express": "^4.17.21",
+		"@types/signale": "^1.4.7",
+		"@types/ws": "^8.5.12",
+		"esbuild": "^0.23.0"
 	}
 }

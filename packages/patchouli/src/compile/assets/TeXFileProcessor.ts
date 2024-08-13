@@ -3,8 +3,8 @@ import path from 'path';
 import { execFile as execFileCb } from 'node:child_process';
 import util from 'node:util';
 import { VFile } from 'vfile';
-import FileProcessor from '../../FileProcessor.js';
-import { vfileMessage } from '../../utils.js';
+import FileProcessor from '../../FileProcessor';
+import { vfileMessage } from '../../utils';
 
 const execFile = util.promisify(execFileCb);
 

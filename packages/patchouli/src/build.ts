@@ -3,21 +3,20 @@ import path from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
 import { reporterPretty } from 'vfile-reporter-pretty';
-import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils.js';
+import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils';
 
-import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor.js';
-import TeXFileProcessor from './compile/assets/TeXFileProcessor.js';
-import NunjucksFileProcessor from './compile/assets/NunjucksFileProcessor.js';
-import TomlFileProcessor from './compile/TomlFileProcessor.js';
-import CatchAllFileProcessor from './compile/assets/CatchAllFileProcessor.js';
+import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor';
+import TeXFileProcessor from './compile/assets/TeXFileProcessor';
+import NunjucksFileProcessor from './compile/assets/NunjucksFileProcessor';
+import TomlFileProcessor from './compile/TomlFileProcessor';
+import CatchAllFileProcessor from './compile/assets/CatchAllFileProcessor';
 
-import SvgFileProcessor from './postCompile/SvgFileProcessor.js';
-import HtmlFileProcessor from './postCompile/HtmlFileProcessor.js';
+import SvgFileProcessor from './postCompile/SvgFileProcessor';
+import HtmlFileProcessor from './postCompile/HtmlFileProcessor';
 
-import StatsCollectionProcessor from './collectionProcessing/StatsCollectionProcessor.js';
-import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor.js';
-import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor.js';
-import MarkdownAuxCollectionProcessor from './collectionProcessing/MarkdownAuxCollectionProcessor.js';
+import StatsCollectionProcessor from './collectionProcessing/StatsCollectionProcessor';
+import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor';
+import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor';
 
 /**
  * Step 1: per-file compilation
@@ -130,7 +129,6 @@ async function collectionProcessStep(
 		new StatsCollectionProcessor(config),
 		new NetworkCollectionProcessor(config),
 		new SchemaCollectionProcessor(config),
-		new MarkdownAuxCollectionProcessor(config),
 		...config.platform.pipeline.collectionProcessors.map((C) => new C(config))
 	];
 

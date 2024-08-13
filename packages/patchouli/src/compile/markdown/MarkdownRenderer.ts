@@ -6,7 +6,7 @@ import remarkFrontmatter from 'remark-frontmatter';
 import remarkExtractFrontmatter from 'remark-extract-frontmatter';
 import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
-import remarkProcessDirectives from './directives.js';
+import remarkProcessDirectives from './directives';
 import remarkSmartypants from 'remark-smartypants';
 import remarkGemoji from 'remark-gemoji';
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
@@ -20,7 +20,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeStringify from 'rehype-stringify';
 
 import toml from '@iarna/toml';
-import * as unifiedProcessors from './unifiedProcessors.js';
+import * as unifiedProcessors from './unifiedProcessors';
 
 export default class MarkdownRenderer {
 	filePath;

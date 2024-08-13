@@ -2,8 +2,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import { VFile } from 'vfile';
 import nunjucks from 'nunjucks';
-import FileProcessor from '../../FileProcessor.js';
-import { vfileMessage } from '../../utils.js';
+import FileProcessor from '../../FileProcessor';
+import { vfileMessage } from '../../utils';
 
 export default class NunjucksFileProcessor extends FileProcessor {
 	async process({ inDir, outDir, filePath }) {

@@ -1,5 +1,5 @@
 import './schemas.js';
-import SeriesCollectionProcessor from './SeriesCollectionProcessor.js';
+import SeriesCollectionProcessor from './SeriesCollectionProcessor';
 
 export default {
 	markdown: {

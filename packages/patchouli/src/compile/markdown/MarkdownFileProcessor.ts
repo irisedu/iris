@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
-import FileProcessor from '../../FileProcessor.js';
-import MarkdownRenderer from './MarkdownRenderer.js';
-import { findFileInParents } from '../../utils.js';
+import FileProcessor from '../../FileProcessor';
+import MarkdownRenderer from './MarkdownRenderer';
+import { findFileInParents } from '../../utils';
 
 const renderer = new MarkdownRenderer();
 

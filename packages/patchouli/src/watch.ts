@@ -1,4 +1,4 @@
-import signale from 'signale';
+import logger from './logger';
 import path from 'path';
 import express from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
@@ -20,7 +20,7 @@ export default function watch(config, projectPath, port = 58064) {
 	app.use('/page', express.static(path.join(projectPath, 'build')));
 
 	const server = app.listen(port, '127.0.0.1', () => {
-		signale.success(`Listening on 127.0.0.1:${port}`);
+		logger.success(`Listening on 127.0.0.1:${port}`);
 	});
 
 	const wss = new WebSocketServer({ noServer: true });
@@ -38,8 +38,8 @@ export default function watch(config, projectPath, port = 58064) {
 	});
 
 	watcher.on('all', async (event, path) => {
-		console.log();
-		signale.await(`File event \`${event}\` at ${path}, rebuilding ...`);
+		logger.raw();
+		logger.await(`File event \`${event}\` at ${path}, rebuilding ...`);
 
 		await build(config, projectPath);
 

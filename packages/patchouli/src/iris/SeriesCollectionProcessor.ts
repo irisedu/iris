@@ -1,4 +1,4 @@
-import signale from 'signale';
+import logger from '../logger';
 import fs from 'fs-extra';
 import path from 'path';
 import CollectionProcessor from '../collectionProcessing/CollectionProcessor';
@@ -22,7 +22,7 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 			const summaryData = JSON.parse(await fs.readFile(summaryPath));
 
 			if (!summaryData.data.summary) {
-				signale.warn(`[Iris] Series '${dirent.name}' has no summary directive`);
+				logger.warn(`[Iris] Series '${dirent.name}' has no summary directive`);
 			}
 
 			const frontmatter = summaryData.data.frontmatter;
@@ -30,7 +30,7 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 				continue;
 			}
 			if (frontmatter.type !== 'series') {
-				signale.warn(
+				logger.warn(
 					`[Iris] Series '${dirent.name}' has SUMMARY.md which is not of type 'series'`
 				);
 			}

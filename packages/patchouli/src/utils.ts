@@ -1,4 +1,4 @@
-import signale from 'signale';
+import logger from './logger';
 import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
@@ -25,7 +25,7 @@ export async function findProject() {
 	const configPath = await findFileInParents(process.cwd(), 'patchouli.toml');
 
 	if (configPath) {
-		signale.info(`Found configuration: ${configPath}`);
+		logger.info(`Found configuration: ${configPath}`);
 		configContents = await fs.readFile(configPath);
 		projectPath = path.dirname(configPath);
 	}
@@ -35,13 +35,13 @@ export async function findProject() {
 	try {
 		userConfig = toml.parse(configContents);
 	} catch (e) {
-		signale.error('Failed to read configuration:');
+		logger.error('Failed to read configuration:');
 		console.error(e);
 
 		process.exit(1);
 	}
 
-	signale.info(`Project path: ${projectPath}`);
+	logger.info(`Project path: ${projectPath}`);
 
 	let platformConfig;
 
@@ -50,9 +50,9 @@ export async function findProject() {
 	}
 
 	if (platformConfig) {
-		signale.info(`Using platform '${userConfig.platform}'`);
+		logger.info(`Using platform '${userConfig.platform}'`);
 	} else {
-		signale.warn(
+		logger.warn(
 			`Invalid platform: ${userConfig.platform}; falling back to 'iris'`
 		);
 		platformConfig = irisPlatformConfig;

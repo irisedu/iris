@@ -1,4 +1,4 @@
-import signale from 'signale';
+import logger from './logger';
 import path from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
@@ -53,11 +53,11 @@ async function compileStep(config, inDir, outDir) {
 			handledFiles[outPath] = inPath;
 
 			if (!(await shouldBuild(inPath, outPath))) {
-				signale.note('Skipping file', filePath, '(cached)');
+				logger.note('Skipping file', filePath, '(cached)');
 				break;
 			}
 
-			signale.await('Building file at', filePath, '...');
+			logger.await('Building file at', filePath, '...');
 			tasks.push(processor.process({ inDir, outDir, filePath }));
 			break;
 		}
@@ -100,7 +100,7 @@ async function postCompileStep(config, inDir, outDir, vfiles, handledFiles) {
 				continue;
 			}
 
-			signale.await('Post-processing file at', vf.path, '...');
+			logger.await('Post-processing file at', vf.path, '...');
 			tasks.push(
 				processor.process({
 					inDir: outDir,
@@ -135,7 +135,7 @@ async function collectionProcessStep(
 	const tasks = [];
 
 	for (const processor of processors) {
-		signale.await('Running', processor.constructor.name, '...');
+		logger.await('Running', processor.constructor.name, '...');
 		tasks.push(processor.process({ inDir, outDir, vfiles, handledFiles }));
 	}
 
@@ -149,7 +149,7 @@ async function cleanStep(handledFiles, outDir) {
 	await recurseDirectory(outDir, async (filePath) => {
 		const fullPath = path.join(outDir, filePath);
 		if (!handledFiles[fullPath]) {
-			signale.note('Removing file', filePath, '(original removed)');
+			logger.note('Removing file', filePath, '(original removed)');
 			await fs.rm(fullPath);
 		}
 	});
@@ -164,5 +164,5 @@ export default async function build(config, projectPath) {
 	await collectionProcessStep(config, inDir, outDir, vfiles, handledFiles);
 	await cleanStep(handledFiles, outDir);
 
-	console.log(reporterPretty(vfiles));
+	logger.raw(reporterPretty(vfiles));
 }

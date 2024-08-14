@@ -17,7 +17,7 @@ export default class TomlFileProcessor extends FileProcessor {
 		let data;
 
 		try {
-			data = toml.parse(await fs.readFile(inPath));
+			data = toml.parse(await fs.readFile(inPath, 'utf-8'));
 		} catch (e) {
 			vfileMessage(
 				vfile,

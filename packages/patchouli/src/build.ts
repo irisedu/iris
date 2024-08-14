@@ -21,7 +21,7 @@ import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionPr
 /**
  * Step 1: per-file compilation
  */
-async function compileStep(config, inDir, outDir) {
+async function compileStep(config, inDir: string, outDir: string) {
 	const processors = [
 		new MarkdownFileProcessor(config),
 		new TeXFileProcessor(config),
@@ -32,7 +32,7 @@ async function compileStep(config, inDir, outDir) {
 	];
 
 	const tasks = [];
-	const handledFiles = {};
+	const handledFiles: Record<string, string> = {};
 
 	await recurseDirectory(inDir, async (filePath) => {
 		if (anymatch(getIgnoredPaths(config), filePath)) {
@@ -72,7 +72,13 @@ async function compileStep(config, inDir, outDir) {
 /**
  * Step 2: per-file post-compilation/optimization
  */
-async function postCompileStep(config, inDir, outDir, vfiles, handledFiles) {
+async function postCompileStep(
+	config,
+	inDir: string,
+	outDir: string,
+	vfiles,
+	handledFiles: Record<string, string>
+) {
 	const processors = [
 		new SvgFileProcessor(config),
 		new HtmlFileProcessor(config),
@@ -120,10 +126,10 @@ async function postCompileStep(config, inDir, outDir, vfiles, handledFiles) {
  */
 async function collectionProcessStep(
 	config,
-	inDir,
-	outDir,
+	inDir: string,
+	outDir: string,
 	vfiles,
-	handledFiles
+	handledFiles: Record<string, string>
 ) {
 	const processors = [
 		new StatsCollectionProcessor(config),
@@ -145,7 +151,7 @@ async function collectionProcessStep(
 /**
  * Step 4: remove files whose source has been deleted
  */
-async function cleanStep(handledFiles, outDir) {
+async function cleanStep(handledFiles: Record<string, string>, outDir: string) {
 	await recurseDirectory(outDir, async (filePath) => {
 		const fullPath = path.join(outDir, filePath);
 		if (!handledFiles[fullPath]) {
@@ -155,7 +161,7 @@ async function cleanStep(handledFiles, outDir) {
 	});
 }
 
-export default async function build(config, projectPath) {
+export default async function build(config, projectPath: string) {
 	const inDir = projectPath;
 	const outDir = path.join(projectPath, 'build');
 

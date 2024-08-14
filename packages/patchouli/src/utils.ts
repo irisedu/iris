@@ -7,7 +7,7 @@ import defaultUserConfig from './defaultUserConfig';
 
 import irisPlatformConfig from './iris/platformConfig';
 
-export async function findFileInParents(filePath, fileName) {
+export async function findFileInParents(filePath: string, fileName: string) {
 	const searchPath = path.join(filePath, fileName);
 
 	if (await fs.exists(searchPath)) {
@@ -26,7 +26,7 @@ export async function findProject() {
 
 	if (configPath) {
 		logger.info(`Found configuration: ${configPath}`);
-		configContents = await fs.readFile(configPath);
+		configContents = await fs.readFile(configPath, 'utf-8');
 		projectPath = path.dirname(configPath);
 	}
 
@@ -75,7 +75,7 @@ export function vfileMessage(file, node, id, msg) {
 	});
 }
 
-export async function shouldBuild(inPath, outPath) {
+export async function shouldBuild(inPath: string, outPath: string) {
 	try {
 		const res = await Promise.all([fs.stat(inPath), fs.stat(outPath)]);
 
@@ -89,7 +89,11 @@ export async function shouldBuild(inPath, outPath) {
  * Recurses the given directory, calling the optionally async callback with the
  * current file path relative to the given directory.
  */
-export async function recurseDirectory(dir, cb, curr) {
+export async function recurseDirectory(
+	dir: string,
+	cb: (rel: string) => void | Promise<void>,
+	curr?: string
+) {
 	if (!curr) {
 		curr = '';
 	}
@@ -110,7 +114,7 @@ export async function recurseDirectory(dir, cb, curr) {
 	}
 }
 
-export function resolveInternalLink(link, filePath) {
+export function resolveInternalLink(link: string, filePath: string) {
 	if (link.startsWith('@')) {
 		// Absolute
 		return `/${link.slice(1)}`;
@@ -123,7 +127,7 @@ export function resolveInternalLink(link, filePath) {
 	}
 }
 
-export function internalLinkToPageLink(link) {
+export function internalLinkToPageLink(link: string) {
 	return '/page' + link;
 }
 

@@ -6,7 +6,7 @@ import chokidar from 'chokidar';
 import { getIgnoredPaths } from './utils';
 import build from './build';
 
-export default function watch(config, projectPath, port = 58064) {
+export default function watch(config, projectPath: string, port = 58064) {
 	const app = express();
 
 	app.use((_, res, next) => {

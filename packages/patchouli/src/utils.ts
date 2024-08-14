@@ -67,14 +67,6 @@ export async function findProject() {
 	};
 }
 
-export function vfileMessage(file, node, id, msg) {
-	file.message(msg, {
-		place: node && node.position,
-		ruleId: id,
-		source: 'patchouli'
-	});
-}
-
 export async function shouldBuild(inPath: string, outPath: string) {
 	try {
 		const res = await Promise.all([fs.stat(inPath), fs.stat(outPath)]);

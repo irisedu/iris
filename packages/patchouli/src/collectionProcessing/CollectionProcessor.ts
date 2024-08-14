@@ -1,4 +1,13 @@
-export default class CollectionProcessor {
+import type FileInfo from '../FileInfo';
+
+export interface CollectionProcessorArgs {
+	inDir: string;
+	outDir: string;
+	fileInfo: FileInfo[];
+	handledFiles: Record<string, string | boolean>;
+}
+
+export default abstract class CollectionProcessor {
 	config;
 
 	constructor(config) {
@@ -6,9 +15,8 @@ export default class CollectionProcessor {
 	}
 
 	/**
-	 * Process the collection at the given directory with the given VFiles and
+	 * Process the collection at the given directory with the given FileInfo and
 	 * file map.
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async process({ inDir, outDir, vfiles, handledFiles }) {}
+	abstract process(args: CollectionProcessorArgs): void | Promise<void>;
 }

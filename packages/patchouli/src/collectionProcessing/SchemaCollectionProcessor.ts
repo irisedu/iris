@@ -2,23 +2,24 @@ import fs from 'fs-extra';
 import path from 'path';
 import anymatch from 'anymatch';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
-import CollectionProcessor from './CollectionProcessor';
 import MarkdownFileProcessor from '../compile/markdown/MarkdownFileProcessor';
 import TomlFileProcessor from '../compile/TomlFileProcessor';
-import { vfileMessage } from '../utils';
+import CollectionProcessor, {
+	type CollectionProcessorArgs
+} from './CollectionProcessor';
 
 export default class SchemaCollectionProcessor extends CollectionProcessor {
-	async process({ outDir, vfiles }) {
-		for (const vf of vfiles) {
+	override async process({ outDir, fileInfo }: CollectionProcessorArgs) {
+		for (const fi of fileInfo) {
 			let obj;
 			let schemaUri;
 			let msg;
 
-			if (vf.path.endsWith('.toml')) {
+			if (fi.path.endsWith('.toml')) {
 				for (const [key, schema] of Object.entries(
 					this.config.platform.schemas
 				)) {
-					if (!anymatch(key, vf.path)) {
+					if (!anymatch(key, fi.path)) {
 						continue;
 					}
 
@@ -32,11 +33,12 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
 
 				obj = JSON.parse(
 					await fs.readFile(
-						path.join(outDir, TomlFileProcessor.getOutputPath(vf.path))
+						path.join(outDir, TomlFileProcessor.getOutputPath(fi.path)),
+						'utf-8'
 					)
 				);
 				msg = 'File violates schema';
-			} else if (vf.path.endsWith('.md')) {
+			} else if (fi.path.endsWith('.md')) {
 				schemaUri = this.config.platform.schemas.FRONTMATTER;
 				if (!schemaUri) {
 					continue;
@@ -44,7 +46,8 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
 
 				const articleData = JSON.parse(
 					await fs.readFile(
-						path.join(outDir, MarkdownFileProcessor.getOutputPath(vf.path))
+						path.join(outDir, MarkdownFileProcessor.getOutputPath(fi.path)),
+						'utf-8'
 					)
 				);
 				obj = articleData.data.frontmatter;
@@ -56,7 +59,7 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
 			const validateResult = await validate(schemaUri, obj);
 
 			if (!validateResult.valid) {
-				vfileMessage(vf, null, 'schema-validate', msg);
+				fi.message({ id: 'schema-validate', message: msg });
 			}
 		}
 	}

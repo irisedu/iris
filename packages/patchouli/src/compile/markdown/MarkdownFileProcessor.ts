@@ -1,13 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
-import FileProcessor from '../../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../../FileProcessor';
+import FileInfo from '../../FileInfo';
 import MarkdownRenderer from './MarkdownRenderer';
 import { findFileInParents } from '../../utils';
 
 const renderer = new MarkdownRenderer();
 
 export default class MarkdownFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(
 			outDir,
@@ -27,8 +28,6 @@ export default class MarkdownFileProcessor extends FileProcessor {
 			config: this.config
 		});
 
-		vfile.path = filePath;
-
 		await fs.ensureDir(path.dirname(outPath));
 
 		await fs.writeFile(
@@ -39,14 +38,14 @@ export default class MarkdownFileProcessor extends FileProcessor {
 			})
 		);
 
-		return vfile;
+		return new FileInfo(filePath);
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.md');
 	}
 
-	static getOutputPath(filePath) {
+	static override getOutputPath(filePath: string) {
 		return filePath + '.json';
 	}
 }

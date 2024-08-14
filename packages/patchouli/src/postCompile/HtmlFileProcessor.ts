@@ -4,10 +4,10 @@ import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import { rehypeMinifyNoJs } from '../compile/markdown/unifiedProcessors';
 import rehypeStringify from 'rehype-stringify';
-import FileProcessor from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
 
 export default class HtmlFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(outDir, filePath);
 
@@ -21,7 +21,7 @@ export default class HtmlFileProcessor extends FileProcessor {
 		await fs.writeFile(outPath, minified.value);
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.html');
 	}
 }

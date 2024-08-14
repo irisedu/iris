@@ -1,10 +1,12 @@
 import logger from '../logger';
 import fs from 'fs-extra';
 import path from 'path';
-import CollectionProcessor from '../collectionProcessing/CollectionProcessor';
+import CollectionProcessor, {
+	type CollectionProcessorArgs
+} from '../collectionProcessing/CollectionProcessor';
 
 export default class SeriesCollectionProcessor extends CollectionProcessor {
-	async process({ outDir, handledFiles }) {
+	async process({ outDir, handledFiles }: CollectionProcessorArgs) {
 		const series = [];
 
 		const directory = await fs.readdir(outDir, { withFileTypes: true });
@@ -19,7 +21,7 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 				continue;
 			}
 
-			const summaryData = JSON.parse(await fs.readFile(summaryPath));
+			const summaryData = JSON.parse(await fs.readFile(summaryPath, 'utf-8'));
 
 			if (!summaryData.data.summary) {
 				logger.warn(`[Iris] Series '${dirent.name}' has no summary directive`);

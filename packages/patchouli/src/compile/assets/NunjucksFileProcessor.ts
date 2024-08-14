@@ -1,19 +1,18 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { VFile } from 'vfile';
+import FileInfo from '../../FileInfo';
 import nunjucks from 'nunjucks';
-import FileProcessor from '../../FileProcessor';
-import { vfileMessage } from '../../utils';
+import FileProcessor, { type FileProcessorArgs } from '../../FileProcessor';
 
 export default class NunjucksFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(
 			outDir,
 			NunjucksFileProcessor.getOutputPath(filePath)
 		);
 
-		const vfile = new VFile({ path: filePath });
+		const fileInfo = new FileInfo(filePath);
 
 		const njkBase = path.join(inDir, this.config.user.nunjucks.templatePath);
 		const env = nunjucks.configure(njkBase, {
@@ -21,7 +20,7 @@ export default class NunjucksFileProcessor extends FileProcessor {
 		});
 
 		// https://github.com/mozilla/nunjucks/issues/788#issuecomment-332183033
-		env.addGlobal('includeRaw', (src) => {
+		env.addGlobal('includeRaw', (src: string) => {
 			let filePath;
 
 			if (src.startsWith('.')) {
@@ -36,25 +35,23 @@ export default class NunjucksFileProcessor extends FileProcessor {
 		const contents = await fs.readFile(inPath, 'utf-8');
 
 		try {
-			const res = nunjucks.renderString(contents);
+			const res = nunjucks.renderString(contents, {});
 			await fs.writeFile(outPath, res);
-		} catch (e) {
-			vfileMessage(
-				vfile,
-				null,
-				'njk-compile',
-				'Failed to compile Nunjucks file: ' + e.message
-			);
+		} catch (e: unknown) {
+			fileInfo.message({
+				id: 'njk-compile',
+				message: 'Failed to compile Nunjucks file: ' + e
+			});
 		}
 
-		return vfile;
+		return fileInfo;
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.njk');
 	}
 
-	static getOutputPath(filePath) {
+	static override getOutputPath(filePath: string) {
 		return filePath.slice(0, -4) + '.html';
 	}
 }

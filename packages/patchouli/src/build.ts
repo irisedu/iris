@@ -2,8 +2,8 @@ import logger from './logger';
 import path from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
-import { reporterPretty } from 'vfile-reporter-pretty';
 import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils';
+import type FileInfo from './FileInfo';
 
 import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor';
 import TeXFileProcessor from './compile/assets/TeXFileProcessor';
@@ -31,8 +31,8 @@ async function compileStep(config, inDir: string, outDir: string) {
 		...config.platform.pipeline.compile.map((C) => new C(config))
 	];
 
-	const tasks = [];
-	const handledFiles: Record<string, string> = {};
+	const tasks: Promise<undefined | FileInfo>[] = [];
+	const handledFiles: Record<string, string | boolean> = {};
 
 	await recurseDirectory(inDir, async (filePath) => {
 		if (anymatch(getIgnoredPaths(config), filePath)) {
@@ -64,7 +64,7 @@ async function compileStep(config, inDir: string, outDir: string) {
 	});
 
 	return {
-		vfiles: (await Promise.all(tasks)).filter((vf) => vf),
+		fileInfo: (await Promise.all(tasks)).filter((vf) => vf !== undefined),
 		handledFiles
 	};
 }
@@ -76,8 +76,8 @@ async function postCompileStep(
 	config,
 	inDir: string,
 	outDir: string,
-	vfiles,
-	handledFiles: Record<string, string>
+	fileInfo: FileInfo[],
+	handledFiles: Record<string, string | boolean>
 ) {
 	const processors = [
 		new SvgFileProcessor(config),
@@ -87,7 +87,7 @@ async function postCompileStep(
 
 	const tasks = [];
 
-	for (const vf of vfiles) {
+	for (const vf of fileInfo) {
 		const inPath = path.join(inDir, vf.path);
 		let outPath;
 		for (const [o, i] of Object.entries(handledFiles)) {
@@ -128,8 +128,8 @@ async function collectionProcessStep(
 	config,
 	inDir: string,
 	outDir: string,
-	vfiles,
-	handledFiles: Record<string, string>
+	fileInfo: FileInfo[],
+	handledFiles: Record<string, string | boolean>
 ) {
 	const processors = [
 		new StatsCollectionProcessor(config),
@@ -142,7 +142,7 @@ async function collectionProcessStep(
 
 	for (const processor of processors) {
 		logger.await('Running', processor.constructor.name, '...');
-		tasks.push(processor.process({ inDir, outDir, vfiles, handledFiles }));
+		tasks.push(processor.process({ inDir, outDir, fileInfo, handledFiles }));
 	}
 
 	await Promise.all(tasks);
@@ -151,7 +151,10 @@ async function collectionProcessStep(
 /**
  * Step 4: remove files whose source has been deleted
  */
-async function cleanStep(handledFiles: Record<string, string>, outDir: string) {
+async function cleanStep(
+	handledFiles: Record<string, string | boolean>,
+	outDir: string
+) {
 	await recurseDirectory(outDir, async (filePath) => {
 		const fullPath = path.join(outDir, filePath);
 		if (!handledFiles[fullPath]) {
@@ -165,10 +168,10 @@ export default async function build(config, projectPath: string) {
 	const inDir = projectPath;
 	const outDir = path.join(projectPath, 'build');
 
-	const { vfiles, handledFiles } = await compileStep(config, inDir, outDir);
-	await postCompileStep(config, inDir, outDir, vfiles, handledFiles);
-	await collectionProcessStep(config, inDir, outDir, vfiles, handledFiles);
+	const { fileInfo, handledFiles } = await compileStep(config, inDir, outDir);
+	await postCompileStep(config, inDir, outDir, fileInfo, handledFiles);
+	await collectionProcessStep(config, inDir, outDir, fileInfo, handledFiles);
 	await cleanStep(handledFiles, outDir);
 
-	logger.raw(reporterPretty(vfiles));
+	return fileInfo;
 }

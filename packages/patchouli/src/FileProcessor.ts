@@ -1,4 +1,12 @@
-export default class FileProcessor {
+import type FileInfo from './FileInfo';
+
+export interface FileProcessorArgs {
+	inDir: string;
+	outDir: string;
+	filePath: string;
+}
+
+export default abstract class FileProcessor {
 	config;
 
 	constructor(config) {
@@ -7,17 +15,18 @@ export default class FileProcessor {
 
 	/**
 	 * Process the given file path relative to the project root. Optionally
-	 * returns a VFile representing the file processed.
+	 * returns a FileInfo representing the file processed.
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async process({ inDir, outDir, filePath }) {}
+	abstract process(
+		args: FileProcessorArgs
+	): undefined | FileInfo | Promise<undefined | FileInfo>;
 
 	/**
 	 * Returns whether this processor handles the given file path relative to
 	 * the project root.
 	 */
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	handlesFile(filePath) {
+	handlesFile(filePath: string) {
 		return false;
 	}
 
@@ -25,7 +34,7 @@ export default class FileProcessor {
 	 * Accepts a file path relative to the project root and returns its
 	 * corresponding output path relative to the output root.
 	 */
-	static getOutputPath(filePath) {
+	static getOutputPath(filePath: string) {
 		return filePath;
 	}
 }

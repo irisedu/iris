@@ -1,16 +1,32 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { recurseDirectory } from '../utils';
-import CollectionProcessor from './CollectionProcessor';
+import CollectionProcessor, {
+	type CollectionProcessorArgs
+} from './CollectionProcessor';
+
+interface NetworkNode {
+	id: string;
+	href: string;
+	[key: string]: unknown;
+}
+
+interface NetworkLink {
+	source: string;
+	target: string;
+}
 
 export default class NetworkCollectionProcessor extends CollectionProcessor {
-	async process({ outDir, handledFiles }) {
-		const network = {
+	override async process({ outDir, handledFiles }: CollectionProcessorArgs) {
+		const network: {
+			nodes: NetworkNode[];
+			links: NetworkLink[];
+		} = {
 			nodes: [],
 			links: []
 		};
 
-		const backlinks = {};
+		const backlinks: Record<string, string[]> = {};
 
 		await recurseDirectory(outDir, async (filePath) => {
 			const articleExt = '.md.json';
@@ -21,10 +37,10 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 
 			const id = filePath.slice(0, -articleExt.length);
 			const articleData = JSON.parse(
-				await fs.readFile(path.join(outDir, filePath))
+				await fs.readFile(path.join(outDir, filePath), 'utf-8')
 			);
 
-			const node = {
+			const node: NetworkNode = {
 				id,
 				href: `/page/${id}`
 			};
@@ -43,8 +59,8 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 					if (
 						network.links.some(
 							(l) =>
-								(l.from === id && l.to === otherId) ||
-								(l.from === otherId && l.to === id)
+								(l.source === id && l.target === otherId) ||
+								(l.source === otherId && l.target === id)
 						)
 					) {
 						continue;

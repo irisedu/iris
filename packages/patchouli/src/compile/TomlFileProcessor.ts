@@ -1,42 +1,40 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { VFile } from 'vfile';
+import FileInfo from '../FileInfo';
 import toml from '@iarna/toml';
-import { vfileMessage } from '../utils';
-import FileProcessor from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
 
 export default class TomlFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(
 			outDir,
 			TomlFileProcessor.getOutputPath(filePath)
 		);
 
-		const vfile = new VFile({ path: filePath });
+		const fileInfo = new FileInfo(filePath);
 		let data;
 
 		try {
 			data = toml.parse(await fs.readFile(inPath, 'utf-8'));
-		} catch (e) {
-			vfileMessage(
-				vfile,
-				null,
-				'toml-invalid',
-				'Failed to parse TOML: ' + e.message
-			);
-			return vfile;
+		} catch (e: unknown) {
+			fileInfo.message({
+				id: 'toml-invalid',
+				message: 'Failed to parse TOML: ' + e
+			});
+
+			return fileInfo;
 		}
 
 		await fs.writeFile(outPath, JSON.stringify(data));
-		return vfile;
+		return fileInfo;
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.toml');
 	}
 
-	static getOutputPath(filePath) {
+	static override getOutputPath(filePath: string) {
 		return filePath.slice(0, -5) + '.json';
 	}
 }

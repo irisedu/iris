@@ -1,11 +1,21 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { recurseDirectory } from '../utils';
-import CollectionProcessor from './CollectionProcessor';
+import CollectionProcessor, {
+	type CollectionProcessorArgs
+} from './CollectionProcessor';
+
+interface CollectionStats {
+	articleCount: number;
+	stubs: {
+		title: string;
+		href: string;
+	}[];
+}
 
 export default class StatsCollectionProcessor extends CollectionProcessor {
-	async process({ outDir, handledFiles }) {
-		const stats = {
+	override async process({ outDir, handledFiles }: CollectionProcessorArgs) {
+		const stats: CollectionStats = {
 			articleCount: 0,
 			stubs: []
 		};
@@ -20,7 +30,7 @@ export default class StatsCollectionProcessor extends CollectionProcessor {
 			stats.articleCount++;
 
 			const articleData = JSON.parse(
-				await fs.readFile(path.join(outDir, filePath))
+				await fs.readFile(path.join(outDir, filePath), 'utf-8')
 			);
 			if (!articleData.contents.length) {
 				stats.stubs.push({

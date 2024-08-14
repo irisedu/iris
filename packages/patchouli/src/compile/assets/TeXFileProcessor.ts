@@ -2,18 +2,17 @@ import fs from 'fs-extra';
 import path from 'path';
 import { execFile as execFileCb } from 'node:child_process';
 import util from 'node:util';
-import { VFile } from 'vfile';
-import FileProcessor from '../../FileProcessor';
-import { vfileMessage } from '../../utils';
+import FileInfo from '../../FileInfo';
+import FileProcessor, { type FileProcessorArgs } from '../../FileProcessor';
 
 const execFile = util.promisify(execFileCb);
 
 export default class TeXFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(outDir, filePath);
 
-		const vfile = new VFile({ path: filePath });
+		const fileInfo = new FileInfo(filePath);
 
 		const inPathParsed = path.parse(inPath);
 		const cwd = inPathParsed.dir;
@@ -32,25 +31,26 @@ export default class TeXFileProcessor extends FileProcessor {
 					{ cwd }
 				);
 			} catch {
-				vfileMessage(
-					vfile,
-					null,
-					'latex-compile',
-					'Failed to convert LaTeX to SVG'
-				);
+				fileInfo.message({
+					id: 'latex-compile',
+					message: 'Failed to convert LaTeX to SVG'
+				});
 			}
 		} catch {
-			vfileMessage(vfile, null, 'latex-compile', 'LaTeX failed to compile');
+			fileInfo.message({
+				id: 'latex-compile',
+				message: 'LaTeX failed to compile'
+			});
 		}
 
-		return vfile;
+		return fileInfo;
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.tex');
 	}
 
-	static getOutputPath(filePath) {
+	static override getOutputPath(filePath: string) {
 		return filePath.slice(0, -4) + '.svg';
 	}
 }

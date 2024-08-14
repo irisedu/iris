@@ -1,14 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { optimize as svgoOptimize } from 'svgo';
-import FileProcessor from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
 
 export default class SvgFileProcessor extends FileProcessor {
-	async process({ inDir, outDir, filePath }) {
+	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(outDir, filePath);
 
-		const contents = await fs.readFile(inPath);
+		const contents = await fs.readFile(inPath, 'utf-8');
 		const optimizeResult = svgoOptimize(contents, {
 			path: inPath,
 			multipass: true
@@ -17,7 +17,7 @@ export default class SvgFileProcessor extends FileProcessor {
 		await fs.writeFile(outPath, optimizeResult.data);
 	}
 
-	handlesFile(filePath) {
+	override handlesFile(filePath: string) {
 		return filePath.endsWith('.svg');
 	}
 }

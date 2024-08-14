@@ -1,10 +1,6 @@
 import { h } from 'hastscript';
 import { visit } from 'unist-util-visit';
-import {
-	vfileMessage,
-	resolveInternalLink,
-	internalLinkToAssetTag
-} from '../../utils';
+import { resolveInternalLink, internalLinkToAssetTag } from '../../utils';
 
 function handleTextDirective(node, file, opts) {
 	const attrs = node.attributes || {};
@@ -12,14 +8,6 @@ function handleTextDirective(node, file, opts) {
 	switch (node.name) {
 		case 'abbr':
 			return h('abbr', { title: attrs.title });
-
-		default:
-			vfileMessage(
-				file,
-				node,
-				'invalid-directive',
-				`Unknown text directive \`${node.name}\``
-			);
 	}
 }
 
@@ -30,12 +18,6 @@ function handleLeafDirective(node, file, opts) {
 		case 'iframe': {
 			let { src, width, height } = attrs;
 			if (!src) {
-				vfileMessage(
-					file,
-					node,
-					'iframe-src',
-					'The `iframe` directive requires a `src` attribute.'
-				);
 				return;
 			}
 
@@ -53,14 +35,6 @@ function handleLeafDirective(node, file, opts) {
 
 		case 'summary':
 			return h('summary');
-
-		default:
-			vfileMessage(
-				file,
-				node,
-				'invalid-directive',
-				`Unknown leaf directive \`${node.name}\``
-			);
 	}
 }
 
@@ -71,24 +45,12 @@ function handleContainerDirective(node, file, opts) {
 		case 'note': {
 			const className = attrs.class;
 			if (!className) {
-				vfileMessage(
-					file,
-					node,
-					'invalid-note-directive',
-					'The `note` directive requires a class name.'
-				);
 				return;
 			}
 
 			const messages = opts.config.platform.markdown.messageTypes;
 
 			if (!messages[className]) {
-				vfileMessage(
-					file,
-					node,
-					'invalid-note-directive',
-					`Invalid note class name \`${className}\``
-				);
 				return;
 			}
 
@@ -103,12 +65,6 @@ function handleContainerDirective(node, file, opts) {
 		case 'comment': {
 			const className = attrs.class;
 			if (!className) {
-				vfileMessage(
-					file,
-					node,
-					'invalid-note-directive',
-					'The `comment` directive requires a class name.'
-				);
 				return;
 			}
 
@@ -116,12 +72,6 @@ function handleContainerDirective(node, file, opts) {
 			const character = opts.config.platform.markdown.characters[firstClass];
 
 			if (!character) {
-				vfileMessage(
-					file,
-					node,
-					'invalid-note-directive',
-					`Invalid comment class name \`${className}\``
-				);
 				return;
 			}
 
@@ -144,14 +94,6 @@ function handleContainerDirective(node, file, opts) {
 
 		case 'summary':
 			return h('div', { id: 'patchouli-summary' });
-
-		default:
-			vfileMessage(
-				file,
-				node,
-				'invalid-directive',
-				`Unknown container directive \`${node.name}\``
-			);
 	}
 }
 

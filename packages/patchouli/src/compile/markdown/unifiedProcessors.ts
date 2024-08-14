@@ -5,7 +5,6 @@ import { select } from 'hast-util-select';
 import { retext } from 'retext';
 import retextSmartypants from 'retext-smartypants';
 import {
-	vfileMessage,
 	resolveInternalLink,
 	internalLinkToPageLink,
 	internalLinkToAssetTag
@@ -175,14 +174,6 @@ export function rehypeExtractSummary() {
 				if (li.type !== 'element') {
 					continue;
 				}
-				if (li.tagName !== 'li') {
-					vfileMessage(
-						file,
-						li,
-						'summary-invalid-element',
-						`Unexpected element in summary list: '${li.tagName}'`
-					);
-				}
 
 				let link;
 
@@ -203,24 +194,8 @@ export function rehypeExtractSummary() {
 								: undefined
 						};
 					} else if (liChild.tagName === 'ul') {
-						if (!link) {
-							vfileMessage(
-								file,
-								liChild,
-								'summary-list-before-link',
-								'Unexpected child list before any links in summary list item'
-							);
-						}
-
 						const linkChildren = link.children || (link.children = []);
 						processList(liChild, linkChildren);
-					} else {
-						vfileMessage(
-							file,
-							liChild,
-							'summary-invalid-element',
-							`Unexpected element in summary list item: '${liChild.tagName}'`
-						);
 					}
 				}
 
@@ -230,12 +205,6 @@ export function rehypeExtractSummary() {
 
 		for (const child of summaryNode.children) {
 			if (child.type !== 'element') {
-				vfileMessage(
-					file,
-					child,
-					'summary-invalid-child-type',
-					`Invalid child type for summary directive: expected 'element', got '${child.type}'`
-				);
 				return;
 			}
 
@@ -256,13 +225,6 @@ export function rehypeExtractSummary() {
 
 				const children = section.children || (section.children = []);
 				processList(child, children);
-			} else {
-				vfileMessage(
-					file,
-					child,
-					'summary-invalid-element',
-					`Unexpected element in summary directive: '${child.tagName}'`
-				);
 			}
 		}
 

@@ -7,6 +7,8 @@ import watch from './watch';
 (async function () {
 	const { config, projectPath } = await findProject();
 
-	await build(config, projectPath);
+	const fileInfo = await build(config, projectPath);
+	console.dir(fileInfo.map((fi) => fi.toJSON()));
+
 	watch(config, projectPath);
 })();

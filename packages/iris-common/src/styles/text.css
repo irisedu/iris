@@ -1,6 +1,15 @@
 :root {
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
+	font-variant-ligatures: common-ligatures discretionary-ligatures;
+	font-feature-settings:
+		'kern' on,
+		'liga' on,
+		'calt' on,
+		'dlig' off,
+		'hlig' off,
+		'swsh' off,
+		'salt' off;
 }
 
 h1 {

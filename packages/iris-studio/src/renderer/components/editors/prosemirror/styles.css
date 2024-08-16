@@ -1,6 +1,10 @@
 .ProseMirror {
 	counter-reset: sidenote-counter;
 
+	/* Override ProseMirror default (works on Electron) */
+	font-variant-ligatures: inherit;
+	font-feature-settings: inherit;
+
 	.display-nbsp {
 		@apply bg-iris-300;
 	}

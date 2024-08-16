@@ -1,6 +1,8 @@
 import type { NodeType, MarkType, Attrs } from 'prosemirror-model';
+import { toggleMark } from 'prosemirror-commands';
 import { tableNodeTypes } from 'prosemirror-tables';
 import {
+	Selection,
 	TextSelection,
 	type Command,
 	type EditorState
@@ -16,10 +18,12 @@ export function markActive(state: EditorState, markType: MarkType) {
 
 export function insertNode(nodeType: NodeType): Command {
 	return (state, dispatch) => {
-		if (dispatch)
-			dispatch(
-				state.tr.replaceSelectionWith(nodeType.create()).scrollIntoView()
-			);
+		const node = nodeType.createAndFill();
+		if (!node) return false;
+
+		if (dispatch) {
+			dispatch(state.tr.replaceSelectionWith(node).scrollIntoView());
+		}
 
 		return true;
 	};
@@ -177,6 +181,8 @@ export const toggleLink: Command = (state, dispatch) => {
 	const link = state.schema.marks.link;
 	const { from, to, empty } = state.selection;
 
+	if (!toggleMark(link)(state)) return false;
+
 	if (markActive(state, link)) {
 		if (!dispatch) return true;
 
@@ -193,6 +199,83 @@ export const toggleLink: Command = (state, dispatch) => {
 
 		// Add link across entire range
 		if (dispatch) dispatch(state.tr.addMark(from, to, link.create()));
+	}
+
+	return true;
+};
+
+export const toggleSummaryHeading: Command = (state, dispatch) => {
+	const { summary, summary_page, summary_heading, summary_list } =
+		state.schema.nodes;
+	const { $head } = state.selection;
+
+	let targetType: NodeType;
+	if ($head.parent.type === summary_heading) {
+		targetType = summary_list;
+	} else if ($head.parent.type === summary_page) {
+		targetType = summary_heading;
+	} else {
+		return false;
+	}
+
+	let targetDepth: number | undefined;
+
+	for (let depth = $head.depth; depth >= 0; depth--) {
+		if ($head.node(depth).type === summary) {
+			targetDepth = depth + 1;
+			break;
+		}
+	}
+
+	if (!targetDepth) return false;
+	const after = $head.after(targetDepth);
+
+	if (state.doc.nodeAt(after)?.type === targetType) {
+		if (dispatch) {
+			dispatch(state.tr.setSelection(Selection.near(state.doc.resolve(after))));
+		}
+
+		return true;
+	}
+
+	if (dispatch) {
+		const node = targetType.createAndFill();
+
+		if (node) {
+			const tr = state.tr.replaceWith(after, after, node).scrollIntoView();
+
+			tr.setSelection(Selection.near(tr.doc.resolve(after)));
+			dispatch(tr);
+		}
+	}
+
+	return true;
+};
+
+export const exitSummary: Command = (state, dispatch) => {
+	const { summary, paragraph } = state.schema.nodes;
+	const { $head, empty } = state.selection;
+	if (!empty) return false;
+
+	let pos: number | undefined;
+
+	for (let depth = $head.depth; depth >= 0; depth--) {
+		if ($head.node(depth).type === summary) {
+			pos = $head.after(depth);
+			break;
+		}
+	}
+
+	if (!pos) return false;
+
+	if (dispatch) {
+		const tr = state.tr
+			.replaceWith(pos, pos, paragraph.create())
+			.scrollIntoView();
+
+		tr.setSelection(Selection.near(tr.doc.resolve(pos)));
+
+		dispatch(tr);
 	}
 
 	return true;

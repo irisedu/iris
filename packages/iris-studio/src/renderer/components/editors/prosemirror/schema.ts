@@ -1,9 +1,4 @@
-import {
-	Schema,
-	type NodeSpec,
-	type MarkSpec,
-	type DOMOutputSpec
-} from 'prosemirror-model';
+import { Schema, type NodeSpec, type MarkSpec } from 'prosemirror-model';
 import { orderedList, bulletList, listItem } from 'prosemirror-schema-list';
 import { tableNodes } from 'prosemirror-tables';
 
@@ -240,7 +235,7 @@ const baseSchemaDef = {
 const docSchemaDef = {
 	nodes: {
 		...baseSchemaDef.nodes,
-		doc: { content: 'frontmatter (block | heading)+' } as NodeSpec,
+		doc: { content: 'frontmatter (block | heading | summary)+' } as NodeSpec,
 
 		frontmatter: {
 			content: 'title frontmatter_attributes',
@@ -251,13 +246,42 @@ const docSchemaDef = {
 		title: {
 			content: 'text*',
 			toDOM() {
-				return ['h1', { class: 'title' }, 0] satisfies DOMOutputSpec;
+				return ['h1', { class: 'title' }, 0];
 			},
 			parseDOM: [{ tag: 'h1' }]
 		} as NodeSpec,
 		frontmatter_attributes: {
 			attrs: { data: { default: null } },
 			selectable: false
+		} as NodeSpec,
+
+		summary: {
+			content: '(summary_list | summary_heading)+',
+			draggable: true,
+			toDOM() {
+				return ['div', { class: 'summary' }, 0];
+			}
+		} as NodeSpec,
+		summary_heading: {
+			content: 'text*',
+			toDOM() {
+				return ['span', { class: 'summary-heading' }, 0];
+			}
+		} as NodeSpec,
+		summary_list: {
+			...bulletList,
+			content: 'summary_list_item+'
+		} as NodeSpec,
+		summary_list_item: {
+			...listItem,
+			content: 'summary_page summary_list*'
+		} as NodeSpec,
+		summary_page: {
+			content: 'text*',
+			marks: '',
+			toDOM() {
+				return ['span', { class: 'summary-page' }, 0];
+			}
 		} as NodeSpec
 	},
 	marks: {

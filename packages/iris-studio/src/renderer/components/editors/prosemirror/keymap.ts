@@ -26,27 +26,18 @@ import {
 import { goToNextCell } from 'prosemirror-tables';
 
 import { baseSchema, docSchema } from './schema';
-import { insertNode, clearFormatting, toggleLink } from './commands';
+import {
+	insertNode,
+	clearFormatting,
+	toggleLink,
+	exitSummary,
+	toggleSummaryHeading
+} from './commands';
 import { toggleInlineMath, insertDisplayMath } from './katex';
 
 function schemaCommonKeymap(schema: Schema) {
 	return {
-		Enter: chainCommands(
-			newlineInCode,
-			splitListItem(schema.nodes.list_item),
-			createParagraphNear,
-			liftEmptyBlock,
-			splitBlock
-		),
-		'Shift-Enter': chainCommands(
-			newlineInCode,
-			createParagraphNear,
-			liftEmptyBlock,
-			splitBlock
-		),
-
 		'Mod-Space': insertNode(schema.nodes.nbsp),
-		'Mod-Enter': chainCommands(exitCode, insertNode(schema.nodes.hard_break)),
 
 		'Mod-i': toggleMark(schema.marks.em),
 		'Mod-b': toggleMark(schema.marks.strong),
@@ -56,9 +47,6 @@ function schemaCommonKeymap(schema: Schema) {
 		'Alt-Shift-5': toggleMark(schema.marks.s),
 
 		'Mod-`': toggleMark(schema.marks.code),
-
-		'Mod-[': liftListItem(schema.nodes.list_item),
-		'Mod-]': sinkListItem(schema.nodes.list_item),
 
 		'Alt-Space': toggleInlineMath,
 		'Alt-Shift-Space': insertDisplayMath
@@ -90,10 +78,61 @@ export const baseKeymap = {
 	'Shift-Tab': goToNextCell(-1),
 	Tab: goToNextCell(1),
 
+	// Common with variations
+	Enter: chainCommands(
+		newlineInCode,
+		splitListItem(baseSchema.nodes.list_item),
+		createParagraphNear,
+		liftEmptyBlock,
+		splitBlock
+	),
+	'Shift-Enter': chainCommands(
+		newlineInCode,
+		createParagraphNear,
+		liftEmptyBlock,
+		splitBlock
+	),
+	'Mod-Enter': chainCommands(exitCode, insertNode(baseSchema.nodes.hard_break)),
+
+	'Mod-[': liftListItem(baseSchema.nodes.list_item),
+	'Mod-]': sinkListItem(baseSchema.nodes.list_item),
+
 	...schemaCommonKeymap(baseSchema)
 };
 
 export const docKeymap = {
 	...baseKeymap,
+
+	// Common with variations
+	Enter: chainCommands(
+		newlineInCode,
+		splitListItem(docSchema.nodes.list_item),
+		splitListItem(docSchema.nodes.summary_list_item),
+		createParagraphNear,
+		liftEmptyBlock,
+		splitBlock
+	),
+	'Shift-Enter': chainCommands(
+		toggleSummaryHeading,
+		newlineInCode,
+		createParagraphNear,
+		liftEmptyBlock,
+		splitBlock
+	),
+	'Mod-Enter': chainCommands(
+		exitCode,
+		exitSummary,
+		insertNode(docSchema.nodes.hard_break)
+	),
+
+	'Mod-[': chainCommands(
+		liftListItem(docSchema.nodes.list_item),
+		liftListItem(docSchema.nodes.summary_list_item)
+	),
+	'Mod-]': chainCommands(
+		sinkListItem(docSchema.nodes.list_item),
+		sinkListItem(docSchema.nodes.summary_list_item)
+	),
+
 	...schemaCommonKeymap(docSchema)
 };

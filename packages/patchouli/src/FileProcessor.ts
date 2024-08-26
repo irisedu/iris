@@ -19,7 +19,7 @@ export default abstract class FileProcessor {
 	 */
 	abstract process(
 		args: FileProcessorArgs
-	): undefined | FileInfo | Promise<undefined | FileInfo>;
+	): void | FileInfo | Promise<void | FileInfo>;
 
 	/**
 	 * Returns whether this processor handles the given file path relative to

@@ -21,7 +21,7 @@
 			@apply hidden;
 		}
 
-		&:has(> .ProseMirror-trailingBreak)::after {
+		&:has(> .ProseMirror-trailingBreak:first-child)::after {
 			@apply italic content-['Click_to_add_title'] text-black/60 dark:text-white/60 cursor-text;
 		}
 	}

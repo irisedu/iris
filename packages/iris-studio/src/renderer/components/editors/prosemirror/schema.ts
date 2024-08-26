@@ -244,7 +244,7 @@ const docSchemaDef = {
 			}
 		} as NodeSpec,
 		title: {
-			content: 'text*',
+			content: 'inline*',
 			toDOM() {
 				return ['h1', { class: 'title' }, 0];
 			},
@@ -263,7 +263,7 @@ const docSchemaDef = {
 			}
 		} as NodeSpec,
 		summary_heading: {
-			content: 'text*',
+			content: 'inline*',
 			toDOM() {
 				return ['span', { class: 'summary-heading' }, 0];
 			}

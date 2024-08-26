@@ -5,6 +5,7 @@ import anymatch from 'anymatch';
 import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils';
 import type FileInfo from './FileInfo';
 
+import IrisFileProcessor from './compile/IrisFileProcessor';
 import MarkdownFileProcessor from './compile/markdown/MarkdownFileProcessor';
 import TeXFileProcessor from './compile/assets/TeXFileProcessor';
 import NunjucksFileProcessor from './compile/assets/NunjucksFileProcessor';
@@ -14,7 +15,7 @@ import CatchAllFileProcessor from './compile/assets/CatchAllFileProcessor';
 import SvgFileProcessor from './postCompile/SvgFileProcessor';
 import HtmlFileProcessor from './postCompile/HtmlFileProcessor';
 
-import StatsCollectionProcessor from './collectionProcessing/StatsCollectionProcessor';
+import IrisCollectionProcessor from './collectionProcessing/IrisCollectionProcessor';
 import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor';
 import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor';
 
@@ -23,6 +24,7 @@ import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionPr
  */
 async function compileStep(config, inDir: string, outDir: string) {
 	const processors = [
+		new IrisFileProcessor(config),
 		new MarkdownFileProcessor(config),
 		new TeXFileProcessor(config),
 		new NunjucksFileProcessor(config),
@@ -132,7 +134,7 @@ async function collectionProcessStep(
 	handledFiles: Record<string, string | boolean>
 ) {
 	const processors = [
-		new StatsCollectionProcessor(config),
+		new IrisCollectionProcessor(config),
 		new NetworkCollectionProcessor(config),
 		new SchemaCollectionProcessor(config),
 		...config.platform.pipeline.collectionProcessors.map((C) => new C(config))

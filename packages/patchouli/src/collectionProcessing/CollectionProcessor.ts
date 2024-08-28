@@ -4,7 +4,6 @@ export interface CollectionProcessorArgs {
 	inDir: string;
 	outDir: string;
 	fileInfo: FileInfo[];
-	handledFiles: Record<string, string | boolean>;
 }
 
 export default abstract class CollectionProcessor {

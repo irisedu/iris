@@ -17,7 +17,7 @@ interface NetworkLink {
 }
 
 export default class NetworkCollectionProcessor extends CollectionProcessor {
-	override async process({ outDir, handledFiles }: CollectionProcessorArgs) {
+	override async process({ outDir }: CollectionProcessorArgs) {
 		const network: {
 			nodes: NetworkNode[];
 			links: NetworkLink[];
@@ -45,9 +45,10 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 				href: `/page/${id}`
 			};
 
-			for (const key of this.config.platform.network.store) {
-				node[key] = articleData.data.frontmatter[key];
-			}
+			// TODO: Fix for .irisc
+			// for (const key of this.config.platform.network.store) {
+			// 	node[key] = articleData.data.frontmatter[key];
+			// }
 
 			network.nodes.push(node);
 
@@ -79,9 +80,5 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 
 		await fs.writeFile(networkPath, JSON.stringify(network));
 		await fs.writeFile(backlinksPath, JSON.stringify(backlinks));
-
-		// Prevent garbage collection
-		handledFiles[networkPath] = true;
-		handledFiles[backlinksPath] = true;
 	}
 }

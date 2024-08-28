@@ -5,8 +5,6 @@ import path from 'path';
 import toml from '@iarna/toml';
 import defaultUserConfig from './defaultUserConfig';
 
-import irisPlatformConfig from './iris/platformConfig';
-
 export async function findFileInParents(filePath: string, fileName: string) {
 	const searchPath = path.join(filePath, fileName);
 
@@ -30,10 +28,10 @@ export async function findProject() {
 		projectPath = path.dirname(configPath);
 	}
 
-	let userConfig;
+	let config;
 
 	try {
-		userConfig = toml.parse(configContents);
+		config = toml.parse(configContents);
 	} catch (e) {
 		logger.error('Failed to read configuration:');
 		console.error(e);
@@ -43,26 +41,8 @@ export async function findProject() {
 
 	logger.info(`Project path: ${projectPath}`);
 
-	let platformConfig;
-
-	if (userConfig.platform === 'iris') {
-		platformConfig = irisPlatformConfig;
-	}
-
-	if (platformConfig) {
-		logger.info(`Using platform '${userConfig.platform}'`);
-	} else {
-		logger.warn(
-			`Invalid platform: ${userConfig.platform}; falling back to 'iris'`
-		);
-		platformConfig = irisPlatformConfig;
-	}
-
 	return {
-		config: {
-			user: userConfig,
-			platform: platformConfig
-		},
+		config,
 		projectPath
 	};
 }
@@ -123,16 +103,6 @@ export function internalLinkToPageLink(link: string) {
 	return '/page' + link;
 }
 
-export function internalLinkToAssetTag(link) {
-	return (
-		'asset-' + crypto.createHash('md5').update(link).digest('hex').slice(0, 12)
-	);
-}
-
 export function getIgnoredPaths(config) {
-	return config.user.ignoredPaths.concat([
-		'patchouli.toml',
-		'build/**',
-		'**/*.bib'
-	]);
+	return config.ignoredPaths.concat(['patchouli.toml', 'build/**', '**/*.bib']);
 }

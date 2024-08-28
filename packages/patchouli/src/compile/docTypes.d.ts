@@ -32,7 +32,10 @@ export interface SummaryNode {
 
 export interface IriscMetadata {
 	title?: IriscNode[];
-	docAttrs?: object;
+	docAttrs?: {
+		authors?: string[];
+		tags?: string[];
+	};
 	summary?: SummaryNode[];
 }
 

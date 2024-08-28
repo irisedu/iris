@@ -8,7 +8,13 @@ import watch from './watch';
 	const { config, projectPath } = await findProject();
 
 	const fileInfo = await build(config, projectPath);
-	console.dir(fileInfo.map((fi) => fi.toJSON()));
+	console.log(
+		JSON.stringify(
+			fileInfo.map((fi) => fi.toJSON()),
+			null,
+			4
+		)
+	);
 
 	watch(config, projectPath);
 })();

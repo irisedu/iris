@@ -14,7 +14,7 @@ export default class NunjucksFileProcessor extends FileProcessor {
 
 		const fileInfo = new FileInfo(filePath);
 
-		const njkBase = path.join(inDir, this.config.user.nunjucks.templatePath);
+		const njkBase = path.join(inDir, this.config.nunjucks.templatePath);
 		const env = nunjucks.configure(njkBase, {
 			autoescape: false
 		});

@@ -1,4 +1,5 @@
 import type FileInfo from '../FileInfo';
+import type { UserConfig } from '../config';
 
 export interface CollectionProcessorArgs {
 	inDir: string;
@@ -7,9 +8,9 @@ export interface CollectionProcessorArgs {
 }
 
 export default abstract class CollectionProcessor {
-	config;
+	protected config: UserConfig;
 
-	constructor(config) {
+	constructor(config: UserConfig) {
 		this.config = config;
 	}
 
@@ -17,5 +18,5 @@ export default abstract class CollectionProcessor {
 	 * Process the collection at the given directory with the given FileInfo and
 	 * file map.
 	 */
-	abstract process(args: CollectionProcessorArgs): void | Promise<void>;
+	abstract process(args: CollectionProcessorArgs): undefined | Promise<void>;
 }

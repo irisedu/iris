@@ -1,6 +1,6 @@
 // highlight.js#2889
 // (c) 2006, Ivan Sagalaev, BSD-3-Clause
-// eslint disable
+/* eslint-disable */
 const mergeHTMLPlugin = (function () {
   'use strict'
 

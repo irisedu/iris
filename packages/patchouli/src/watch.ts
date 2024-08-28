@@ -5,8 +5,13 @@ import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';
 import { getIgnoredPaths } from './utils';
 import build from './build';
+import type { UserConfig } from './config';
 
-export default function watch(config, projectPath: string, port = 58064) {
+export default function watch(
+	config: UserConfig,
+	projectPath: string,
+	port = 58064
+) {
 	const app = express();
 
 	app.use((_, res, next) => {

@@ -1,4 +1,5 @@
 import type FileInfo from './FileInfo';
+import type { UserConfig } from './config';
 
 export interface FileProcessorArgs {
 	inDir: string;
@@ -7,9 +8,9 @@ export interface FileProcessorArgs {
 }
 
 export default abstract class FileProcessor {
-	config;
+	protected config: UserConfig;
 
-	constructor(config) {
+	constructor(config: UserConfig) {
 		this.config = config;
 	}
 
@@ -19,7 +20,7 @@ export default abstract class FileProcessor {
 	 */
 	abstract process(
 		args: FileProcessorArgs
-	): void | FileInfo | Promise<void | FileInfo>;
+	): undefined | FileInfo | Promise<void> | Promise<FileInfo>;
 
 	/**
 	 * Returns whether this processor handles the given file path relative to

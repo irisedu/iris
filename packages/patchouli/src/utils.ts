@@ -1,9 +1,8 @@
 import logger from './logger';
-import crypto from 'crypto';
 import fs from 'fs-extra';
 import path from 'path';
 import toml from '@iarna/toml';
-import defaultUserConfig from './defaultUserConfig';
+import { defaultUserConfig, type UserConfig } from './config';
 
 export async function findFileInParents(filePath: string, fileName: string) {
 	const searchPath = path.join(filePath, fileName);
@@ -28,10 +27,11 @@ export async function findProject() {
 		projectPath = path.dirname(configPath);
 	}
 
-	let config;
+	let config: UserConfig;
 
 	try {
-		config = toml.parse(configContents);
+		// TODO: validate this using JSON schema
+		config = toml.parse(configContents) as unknown as UserConfig;
 	} catch (e) {
 		logger.error('Failed to read configuration:');
 		console.error(e);
@@ -103,6 +103,6 @@ export function internalLinkToPageLink(link: string) {
 	return '/page' + link;
 }
 
-export function getIgnoredPaths(config) {
+export function getIgnoredPaths(config: UserConfig) {
 	return config.ignoredPaths.concat(['patchouli.toml', 'build/**', '**/*.bib']);
 }

@@ -42,6 +42,7 @@ export interface TocNode {
 
 export interface IriscMetadata {
 	title?: IriscNode[];
+	titleString?: string;
 	docAttrs?: {
 		authors?: string[];
 		tags?: string[];

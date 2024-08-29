@@ -85,6 +85,7 @@ const nodeProcessors: Record<
 	title(node, meta, fileInfo, ctx) {
 		if (node.content && Array.isArray(node.content)) {
 			meta.title = processIrisNodes(node.content, meta, fileInfo, ctx);
+			meta.titleString = nodesToString(meta.title);
 		}
 
 		return [null, false];

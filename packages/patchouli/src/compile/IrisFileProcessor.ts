@@ -8,9 +8,18 @@ import type {
 	IriscFile,
 	IriscNode,
 	IriscMetadata,
-	SummaryNode
+	SummaryNode,
+	TocNode
 } from './docTypes.d';
 import { resolveInternalLink } from '../utils';
+import GithubSlugger from 'github-slugger';
+
+interface ProcessorCtx {
+	headings: {
+		slugger: GithubSlugger;
+		currentStack: { rank: number; data: TocNode }[];
+	};
+}
 
 function processList(
 	listNode: IrisNode,
@@ -46,22 +55,36 @@ function processList(
 	}
 }
 
+// Naive conversion to string, for inline content
+function nodesToString(nodes: IriscNode[]) {
+	return nodes
+		.map((n) => {
+			if (n.type === 'text') {
+				return n.text ?? '';
+			} else if (n.type === 'nbsp') {
+				return ' ';
+			}
+
+			return '';
+		})
+		.join('');
+}
+
 const nodeProcessors: Record<
 	string,
 	(
 		node: IrisNode,
 		meta: IriscMetadata,
-		fileInfo: FileInfo
+		fileInfo: FileInfo,
+		ctx: ProcessorCtx
 	) => [IriscNode | null, boolean]
 > = {
 	frontmatter() {
 		return [null, true];
 	},
-	title(node, meta, fileInfo) {
+	title(node, meta, fileInfo, ctx) {
 		if (node.content && Array.isArray(node.content)) {
-			meta.title = node.content
-				.map((text) => processIrisNode(text, meta, fileInfo))
-				.filter((n) => n !== null);
+			meta.title = processIrisNodes(node.content, meta, fileInfo, ctx);
 		}
 
 		return [null, false];
@@ -73,7 +96,7 @@ const nodeProcessors: Record<
 
 		return [null, false];
 	},
-	summary(node, meta, fileInfo) {
+	summary(node, meta, fileInfo, ctx) {
 		const summary: SummaryNode[] = [];
 
 		let section: SummaryNode | undefined;
@@ -88,9 +111,7 @@ const nodeProcessors: Record<
 					if (!Array.isArray(child.content)) continue;
 
 					section = {
-						title: child.content
-							.map((text) => processIrisNode(text, meta, fileInfo))
-							.filter((n) => n !== null)
+						title: processIrisNodes(child.content, meta, fileInfo, ctx)
 					};
 				} else if (child.type === 'summary_list') {
 					if (!section) {
@@ -108,13 +129,55 @@ const nodeProcessors: Record<
 		meta.summary = summary;
 
 		return [{ type: 'summary' }, false];
+	},
+	heading(node, meta, fileInfo, ctx) {
+		const { slugger, currentStack } = ctx.headings;
+		const rank = node.attrs?.level;
+		if (typeof rank !== 'number' || !Array.isArray(node.content))
+			return [node, true];
+
+		const headingContent = processIrisNodes(node.content, meta, fileInfo, ctx);
+		const headingId = slugger.slug(nodesToString(headingContent));
+		const heading = {
+			rank,
+			data: {
+				id: headingId,
+				content: headingContent
+			}
+		};
+
+		while (currentStack.length && currentStack.at(-1)!.rank >= rank) {
+			currentStack.pop();
+		}
+
+		if (currentStack.length) {
+			const children =
+				currentStack.at(-1)!.data.children ||
+				(currentStack.at(-1)!.data.children = []);
+			children.push(heading.data);
+		} else {
+			(meta.toc ?? (meta.toc = [])).push(heading.data);
+		}
+
+		currentStack.push(heading);
+
+		return [
+			{
+				...node,
+				html: {
+					id: headingId
+				}
+			},
+			true
+		];
 	}
 };
 
 function processIrisNode(
 	node: IrisNode,
 	meta: IriscMetadata,
-	fileInfo: FileInfo
+	fileInfo: FileInfo,
+	ctx: ProcessorCtx
 ): IriscNode | null {
 	if (!node.type) {
 		fileInfo.message({
@@ -130,7 +193,7 @@ function processIrisNode(
 
 	const proc = nodeProcessors[node.type];
 	if (proc) {
-		[newNode, recurse] = proc(node, meta, fileInfo);
+		[newNode, recurse] = proc(node, meta, fileInfo, ctx);
 	}
 
 	// Allow recursion with no output (e.g. for frontmatter)
@@ -144,14 +207,22 @@ function processIrisNode(
 			return null;
 		}
 
-		const content = node.content
-			.map((child) => processIrisNode(child, meta, fileInfo))
-			.filter((n) => n !== null);
-
+		const content = processIrisNodes(node.content, meta, fileInfo, ctx);
 		if (newNode) newNode.content = content;
 	}
 
 	return newNode;
+}
+
+function processIrisNodes(
+	nodes: IrisNode[],
+	meta: IriscMetadata,
+	fileInfo: FileInfo,
+	ctx: ProcessorCtx
+): IriscNode[] {
+	return nodes
+		.map((n) => processIrisNode(n, meta, fileInfo, ctx))
+		.filter((n) => n !== null);
 }
 
 export default class IrisFileProcessor extends FileProcessor {
@@ -186,8 +257,15 @@ export default class IrisFileProcessor extends FileProcessor {
 			return fileInfo;
 		}
 
+		const ctx: ProcessorCtx = {
+			headings: {
+				slugger: new GithubSlugger(),
+				currentStack: []
+			}
+		};
+
 		const meta: IriscMetadata = {};
-		const newData = processIrisNode(data.data, meta, fileInfo);
+		const newData = processIrisNode(data.data, meta, fileInfo, ctx);
 
 		if (!newData) {
 			fileInfo.message({

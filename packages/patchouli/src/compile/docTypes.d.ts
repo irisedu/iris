@@ -20,7 +20,11 @@ export interface IrisFile {
 
 /* OUTPUT */
 
-export type IriscNode = IrisNode;
+export type IriscNode = IrisNode & {
+	html?: {
+		id?: string;
+	};
+};
 
 export interface SummaryNode {
 	title?: IriscNode[];
@@ -30,6 +34,12 @@ export interface SummaryNode {
 	children?: SummaryNode[];
 }
 
+export interface TocNode {
+	content: IriscNode[];
+	id: string;
+	children?: TocNode[];
+}
+
 export interface IriscMetadata {
 	title?: IriscNode[];
 	docAttrs?: {
@@ -37,6 +47,7 @@ export interface IriscMetadata {
 		tags?: string[];
 	};
 	summary?: SummaryNode[];
+	toc?: TocNode[];
 }
 
 export interface IriscFile {

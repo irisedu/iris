@@ -22,6 +22,7 @@ export default function watch(
 		next();
 	});
 
+	express.static.mime.define({ 'application/json': ['irisc'] });
 	app.use('/page', express.static(path.join(projectPath, 'build')));
 
 	const server = app.listen(port, '127.0.0.1', () => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import {
@@ -8,10 +8,12 @@ import {
 	Tag,
 	Label
 } from 'react-aria-components';
-import { DevContext } from '../main.jsx';
 import parse, { domToReact, attributesToProps } from 'html-react-parser';
 import hljs from 'highlight.js';
-import mergeHTMLPlugin from './highlightMergeHTMLPlugin.js';
+import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
+
+import { useSelector } from 'react-redux';
+import { type RootState } from '$state/store';
 
 import './Article.css';
 import 'katex/dist/katex.css';
@@ -191,8 +193,8 @@ function Sidebar({ articleData, seriesData }) {
 }
 
 export function Component() {
+	const refresh = useSelector((state: RootState) => state.dev.refresh);
 	const params = useParams();
-	const { refresh } = useContext(DevContext);
 	const [articleData, setArticleData] = useState(null);
 	const [seriesData, setSeriesData] = useState(null);
 

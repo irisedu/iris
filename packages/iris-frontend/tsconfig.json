@@ -11,9 +11,10 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"paths": {
-			"$assets/*": ["src/renderer/assets/*"],
-			"$hooks/*": ["src/renderer/hooks/*"],
-			"$components/*": ["src/renderer/components/*"]
+			"$assets/*": ["src/assets/*"],
+			"$hooks/*": ["src/hooks/*"],
+			"$components/*": ["src/components/*"],
+			"$state/*": ["src/state/*"]
 		}
 	}
 }

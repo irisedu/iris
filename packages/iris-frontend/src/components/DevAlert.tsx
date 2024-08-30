@@ -1,17 +1,19 @@
-import { useContext } from 'react';
-import { DevContext } from '../main.jsx';
+import { useSelector } from 'react-redux';
+import type { RootState } from '$state/store';
 
 import './DevAlert.css';
 
-const devStates = {
+const devStates: Record<string, [string, string]> = {
 	disconnected: ['Disconnected', 'bg-gray-500'],
 	error: ['Error', 'bg-red-500'],
 	connecting: ['Connecting...', 'bg-yellow-500'],
 	connected: ['Connected', 'bg-green-500']
 };
 
-function DevAlert({ className }) {
-	const { devEnabled, devHost, devState } = useContext(DevContext);
+function DevAlert({ className }: { className: string }) {
+	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
+	const devHost = useSelector((state: RootState) => state.dev.host);
+	const devState = useSelector((state: RootState) => state.dev.state);
 
 	return (
 		devEnabled && (

@@ -1,8 +1,10 @@
-import { useContext } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { Link as AriaLink } from 'react-aria-components';
-import DevAlert from '$components/DevAlert.jsx';
-import { DevContext } from './main.jsx';
+import DevAlert from '$components/DevAlert';
+
+import { useSelector } from 'react-redux';
+import { useAppDispatch, type RootState } from '$state/store';
+import { setDevEnabled } from '$state/devSlice';
 
 import Git from '~icons/tabler/brand-git';
 import React from '~icons/tabler/brand-react';
@@ -12,7 +14,8 @@ import irisWord from '$assets/iris-word.svg';
 import irisFlower from '$assets/iris.svg';
 
 function Layout() {
-	const { devEnabled, setDevEnabled } = useContext(DevContext);
+	const dispatch = useAppDispatch();
+	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 
 	return (
 		<div className="relative flex flex-col bg-iris-50 min-h-screen">
@@ -73,7 +76,7 @@ function Layout() {
 						</AriaLink>
 						<AriaLink
 							aria-label="Developer mode"
-							onPress={() => setDevEnabled(!devEnabled)}
+							onPress={() => dispatch(setDevEnabled(!devEnabled))}
 						>
 							<Braces className="w-5 h-5" />
 						</AriaLink>

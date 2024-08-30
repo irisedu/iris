@@ -25,6 +25,10 @@ export default defineConfig({
 			{
 				find: '$components',
 				replacement: path.join(import.meta.dirname, 'src/components')
+			},
+			{
+				find: '$state',
+				replacement: path.join(import.meta.dirname, 'src/state')
 			}
 		]
 	}

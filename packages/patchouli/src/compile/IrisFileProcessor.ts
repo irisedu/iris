@@ -109,10 +109,10 @@ const nodeProcessors: Record<
 						summary.push(section);
 					}
 
-					if (!Array.isArray(child.content)) continue;
-
 					section = {
-						title: processIrisNodes(child.content, meta, fileInfo, ctx)
+						title: Array.isArray(child.content)
+							? processIrisNodes(child.content, meta, fileInfo, ctx)
+							: []
 					};
 				} else if (child.type === 'summary_list') {
 					if (!section) {
@@ -126,6 +126,8 @@ const nodeProcessors: Record<
 				}
 			}
 		}
+
+		if (section) summary.push(section);
 
 		meta.summary = summary;
 

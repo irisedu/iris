@@ -3,9 +3,9 @@ import {
 	useEditorEffect,
 	useEditorEventCallback
 } from '@nytimes/react-prosemirror';
-import type { Node, Mark } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import { Popover, TextField, Input, Button } from 'react-aria-components';
+import { markExtend } from './commands';
 
 import ExternalLink from '~icons/tabler/external-link';
 
@@ -32,11 +32,12 @@ function FloatingMenu() {
 	const [visible, setVisible] = useState(false);
 
 	const [link, setLink] = useState<number | null>(null);
+	const [linkEnd, setLinkEnd] = useState<number | null>(null);
 	const [linkModified, setLinkModified] = useState(false);
 	const [linkHref, setLinkHref] = useState('');
 
 	const updateLinkMark = useEditorEventCallback((view) => {
-		if (!link) return;
+		if (!link || !linkEnd) return;
 
 		const state = view.state;
 		const schema = state.schema;
@@ -44,13 +45,10 @@ function FloatingMenu() {
 		const node = state.doc.nodeAt(link);
 		if (!node) return;
 
-		const from = link;
-		const to = link + node.nodeSize;
-
 		view.dispatch(
 			state.tr
-				.removeMark(from, to, schema.marks.link)
-				.addMark(from, to, schema.marks.link.create({ href: linkHref }))
+				.removeMark(link, linkEnd, schema.marks.link)
+				.addMark(link, linkEnd, schema.marks.link.create({ href: linkHref }))
 		);
 	});
 
@@ -59,37 +57,25 @@ function FloatingMenu() {
 
 		const state = view.state;
 		const schema = state.schema;
-		const { from, to } = state.selection;
+		const { $from, $to } = state.selection;
 
 		// Links
 		setLink(null);
-		let linkNode: { node: Node; pos: number; mark: Mark } | undefined;
-		let i = 0;
 
-		state.doc.nodesBetween(from, to, (node, pos) => {
-			if (!node.isText) return;
+		const res = markExtend($from, $to, schema.marks.link);
 
-			if (i === 0) {
-				const mark = schema.marks.link.isInSet(node.marks);
-				if (mark) linkNode = { node, pos, mark };
-			} else {
-				linkNode = undefined;
-			}
+		if (res) {
+			const { from, to, mark } = res;
 
-			i++;
-		});
-
-		if (linkNode) {
-			const { node, pos, mark } = linkNode;
-
-			setElementPos(triggerRef.current, view, pos, pos + node.nodeSize);
+			setElementPos(triggerRef.current, view, from, to);
 			setVisible(true);
 
-			const modified = linkModified && link === pos;
+			const modified = linkModified && link === from;
 			setLinkModified(modified);
 			if (!modified) setLinkHref(mark.attrs.href);
 
-			setLink(pos);
+			setLink(from);
+			setLinkEnd(to);
 
 			return;
 		}

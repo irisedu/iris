@@ -1,4 +1,4 @@
-import type { NodeType, MarkType, Attrs } from 'prosemirror-model';
+import type { NodeType, MarkType, Attrs, ResolvedPos } from 'prosemirror-model';
 import { toggleMark } from 'prosemirror-commands';
 import { tableNodeTypes } from 'prosemirror-tables';
 import {
@@ -14,6 +14,61 @@ export function markActive(state: EditorState, markType: MarkType) {
 	if (empty) return !!markType.isInSet(state.storedMarks || $from.marks());
 
 	return state.doc.rangeHasMark(from, to, markType);
+}
+
+// https://discuss.prosemirror.net/t/find-extents-of-a-mark-given-a-selection/344/2
+// TODO: Check attributes?
+export function markExtend(
+	$start: ResolvedPos,
+	$end: ResolvedPos,
+	mark: MarkType
+) {
+	let startIndex = $start.index();
+	let endIndex = $end.indexAfter();
+
+	if (
+		startIndex === endIndex ||
+		startIndex >= $start.parent.childCount ||
+		endIndex > $start.parent.childCount
+	)
+		return null;
+
+	for (let i = startIndex; i < endIndex; i++) {
+		if (!mark.isInSet($start.parent.child(i).marks)) return null;
+	}
+
+	while (
+		startIndex > 0 &&
+		mark.isInSet($start.parent.child(startIndex - 1).marks)
+	) {
+		startIndex--;
+	}
+
+	while (
+		endIndex < $start.parent.childCount &&
+		mark.isInSet($start.parent.child(endIndex).marks)
+	) {
+		endIndex++;
+	}
+
+	let startPos = $start.start();
+	let endPos = startPos;
+	for (let i = 0; i < endIndex; i++) {
+		const size = $start.parent.child(i).nodeSize;
+		if (i < startIndex) startPos += size;
+		endPos += size;
+	}
+
+	const firstMark = $start.parent
+		.child(startIndex)
+		.marks.find((m) => m.type === mark);
+	if (!firstMark) return null;
+
+	return {
+		from: startPos,
+		to: endPos,
+		mark: firstMark
+	};
 }
 
 export function insertNode(nodeType: NodeType): Command {

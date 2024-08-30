@@ -131,6 +131,24 @@ const baseSchemaDef = {
 		} as NodeSpec
 	},
 	marks: {
+		// Keep as first to render as parent of all other marks
+		link: {
+			attrs: { href: { default: '', validate: 'string' } },
+			inclusive: false,
+			excludes: 'u',
+			toDOM(node) {
+				return ['a', node.attrs, 0];
+			},
+			parseDOM: [
+				{
+					tag: 'a[href]',
+					getAttrs(dom) {
+						return { href: dom.getAttribute('href') };
+					}
+				}
+			]
+		} as MarkSpec,
+
 		em: {
 			toDOM() {
 				return ['em', 0];
@@ -196,23 +214,6 @@ const baseSchemaDef = {
 				{ tag: 'span.font-smallcaps' },
 				{ style: 'font-variant=small-caps' },
 				{ style: 'font-variant-caps=small-caps' }
-			]
-		} as MarkSpec,
-
-		link: {
-			attrs: { href: { default: '', validate: 'string' } },
-			inclusive: false,
-			excludes: 'u',
-			toDOM(node) {
-				return ['a', node.attrs, 0];
-			},
-			parseDOM: [
-				{
-					tag: 'a[href]',
-					getAttrs(dom) {
-						return { href: dom.getAttribute('href') };
-					}
-				}
 			]
 		} as MarkSpec,
 

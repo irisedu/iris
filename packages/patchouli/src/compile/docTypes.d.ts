@@ -2,12 +2,12 @@
 
 export interface IrisMark {
 	type: string;
-	attrs?: Record<string, object>;
+	attrs?: Record<string, unknown>;
 }
 
 export interface IrisNode {
 	type: string;
-	attrs?: Record<string, object>;
+	attrs?: Record<string, unknown>;
 	marks?: IrisMark[];
 	content?: IrisNode[];
 	text?: string;
@@ -20,7 +20,10 @@ export interface IrisFile {
 
 /* OUTPUT */
 
+export type IriscMark = IrisMark;
+
 export type IriscNode = IrisNode & {
+	marks?: IriscMark[];
 	html?: {
 		id?: string;
 	};

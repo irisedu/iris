@@ -28,7 +28,7 @@ article {
 		@apply relative;
 	}
 
-	a:has(> .anchor-link) {
+	:has(> .anchor-link) {
 		@apply absolute top-0 bottom-0 my-auto h-6 right-[calc(100%+0.75ch)] hover:no-underline;
 	}
 
@@ -131,9 +131,5 @@ article {
 
 	iframe {
 		@apply mx-auto my-3 max-w-full;
-	}
-
-	.footnotes {
-		@apply text-sm;
 	}
 }

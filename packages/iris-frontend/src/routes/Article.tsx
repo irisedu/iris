@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, type LoaderFunctionArgs } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import {
 	Link as AriaLink,
@@ -8,8 +8,11 @@ import {
 	Tag,
 	Label
 } from 'react-aria-components';
-import parse, { domToReact, attributesToProps } from 'html-react-parser';
+import type { IriscFile, TocNode } from 'patchouli';
 import hljs from 'highlight.js';
+import { goToAnchor } from '$components/utils';
+import { IriscNode, IriscInlineContent } from '$components/nodes/IriscNode';
+// @ts-expect-error External code without types
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
 
 import { useSelector } from 'react-redux';
@@ -20,18 +23,24 @@ import 'katex/dist/katex.css';
 import 'highlight.js/styles/xcode.css';
 
 hljs.configure({
-	ignoreUnescapedHTML: true
+	ignoreUnescapedHTML: true,
+	languages: []
 });
 
 hljs.addPlugin(mergeHTMLPlugin);
 
+// @ts-expect-error Interop with line numbers
 window.hljs = hljs;
-await import('highlightjs-line-numbers.js'); // Don't Ask
+// @ts-expect-error Library does not have types
+await import('highlightjs-line-numbers.js');
 
-async function getPageData(fullPath) {
-	if (localStorage.getItem('dev.enabled') === 'true') {
-		const host = localStorage.getItem('dev.host');
-		const res = await fetch(`http://${host}${fullPath}`);
+async function getPageData(
+	fullPath: string,
+	devEnabled: boolean,
+	devHost: string
+) {
+	if (devEnabled) {
+		const res = await fetch(`http://${devHost}${fullPath}`);
 
 		if (res.status === 200) {
 			return await res.json();
@@ -46,121 +55,40 @@ async function getPageData(fullPath) {
 	return await res.json();
 }
 
-function parsePath(splat) {
+function parsePath(splat: string) {
 	const routePath = splat.replace(/\/+$/g, '');
 	const routePathSegments = routePath.split('/');
 
 	return { routePath, routePathSegments };
 }
 
-function parseHtml(src) {
-	const options = {
-		replace(domNode) {
-			if (domNode.type !== 'tag') {
-				return;
-			}
-
-			switch (domNode.name) {
-				case 'a': {
-					if (
-						domNode.attribs &&
-						domNode.attribs.href &&
-						domNode.attribs.href.startsWith('#')
-					) {
-						const anchor = domNode.attribs.href.slice(1);
-						return (
-							<a
-								onClick={() => {
-									goToAnchor(anchor);
-								}}
-								{...attributesToProps(domNode.attribs)}
-							>
-								{domToReact(domNode.children, options)}
-							</a>
-						);
-					}
-
-					const attribs = domNode.attribs
-						? attributesToProps(domNode.attribs)
-						: {};
-					return (
-						<AriaLink {...attribs}>
-							{domToReact(domNode.children, options)}
-						</AriaLink>
-					);
-				}
-
-				case 'pre': {
-					if (
-						domNode.children &&
-						domNode.children.length === 1 &&
-						domNode.children[0].name === 'code'
-					) {
-						return (
-							<pre key={Math.floor(Math.random() * 10000)}>
-								{domToReact(domNode.children, options)}
-							</pre>
-						);
-					}
-				}
-			}
-		}
-	};
-
-	return parse(src, options);
-}
-
-export function loader({ params }) {
-	const { routePath, routePathSegments } = parsePath(params['*']);
-
-	if (
-		!routePath ||
-		routePath === 'SUMMARY' ||
-		routePath.endsWith('/SUMMARY') ||
-		routePathSegments.at(-1).split('.').length > 1
-	) {
-		throw new Response('', { status: 404 });
-	}
-
-	return null;
-}
-
-async function load(splat) {
+async function load(splat: string, devEnabled: boolean, devHost: string) {
 	const { routePath, routePathSegments } = parsePath(splat);
 
 	let fullPath;
 	let seriesPath;
 
 	if (routePathSegments.length === 1) {
-		fullPath = '/page/' + routePath + '/SUMMARY.md.json';
+		fullPath = '/page/' + routePath + '/SUMMARY.irisc';
 	} else {
-		fullPath = '/page/' + routePath + '.md.json';
-		seriesPath = '/page/' + routePathSegments[0] + '/SUMMARY.md.json';
+		fullPath = '/page/' + routePath + '.irisc';
+		seriesPath = '/page/' + routePathSegments[0] + '/SUMMARY.irisc';
 	}
 
 	return await Promise.all([
-		getPageData(fullPath),
-		seriesPath && getPageData(seriesPath)
+		getPageData(fullPath, devEnabled, devHost),
+		seriesPath && getPageData(seriesPath, devEnabled, devHost)
 	]);
 }
 
-function goToAnchor(anchor) {
-	window.history.pushState(null, null, `#${anchor}`);
-
-	const elem = document.getElementById(anchor);
-	if (elem) {
-		elem.scrollIntoView();
-	}
-}
-
-function ArticleOutline({ outline }) {
+function ArticleOutline({ outline }: { outline: TocNode[] }) {
 	return (
 		<ul className="list-none pl-2 my-0">
 			{outline.map((heading) => (
 				<Fragment key={heading.id}>
 					<li className="mb-1 text-gray-800">
 						<AriaLink onPress={() => goToAnchor(heading.id)}>
-							{parseHtml(heading.value)}
+							<IriscInlineContent nodes={heading.content} />
 						</AriaLink>
 					</li>
 					{heading.children && <ArticleOutline outline={heading.children} />}
@@ -170,33 +98,65 @@ function ArticleOutline({ outline }) {
 	);
 }
 
-function Sidebar({ articleData, seriesData }) {
+function Sidebar({
+	articleData,
+	seriesData
+}: {
+	articleData: IriscFile;
+	seriesData: IriscFile;
+}) {
 	const isMd = useMediaQuery({ query: '(min-width: 768px)' });
 
 	return (
-		<div className="flex flex-col gap-8">
+		<div className="flex flex-col gap-8 max-w-[25ch]">
 			<div className="px-2 max-h-56 md:max-h-80 md:w-72 overflow-y-auto">
-				<span className="text-xl">{seriesData.data.frontmatter.title}</span>
+				<span className="text-xl">
+					<IriscInlineContent nodes={seriesData.meta.title ?? []} />
+				</span>
 			</div>
 
-			<details className="md:sticky top-8 contents--disabled" open={isMd}>
-				<summary
-					className={`text-lg ${isMd ? 'pointer-events-none' : ''}`}
-					tabIndex="-1"
-				>
-					Contents
-				</summary>
-				<ArticleOutline outline={articleData.data.toc} />
-			</details>
+			{articleData.meta.toc && (
+				<details className="md:sticky top-8 contents--disabled" open={isMd}>
+					<summary
+						className={`text-lg ${isMd ? 'pointer-events-none' : ''}`}
+						tabIndex={-1}
+					>
+						Contents
+					</summary>
+					<ArticleOutline outline={articleData.meta.toc} />
+				</details>
+			)}
 		</div>
 	);
 }
 
+export function loader({ params }: LoaderFunctionArgs) {
+	if (!params['*']) {
+		throw new Response('', { status: 404 });
+	}
+
+	const { routePath, routePathSegments } = parsePath(params['*']);
+
+	if (
+		!routePath ||
+		routePath === 'SUMMARY' ||
+		routePath.endsWith('/SUMMARY') ||
+		!routePathSegments.length ||
+		routePathSegments.at(-1)!.split('.').length > 1
+	) {
+		throw new Response('', { status: 404 });
+	}
+
+	return null;
+}
+
 export function Component() {
+	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
+	const devHost = useSelector((state: RootState) => state.dev.host);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 	const params = useParams();
-	const [articleData, setArticleData] = useState(null);
-	const [seriesData, setSeriesData] = useState(null);
+	const [articleData, setArticleData] = useState<IriscFile | null>(null);
+	const [seriesData, setSeriesData] = useState<IriscFile | null>(null);
 
 	useEffect(() => {
 		if (window.location.hash) {
@@ -207,11 +167,15 @@ export function Component() {
 	}, []);
 
 	useEffect(() => {
-		load(params['*']).then(([newArticleData, newSeriesData]) => {
-			setArticleData(newArticleData);
-			setSeriesData(newSeriesData);
-		});
-	}, [params, refresh]);
+		if (!params['*']) return;
+
+		load(params['*'], devEnabled, devHost).then(
+			([newArticleData, newSeriesData]) => {
+				setArticleData(newArticleData);
+				setSeriesData(newSeriesData);
+			}
+		);
+	}, [devEnabled, devHost, params, refresh]);
 
 	useEffect(() => {
 		if (!articleData) {
@@ -219,68 +183,59 @@ export function Component() {
 		}
 
 		if (seriesData) {
-			document.title = `${articleData.data.frontmatter.title} - ${seriesData.data.frontmatter.title} • Iris`;
+			document.title = `${articleData.meta.titleString ?? '<no title>'} - ${seriesData.meta.titleString ?? '<no series title>'} • Iris`;
 		} else {
-			document.title = `${articleData.data.frontmatter.title} • Iris`;
+			document.title = `${articleData.meta.titleString ?? '<no title>'} • Iris`;
 		}
 	}, [articleData, seriesData]);
 
 	useEffect(() => {
 		document.querySelectorAll('pre code').forEach((elem) => {
+			if (!(elem instanceof HTMLElement)) return;
+
 			delete elem.dataset.highlighted;
 			hljs.highlightElement(elem);
+			// @ts-expect-error Injected function
 			hljs.lineNumbersBlock(elem);
 		});
 	});
 
+	if (!articleData) return;
+
 	return (
-		articleData && (
-			<article className="flex flex-col md:flex-row gap-8 mb-8">
-				{seriesData && (
-					<Sidebar articleData={articleData} seriesData={seriesData} />
-				)}
+		<article className="flex flex-col md:flex-row gap-8 mb-8">
+			{seriesData && (
+				<Sidebar articleData={articleData} seriesData={seriesData} />
+			)}
 
-				<div className="md:px-8 w-full md:max-w-[70ch] min-h-72">
-					<div className="mb-4">
-						<h1 className="my-0">{articleData.data.frontmatter.title}</h1>
-					</div>
+			<div className="md:px-8 w-full md:max-w-[70ch] min-h-72">
+				<h1 className="mt-0 mb-4">
+					<IriscInlineContent nodes={articleData.meta.title ?? []} />
+				</h1>
 
-					{articleData.contents.length ? (
-						parseHtml(articleData.contents)
-					) : (
-						<div className="note info">
-							<span className="note__label">
-								<strong>Info</strong>
-							</span>
-							<p>This article is a stub.</p>
-						</div>
+				<IriscNode node={articleData.data} />
+
+				<hr className="my-3 last:mb-0" />
+
+				{articleData.meta.docAttrs?.authors &&
+					articleData.meta.docAttrs.authors.length > 0 && (
+						<p className="text-sm mb-0">
+							By {articleData.meta.docAttrs.authors.join(', ')}
+						</p>
 					)}
 
-					<hr className="my-3 last:mb-0" />
-
-					{articleData.data.frontmatter.authors &&
-						articleData.data.frontmatter.authors.length && (
-							<p className="text-sm mb-0">
-								By {articleData.data.frontmatter.authors.join(', ')}
-							</p>
-						)}
-
-					{articleData.data.frontmatter.tags &&
-						articleData.data.frontmatter.tags.length && (
-							<TagGroup
-								selectionMode="none"
-								className="react-aria-TagGroup my-2"
-							>
-								<Label>Tags:</Label>
-								<TagList>
-									{articleData.data.frontmatter.tags.map((t) => (
-										<Tag key={t}>{t}</Tag>
-									))}
-								</TagList>
-							</TagGroup>
-						)}
-				</div>
-			</article>
-		)
+				{articleData.meta.docAttrs?.tags &&
+					articleData.meta.docAttrs.tags.length > 0 && (
+						<TagGroup selectionMode="none" className="react-aria-TagGroup my-2">
+							<Label>Tags:</Label>
+							<TagList>
+								{articleData.meta.docAttrs.tags.map((t, i) => (
+									<Tag key={i}>{t}</Tag>
+								))}
+							</TagList>
+						</TagGroup>
+					)}
+			</div>
+		</article>
 	);
 }

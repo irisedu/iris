@@ -1,6 +1,6 @@
 .hljs-ln {
 	/* Revert table styles */
-	@apply border-0;
+	@apply border-0 my-0;
 
 	tr {
 		@apply border-0;

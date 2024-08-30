@@ -45,10 +45,9 @@ function getKaTeXDecorations(
 
 		try {
 			KaTeX.render(content, elem, { displayMode });
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} catch (err: any) {
+		} catch (err: unknown) {
 			elem.classList.add('katex-render--error');
-			elem.innerHTML = err.toString();
+			elem.innerHTML = String(err);
 		}
 
 		return elem;

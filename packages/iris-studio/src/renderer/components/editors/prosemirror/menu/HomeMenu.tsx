@@ -253,21 +253,21 @@ function HomeMenu({ index }: { index: number }) {
 				<ToggleMarkButton
 					index={formatIdx++}
 					Icon={Bold}
-					markType={docSchema.marks.strong}
+					markType={docSchema.marks.bold}
 					tooltip="Bold"
 					keys={['Mod', 'B']}
 				/>
 				<ToggleMarkButton
 					index={formatIdx++}
 					Icon={Italic}
-					markType={docSchema.marks.em}
+					markType={docSchema.marks.italic}
 					tooltip="Italic"
 					keys={['Mod', 'I']}
 				/>
 				<ToggleMarkButton
 					index={formatIdx++}
 					Icon={Underline}
-					markType={docSchema.marks.u}
+					markType={docSchema.marks.underline}
 					tooltip="Underline"
 					keys={['Mod', 'U']}
 				/>

@@ -39,12 +39,12 @@ function schemaCommonKeymap(schema: Schema) {
 	return {
 		'Mod-Space': insertNode(schema.nodes.nbsp),
 
-		'Mod-i': toggleMark(schema.marks.em),
-		'Mod-b': toggleMark(schema.marks.strong),
-		'Mod-u': toggleMark(schema.marks.u),
-		'Mod-,': toggleMark(schema.marks.sub),
-		'Mod-.': toggleMark(schema.marks.sup),
-		'Alt-Shift-5': toggleMark(schema.marks.s),
+		'Mod-i': toggleMark(schema.marks.italic),
+		'Mod-b': toggleMark(schema.marks.bold),
+		'Mod-u': toggleMark(schema.marks.underline),
+		'Mod-,': toggleMark(schema.marks.subscript),
+		'Mod-.': toggleMark(schema.marks.superscript),
+		'Alt-Shift-5': toggleMark(schema.marks.strikethrough),
 
 		'Mod-`': toggleMark(schema.marks.code),
 

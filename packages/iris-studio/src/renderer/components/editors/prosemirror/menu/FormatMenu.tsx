@@ -23,27 +23,27 @@ function FormattingMenu({ index }: { index: number }) {
 				<ToggleMarkButton
 					index={mainIdx++}
 					Icon={Strikethrough}
-					markType={docSchema.marks.s}
+					markType={docSchema.marks.strikethrough}
 					tooltip="Strikethrough"
 					keys={['Shift', 'Alt', '5']}
 				/>
 				<ToggleMarkButton
 					index={mainIdx++}
 					Icon={SmallCaps}
-					markType={docSchema.marks.smallcaps}
+					markType={docSchema.marks.small_caps}
 					tooltip="Small Caps"
 				/>
 				<ToggleMarkButton
 					index={mainIdx++}
 					Icon={Subscript}
-					markType={docSchema.marks.sub}
+					markType={docSchema.marks.subscript}
 					tooltip="Subscript"
 					keys={['Mod', ',']}
 				/>
 				<ToggleMarkButton
 					index={mainIdx++}
 					Icon={Superscript}
-					markType={docSchema.marks.sup}
+					markType={docSchema.marks.superscript}
 					tooltip="Superscript"
 					keys={['Mod', '.']}
 				/>

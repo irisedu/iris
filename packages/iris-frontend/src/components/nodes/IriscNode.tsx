@@ -22,19 +22,19 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 		case 'link':
 			return <Link href={String(mark.attrs?.href)}>{children}</Link>;
 
-		case 'em':
+		case 'italic':
 			return <em>{children}</em>;
-		case 'strong':
+		case 'bold':
 			return <strong>{children}</strong>;
-		case 'u':
+		case 'underline':
 			return <u>{children}</u>;
-		case 's':
+		case 'strikethrough':
 			return <s>{children}</s>;
-		case 'sup':
+		case 'superscript':
 			return <sup>{children}</sup>;
-		case 'sub':
+		case 'subscript':
 			return <sub>{children}</sub>;
-		case 'smallcaps':
+		case 'small_caps':
 			return <span className="font-smallcaps">{children}</span>;
 		case 'code':
 			return <code>{children}</code>;

@@ -135,7 +135,7 @@ const baseSchemaDef = {
 		link: {
 			attrs: { href: { default: '', validate: 'string' } },
 			inclusive: false,
-			excludes: 'u',
+			excludes: 'underline',
 			toDOM(node) {
 				return ['a', node.attrs, 0];
 			},
@@ -149,7 +149,7 @@ const baseSchemaDef = {
 			]
 		} as MarkSpec,
 
-		em: {
+		italic: {
 			toDOM() {
 				return ['em', 0];
 			},
@@ -160,7 +160,7 @@ const baseSchemaDef = {
 				{ style: 'font-style=normal', clearMark: (m) => m.type.name == 'em' }
 			]
 		} as MarkSpec,
-		strong: {
+		bold: {
 			toDOM() {
 				return ['strong', 0];
 			},
@@ -180,38 +180,37 @@ const baseSchemaDef = {
 				}
 			]
 		} as MarkSpec,
-		u: {
+		underline: {
 			toDOM() {
 				return ['u', 0];
 			},
 			parseDOM: [{ tag: 'u' }, { style: 'text-decoration=underline' }]
 		} as MarkSpec,
-		s: {
+		strikethrough: {
 			toDOM() {
 				return ['s', 0];
 			},
 			parseDOM: [{ tag: 's' }, { style: 'text-decoration=line-through' }]
 		} as MarkSpec,
-		sup: {
-			excludes: 'sub',
+		superscript: {
+			excludes: 'subscript',
 			toDOM() {
 				return ['sup', 0];
 			},
 			parseDOM: [{ tag: 'sup' }]
 		} as MarkSpec,
-		sub: {
-			excludes: 'sup',
+		subscript: {
+			excludes: 'superscript',
 			toDOM() {
 				return ['sub', 0];
 			},
 			parseDOM: [{ tag: 'sub' }]
 		} as MarkSpec,
-		smallcaps: {
+		small_caps: {
 			toDOM() {
 				return ['span', { class: 'font-smallcaps' }, 0];
 			},
 			parseDOM: [
-				{ tag: 'span.font-smallcaps' },
 				{ style: 'font-variant=small-caps' },
 				{ style: 'font-variant-caps=small-caps' }
 			]

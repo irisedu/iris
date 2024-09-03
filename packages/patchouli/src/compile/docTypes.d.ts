@@ -26,6 +26,9 @@ export type IriscNode = IrisNode & {
 	marks?: IriscMark[];
 	html?: {
 		id?: string;
+
+		raw?: string;
+		code?: string;
 	};
 };
 

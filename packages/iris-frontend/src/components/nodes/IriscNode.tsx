@@ -3,6 +3,7 @@ import type { IriscNode, IriscMark } from 'patchouli';
 import deepEqual from 'deep-equal';
 import { Link } from 'react-aria-components';
 import { goToAnchor } from '$components/utils';
+import SanitizedHtml from '$components/SanitizedHtml';
 
 function InlineNode({ node }: { node: IriscNode }) {
 	switch (node.type) {
@@ -12,6 +13,9 @@ function InlineNode({ node }: { node: IriscNode }) {
 			return '\u00A0';
 		case 'hard_break':
 			return <br />;
+
+		case 'math_inline':
+			return node.html?.code && <SanitizedHtml html={node.html.code} />;
 	}
 
 	return null;
@@ -149,5 +153,8 @@ export function IriscNode({ node }: { node: IriscNode }) {
 				</pre>
 			);
 		}
+
+		case 'math_display':
+			return node.html?.code && <SanitizedHtml html={node.html.code} />;
 	}
 }

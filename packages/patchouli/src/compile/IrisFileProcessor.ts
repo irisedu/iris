@@ -13,6 +13,7 @@ import type {
 } from './docTypes.d';
 import { resolveInternalLink } from '../utils';
 import GithubSlugger from 'github-slugger';
+import KaTeX from 'katex';
 
 interface ProcessorCtx {
 	headings: {
@@ -63,6 +64,8 @@ function nodesToString(nodes: IriscNode[]) {
 				return n.text ?? '';
 			} else if (n.type === 'nbsp') {
 				return ' ';
+			} else if (n.type === 'math_inline') {
+				return n.html?.raw ? `$${n.html.raw}$` : '';
 			}
 
 			return '';
@@ -172,6 +175,56 @@ const nodeProcessors: Record<
 				}
 			},
 			true
+		];
+	},
+	text(node) {
+		if (!Array.isArray(node.marks)) return [node, false];
+
+		const mathMark = node.marks.find((m) => m.type === 'math_inline');
+		if (mathMark) {
+			const textContent = node.text ?? '';
+			const html = KaTeX.renderToString(textContent, {
+				displayMode: false,
+				throwOnError: false
+			});
+
+			return [
+				{
+					type: 'math_inline',
+					html: {
+						code: html,
+						raw: textContent
+					}
+				},
+				false
+			];
+		}
+
+		return [node, false];
+	},
+	math_display(node) {
+		if (!Array.isArray(node.content) || node.content.length === 0)
+			return [null, false];
+
+		const text = node.content[0];
+		if (text.type !== 'text') return [null, false];
+
+		const textContent = text.text ?? '';
+
+		const html = KaTeX.renderToString(textContent, {
+			displayMode: true,
+			throwOnError: false
+		});
+
+		return [
+			{
+				type: 'math_display',
+				html: {
+					code: html,
+					raw: textContent
+				}
+			},
+			false
 		];
 	}
 };

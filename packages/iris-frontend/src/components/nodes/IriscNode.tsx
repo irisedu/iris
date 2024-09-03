@@ -106,6 +106,47 @@ export function IriscBlockContent({ nodes }: { nodes: IriscNode[] }) {
 	return nodes.map((n, i) => <IriscNode node={n} key={i} />);
 }
 
+// https://github.com/ProseMirror/prosemirror-tables/blob/master/src/tableview.ts
+// Copyright (C) 2015-2016 by Marijn Haverbeke <marijnh@gmail.com> and others (MIT)
+const cellMinWidth = 25;
+function tableSize(table: IriscNode) {
+	let totalWidth = 0;
+	let fixedWidth = true;
+	const widths: (number | null)[] = [];
+
+	if (!Array.isArray(table.content) || table.content.length === 0) return null;
+
+	const row = table.content[0];
+	if (row.type !== 'table_row' || !Array.isArray(row.content)) return null;
+
+	for (const child of row.content) {
+		const { colspan, colwidth }: { colspan?: number; colwidth?: number[] } =
+			child.attrs ?? {};
+
+		for (let i = 0; i < (colspan ?? 1); i++) {
+			const hasWidth = colwidth && colwidth[i];
+			totalWidth += hasWidth || cellMinWidth;
+
+			if (hasWidth) {
+				widths.push(hasWidth);
+			} else {
+				widths.push(null);
+				fixedWidth = false;
+			}
+		}
+	}
+
+	const tableStyle = { width: '', minWidth: '' };
+
+	if (fixedWidth) {
+		tableStyle.width = totalWidth + 'px';
+	} else {
+		tableStyle.minWidth = totalWidth + 'px';
+	}
+
+	return { widths, style: tableStyle };
+}
+
 export function IriscNode({ node }: { node: IriscNode }) {
 	switch (node.type) {
 		case 'doc':
@@ -158,6 +199,73 @@ export function IriscNode({ node }: { node: IriscNode }) {
 				</pre>
 			);
 		}
+
+		case 'ordered_list':
+			return (
+				<ol>{node.content && <IriscBlockContent nodes={node.content} />}</ol>
+			);
+		case 'bullet_list':
+			return (
+				<ul>{node.content && <IriscBlockContent nodes={node.content} />}</ul>
+			);
+		case 'list_item':
+			return (
+				<li>{node.content && <IriscBlockContent nodes={node.content} />}</li>
+			);
+
+		case 'table': {
+			const sizeData = tableSize(node);
+			return (
+				<div className="max-w-full overflow-auto">
+					<table style={sizeData?.style}>
+						{sizeData && (
+							<colgroup>
+								{sizeData.widths.map((w, i) => (
+									<col key={i} style={w ? { width: w + 'px' } : undefined} />
+								))}
+							</colgroup>
+						)}
+						<tbody>
+							{node.content && <IriscBlockContent nodes={node.content} />}
+						</tbody>
+					</table>
+				</div>
+			);
+		}
+		case 'table_row':
+			return (
+				<tr>{node.content && <IriscBlockContent nodes={node.content} />}</tr>
+			);
+		case 'table_cell':
+			return (
+				<td
+					colSpan={node.attrs?.colspan as number | undefined}
+					rowSpan={node.attrs?.rowspan as number | undefined}
+					style={{
+						textAlign: String(node.attrs?.justify ?? 'left') as
+							| 'left'
+							| 'center'
+							| 'right'
+					}}
+				>
+					{node.content && <IriscBlockContent nodes={node.content} />}
+				</td>
+			);
+		case 'table_header':
+			return (
+				<th
+					colSpan={node.attrs?.colspan as number | undefined}
+					rowSpan={node.attrs?.rowspan as number | undefined}
+					style={{
+						textAlign: String(node.attrs?.justify ?? 'left') as
+							| 'left'
+							| 'center'
+							| 'right'
+					}}
+				>
+					{node.content && <IriscBlockContent nodes={node.content} />}
+				</th>
+			);
 
 		case 'math_display':
 			return node.html?.code && <SanitizedHtml html={node.html.code} />;

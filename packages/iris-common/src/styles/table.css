@@ -1,5 +1,5 @@
 table {
-	@apply overflow-x-scroll max-w-full my-3;
+	@apply mx-auto my-3;
 
 	p {
 		@apply m-0;

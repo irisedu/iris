@@ -55,6 +55,7 @@ export interface IriscMetadata {
 	};
 	summary?: SummaryNode[];
 	toc?: TocNode[];
+	links?: string[];
 }
 
 export interface IriscFile {

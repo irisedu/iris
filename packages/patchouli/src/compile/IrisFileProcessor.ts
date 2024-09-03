@@ -11,7 +11,7 @@ import type {
 	SummaryNode,
 	TocNode
 } from './docTypes.d';
-import { resolveInternalLink } from '../utils';
+import { resolveInternalLink, internalLinkToPageLink } from '../utils';
 import GithubSlugger from 'github-slugger';
 import KaTeX from 'katex';
 
@@ -177,7 +177,7 @@ const nodeProcessors: Record<
 			true
 		];
 	},
-	text(node) {
+	text(node, meta, fileInfo) {
 		if (!Array.isArray(node.marks)) return [node, false];
 
 		const mathMark = node.marks.find((m) => m.type === 'math_inline');
@@ -195,6 +195,44 @@ const nodeProcessors: Record<
 						code: html,
 						raw: textContent
 					}
+				},
+				false
+			];
+		}
+
+		const linkMark = node.marks.find((m) => m.type === 'link');
+		if (linkMark) {
+			const href = linkMark.attrs?.href;
+			if (typeof href !== 'string') return [node, false];
+
+			const internalLink = resolveInternalLink(href, fileInfo.path);
+			if (!internalLink) return [node, false];
+
+			const links = meta.links || (meta.links = []);
+			const hashSplit = internalLink.slice(1).split('#');
+			if (hashSplit.length > 1) {
+				links.push(hashSplit.slice(0, -1).join('#'));
+			} else {
+				links.push(hashSplit[0]);
+			}
+
+			return [
+				{
+					...node,
+					marks: node.marks.map((m) => {
+						if (m === linkMark) {
+							return {
+								...linkMark,
+								attrs: {
+									...node.attrs,
+									href: internalLinkToPageLink(internalLink),
+									internalLink: true
+								}
+							};
+						}
+
+						return m;
+					})
 				},
 				false
 			];

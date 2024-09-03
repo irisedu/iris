@@ -1,1 +1,1 @@
-export type * from './compile/docTypes.d.ts';
+export type * from './compile/docTypes';

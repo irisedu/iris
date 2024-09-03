@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
 import type { IriscNode, IriscMark } from 'patchouli';
 import deepEqual from 'deep-equal';
-import { Link } from 'react-aria-components';
+import { Link as AriaLink } from 'react-aria-components';
+import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
 import SanitizedHtml from '$components/SanitizedHtml';
 
@@ -24,7 +25,11 @@ function InlineNode({ node }: { node: IriscNode }) {
 function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 	switch (mark.type) {
 		case 'link':
-			return <Link href={String(mark.attrs?.href)}>{children}</Link>;
+			if (mark.attrs?.internalLink) {
+				return <Link to={String(mark.attrs?.href)}>{children}</Link>;
+			} else {
+				return <AriaLink href={String(mark.attrs?.href)}>{children}</AriaLink>;
+			}
 
 		case 'italic':
 			return <em>{children}</em>;
@@ -116,9 +121,9 @@ export function IriscNode({ node }: { node: IriscNode }) {
 			const children = (
 				<>
 					{id && (
-						<Link onPress={() => goToAnchor(id)}>
+						<AriaLink onPress={() => goToAnchor(id)}>
 							<span className="anchor-link"></span>
-						</Link>
+						</AriaLink>
 					)}
 					{node.content && <IriscInlineContent nodes={node.content} />}
 				</>

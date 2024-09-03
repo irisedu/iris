@@ -4,11 +4,13 @@ import { recurseDirectory } from '../utils';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor';
+import type { IriscFile, IriscNode } from '../compile/docTypes';
 
 interface NetworkNode {
 	id: string;
 	href: string;
-	[key: string]: unknown;
+	title: IriscNode[];
+	isSummary: boolean;
 }
 
 interface NetworkLink {
@@ -29,49 +31,49 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 		const backlinks: Record<string, string[]> = {};
 
 		await recurseDirectory(outDir, async (filePath) => {
-			const articleExt = '.md.json';
+			const articleExt = '.irisc';
+			if (!filePath.endsWith(articleExt)) return;
 
-			if (!filePath.endsWith(articleExt)) {
-				return;
-			}
+			const summarySuffix = '/SUMMARY' + articleExt;
+			const isSummary = filePath.endsWith(summarySuffix);
 
-			const id = filePath.slice(0, -articleExt.length);
-			const articleData = JSON.parse(
+			const id = filePath.slice(
+				0,
+				isSummary ? -summarySuffix.length : -articleExt.length
+			);
+			const articleData: IriscFile = JSON.parse(
 				await fs.readFile(path.join(outDir, filePath), 'utf-8')
 			);
 
 			const node: NetworkNode = {
-				id,
-				href: `/page/${id}`
+				id: id,
+				href: `/page/${id}`,
+				title: articleData.meta.title ?? [],
+				isSummary
 			};
-
-			// TODO: Fix for .irisc
-			// for (const key of this.config.platform.network.store) {
-			// 	node[key] = articleData.data.frontmatter[key];
-			// }
 
 			network.nodes.push(node);
 
-			if (articleData.data.links) {
-				for (const otherId of articleData.data.links) {
-					const links = backlinks[otherId] || (backlinks[otherId] = []);
-					links.push(id);
+			if (!Array.isArray(articleData.meta.links)) return;
 
-					if (
-						network.links.some(
-							(l) =>
-								(l.source === id && l.target === otherId) ||
-								(l.source === otherId && l.target === id)
-						)
-					) {
-						continue;
-					}
+			for (const otherId of articleData.meta.links) {
+				const links = backlinks[otherId] || (backlinks[otherId] = []);
+				links.push(id);
 
-					network.links.push({
-						source: id,
-						target: otherId
-					});
+				if (
+					network.links.some(
+						(l) =>
+							(l.source === id && l.target === otherId) ||
+							(l.source === otherId && l.target === id)
+					)
+				) {
+					continue;
 				}
+
+				network.links.push({
+					source: id,
+					target: otherId
+				});
 			}
 		});
 

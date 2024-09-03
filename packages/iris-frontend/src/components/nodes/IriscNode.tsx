@@ -24,12 +24,22 @@ function InlineNode({ node }: { node: IriscNode }) {
 
 function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 	switch (mark.type) {
-		case 'link':
-			if (mark.attrs?.internalLink) {
-				return <Link to={String(mark.attrs?.href)}>{children}</Link>;
+		case 'link': {
+			const href = mark.attrs?.href ? String(mark.attrs.href) : null;
+			if (!href) return null;
+
+			if (href.startsWith('#')) {
+				return (
+					<AriaLink onPress={() => goToAnchor(href.slice(1))}>
+						{children}
+					</AriaLink>
+				);
+			} else if (mark.attrs?.internalLink) {
+				return <Link to={href}>{children}</Link>;
 			} else {
-				return <AriaLink href={String(mark.attrs?.href)}>{children}</AriaLink>;
+				return <AriaLink href={href}>{children}</AriaLink>;
 			}
+		}
 
 		case 'italic':
 			return <em>{children}</em>;

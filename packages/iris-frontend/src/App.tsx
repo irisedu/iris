@@ -36,6 +36,7 @@ function App() {
 		const ws = new WebSocket(`ws://${devHost}/`);
 		dispatch(setDevState('connecting'));
 		let errored = false;
+		let deinit = false;
 
 		ws.addEventListener('error', (e) => {
 			dispatch(setDevState('error'));
@@ -52,7 +53,7 @@ function App() {
 				dispatch(setDevState('disconnected'));
 			}
 
-			if (devRetry < 10) {
+			if (!deinit && devRetry < 10) {
 				setTimeout(() => {
 					setDevRetry((r) => r + 1);
 				}, 3000);
@@ -67,7 +68,10 @@ function App() {
 			}
 		});
 
-		return () => ws.close();
+		return () => {
+			deinit = true;
+			ws.close();
+		};
 	}, [dispatch, devHost, devEnabled, devRetry]);
 
 	return <RouterProvider router={router} />;

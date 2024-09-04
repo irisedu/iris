@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
 	useEditorEffect,
 	useEditorEventCallback
@@ -35,6 +35,14 @@ function FloatingMenu() {
 	const [linkEnd, setLinkEnd] = useState<number | null>(null);
 	const [linkModified, setLinkModified] = useState(false);
 	const [linkHref, setLinkHref] = useState('');
+	const isExternalLink = useMemo(() => {
+		try {
+			new URL(linkHref);
+			return true;
+		} catch {
+			return false;
+		}
+	}, [linkHref]);
 
 	const updateLinkMark = useEditorEventCallback((view) => {
 		if (!link || !linkEnd) return;
@@ -126,14 +134,16 @@ function FloatingMenu() {
 							Save
 						</Button>
 
-						<Button
-							className="round-button"
-							onPress={() => {
-								window.open(linkHref);
-							}}
-						>
-							<ExternalLink className="text-iris-500 w-1/2 h-1/2 m-auto" />
-						</Button>
+						{isExternalLink && (
+							<Button
+								className="round-button"
+								onPress={() => {
+									window.open(linkHref);
+								}}
+							>
+								<ExternalLink className="text-iris-500 w-1/2 h-1/2 m-auto" />
+							</Button>
+						)}
 					</>
 				)}
 			</Popover>

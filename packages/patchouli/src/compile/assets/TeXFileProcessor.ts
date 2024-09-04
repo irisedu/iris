@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import { execFile as execFileCb } from 'node:child_process';
 import util from 'node:util';
 import FileInfo from '../../FileInfo';

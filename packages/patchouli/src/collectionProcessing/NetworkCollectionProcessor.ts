@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import { recurseDirectory } from '../utils';
 import CollectionProcessor, {
 	type CollectionProcessorArgs

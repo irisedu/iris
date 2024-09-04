@@ -1,6 +1,6 @@
 import logger from '../logger';
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor';

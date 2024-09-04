@@ -1,5 +1,5 @@
 import logger from './logger';
-import path from 'path';
+import { posix as path } from 'path';
 import express from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar from 'chokidar';

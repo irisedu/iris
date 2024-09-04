@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import { optimize as svgoOptimize } from 'svgo';
 import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
 

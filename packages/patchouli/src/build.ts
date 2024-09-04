@@ -1,5 +1,5 @@
 import logger from './logger';
-import path from 'path';
+import { posix as path } from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
 import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils';

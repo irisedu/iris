@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeStringify from 'rehype-stringify';

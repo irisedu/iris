@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import { posix as path } from 'path';
 import anymatch from 'anymatch';
 import type { Json } from '@hyperjump/json-pointer';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';

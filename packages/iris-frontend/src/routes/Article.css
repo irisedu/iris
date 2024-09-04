@@ -1,4 +1,6 @@
 article {
+	counter-reset: sidenote-counter;
+
 	@apply hyphens-auto;
 
 	/* FIGURES */
@@ -125,6 +127,61 @@ article {
 
 	.katex-display::-webkit-scrollbar {
 		@apply hidden;
+	}
+
+	/* SIDENOTES */
+	/* https://edwardtufte.github.io/tufte-css/ */
+	/* Copyright (c) 2014 Dave Liepmann (MIT) */
+	.sidenote-toggle {
+		&.sidenote--numbered::before {
+			@apply content-[counter(sidenote-counter)] align-super;
+			counter-increment: sidenote-counter;
+		}
+	}
+
+	.sidenote-checkbox {
+		@apply hidden;
+	}
+
+	.sidenote {
+		@apply font-normal text-sm text-left leading-5;
+
+		p {
+			@apply my-1;
+		}
+
+		.katex-display {
+			@apply my-1;
+		}
+
+		&.sidenote--numbered > :first-child:not(.katex-display)::before {
+			@apply content-[counter(sidenote-counter)] align-super mr-1;
+		}
+	}
+
+	/* Tailwind: lg */
+	@media (min-width: 1024px) {
+		.sidenote-toggle::before {
+			@apply text-xs;
+		}
+
+		.sidenote {
+			@apply float-right clear-both -mr-[33%] mb-1 w-[33%];
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.sidenote-toggle::before {
+			@apply content-['⊕'] cursor-pointer;
+		}
+
+		.sidenote {
+			@apply hidden;
+		}
+
+		.sidenote-checkbox:checked + .sidenote {
+			@apply block w-[95%] mx-auto p-3 my-2 border-2 border-iris-100;
+		}
 	}
 
 	/* MISC */

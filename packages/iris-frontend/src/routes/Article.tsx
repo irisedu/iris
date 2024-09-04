@@ -105,20 +105,20 @@ function Sidebar({
 	articleData: IriscFile;
 	seriesData: IriscFile;
 }) {
-	const isMd = useMediaQuery({ query: '(min-width: 768px)' });
+	const isLg = useMediaQuery({ query: '(min-width: 1024px)' });
 
 	return (
 		<div className="flex flex-col gap-8 max-w-[25ch]">
-			<div className="px-2 max-h-56 md:max-h-80 md:w-72 overflow-y-auto">
+			<div className="px-2 max-h-56 lg:max-h-80 lg:w-72 overflow-y-auto">
 				<span className="text-xl">
 					<IriscInlineContent nodes={seriesData.meta.title ?? []} />
 				</span>
 			</div>
 
 			{articleData.meta.toc && (
-				<details className="md:sticky top-8 contents--disabled" open={isMd}>
+				<details className="lg:sticky top-8 contents--disabled" open={isLg}>
 					<summary
-						className={`text-lg ${isMd ? 'pointer-events-none' : ''}`}
+						className={`text-lg ${isLg ? 'pointer-events-none' : ''}`}
 						tabIndex={-1}
 					>
 						Contents
@@ -203,12 +203,12 @@ export function Component() {
 	if (!articleData) return;
 
 	return (
-		<article className="flex flex-col md:flex-row gap-8 mb-8">
+		<article className="flex flex-col lg:flex-row gap-8 mb-8">
 			{seriesData && (
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}
 
-			<div className="md:px-8 w-full md:max-w-[70ch] min-h-72">
+			<div className="lg:px-8 w-full lg:max-w-[60%] min-h-72">
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent nodes={articleData.meta.title ?? []} />
 				</h1>

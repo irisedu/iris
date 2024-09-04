@@ -17,6 +17,25 @@ function InlineNode({ node }: { node: IriscNode }) {
 
 		case 'math_inline':
 			return node.html?.code && <SanitizedHtml html={node.html.code} />;
+
+		case 'sidenote': {
+			const numbered = node.attrs?.numbered as boolean;
+			const uuid = crypto.randomUUID();
+			const id = `sn-${uuid.split('-')[0]}`;
+
+			return (
+				<>
+					<label
+						className={`sidenote-toggle${numbered ? ' sidenote--numbered' : ''}`}
+						htmlFor={id}
+					></label>
+					<input className="sidenote-checkbox" id={id} type="checkbox" />
+					<span className={`sidenote${numbered ? ' sidenote--numbered' : ''}`}>
+						{node.content && <IriscBlockContent nodes={node.content} />}
+					</span>
+				</>
+			);
+		}
 	}
 
 	return null;

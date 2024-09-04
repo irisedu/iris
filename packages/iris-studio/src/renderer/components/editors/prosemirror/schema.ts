@@ -61,13 +61,13 @@ const baseSchemaDef = {
 			isolating: true,
 			draggable: true,
 			toDOM(node) {
-				let containerClass = 'aside-container';
+				let containerClass = 'sidenote-container';
 				if (node.attrs.numbered) containerClass += ' numbered';
 
 				return [
 					'div',
 					{ class: containerClass },
-					['span', { class: 'aside' }, 0]
+					['span', { class: 'sidenote' }, 0]
 				];
 			},
 			parseDOM: [{ tag: 'aside' }]

@@ -44,7 +44,7 @@
 	}
 
 	/* Styling based on https://edwardtufte.github.io/tufte-css/ and https://practicaltypography.com/ */
-	.aside-container {
+	.sidenote-container {
 		@apply inline;
 
 		&:not(.numbered)::before {
@@ -56,11 +56,13 @@
 			counter-increment: sidenote-counter;
 		}
 
-		&.numbered .aside > :first-child:not(.math-display)::before {
+		&.numbered
+			.sidenote
+			> :first-child:not(.math-display):not(.katex-render)::before {
 			@apply content-[counter(sidenote-counter)] text-xs align-super mr-1;
 		}
 
-		.aside {
+		.sidenote {
 			@apply font-normal text-sm text-left leading-5 float-right clear-both -mr-[45%] mb-1 w-[35%];
 
 			p {

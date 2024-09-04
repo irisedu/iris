@@ -54,7 +54,6 @@ export default class IrisCollectionProcessor extends CollectionProcessor {
 				}
 
 				node.href = internalLinkToPageLink(node.hrefInternal);
-				delete node.hrefInternal;
 			}
 
 			for (const node of articleData.meta.summary) {

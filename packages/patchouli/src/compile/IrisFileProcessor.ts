@@ -119,9 +119,7 @@ const nodeProcessors: Record<
 					};
 				} else if (child.type === 'summary_list') {
 					if (!section) {
-						section = {
-							topLevel: true
-						};
+						section = {};
 					}
 
 					const children = section.children || (section.children = []);

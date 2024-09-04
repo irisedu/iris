@@ -8,10 +8,14 @@ import {
 	Tag,
 	Label
 } from 'react-aria-components';
-import type { IriscFile, TocNode } from 'patchouli';
+import type { IriscFile } from 'patchouli';
 import hljs from 'highlight.js';
 import { goToAnchor } from '$components/utils';
-import { IriscNode, IriscInlineContent } from '$components/nodes/IriscNode';
+import {
+	IriscNode,
+	IriscInlineContent,
+	Summary
+} from '$components/nodes/IriscNode';
 // @ts-expect-error External code without types
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
 
@@ -81,17 +85,20 @@ async function load(splat: string, devEnabled: boolean, devHost: string) {
 	]);
 }
 
-function ArticleOutline({ outline }: { outline: TocNode[] }) {
+function ArticleOutline({ articleData }: { articleData: IriscFile }) {
 	return (
 		<ul className="list-none pl-2 my-0">
-			{outline.map((heading) => (
+			{articleData.meta.toc?.map((heading) => (
 				<Fragment key={heading.id}>
 					<li className="mb-1 text-gray-800">
 						<AriaLink onPress={() => goToAnchor(heading.id)}>
-							<IriscInlineContent nodes={heading.content} />
+							<IriscInlineContent
+								nodes={heading.content}
+								meta={articleData.meta}
+							/>
 						</AriaLink>
 					</li>
-					{heading.children && <ArticleOutline outline={heading.children} />}
+					{heading.children && <ArticleOutline articleData={articleData} />}
 				</Fragment>
 			))}
 		</ul>
@@ -108,11 +115,18 @@ function Sidebar({
 	const isLg = useMediaQuery({ query: '(min-width: 1024px)' });
 
 	return (
-		<div className="flex flex-col gap-8 max-w-[25ch]">
-			<div className="px-2 max-h-56 lg:max-h-80 lg:w-72 overflow-y-auto">
+		<div className="flex flex-col gap-8 lg:max-w-[25ch]">
+			<div className="px-2 max-h-56 lg:max-h-80 overflow-y-auto">
 				<span className="text-xl">
-					<IriscInlineContent nodes={seriesData.meta.title ?? []} />
+					<IriscInlineContent
+						nodes={seriesData.meta.title ?? []}
+						meta={seriesData.meta}
+					/>
 				</span>
+
+				{seriesData.meta.summary && (
+					<Summary summary={seriesData.meta.summary} meta={seriesData.meta} />
+				)}
 			</div>
 
 			{articleData.meta.toc && (
@@ -123,7 +137,7 @@ function Sidebar({
 					>
 						Contents
 					</summary>
-					<ArticleOutline outline={articleData.meta.toc} />
+					<ArticleOutline articleData={articleData} />
 				</details>
 			)}
 		</div>
@@ -210,10 +224,13 @@ export function Component() {
 
 			<div className="lg:px-8 w-full lg:max-w-[60%] min-h-72">
 				<h1 className="mt-0 mb-4">
-					<IriscInlineContent nodes={articleData.meta.title ?? []} />
+					<IriscInlineContent
+						nodes={articleData.meta.title ?? []}
+						meta={articleData.meta}
+					/>
 				</h1>
 
-				<IriscNode node={articleData.data} />
+				<IriscNode node={articleData.data} meta={articleData.meta} />
 
 				<hr className="my-3 last:mb-0" />
 

@@ -36,7 +36,6 @@ export interface SummaryNode {
 	title?: IriscNode[];
 	href?: string;
 	hrefInternal?: string;
-	topLevel?: boolean;
 	children?: SummaryNode[];
 }
 

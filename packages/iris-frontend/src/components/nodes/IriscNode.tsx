@@ -1,12 +1,17 @@
-import { ReactNode } from 'react';
-import type { IriscNode, IriscMark } from 'patchouli';
+import { Fragment, ReactNode } from 'react';
+import type {
+	IriscNode,
+	IriscMark,
+	SummaryNode,
+	IriscMetadata
+} from 'patchouli';
 import deepEqual from 'deep-equal';
 import { Link as AriaLink } from 'react-aria-components';
 import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
 import SanitizedHtml from '$components/SanitizedHtml';
 
-function InlineNode({ node }: { node: IriscNode }) {
+function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 	switch (node.type) {
 		case 'text':
 			return node.text ?? '';
@@ -31,7 +36,9 @@ function InlineNode({ node }: { node: IriscNode }) {
 					></label>
 					<input className="sidenote-checkbox" id={id} type="checkbox" />
 					<span className={`sidenote${numbered ? ' sidenote--numbered' : ''}`}>
-						{node.content && <IriscBlockContent nodes={node.content} />}
+						{node.content && (
+							<IriscBlockContent nodes={node.content} meta={meta} />
+						)}
 					</span>
 				</>
 			);
@@ -85,9 +92,11 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 // node. This is especially important for links.
 export function IriscInlineContent({
 	nodes,
+	meta,
 	markStart = 0
 }: {
 	nodes: IriscNode[];
+	meta: IriscMetadata;
 	markStart?: number;
 }) {
 	const output: ReactNode[] = [];
@@ -100,7 +109,11 @@ export function IriscInlineContent({
 		if (currentMark)
 			output.push(
 				<Mark key={output.length} mark={currentMark}>
-					<IriscInlineContent nodes={partition} markStart={markStart + 1} />
+					<IriscInlineContent
+						nodes={partition}
+						meta={meta}
+						markStart={markStart + 1}
+					/>
 				</Mark>
 			);
 
@@ -122,7 +135,7 @@ export function IriscInlineContent({
 			currentMark = node.marks[markStart];
 			partition.push(node);
 		} else {
-			output.push(<InlineNode key={output.length} node={node} />);
+			output.push(<InlineNode key={output.length} node={node} meta={meta} />);
 		}
 	}
 
@@ -131,8 +144,14 @@ export function IriscInlineContent({
 	return output;
 }
 
-export function IriscBlockContent({ nodes }: { nodes: IriscNode[] }) {
-	return nodes.map((n, i) => <IriscNode node={n} key={i} />);
+export function IriscBlockContent({
+	nodes,
+	meta
+}: {
+	nodes: IriscNode[];
+	meta: IriscMetadata;
+}) {
+	return nodes.map((n, i) => <IriscNode key={i} node={n} meta={meta} />);
 }
 
 // https://github.com/ProseMirror/prosemirror-tables/blob/master/src/tableview.ts
@@ -176,13 +195,69 @@ function tableSize(table: IriscNode) {
 	return { widths, style: tableStyle };
 }
 
-export function IriscNode({ node }: { node: IriscNode }) {
+function SummaryList({
+	nodes,
+	meta
+}: {
+	nodes: SummaryNode[];
+	meta: IriscMetadata;
+}) {
+	return (
+		<ul className="list-none">
+			{nodes.map((node, i) => {
+				const contents = (
+					<IriscInlineContent nodes={node.title ?? []} meta={meta} />
+				);
+
+				return (
+					<li key={i}>
+						<Link to={node.href ?? ''}>{contents}</Link>
+						{node.children && <SummaryList nodes={node.children} meta={meta} />}
+					</li>
+				);
+			})}
+		</ul>
+	);
+}
+
+export function Summary({
+	summary,
+	meta
+}: {
+	summary: SummaryNode[];
+	meta: IriscMetadata;
+}) {
+	return (
+		<div>
+			{summary.map((node, i) => (
+				<Fragment key={i}>
+					{node.title && <IriscInlineContent nodes={node.title} meta={meta} />}
+					{node.children && <SummaryList nodes={node.children} meta={meta} />}
+				</Fragment>
+			))}
+		</div>
+	);
+}
+
+export function IriscNode({
+	node,
+	meta
+}: {
+	node: IriscNode;
+	meta: IriscMetadata;
+}) {
 	switch (node.type) {
 		case 'doc':
-			return node.content && <IriscBlockContent nodes={node.content} />;
+			return (
+				node.content && <IriscBlockContent nodes={node.content} meta={meta} />
+			);
 		case 'paragraph':
 			return (
-				<p>{node.content && <IriscInlineContent nodes={node.content} />}</p>
+				<p>
+					{node.content && (
+						<IriscInlineContent nodes={node.content} meta={meta} />
+					)}
+				</p>
 			);
 		case 'heading': {
 			const id = node.html?.id;
@@ -195,7 +270,9 @@ export function IriscNode({ node }: { node: IriscNode }) {
 							<span className="anchor-link"></span>
 						</AriaLink>
 					)}
-					{node.content && <IriscInlineContent nodes={node.content} />}
+					{node.content && (
+						<IriscInlineContent nodes={node.content} meta={meta} />
+					)}
 				</>
 			);
 
@@ -223,7 +300,9 @@ export function IriscNode({ node }: { node: IriscNode }) {
 							language && language.length ? `language-${language}` : ''
 						}
 					>
-						{node.content && <IriscInlineContent nodes={node.content} />}
+						{node.content && (
+							<IriscInlineContent nodes={node.content} meta={meta} />
+						)}
 					</code>
 				</pre>
 			);
@@ -231,15 +310,27 @@ export function IriscNode({ node }: { node: IriscNode }) {
 
 		case 'ordered_list':
 			return (
-				<ol>{node.content && <IriscBlockContent nodes={node.content} />}</ol>
+				<ol>
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
+				</ol>
 			);
 		case 'bullet_list':
 			return (
-				<ul>{node.content && <IriscBlockContent nodes={node.content} />}</ul>
+				<ul>
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
+				</ul>
 			);
 		case 'list_item':
 			return (
-				<li>{node.content && <IriscBlockContent nodes={node.content} />}</li>
+				<li>
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
+				</li>
 			);
 
 		case 'table': {
@@ -255,7 +346,9 @@ export function IriscNode({ node }: { node: IriscNode }) {
 							</colgroup>
 						)}
 						<tbody>
-							{node.content && <IriscBlockContent nodes={node.content} />}
+							{node.content && (
+								<IriscBlockContent nodes={node.content} meta={meta} />
+							)}
 						</tbody>
 					</table>
 				</div>
@@ -263,7 +356,11 @@ export function IriscNode({ node }: { node: IriscNode }) {
 		}
 		case 'table_row':
 			return (
-				<tr>{node.content && <IriscBlockContent nodes={node.content} />}</tr>
+				<tr>
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
+				</tr>
 			);
 		case 'table_cell':
 			return (
@@ -277,7 +374,9 @@ export function IriscNode({ node }: { node: IriscNode }) {
 							| 'right'
 					}}
 				>
-					{node.content && <IriscBlockContent nodes={node.content} />}
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
 				</td>
 			);
 		case 'table_header':
@@ -292,11 +391,22 @@ export function IriscNode({ node }: { node: IriscNode }) {
 							| 'right'
 					}}
 				>
-					{node.content && <IriscBlockContent nodes={node.content} />}
+					{node.content && (
+						<IriscBlockContent nodes={node.content} meta={meta} />
+					)}
 				</th>
 			);
 
 		case 'math_display':
 			return node.html?.code && <SanitizedHtml html={node.html.code} />;
+
+		case 'summary':
+			if (!meta.summary) return null;
+			return (
+				<>
+					<h2>Contents</h2>
+					<Summary summary={meta.summary} meta={meta} />
+				</>
+			);
 	}
 }

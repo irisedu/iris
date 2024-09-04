@@ -284,6 +284,9 @@ function Sidebar() {
 	const currentTab = useSelector((state: RootState) => state.tabs.currentTab);
 	const tabState = useSelector((state: RootState) => state.tabs.tabState);
 
+	// https://github.com/brimdata/react-arborist/issues/239#issuecomment-2078210396
+	const dndRoot = useRef<HTMLDivElement>(null);
+
 	const tree = useRef<TreeApi<TreeNode>>(null);
 	const {
 		ref: resizeRef,
@@ -341,7 +344,7 @@ function Sidebar() {
 	}, [reloadDir, openDirectory]);
 
 	return (
-		<div className="font-sans w-full h-full p-2">
+		<div ref={dndRoot} className="font-sans w-full h-full p-2">
 			<DeleteDialog
 				isOpen={deleteOpen}
 				setIsOpen={setDeleteOpen}
@@ -476,115 +479,118 @@ function Sidebar() {
 					e.stopPropagation();
 				}}
 			>
-				<Tree
-					data={treeData.data}
-					disableEdit={false}
-					disableDrop={(args) => treeData.disableDrop(args)}
-					onCreate={async (args) => {
-						if (!openDirectory) return null;
+				{dndRoot.current && (
+					<Tree
+						dndRootElement={dndRoot.current}
+						data={treeData.data}
+						disableEdit={false}
+						disableDrop={(args) => treeData.disableDrop(args)}
+						onCreate={async (args) => {
+							if (!openDirectory) return null;
 
-						const { newTree, newNode } = await treeData.onCreate(
-							args,
-							openDirectory,
-							createExtension.current
-						);
-						setTreeData(newTree);
+							const { newTree, newNode } = await treeData.onCreate(
+								args,
+								openDirectory,
+								createExtension.current
+							);
+							setTreeData(newTree);
 
-						if (newNode.isFolder) {
-							await fs.mkdir(newNode.id);
-						} else {
-							await fs.writeTextFile({ file: newNode.id, data: '' });
-						}
+							if (newNode.isFolder) {
+								await fs.mkdir(newNode.id);
+							} else {
+								await fs.writeTextFile({ file: newNode.id, data: '' });
+							}
 
-						return newNode;
-					}}
-					onRename={async (args) => {
-						const res = await treeData.onRename(args);
-						if (!res) return;
+							return newNode;
+						}}
+						onRename={async (args) => {
+							const res = await treeData.onRename(args);
+							if (!res) return;
 
-						const {
-							newTree,
-							oldId,
-							newId,
-							immediateParentId,
-							renameMap,
-							fileExists
-						} = res;
+							const {
+								newTree,
+								oldId,
+								newId,
+								immediateParentId,
+								renameMap,
+								fileExists
+							} = res;
 
-						const doRename = async () => {
+							const doRename = async () => {
+								if (!openDirectory) return;
+
+								setTreeData(newTree);
+								setTimeout(() => tree.current?.select(newId), 20);
+
+								await fs.mkdir(immediateParentId);
+								await fs.rename({ from: oldId, to: newId });
+
+								updateTabs(
+									renameMap,
+									openDirectory,
+									dispatch,
+									tabs,
+									tabState,
+									currentTab
+								);
+							};
+
+							if (fileExists) {
+								overwriteCb.current = doRename;
+								setOverwritePaths([newId]);
+								setOverwriteOpen(true);
+							} else {
+								await doRename();
+							}
+						}}
+						onMove={async (args) => {
 							if (!openDirectory) return;
+							const res = await treeData.onMove(args, openDirectory);
 
-							setTreeData(newTree);
-							setTimeout(() => tree.current?.select(newId), 20);
+							if (!res) return;
 
-							await fs.mkdir(immediateParentId);
-							await fs.rename({ from: oldId, to: newId });
+							const { newTree, nodeInfo, renameMap } = res;
 
-							updateTabs(
-								renameMap,
-								openDirectory,
-								dispatch,
-								tabs,
-								tabState,
-								currentTab
-							);
-						};
+							const doMove = async () => {
+								setTreeData(newTree);
 
-						if (fileExists) {
-							overwriteCb.current = doRename;
-							setOverwritePaths([newId]);
-							setOverwriteOpen(true);
-						} else {
-							await doRename();
-						}
-					}}
-					onMove={async (args) => {
-						if (!openDirectory) return;
-						const res = await treeData.onMove(args, openDirectory);
+								await Promise.all(
+									nodeInfo.map((info) => {
+										return fs.rename({ from: info.id, to: info.newId });
+									})
+								);
 
-						if (!res) return;
+								updateTabs(
+									renameMap,
+									openDirectory,
+									dispatch,
+									tabs,
+									tabState,
+									currentTab
+								);
+							};
 
-						const { newTree, nodeInfo, renameMap } = res;
+							const overwritePaths = nodeInfo
+								.filter((i) => i.exists)
+								.map((i) => i.newId);
 
-						const doMove = async () => {
-							setTreeData(newTree);
-
-							await Promise.all(
-								nodeInfo.map((info) => {
-									return fs.rename({ from: info.id, to: info.newId });
-								})
-							);
-
-							updateTabs(
-								renameMap,
-								openDirectory,
-								dispatch,
-								tabs,
-								tabState,
-								currentTab
-							);
-						};
-
-						const overwritePaths = nodeInfo
-							.filter((i) => i.exists)
-							.map((i) => i.newId);
-
-						if (overwritePaths.length) {
-							overwriteCb.current = doMove;
-							setOverwritePaths(overwritePaths);
-							setOverwriteOpen(true);
-						} else {
-							await doMove();
-						}
-					}}
-					width={treeWidth}
-					height={treeHeight}
-					rowHeight={44}
-					openByDefault={false}
-					ref={tree}
-				>
-					{Node}
-				</Tree>
+							if (overwritePaths.length) {
+								overwriteCb.current = doMove;
+								setOverwritePaths(overwritePaths);
+								setOverwriteOpen(true);
+							} else {
+								await doMove();
+							}
+						}}
+						width={treeWidth}
+						height={treeHeight}
+						rowHeight={44}
+						openByDefault={false}
+						ref={tree}
+					>
+						{Node}
+					</Tree>
+				)}
 			</div>
 		</div>
 	);

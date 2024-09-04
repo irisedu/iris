@@ -6,14 +6,12 @@ import { setTabs } from './tabsSlice';
 interface AppState {
 	darkTheme: boolean;
 	openDirectory?: string;
-	sidebarOpen: boolean;
 }
 
 export const appSlice = createSlice({
 	name: 'app',
 	initialState: {
-		darkTheme: false,
-		sidebarOpen: true
+		darkTheme: false
 	} as AppState,
 	reducers: {
 		setDarkTheme(state, action) {
@@ -21,15 +19,11 @@ export const appSlice = createSlice({
 		},
 		setOpenDirectory(state, action) {
 			state.openDirectory = action.payload;
-		},
-		setSidebarOpen(state, action) {
-			state.sidebarOpen = action.payload;
 		}
 	}
 });
 
-export const { setDarkTheme, setOpenDirectory, setSidebarOpen } =
-	appSlice.actions;
+export const { setDarkTheme, setOpenDirectory } = appSlice.actions;
 
 export default appSlice.reducer;
 

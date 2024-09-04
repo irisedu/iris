@@ -9,7 +9,7 @@ import deepEqual from 'deep-equal';
 import { Link as AriaLink } from 'react-aria-components';
 import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
-import SanitizedHtml from '$components/SanitizedHtml';
+import parse from 'html-react-parser';
 
 function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 	switch (node.type) {
@@ -21,7 +21,7 @@ function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 			return <br />;
 
 		case 'math_inline':
-			return node.html?.code && <SanitizedHtml html={node.html.code} />;
+			return node.html?.code && parse(node.html.code);
 
 		case 'sidenote': {
 			const numbered = node.attrs?.numbered as boolean;
@@ -398,7 +398,7 @@ export function IriscNode({
 			);
 
 		case 'math_display':
-			return node.html?.code && <SanitizedHtml html={node.html.code} />;
+			return node.html?.code && parse(node.html.code);
 
 		case 'summary':
 			if (!meta.summary) return null;

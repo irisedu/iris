@@ -122,7 +122,7 @@ article {
 	}
 
 	.katex-display {
-		@apply max-w-full overflow-x-scroll overflow-y-hidden p-2;
+		@apply w-full overflow-x-scroll overflow-y-hidden p-2;
 	}
 
 	.katex-display::-webkit-scrollbar {
@@ -166,7 +166,7 @@ article {
 		}
 
 		.sidenote {
-			@apply float-right clear-both -mr-[33%] mb-1 w-[33%];
+			@apply float-right clear-both -mr-[35%] mb-1 w-[35%];
 		}
 	}
 

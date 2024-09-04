@@ -222,7 +222,7 @@ export function Component() {
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}
 
-			<div className="lg:px-8 w-full lg:max-w-[60%] min-h-72">
+			<div className="lg:px-8 w-full lg:w-[58%] max-w-[70ch] min-h-72 mx-auto lg:mx-0">
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent
 						nodes={articleData.meta.title ?? []}

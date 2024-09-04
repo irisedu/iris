@@ -11,7 +11,6 @@
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@fec/remark-a11y-emoji": "^4.0.2",
 		"@hyperjump/json-pointer": "^1.1.0",
 		"@hyperjump/json-schema": "^1.9.3",
 		"@iarna/toml": "^2.2.5",

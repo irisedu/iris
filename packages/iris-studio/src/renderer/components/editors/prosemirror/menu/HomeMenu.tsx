@@ -311,7 +311,7 @@ function HomeMenu({ index }: { index: number }) {
 					command={toggleInlineMath}
 					markType={docSchema.marks.math_inline}
 					tooltip="Inline Math"
-					keys={['Alt', 'Space']}
+					keys={['Alt', 'm']}
 				/>
 
 				<CommandButton
@@ -325,7 +325,7 @@ function HomeMenu({ index }: { index: number }) {
 					)}
 					command={insertDisplayMath}
 					tooltip="Display Math"
-					keys={['Shift', 'Alt', 'Space']}
+					keys={['Shift', 'Alt', 'm']}
 				/>
 
 				<MathPreviewToggle />

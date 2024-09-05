@@ -48,8 +48,8 @@ function schemaCommonKeymap(schema: Schema) {
 
 		'Mod-`': toggleMark(schema.marks.code),
 
-		'Alt-Space': toggleInlineMath,
-		'Alt-Shift-Space': insertDisplayMath
+		'Alt-m': toggleInlineMath,
+		'Alt-Shift-m': insertDisplayMath
 	};
 }
 

@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, type RefObject } from 'react';
 import {
 	useEditorEffect,
 	useEditorEventCallback
@@ -27,10 +27,7 @@ function setElementPos(
 	elem.style.bottom = box.bottom - start.top + 'px';
 }
 
-function FloatingMenu() {
-	const triggerRef = useRef<HTMLDivElement>(null);
-	const [visible, setVisible] = useState(false);
-
+function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
 	const [link, setLink] = useState<number | null>(null);
 	const [linkEnd, setLinkEnd] = useState<number | null>(null);
 	const [linkModified, setLinkModified] = useState(false);
@@ -76,7 +73,6 @@ function FloatingMenu() {
 			const { from, to, mark } = res;
 
 			setElementPos(triggerRef.current, view, from, to);
-			setVisible(true);
 
 			const modified = linkModified && link === from;
 			setLinkModified(modified);
@@ -84,12 +80,60 @@ function FloatingMenu() {
 
 			setLink(from);
 			setLinkEnd(to);
-
-			return;
 		}
-
-		setVisible(false);
 	});
+
+	const component = link && (
+		<div className="flex flex-row gap-1 items-center">
+			<TextField
+				className="react-aria-TextField m-0 w-36"
+				aria-label="Link"
+				value={linkHref}
+				onChange={(value) => {
+					setLinkHref(value);
+					setLinkModified(true);
+				}}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter') {
+						updateLinkMark();
+						setLinkModified(false);
+					}
+				}}
+			>
+				<Input placeholder="Link" />
+			</TextField>
+
+			<Button
+				className="react-aria-Button border-iris-300"
+				isDisabled={!linkModified}
+				onPress={() => {
+					updateLinkMark();
+					setLinkModified(false);
+				}}
+			>
+				Save
+			</Button>
+
+			{isExternalLink && (
+				<Button
+					className="round-button"
+					onPress={() => {
+						window.open(linkHref);
+					}}
+				>
+					<ExternalLink className="text-iris-500 w-1/2 h-1/2 m-auto" />
+				</Button>
+			)}
+		</div>
+	);
+
+	return { link, component };
+}
+
+function FloatingMenu() {
+	const triggerRef = useRef<HTMLDivElement>(null);
+
+	const { link, component: linkComponent } = useLinkWidget(triggerRef);
 
 	return (
 		<>
@@ -97,55 +141,13 @@ function FloatingMenu() {
 			<Popover
 				/* Force position update when focused item changes */
 				key={link}
-				isOpen={visible}
-				className={`react-aria-Popover flex flex-row gap-1 items-center shadow-lg font-sans bg-iris-100 p-1`}
+				isOpen={!!link}
+				className={`react-aria-Popover shadow-lg font-sans bg-iris-100 p-1`}
 				placement="top"
 				triggerRef={triggerRef}
 				isNonModal
 			>
-				{link && (
-					<>
-						<TextField
-							className="react-aria-TextField m-0 w-36"
-							aria-label="Link"
-							value={linkHref}
-							onChange={(value) => {
-								setLinkHref(value);
-								setLinkModified(true);
-							}}
-							onKeyDown={(e) => {
-								if (e.key === 'Enter') {
-									updateLinkMark();
-									setLinkModified(false);
-								}
-							}}
-						>
-							<Input placeholder="Link" />
-						</TextField>
-
-						<Button
-							className="react-aria-Button border-iris-300"
-							isDisabled={!linkModified}
-							onPress={() => {
-								updateLinkMark();
-								setLinkModified(false);
-							}}
-						>
-							Save
-						</Button>
-
-						{isExternalLink && (
-							<Button
-								className="round-button"
-								onPress={() => {
-									window.open(linkHref);
-								}}
-							>
-								<ExternalLink className="text-iris-500 w-1/2 h-1/2 m-auto" />
-							</Button>
-						)}
-					</>
-				)}
+				{linkComponent}
 			</Popover>
 		</>
 	);

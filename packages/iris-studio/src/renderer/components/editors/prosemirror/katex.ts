@@ -124,6 +124,31 @@ export const katexPlugin = new Plugin({
 				return true;
 			}
 		}
+	},
+	filterTransaction(tr, state) {
+		if (!tr.docChanged) return true;
+
+		const mathInline = state.schema.marks.math_inline;
+		let dirty = false;
+
+		function nodeIsDirty(node: Node) {
+			return !node.isText && mathInline.isInSet(node.marks);
+		}
+
+		tr.before.descendants((node) => {
+			if (dirty) return false;
+			if (nodeIsDirty(node)) dirty = true;
+		});
+
+		// Document is already dirty, do nothing
+		if (dirty) return true;
+
+		tr.doc.descendants((node) => {
+			if (dirty) return false;
+			if (nodeIsDirty(node)) dirty = true;
+		});
+
+		return !dirty;
 	}
 });
 

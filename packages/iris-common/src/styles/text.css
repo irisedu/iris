@@ -1,4 +1,6 @@
 :root {
+	@apply hyphens-auto;
+
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	font-variant-ligatures: common-ligatures discretionary-ligatures;

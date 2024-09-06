@@ -1,12 +1,6 @@
 article {
 	counter-reset: sidenote-counter;
 
-	@apply hyphens-auto;
-
-	.p-alt {
-		@apply block my-1 first:mt-0 last:mb-0;
-	}
-
 	/* HEADINGS */
 
 	h1,

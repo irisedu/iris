@@ -8,7 +8,7 @@ import {
 	Tag,
 	Label
 } from 'react-aria-components';
-import type { IriscFile } from 'patchouli';
+import type { IriscFile, TocNode } from 'patchouli';
 import hljs from 'highlight.js';
 import { goToAnchor } from '$components/utils';
 import {
@@ -85,10 +85,16 @@ async function load(splat: string, devEnabled: boolean, devHost: string) {
 	]);
 }
 
-function ArticleOutline({ articleData }: { articleData: IriscFile }) {
+function ArticleOutline({
+	articleData,
+	outline
+}: {
+	articleData: IriscFile;
+	outline: TocNode[];
+}) {
 	return (
 		<ul className="list-none pl-2 my-0">
-			{articleData.meta.toc?.map((heading) => (
+			{outline.map((heading) => (
 				<Fragment key={heading.id}>
 					<li className="mb-1 text-gray-800">
 						<AriaLink onPress={() => goToAnchor(heading.id)}>
@@ -98,7 +104,12 @@ function ArticleOutline({ articleData }: { articleData: IriscFile }) {
 							/>
 						</AriaLink>
 					</li>
-					{heading.children && <ArticleOutline articleData={articleData} />}
+					{heading.children && (
+						<ArticleOutline
+							articleData={articleData}
+							outline={heading.children}
+						/>
+					)}
 				</Fragment>
 			))}
 		</ul>
@@ -137,7 +148,10 @@ function Sidebar({
 					>
 						Contents
 					</summary>
-					<ArticleOutline articleData={articleData} />
+					<ArticleOutline
+						articleData={articleData}
+						outline={articleData.meta.toc}
+					/>
 				</details>
 			)}
 		</div>

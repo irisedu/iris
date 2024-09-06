@@ -128,6 +128,9 @@ async function postCompileStep(
  */
 async function cleanStep(handledFiles: Record<string, string>, outDir: string) {
 	await recurseDirectory(outDir, async (filePath) => {
+		// Special case
+		if (filePath === 'build.json') return;
+
 		const fullPath = path.join(outDir, filePath);
 		if (!handledFiles[fullPath]) {
 			logger.note('Removing file', filePath, '(no source)');
@@ -162,8 +165,29 @@ async function collectionProcessStep(
 	await Promise.all(tasks);
 }
 
+const BUILD_VERSION = 1;
+
 export default async function build(config: UserConfig, inDir: string) {
 	const outDir = path.join(inDir, 'build');
+	const buildMetaPath = path.join(outDir, 'build.json');
+
+	try {
+		const contents = JSON.parse(await fs.readFile(buildMetaPath, 'utf-8'));
+		if (contents.version !== BUILD_VERSION) {
+			throw new Error();
+		}
+	} catch {
+		logger.info('Rebuilding due to build version update...');
+		await fs.rm(outDir, { recursive: true, force: true });
+	}
+
+	await fs.ensureDir(outDir);
+	await fs.writeFile(
+		buildMetaPath,
+		JSON.stringify({
+			version: BUILD_VERSION
+		})
+	);
 
 	const { fileInfo, handledFiles } = await compileStep(config, inDir, outDir);
 	await postCompileStep(config, inDir, outDir, fileInfo, handledFiles);

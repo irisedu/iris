@@ -4,7 +4,14 @@ import {
 	useEditorEventCallback
 } from '@nytimes/react-prosemirror';
 import type { EditorView } from 'prosemirror-view';
-import { Popover, TextField, Input, Button } from 'react-aria-components';
+import {
+	Popover,
+	TextField,
+	Input,
+	TextArea,
+	Button,
+	Label
+} from 'react-aria-components';
 import { markExtend } from './commands';
 
 import ExternalLink from '~icons/tabler/external-link';
@@ -17,12 +24,26 @@ function setElementPos(
 ) {
 	const start = view.coordsAtPos(from);
 	const end = view.coordsAtPos(to);
+	let left: number | undefined;
+
+	if (start.left === end.left) {
+		// Non-text
+		const elem = view.domAtPos(from).node;
+
+		if (elem && elem instanceof HTMLElement) {
+			const rect = elem.getBoundingClientRect();
+			left = (rect.left + rect.right) / 2;
+		}
+	} else {
+		// https://prosemirror.net/examples/tooltip/
+		left = Math.max((start.left + end.left) / 2, start.left + 3);
+	}
+
+	if (!left) return;
 
 	const box = elem.offsetParent?.getBoundingClientRect();
 	if (!box) return;
 
-	// https://prosemirror.net/examples/tooltip/
-	const left = Math.max((start.left + end.left) / 2, start.left + 3);
 	elem.style.left = left - box.left + 'px';
 	elem.style.bottom = box.bottom - start.top + 'px';
 }
@@ -64,7 +85,6 @@ function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
 		const schema = state.schema;
 		const { $from, $to } = state.selection;
 
-		// Links
 		setLink(null);
 
 		const res = markExtend($from, $to, schema.marks.link);
@@ -130,24 +150,125 @@ function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
 	return { link, component };
 }
 
+function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
+	const [image, setImage] = useState<number | null>(null);
+	const [imageModified, setImageModified] = useState(false);
+
+	const [imageSrc, setImageSrc] = useState('');
+	const [imageAlt, setImageAlt] = useState('');
+
+	const updateImage = useEditorEventCallback((view) => {
+		if (!image) return;
+
+		const state = view.state;
+
+		view.dispatch(
+			state.tr
+				.setNodeAttribute(image, 'src', imageSrc)
+				.setNodeAttribute(image, 'alt', imageAlt)
+		);
+	});
+
+	useEditorEffect((view) => {
+		if (!triggerRef.current) return;
+
+		const state = view.state;
+		const schema = state.schema;
+		const { $head } = state.selection;
+
+		setImage(null);
+
+		const pos = $head.start($head.depth);
+		const node = state.doc.nodeAt(pos);
+
+		if (node?.type !== schema.nodes.image) return;
+
+		setElementPos(triggerRef.current, view, pos, pos);
+
+		const modified = imageModified && image === pos;
+		setImageModified(modified);
+		if (!modified) {
+			setImageSrc(node.attrs.src ?? '');
+			setImageAlt(node.attrs.alt ?? '');
+		}
+
+		setImage(pos);
+	});
+
+	const component = image && (
+		<div className="flex flex-col gap-1 w-56">
+			<TextField
+				className="react-aria-TextField m-0"
+				value={imageSrc}
+				onChange={(value) => {
+					setImageSrc(value);
+					setImageModified(true);
+				}}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter') {
+						updateImage();
+						setImageModified(false);
+					}
+				}}
+			>
+				<Label>Source</Label>
+				<Input />
+			</TextField>
+
+			<TextField
+				className="react-aria-TextField m-0"
+				value={imageAlt}
+				onChange={(value) => {
+					setImageAlt(value);
+					setImageModified(true);
+				}}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter' && e.ctrlKey) {
+						updateImage();
+						setImageModified(false);
+					}
+				}}
+			>
+				<Label>Alt text</Label>
+				<TextArea />
+			</TextField>
+
+			<Button
+				className="react-aria-Button border-iris-300"
+				isDisabled={!imageModified}
+				onPress={() => {
+					updateImage();
+					setImageModified(false);
+				}}
+			>
+				Save
+			</Button>
+		</div>
+	);
+
+	return { image, component };
+}
+
 function FloatingMenu() {
 	const triggerRef = useRef<HTMLDivElement>(null);
 
 	const { link, component: linkComponent } = useLinkWidget(triggerRef);
+	const { image, component: imageComponent } = useImageWidget(triggerRef);
 
 	return (
 		<>
 			<div ref={triggerRef} className="absolute" />
 			<Popover
 				/* Force position update when focused item changes */
-				key={link}
-				isOpen={!!link}
-				className={`react-aria-Popover shadow-lg font-sans bg-iris-100 p-1`}
+				key={link ?? image ?? 'none'}
+				isOpen={!!(link || image)}
+				className={`react-aria-Popover flex flex-col gap-1 shadow-lg font-sans bg-iris-100 p-1`}
 				placement="top"
 				triggerRef={triggerRef}
 				isNonModal
 			>
 				{linkComponent}
+				{imageComponent}
 			</Popover>
 		</>
 	);

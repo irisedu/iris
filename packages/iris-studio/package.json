@@ -93,6 +93,7 @@
 		"iris-common": "workspace:^",
 		"katex": "^0.16.11",
 		"nightwind": "^1.1.13",
+		"patchouli": "workspace:^",
 		"postcss": "^8.4.40",
 		"prosemirror-commands": "^1.6.0",
 		"prosemirror-dropcursor": "^1.8.1",

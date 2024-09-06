@@ -30,7 +30,7 @@ import {
 	insertNode,
 	clearFormatting,
 	toggleLink,
-	exitSummary,
+	exitNode,
 	toggleSummaryHeading
 } from './commands';
 import { toggleInlineMath, insertDisplayMath } from './katex';
@@ -92,7 +92,11 @@ export const baseKeymap = {
 		liftEmptyBlock,
 		splitBlock
 	),
-	'Mod-Enter': chainCommands(exitCode, insertNode(baseSchema.nodes.hard_break)),
+	'Mod-Enter': chainCommands(
+		exitCode,
+		exitNode([baseSchema.nodes.figure]),
+		insertNode(baseSchema.nodes.hard_break)
+	),
 
 	'Mod-[': liftListItem(baseSchema.nodes.list_item),
 	'Mod-]': sinkListItem(baseSchema.nodes.list_item),
@@ -121,7 +125,7 @@ export const docKeymap = {
 	),
 	'Mod-Enter': chainCommands(
 		exitCode,
-		exitSummary,
+		exitNode([docSchema.nodes.summary, docSchema.nodes.figure]),
 		insertNode(docSchema.nodes.hard_break)
 	),
 

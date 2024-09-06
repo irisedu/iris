@@ -18,6 +18,7 @@ import HomeMenu from './HomeMenu';
 import FormatMenu from './FormatMenu';
 import InsertMenu from './InsertMenu';
 import TableMenu from './TableMenu';
+import FigureMenu from './FigureMenu';
 
 import Undo from '~icons/tabler/arrow-back-up';
 import Redo from '~icons/tabler/arrow-forward-up';
@@ -31,7 +32,8 @@ const tabs: TabData[] = [
 	{ id: 'home', name: 'Home' },
 	{ id: 'format', name: 'Format' },
 	{ id: 'insert', name: 'Insert' },
-	{ id: 'table', name: 'Table' }
+	{ id: 'table', name: 'Table' },
+	{ id: 'figure', name: 'Figure' }
 ];
 
 const digits: Record<string, number> = {
@@ -126,6 +128,14 @@ function MenuBar() {
 							shouldForceMount
 						>
 							<TableMenu index={3} />
+						</TabPanel>
+
+						<TabPanel
+							id="figure"
+							className="react-aria-TabPanel flex flex-row gap-6"
+							shouldForceMount
+						>
+							<FigureMenu index={4} />
 						</TabPanel>
 					</VisibilityContext.Provider>
 				</div>

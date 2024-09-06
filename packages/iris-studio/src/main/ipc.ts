@@ -6,9 +6,9 @@ import {
 	dialog,
 	type OpenDialogSyncOptions
 } from 'electron';
-import path from 'path';
-import os from 'os';
-import fs from 'fs';
+import path from 'node:path';
+import os from 'node:os';
+import fs from 'node:fs';
 import menu from './menu';
 
 export interface DirTreeNode {

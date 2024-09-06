@@ -11,6 +11,9 @@ import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
 import parse from 'html-react-parser';
 
+import { useSelector } from 'react-redux';
+import { type RootState } from '$state/store';
+
 function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 	switch (node.type) {
 		case 'text':
@@ -51,8 +54,7 @@ function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 	switch (mark.type) {
 		case 'link': {
-			const href = mark.attrs?.href ? String(mark.attrs.href) : null;
-			if (!href) return null;
+			const href = mark.attrs?.href ? String(mark.attrs.href) : '';
 
 			if (href.startsWith('#')) {
 				return (
@@ -246,19 +248,26 @@ export function IriscNode({
 	node: IriscNode;
 	meta: IriscMetadata;
 }) {
+	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
+	const devHost = useSelector((state: RootState) => state.dev.host);
+
+	function getBlockContent() {
+		return (
+			node.content && <IriscBlockContent nodes={node.content} meta={meta} />
+		);
+	}
+
+	function getInlineContent() {
+		return (
+			node.content && <IriscInlineContent nodes={node.content} meta={meta} />
+		);
+	}
+
 	switch (node.type) {
 		case 'doc':
-			return (
-				node.content && <IriscBlockContent nodes={node.content} meta={meta} />
-			);
+			return getBlockContent();
 		case 'paragraph':
-			return (
-				<p>
-					{node.content && (
-						<IriscInlineContent nodes={node.content} meta={meta} />
-					)}
-				</p>
-			);
+			return <p>{getInlineContent()}</p>;
 		case 'heading': {
 			const id = node.html?.id;
 			const level = node.attrs?.level;
@@ -270,9 +279,7 @@ export function IriscNode({
 							<span className="anchor-link"></span>
 						</AriaLink>
 					)}
-					{node.content && (
-						<IriscInlineContent nodes={node.content} meta={meta} />
-					)}
+					{getInlineContent()}
 				</>
 			);
 
@@ -300,38 +307,57 @@ export function IriscNode({
 							language && language.length ? `language-${language}` : ''
 						}
 					>
-						{node.content && (
-							<IriscInlineContent nodes={node.content} meta={meta} />
-						)}
+						{getInlineContent()}
 					</code>
 				</pre>
 			);
 		}
 
+		case 'figure': {
+			const float = node.attrs?.float;
+			const width = node.attrs?.width;
+			const domClasses: Record<string, string> = {
+				left: 'figure-left',
+				right: 'figure-right'
+			};
+
+			const domClass =
+				typeof float === 'string' && float.length
+					? domClasses[float]
+					: undefined;
+
+			const domStyle = width ? { width: String(width) } : undefined;
+
+			return (
+				<figure className={domClass} style={domStyle}>
+					{getBlockContent()}
+				</figure>
+			);
+		}
+		case 'figure_caption': {
+			return <figcaption>{getInlineContent()}</figcaption>;
+		}
+		case 'image': {
+			const src = node.attrs?.src;
+			const alt = node.attrs?.alt;
+			if (src === undefined || alt === undefined) return null;
+
+			return devEnabled && String(src).startsWith('/') ? (
+				<picture>
+					<source srcSet={'http://' + devHost + String(src)} />
+					<img src={String(src)} alt={String(alt)} />
+				</picture>
+			) : (
+				<img src={String(src)} alt={String(alt)} />
+			);
+		}
+
 		case 'ordered_list':
-			return (
-				<ol>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
-				</ol>
-			);
+			return <ol>{getBlockContent()}</ol>;
 		case 'bullet_list':
-			return (
-				<ul>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
-				</ul>
-			);
+			return <ul>{getBlockContent()}</ul>;
 		case 'list_item':
-			return (
-				<li>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
-				</li>
-			);
+			return <li>{getBlockContent()}</li>;
 
 		case 'table': {
 			const sizeData = tableSize(node);
@@ -345,23 +371,13 @@ export function IriscNode({
 								))}
 							</colgroup>
 						)}
-						<tbody>
-							{node.content && (
-								<IriscBlockContent nodes={node.content} meta={meta} />
-							)}
-						</tbody>
+						<tbody>{getBlockContent()}</tbody>
 					</table>
 				</div>
 			);
 		}
 		case 'table_row':
-			return (
-				<tr>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
-				</tr>
-			);
+			return <tr>{getBlockContent()}</tr>;
 		case 'table_cell':
 			return (
 				<td
@@ -374,9 +390,7 @@ export function IriscNode({
 							| 'right'
 					}}
 				>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
+					{getBlockContent()}
 				</td>
 			);
 		case 'table_header':
@@ -391,9 +405,7 @@ export function IriscNode({
 							| 'right'
 					}}
 				>
-					{node.content && (
-						<IriscBlockContent nodes={node.content} meta={meta} />
-					)}
+					{getBlockContent()}
 				</th>
 			);
 

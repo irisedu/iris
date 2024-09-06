@@ -7,6 +7,7 @@ declare global {
 	const app: Preload.AppGlobal;
 	const fs: Preload.FsGlobal;
 	const shell: Preload.ShellGlobal;
+	const patchouli: Preload.PatchouliGlobal;
 }
 
 export default global;

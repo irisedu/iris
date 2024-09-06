@@ -1,4 +1,11 @@
-import type { NodeType, MarkType, Attrs, ResolvedPos } from 'prosemirror-model';
+import type {
+	Node,
+	NodeType,
+	MarkType,
+	Attrs,
+	ResolvedPos,
+	Fragment
+} from 'prosemirror-model';
 import { toggleMark } from 'prosemirror-commands';
 import { tableNodeTypes } from 'prosemirror-tables';
 import {
@@ -71,9 +78,15 @@ export function markExtend(
 	};
 }
 
-export function insertNode(nodeType: NodeType): Command {
+export function insertNode(
+	nodeType: NodeType,
+	content?: () => Fragment | Node | readonly Node[]
+): Command {
 	return (state, dispatch) => {
-		const node = nodeType.createAndFill();
+		const node = content
+			? nodeType.create(null, content())
+			: nodeType.createAndFill();
+
 		if (!node) return false;
 
 		if (dispatch) {
@@ -307,31 +320,52 @@ export const toggleSummaryHeading: Command = (state, dispatch) => {
 	return true;
 };
 
-export const exitSummary: Command = (state, dispatch) => {
-	const { summary, paragraph } = state.schema.nodes;
-	const { $head, empty } = state.selection;
-	if (!empty) return false;
-
-	let pos: number | undefined;
+export function findParent(state: EditorState, nodeTypes: NodeType[]) {
+	const { $head } = state.selection;
 
 	for (let depth = $head.depth; depth >= 0; depth--) {
-		if ($head.node(depth).type === summary) {
-			pos = $head.after(depth);
-			break;
+		if (nodeTypes.includes($head.node(depth).type)) {
+			return { before: $head.before(depth), after: $head.after(depth) };
 		}
 	}
+}
 
-	if (!pos) return false;
+export function exitNode(nodeTypes: NodeType[]): Command {
+	return (state, dispatch) => {
+		const { paragraph } = state.schema.nodes;
+		const { empty } = state.selection;
+		if (!empty) return false;
 
-	if (dispatch) {
-		const tr = state.tr
-			.replaceWith(pos, pos, paragraph.create())
-			.scrollIntoView();
+		const pos = findParent(state, nodeTypes);
+		if (!pos) return false;
 
-		tr.setSelection(Selection.near(tr.doc.resolve(pos)));
+		if (dispatch) {
+			const tr = state.tr
+				.replaceWith(pos.after, pos.after, paragraph.create())
+				.scrollIntoView();
 
-		dispatch(tr);
-	}
+			tr.setSelection(Selection.near(tr.doc.resolve(pos.after)));
 
-	return true;
-};
+			dispatch(tr);
+		}
+
+		return true;
+	};
+}
+
+export function setParentAttr(
+	nodeType: NodeType,
+	attr: string,
+	value: unknown
+): Command {
+	return (state, dispatch) => {
+		const pos = findParent(state, [nodeType]);
+		if (!pos) return false;
+
+		if (dispatch) {
+			dispatch(state.tr.setNodeAttribute(pos.before, attr, value));
+		}
+
+		return true;
+	};
+}

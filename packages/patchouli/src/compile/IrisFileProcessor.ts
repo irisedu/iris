@@ -262,6 +262,26 @@ const nodeProcessors: Record<
 			},
 			false
 		];
+	},
+	image(node, _, fileInfo) {
+		const src = node.attrs?.src;
+		if (typeof src !== 'string') return [node, false];
+
+		const internalLink = resolveInternalLink(src, fileInfo.path);
+		if (internalLink) {
+			return [
+				{
+					...node,
+					attrs: {
+						...node.attrs,
+						src: internalLinkToPageLink(internalLink)
+					}
+				},
+				false
+			];
+		}
+
+		return [node, false];
 	}
 };
 

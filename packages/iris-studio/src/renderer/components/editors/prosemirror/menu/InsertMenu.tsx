@@ -10,6 +10,7 @@ import {
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';
 import Summary from '~icons/tabler/baseline-density-small';
+import Image from '~icons/tabler/photo';
 
 function InsertMenu({
 	index,
@@ -58,6 +59,14 @@ function InsertMenu({
 					Icon={Summary}
 					command={insertNode(docSchema.nodes.summary)}
 					tooltip="Module Summary"
+				/>
+				<CommandButton
+					index={mainIdx++}
+					Icon={Image}
+					command={insertNode(docSchema.nodes.figure, () =>
+						docSchema.nodes.image.create()
+					)}
+					tooltip="Image"
 				/>
 			</VisibilityGroup>
 		</VisibilityContext.Provider>

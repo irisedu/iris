@@ -1,4 +1,5 @@
 import type * as Ipc from '../main/ipc';
+import type * as Patchouli from '../main/patchouliIntegration';
 import { contextBridge, ipcRenderer } from 'electron';
 import os from 'os';
 import path from 'path';
@@ -48,12 +49,20 @@ const shellGlobal = {
 		ipcRenderer.invoke('shell:showItemInFolder', args)
 };
 
+const patchouliGlobal = {
+	cd: (args: Patchouli.PatchouliCdArgs) =>
+		ipcRenderer.send('patchouli:cd', args),
+	setOpenFile: (args: Patchouli.PatchouliSetOpenFileArgs) =>
+		ipcRenderer.send('patchouli:setOpenFile', args)
+};
+
 export type WinGlobal = typeof winGlobal;
 export type ProcessGlobal = typeof processGlobal;
 export type OsGlobal = typeof osGlobal;
 export type AppGlobal = typeof appGlobal;
 export type FsGlobal = typeof fsGlobal;
 export type ShellGlobal = typeof shellGlobal;
+export type PatchouliGlobal = typeof patchouliGlobal;
 
 contextBridge.exposeInMainWorld('win', winGlobal);
 contextBridge.exposeInMainWorld('process', processGlobal);
@@ -61,3 +70,4 @@ contextBridge.exposeInMainWorld('os', osGlobal);
 contextBridge.exposeInMainWorld('app', appGlobal);
 contextBridge.exposeInMainWorld('fs', fsGlobal);
 contextBridge.exposeInMainWorld('shell', shellGlobal);
+contextBridge.exposeInMainWorld('patchouli', patchouliGlobal);

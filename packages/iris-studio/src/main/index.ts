@@ -1,8 +1,10 @@
 import { app, shell, BrowserWindow } from 'electron';
-import path from 'path';
+import path from 'node:path';
 import icon from '../../public/icon.png?asset';
 import menu from './menu';
+
 import './ipc';
+import './patchouliIntegration';
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({

@@ -48,7 +48,7 @@
 		@apply inline;
 
 		&:not(.numbered)::before {
-			@apply font-sans text-xs text-black font-bold content-['Note_›'] rounded-md bg-blue-200 p-1 cursor-grab;
+			@apply font-sans text-xs text-black font-bold content-['Note_›'] rounded-md bg-blue-200 p-1 cursor-grab whitespace-nowrap;
 		}
 
 		&.numbered::before {
@@ -63,7 +63,7 @@
 		}
 
 		.sidenote {
-			@apply font-normal text-sm text-left leading-5 float-right clear-both -mr-[45%] mb-1 w-[35%];
+			@apply font-normal text-sm text-left leading-5 float-right clear-right -mr-[45%] mb-1 w-[35%];
 
 			p {
 				@apply my-1;
@@ -88,6 +88,18 @@
 
 		.summary-heading {
 			@apply block font-bold text-xl mt-2;
+		}
+	}
+
+	figure {
+		@apply border-2 border-iris-200 p-1;
+
+		&::before {
+			@apply inline-block font-sans font-bold content-['Figure'] text-sm bg-iris-200 p-1 cursor-grab mb-2;
+		}
+
+		img:not([src]) {
+			@apply min-h-24;
 		}
 	}
 }

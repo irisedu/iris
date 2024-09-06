@@ -56,6 +56,25 @@ function App() {
 	const tabData = useSelector((state: RootState) => state.tabs.tabs);
 	const tabState = useSelector((state: RootState) => state.tabs.tabState);
 	const currentTab = useSelector((state: RootState) => state.tabs.currentTab);
+	const openDirectory = useSelector(
+		(state: RootState) => state.app.openDirectory
+	);
+
+	// Sync with patchouli integration
+	useEffect(() => {
+		patchouli.cd(openDirectory);
+	}, [openDirectory]);
+
+	useEffect(() => {
+		if (!currentTab) return;
+
+		const tab = tabData.find((t) => t.id === currentTab);
+		if (tab && tab.type === 'file') {
+			patchouli.setOpenFile(tab.fileName);
+		} else {
+			patchouli.setOpenFile(undefined);
+		}
+	}, [currentTab, tabData]);
 
 	const lastTabs = useRef<TabRender[]>();
 	const tabs = useMemo(() => {

@@ -75,7 +75,8 @@ export default [
 				os: true,
 				app: true,
 				fs: true,
-				shell: true
+				shell: true,
+				patchouli: true
 			}
 		}
 	},

@@ -181,6 +181,7 @@ export function loader({ params }: LoaderFunctionArgs) {
 export function Component() {
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 	const devHost = useSelector((state: RootState) => state.dev.host);
+	const devState = useSelector((state: RootState) => state.dev.state);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 	const params = useParams();
 	const [articleData, setArticleData] = useState<IriscFile | null>(null);
@@ -203,7 +204,7 @@ export function Component() {
 				setSeriesData(newSeriesData);
 			}
 		);
-	}, [devEnabled, devHost, params, refresh]);
+	}, [devEnabled, devHost, devState, params, refresh]);
 
 	useEffect(() => {
 		if (!articleData) {

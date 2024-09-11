@@ -16,15 +16,18 @@ export async function findFileInParents(filePath: string, fileName: string) {
 	}
 }
 
-export async function findProject() {
+export async function readConfig(configPath?: string) {
 	let configContents = defaultUserConfig;
-	let projectPath = process.cwd();
-	const configPath = await findFileInParents(process.cwd(), 'patchouli.toml');
 
 	if (configPath) {
-		logger.info(`Found configuration: ${configPath}`);
-		configContents = await fs.readFile(configPath, 'utf-8');
-		projectPath = path.dirname(configPath);
+		try {
+			configContents = await fs.readFile(configPath, 'utf-8');
+		} catch (e: unknown) {
+			logger.error('Failed to read configuration:');
+			logger.error(e);
+
+			return null;
+		}
 	}
 
 	let config: UserConfig;
@@ -32,12 +35,26 @@ export async function findProject() {
 	try {
 		// TODO: validate this using JSON schema
 		config = toml.parse(configContents) as unknown as UserConfig;
-	} catch (e) {
+	} catch (e: unknown) {
 		logger.error('Failed to read configuration:');
-		console.error(e);
+		logger.error(e);
 
-		process.exit(1);
+		return null;
 	}
+
+	return config;
+}
+
+export async function findProject() {
+	let projectPath = process.cwd();
+	const configPath = await findFileInParents(process.cwd(), 'patchouli.toml');
+	if (configPath) {
+		logger.info(`Found configuration: ${configPath}`);
+		projectPath = path.dirname(configPath);
+	}
+
+	const config = await readConfig(configPath);
+	if (!config) process.exit(1);
 
 	logger.info(`Project path: ${projectPath}`);
 

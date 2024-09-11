@@ -102,6 +102,10 @@
 			@apply min-h-24;
 		}
 	}
+
+	img {
+		@apply dark:bg-iris-900;
+	}
 }
 
 .ProseMirror-dropcursor {

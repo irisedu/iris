@@ -1,6 +1,6 @@
 import type * as Ipc from '../main/ipc';
 import type * as Patchouli from '../main/patchouliIntegration';
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, type IpcRendererEvent } from 'electron';
 import os from 'os';
 import path from 'path';
 
@@ -27,7 +27,18 @@ const osGlobal = {
 };
 
 const appGlobal = {
-	getVersion: () => ipcRenderer.invoke('app:version')
+	getVersion: () => ipcRenderer.invoke('app:version'),
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	on: (channel: string, cb: (...args: any[]) => void) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const ipcCb = (_: IpcRendererEvent, ...args: any[]) => {
+			cb(...args);
+		};
+
+		ipcRenderer.on(channel, ipcCb);
+
+		return () => ipcRenderer.off(channel, ipcCb);
+	}
 };
 
 const fsGlobal = {
@@ -53,7 +64,10 @@ const patchouliGlobal = {
 	cd: (args: Patchouli.PatchouliCdArgs) =>
 		ipcRenderer.send('patchouli:cd', args),
 	setOpenFile: (args: Patchouli.PatchouliSetOpenFileArgs) =>
-		ipcRenderer.send('patchouli:setOpenFile', args)
+		ipcRenderer.send('patchouli:setOpenFile', args),
+	getServerStatus: () => ipcRenderer.invoke('patchouli:getServerStatus'),
+	setServerIsOpen: (args: Patchouli.PatchouliSetServerIsOpenArgs) =>
+		ipcRenderer.invoke('patchouli:setServerIsOpen', args)
 };
 
 export type WinGlobal = typeof winGlobal;

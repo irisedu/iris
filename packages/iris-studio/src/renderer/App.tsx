@@ -4,6 +4,7 @@ import Sidebar from '$components/Sidebar';
 import { data as welcomeTabData } from '$components/tabs/WelcomeTab';
 import { data as diagnosticsTabData } from '$components/tabs/DiagnosticsTab';
 import CloseDialog from '$components/CloseDialog';
+import WatchServerWidget from '$components/WatchServerWidget';
 import {
 	Button,
 	Tabs,
@@ -204,7 +205,7 @@ function App() {
 				</TopBar>
 
 				<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
-					<Panel defaultSize={80} minSize={50}>
+					<Panel defaultSize={80} minSize={50} className="relative">
 						<Collection items={tabs}>
 							{(item) => (
 								<TabPanel className="react-aria-TabPanel h-full">
@@ -212,6 +213,8 @@ function App() {
 								</TabPanel>
 							)}
 						</Collection>
+
+						<WatchServerWidget />
 					</Panel>
 
 					{sidebarOpen && (

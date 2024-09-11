@@ -1,36 +1,97 @@
-import { app, ipcMain, protocol, net } from 'electron';
-import { resolveInternalLink } from 'patchouli';
+import { app, ipcMain, protocol, net, type BrowserWindow } from 'electron';
+import {
+	resolveInternalLink,
+	WatchServer,
+	readConfig,
+	type UserConfig
+} from 'patchouli';
 import path from 'node:path';
 import url from 'node:url';
 
 export type PatchouliCdArgs = string | undefined;
 export type PatchouliSetOpenFileArgs = string | undefined;
+export type PatchouliSetServerIsOpenArgs = boolean;
 
-// NOTE: this scheme does not support multiple files open at once
-let openDirectory: string | undefined;
-let openFile: string | undefined;
+export default function initPatchouliIntegration(win: BrowserWindow) {
+	// NOTE: this scheme does not support multiple files open at once
+	let openDirectory: string | undefined;
+	let openFile: string | undefined;
+	let watchServer: WatchServer | undefined;
 
-ipcMain.on('patchouli:cd', (_, args: PatchouliCdArgs) => {
-	if (openDirectory === args) return;
-	openDirectory = args;
-});
+	async function startServer(config: UserConfig, openDirectory: string) {
+		await stopServer();
 
-ipcMain.on('patchouli:setOpenFile', (_, args: PatchouliSetOpenFileArgs) => {
-	if (openFile === args) return;
-	openFile = args;
-});
+		watchServer = new WatchServer(config, openDirectory);
 
-app.whenReady().then(() => {
-	protocol.handle('asset', (request) => {
-		if (!openDirectory || !openFile)
-			return new Response('Not Found', { status: 404 });
+		watchServer.on('build', (results) => {
+			win.webContents.send(
+				'patchouli:build',
+				results.map((r) => r.toJSON())
+			);
+		});
 
-		const assetPath = request.url.slice('asset://'.length);
-		const internalLink = resolveInternalLink(assetPath, openFile);
-		if (!internalLink) return new Response('Not Found', { status: 404 });
+		watchServer.on('buildError', (err) => {
+			win.webContents.send('patchouli:buildError', err);
+		});
 
-		return net.fetch(
-			url.pathToFileURL(path.join(openDirectory, internalLink)).toString()
+		await watchServer.start();
+	}
+
+	async function stopServer() {
+		await watchServer?.stop();
+		watchServer = undefined;
+	}
+
+	ipcMain.on('patchouli:cd', async (_, args: PatchouliCdArgs) => {
+		if (openDirectory === args) return;
+		openDirectory = args;
+
+		await stopServer();
+	});
+
+	ipcMain.on('patchouli:setOpenFile', (_, args: PatchouliSetOpenFileArgs) => {
+		if (openFile === args) return;
+		openFile = args;
+	});
+
+	ipcMain.handle('patchouli:getServerStatus', () => {
+		return (
+			watchServer && {
+				isOpen: watchServer.isOpen,
+				openFailed: watchServer.openFailed
+			}
 		);
 	});
-});
+
+	ipcMain.handle(
+		'patchouli:setServerIsOpen',
+		async (_, args: PatchouliSetServerIsOpenArgs) => {
+			if (args && openDirectory) {
+				const configPath = path.join(openDirectory, 'patchouli.toml');
+				const config = await readConfig(configPath);
+
+				// Check this after awaiting to avoid races
+				if (watchServer?.isOpen) return;
+
+				if (config) await startServer(config, openDirectory);
+			} else {
+				await stopServer();
+			}
+		}
+	);
+
+	app.whenReady().then(() => {
+		protocol.handle('asset', (request) => {
+			if (!openDirectory || !openFile)
+				return new Response('Not Found', { status: 404 });
+
+			const assetPath = request.url.slice('asset://'.length);
+			const internalLink = resolveInternalLink(assetPath, openFile);
+			if (!internalLink) return new Response('Not Found', { status: 404 });
+
+			return net.fetch(
+				url.pathToFileURL(path.join(openDirectory, internalLink)).toString()
+			);
+		});
+	});
+}

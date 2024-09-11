@@ -4,7 +4,7 @@ import icon from '../../public/icon.png?asset';
 import menu from './menu';
 
 import './ipc';
-import './patchouliIntegration';
+import initPatchouliIntegration from './patchouliIntegration';
 
 function createWindow() {
 	const mainWindow = new BrowserWindow({
@@ -19,6 +19,8 @@ function createWindow() {
 			sandbox: false
 		}
 	});
+
+	initPatchouliIntegration(mainWindow);
 
 	mainWindow.setMenu(menu);
 

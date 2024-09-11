@@ -29,6 +29,9 @@ export class WatchServer extends EventEmitter {
 	#watcher?: FSWatcher;
 	#server?: ReturnType<Express['listen']>;
 
+	#isOpen = false;
+	#openFailed = false;
+
 	constructor(config: UserConfig, projectPath: string) {
 		super();
 
@@ -63,6 +66,11 @@ export class WatchServer extends EventEmitter {
 		// Start server
 		this.#server = this.#app.listen(port, '127.0.0.1', () => {
 			logger.success(`Watch server listening on 127.0.0.1:${port}`);
+			this.#isOpen = true;
+		});
+
+		this.#server.on('error', () => {
+			this.#openFailed = true;
 		});
 
 		// Start websocket
@@ -95,6 +103,8 @@ export class WatchServer extends EventEmitter {
 	}
 
 	async stop() {
+		if (!this.#isOpen) return;
+
 		await this.#watcher?.close();
 		this.#watcher = undefined;
 
@@ -103,5 +113,16 @@ export class WatchServer extends EventEmitter {
 
 		this.#server?.close();
 		this.#server = undefined;
+
+		this.#isOpen = false;
+		this.#openFailed = false;
+	}
+
+	get isOpen() {
+		return this.#isOpen;
+	}
+
+	get openFailed() {
+		return this.#openFailed;
 	}
 }

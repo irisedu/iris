@@ -92,11 +92,7 @@
 	}
 
 	figure {
-		@apply border-2 border-iris-200 p-1;
-
-		&::before {
-			@apply inline-block font-sans font-bold content-['Figure'] text-sm bg-iris-200 p-1 cursor-grab mb-2;
-		}
+		@apply border-4 border-iris-200 p-1;
 
 		img:not([src]) {
 			@apply min-h-24;

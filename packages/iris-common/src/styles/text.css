@@ -1,5 +1,5 @@
 :root {
-	@apply hyphens-auto break-all;
+	@apply hyphens-auto break-words;
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;

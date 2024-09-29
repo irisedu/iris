@@ -25,4 +25,6 @@
 
 :root {
 	@apply scroll-smooth font-serif;
+
+	font-size: 125%;
 }

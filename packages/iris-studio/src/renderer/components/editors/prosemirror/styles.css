@@ -63,7 +63,7 @@
 		}
 
 		.sidenote {
-			@apply font-normal text-sm text-left leading-5 float-right clear-right -mr-[45%] mb-1 w-[35%];
+			@apply font-normal text-sm text-left float-right clear-right -mr-[45%] mb-1 w-[35%];
 
 			p {
 				@apply my-1;

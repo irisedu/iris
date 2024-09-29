@@ -26,7 +26,7 @@
 :root {
 	@apply scroll-smooth font-serif;
 
-	font-size: 24px;
+	font-size: 150%;
 }
 
 body {

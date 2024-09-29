@@ -1,5 +1,5 @@
 :root {
-	@apply hyphens-auto break-words;
+	@apply hyphens-auto break-words leading-snug;
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;

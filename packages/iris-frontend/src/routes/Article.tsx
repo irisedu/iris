@@ -126,7 +126,7 @@ function Sidebar({
 	const isLg = useMediaQuery({ query: '(min-width: 1024px)' });
 
 	return (
-		<div className="flex flex-col gap-8 lg:max-w-[25ch]">
+		<div className="flex flex-col gap-8 lg:max-w-[25ch] text-sm">
 			<div className="px-2 max-h-56 lg:max-h-80 overflow-y-auto">
 				<span className="text-xl">
 					<IriscInlineContent
@@ -237,7 +237,7 @@ export function Component() {
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}
 
-			<div className="lg:px-8 w-full lg:w-[58%] max-w-[70ch] min-h-72 mx-auto lg:mx-0">
+			<div className="lg:px-8 w-full lg:w-[55%] max-w-[60ch] min-h-72 mx-auto lg:mx-0">
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent
 						nodes={articleData.meta.title ?? []}

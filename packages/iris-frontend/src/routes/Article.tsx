@@ -144,7 +144,7 @@ function Sidebar({
 				<details className="lg:sticky top-8 contents--disabled" open={isLg}>
 					<summary
 						className={`text-lg ${isLg ? 'pointer-events-none' : ''}`}
-						tabIndex={-1}
+						tabIndex={isLg ? -1 : undefined}
 					>
 						Contents
 					</summary>

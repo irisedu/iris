@@ -1,20 +1,27 @@
 import express from 'express';
 import path from 'path';
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import { expressLogger } from './logger.js';
+import { indexBuildFiles } from './indexer.js';
 
 const app = express();
 
+const buildRoot = process.env.BUILD_ROOT || path.join(process.cwd(), 'build');
 const contentRoot =
 	process.env.CONTENT_ROOT || path.join(process.cwd(), 'content');
+
+// TODO: should run more smartly
+fs.rm(contentRoot, { recursive: true }).then(() =>
+	indexBuildFiles(buildRoot, contentRoot)
+);
 
 app.get('/page/:series/*', async (req, res) => {
 	const series = req.params.series;
 	const slug = (req.params as unknown as string[])[0]; // TODO
 
 	try {
-		const filePath = path.join(contentRoot, series, slug);
-		const contents = await fs.promises.readFile(filePath);
+		const filePath = path.join(contentRoot, series, 'static', slug);
+		const contents = await fs.readFile(filePath);
 
 		if (slug.endsWith('.irisc')) {
 			res.contentType('application/json');

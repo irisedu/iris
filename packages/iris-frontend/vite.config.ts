@@ -31,5 +31,10 @@ export default defineConfig({
 				replacement: path.join(import.meta.dirname, 'src/state')
 			}
 		]
+	},
+	server: {
+		proxy: {
+			'^\\/page\\/[^.]+\\..*$': 'http://localhost:58063'
+		}
 	}
 });

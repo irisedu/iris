@@ -223,7 +223,7 @@ function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
 					setImageModified(true);
 				}}
 				onKeyDown={(e) => {
-					if (e.key === 'Enter' && e.ctrlKey) {
+					if (e.key === 'Enter' && e.metaKey) {
 						updateImage();
 						setImageModified(false);
 					}

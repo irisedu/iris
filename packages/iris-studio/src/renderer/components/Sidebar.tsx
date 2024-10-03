@@ -167,7 +167,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 				className={`px-2 border-2 rounded-md flex flex-row gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ' border-transparent'}`}
 				ref={dragHandle}
 				onClick={(e) => {
-					if (e.ctrlKey) {
+					if (e.metaKey) {
 						if (node.isSelected) node.deselect();
 						else node.selectMulti();
 
@@ -237,7 +237,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 					<span
 						className="overflow-x-hidden whitespace-nowrap text-ellipsis"
 						onClick={(e) => {
-							if (e.ctrlKey || e.shiftKey) return;
+							if (e.metaKey || e.shiftKey) return;
 
 							if (e.detail > 1) {
 								if (clickTimeout.current) {
@@ -488,6 +488,7 @@ function Sidebar() {
 						data={treeData.data}
 						disableEdit={false}
 						disableDrop={(args) => treeData.disableDrop(args)}
+						rowClassName="no-focus-outline"
 						onCreate={async (args) => {
 							if (!openDirectory) return null;
 
@@ -587,7 +588,7 @@ function Sidebar() {
 						}}
 						width={treeWidth}
 						height={treeHeight}
-						rowHeight={44}
+						rowHeight={36}
 						openByDefault={false}
 						ref={tree}
 					>

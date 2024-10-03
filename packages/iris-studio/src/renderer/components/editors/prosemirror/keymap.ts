@@ -37,7 +37,7 @@ import { toggleInlineMath, insertDisplayMath } from './katex';
 
 function schemaCommonKeymap(schema: Schema) {
 	return {
-		'Mod-Space': insertNode(schema.nodes.nbsp),
+		'Ctrl-Space': insertNode(schema.nodes.nbsp),
 
 		'Mod-i': toggleMark(schema.marks.italic),
 		'Mod-b': toggleMark(schema.marks.bold),

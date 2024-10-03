@@ -49,7 +49,7 @@ function MenuBar() {
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.ctrlKey || e.repeat) return;
+			if (!e.metaKey || e.repeat) return;
 
 			const digit = digits[e.code];
 			if (digit === undefined) return;

@@ -22,11 +22,8 @@ export async function readConfig(configPath?: string) {
 	if (configPath) {
 		try {
 			configContents = await fs.readFile(configPath, 'utf-8');
-		} catch (e: unknown) {
-			logger.error('Failed to read configuration:');
-			logger.error(e);
-
-			return null;
+		} catch {
+			logger.info('Failed to read configuration, falling back to defaults...');
 		}
 	}
 

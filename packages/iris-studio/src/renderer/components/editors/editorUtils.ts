@@ -72,7 +72,7 @@ export function useFileEditor({
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.ctrlKey || e.repeat) return;
+			if (!e.metaKey || e.repeat) return;
 
 			if (e.key === 's') {
 				const contents = getFile();

@@ -130,7 +130,7 @@ function App() {
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.ctrlKey || e.repeat) return;
+			if (!e.metaKey || e.repeat) return;
 
 			if (e.code === 'Tab') {
 				dispatch(advanceTab(e.shiftKey ? -1 : 1));

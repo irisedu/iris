@@ -17,6 +17,7 @@ import {
 	Collection
 } from 'react-aria-components';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+import { cmdOrCtrl } from './utils';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -134,7 +135,7 @@ function App() {
 
 			if (e.ctrlKey && e.code === 'Tab') {
 				dispatch(advanceTab(e.shiftKey ? -1 : 1));
-			} else if (e.metaKey && e.key === 'w') {
+			} else if (cmdOrCtrl(e) && e.key === 'w') {
 				if (currentTab) tryCloseTab(currentTab);
 			}
 		}

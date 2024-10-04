@@ -12,6 +12,7 @@ import {
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
 import { Submenu } from 'iris-common/components';
+import { cmdOrCtrl } from '../utils';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState, type AppDispatch } from '$state/store';
@@ -167,7 +168,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 				className={`px-2 border-2 rounded-md flex flex-row gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ' border-transparent'}`}
 				ref={dragHandle}
 				onClick={(e) => {
-					if (e.metaKey) {
+					if (cmdOrCtrl(e)) {
 						if (node.isSelected) node.deselect();
 						else node.selectMulti();
 
@@ -237,7 +238,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 					<span
 						className="overflow-x-hidden whitespace-nowrap text-ellipsis"
 						onClick={(e) => {
-							if (e.metaKey || e.shiftKey) return;
+							if (cmdOrCtrl(e) || e.shiftKey) return;
 
 							if (e.detail > 1) {
 								if (clickTimeout.current) {

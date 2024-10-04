@@ -13,6 +13,7 @@ import {
 	Label
 } from 'react-aria-components';
 import { markExtend } from './commands';
+import { cmdOrCtrl } from '../../../utils';
 
 import ExternalLink from '~icons/tabler/external-link';
 
@@ -223,7 +224,7 @@ function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
 					setImageModified(true);
 				}}
 				onKeyDown={(e) => {
-					if (e.key === 'Enter' && e.metaKey) {
+					if (e.key === 'Enter' && cmdOrCtrl(e)) {
 						updateImage();
 						setImageModified(false);
 					}

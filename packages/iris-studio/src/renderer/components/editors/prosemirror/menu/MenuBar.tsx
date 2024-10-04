@@ -13,6 +13,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext
 } from '$components/VisibilityContext';
+import { cmdOrCtrl } from '../../../../utils';
 
 import HomeMenu from './HomeMenu';
 import FormatMenu from './FormatMenu';
@@ -49,7 +50,7 @@ function MenuBar() {
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.metaKey || e.repeat) return;
+			if (!cmdOrCtrl(e) || e.repeat) return;
 
 			const digit = digits[e.code];
 			if (digit === undefined) return;

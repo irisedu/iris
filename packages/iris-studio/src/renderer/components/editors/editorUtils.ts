@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { cmdOrCtrl } from '../../utils';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -72,7 +73,7 @@ export function useFileEditor({
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
-			if (!e.metaKey || e.repeat) return;
+			if (!cmdOrCtrl(e) || e.repeat) return;
 
 			if (e.key === 's') {
 				const contents = getFile();

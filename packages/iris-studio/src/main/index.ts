@@ -1,7 +1,7 @@
-import { app, shell, BrowserWindow } from 'electron';
+import { app, shell, BrowserWindow, Menu } from 'electron';
 import path from 'node:path';
 import icon from '../../public/icon.png?asset';
-import menu from './menu';
+import { menu, appMenu } from './menu';
 
 import './ipc';
 import initPatchouliIntegration from './patchouliIntegration';
@@ -22,6 +22,7 @@ function createWindow() {
 
 	initPatchouliIntegration(mainWindow);
 
+	Menu.setApplicationMenu(appMenu);
 	mainWindow.setMenu(menu);
 
 	mainWindow.on('ready-to-show', () => {

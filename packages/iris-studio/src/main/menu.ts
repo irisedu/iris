@@ -1,6 +1,6 @@
 import { Menu, MenuItem } from 'electron';
 
-const menu = new Menu();
+export const menu = new Menu();
 
 menu.append(
 	new MenuItem({
@@ -41,4 +41,61 @@ menu.append(
 	})
 );
 
-export default menu;
+export const appMenu = new Menu();
+
+appMenu.append(
+	new MenuItem({
+		label: 'Iris Studio',
+		submenu: [
+			{
+				label: 'About Iris Studio',
+				role: 'about'
+			},
+			{ type: 'separator' },
+			{
+				label: 'Quit Iris Studio',
+				accelerator: 'CmdOrCtrl+Q',
+				role: 'quit'
+			}
+		]
+	})
+);
+
+appMenu.append(
+	new MenuItem({
+		label: 'View',
+		submenu: [
+			{
+				label: 'Refresh',
+				accelerator: 'CmdOrCtrl+R',
+				role: 'reload'
+			},
+			{
+				label: 'Inspect Element',
+				accelerator: 'CmdOrCtrl+Shift+I',
+				role: 'toggleDevTools'
+			},
+			{ type: 'separator' },
+			{
+				label: 'Zoom',
+				submenu: [
+					{
+						label: 'Zoom Out',
+						accelerator: 'CmdOrCtrl+-',
+						role: 'zoomOut'
+					},
+					{
+						label: 'Zoom In',
+						accelerator: 'CmdOrCtrl+=',
+						role: 'zoomIn'
+					},
+					{
+						label: 'Reset Zoom',
+						accelerator: 'CmdOrCtrl+0',
+						role: 'resetZoom'
+					}
+				]
+			}
+		]
+	})
+);

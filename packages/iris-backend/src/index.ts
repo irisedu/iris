@@ -2,17 +2,17 @@ import express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { expressLogger } from './logger.js';
-import { indexBuildFiles } from './indexer.js';
+import { indexRepoFiles } from './indexer.js';
 
 const app = express();
 
-const buildRoot = process.env.BUILD_ROOT || path.join(process.cwd(), 'build');
+const repoRoot = process.env.BUILD_ROOT || path.join(process.cwd(), 'repo');
 const contentRoot =
 	process.env.CONTENT_ROOT || path.join(process.cwd(), 'content');
 
 // TODO: should run more smartly
 fs.rm(contentRoot, { recursive: true }).then(() =>
-	indexBuildFiles(buildRoot, contentRoot)
+	indexRepoFiles(repoRoot, contentRoot)
 );
 
 app.get('/page/:series/*', async (req, res) => {

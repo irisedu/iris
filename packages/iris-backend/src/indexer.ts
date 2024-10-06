@@ -2,9 +2,10 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { indexerLogger } from './logger.js';
 
-export async function indexBuildDir(buildDir: string, contentRoot: string) {
-	indexerLogger.info({ buildDir }, `Indexing ${buildDir} ...`);
+export async function indexRepoDir(repoDir: string, contentRoot: string) {
+	indexerLogger.info({ repoDir }, `Indexing ${repoDir} ...`);
 
+	const buildDir = path.join(repoDir, 'build');
 	const buildContents = await fs.readdir(buildDir, { withFileTypes: true });
 
 	for (const dirent of buildContents) {
@@ -26,14 +27,14 @@ export async function indexBuildDir(buildDir: string, contentRoot: string) {
 	}
 }
 
-export async function indexBuildFiles(buildRoot: string, contentRoot: string) {
+export async function indexRepoFiles(repoRoot: string, contentRoot: string) {
 	await fs.mkdir(contentRoot, { recursive: true });
 
-	const buildDirs = await fs.readdir(buildRoot);
+	const repoDirs = await fs.readdir(repoRoot);
 
 	await Promise.all(
-		buildDirs.map((buildDir) =>
-			indexBuildDir(path.join(buildRoot, buildDir), contentRoot)
+		repoDirs.map((buildDir) =>
+			indexRepoDir(path.join(repoRoot, buildDir), contentRoot)
 		)
 	);
 }

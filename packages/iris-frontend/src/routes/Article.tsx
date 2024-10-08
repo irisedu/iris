@@ -33,11 +33,6 @@ hljs.configure({
 
 hljs.addPlugin(mergeHTMLPlugin);
 
-// @ts-expect-error Interop with line numbers
-window.hljs = hljs;
-// @ts-expect-error Library does not have types
-await import('highlightjs-line-numbers.js');
-
 async function getPageData(
 	fullPath: string,
 	devEnabled: boolean,
@@ -224,8 +219,6 @@ export function Component() {
 
 			delete elem.dataset.highlighted;
 			hljs.highlightElement(elem);
-			// @ts-expect-error Injected function
-			hljs.lineNumbersBlock(elem);
 		});
 	});
 

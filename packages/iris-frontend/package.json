@@ -13,7 +13,6 @@
 		"@reduxjs/toolkit": "^2.2.8",
 		"deep-equal": "^2.2.3",
 		"highlight.js": "^11.10.0",
-		"highlightjs-line-numbers.js": "^2.8.0",
 		"html-react-parser": "^5.1.18",
 		"iris-common": "workspace:^",
 		"react": "^18.3.1",

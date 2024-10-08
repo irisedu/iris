@@ -15,6 +15,6 @@
 		"react-aria-components": "1.2.1"
 	},
 	"devDependencies": {
-		"unplugin-icons": "^0.19.2"
+		"unplugin-icons": "^0.19.3"
 	}
 }

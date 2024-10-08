@@ -1,4 +1,5 @@
 import logger from './logger';
+import anymatch from 'anymatch';
 import { EventEmitter } from 'events';
 import { posix as path } from 'path';
 import express, { type Express } from 'express';
@@ -83,7 +84,11 @@ export class WatchServer extends EventEmitter {
 
 		// Start watcher
 		this.#watcher = chokidar.watch('.', {
-			ignored: getIgnoredPaths(this.#config),
+			ignored: (file) =>
+				anymatch(
+					getIgnoredPaths(this.#config),
+					path.relative(this.#projectPath, file)
+				),
 			ignoreInitial: true,
 			cwd: this.#projectPath
 		});

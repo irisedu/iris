@@ -65,7 +65,23 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 			} else if (mark.attrs?.internalLink) {
 				return <Link to={href}>{children}</Link>;
 			} else {
-				return <AriaLink href={href}>{children}</AriaLink>;
+				let isExternal = false;
+
+				try {
+					new URL(href);
+					isExternal = true;
+				} catch {
+					// Nothing
+				}
+
+				return (
+					<AriaLink
+						href={href}
+						className={`react-aria-Link${isExternal ? ' external' : ''}`}
+					>
+						{children}
+					</AriaLink>
+				);
 			}
 		}
 

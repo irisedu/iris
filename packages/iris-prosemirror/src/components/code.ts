@@ -1,3 +1,5 @@
+import type { ProseMirrorComponent } from '../';
+import type { NodeSpec } from 'prosemirror-model';
 import {
 	EditorView as CodeMirror,
 	keymap as cmKeymap,
@@ -14,17 +16,23 @@ import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
 
 import type { Node } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
+import { InputRule } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
-import { Selection, TextSelection, type Command } from 'prosemirror-state';
+import {
+	Selection,
+	TextSelection,
+	type Transaction,
+	type Command
+} from 'prosemirror-state';
 import { exitCode } from 'prosemirror-commands';
 import { undo, redo } from 'prosemirror-history';
-import { clearFormatting } from './commands';
+import { clearFormatting, replaceNode } from '../utils';
 
 // https://github.com/ProseMirror/website/blob/master/example/codemirror/index.js
 // https://prosemirror.net/examples/codemirror/
 // Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT)
 
-export class CodeBlockView {
+class CodeBlockView {
 	node: Node;
 	view: EditorView;
 	getPos: () => number | undefined;
@@ -308,9 +316,44 @@ function arrowHandler(dir: 'left' | 'right' | 'up' | 'down'): Command {
 	};
 }
 
-export const cmArrowHandlers = keymap({
+const cmArrowHandlers = keymap({
 	ArrowLeft: arrowHandler('left'),
 	ArrowRight: arrowHandler('right'),
 	ArrowUp: arrowHandler('up'),
 	ArrowDown: arrowHandler('down')
 });
+
+export const codeComponent = {
+	plugins: [cmArrowHandlers],
+	nodes: {
+		code_block: {
+			group: 'block',
+			content: 'text*',
+			attrs: { language: { default: '', validate: 'string' } },
+			marks: '',
+			code: true,
+			defining: true,
+			toDOM() {
+				return ['pre', ['code', 0]];
+			},
+			parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }]
+		} as NodeSpec
+	},
+	inputRules: (schema) => [
+		new InputRule(/^```(\S*)\s+$/, (state, match) => {
+			let tr: Transaction | undefined;
+
+			replaceNode(schema.nodes.code_block, { language: match[1] })(
+				state,
+				(cmdTr) => {
+					tr = cmdTr;
+				}
+			);
+
+			return tr ?? null;
+		})
+	],
+	nodeViews: {
+		code_block: (node, view, getPos) => new CodeBlockView(node, view, getPos)
+	}
+} satisfies ProseMirrorComponent;

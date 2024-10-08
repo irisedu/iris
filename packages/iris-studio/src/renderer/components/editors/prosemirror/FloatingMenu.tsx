@@ -12,7 +12,7 @@ import {
 	Button,
 	Label
 } from 'react-aria-components';
-import { markExtend } from './commands';
+import { markExtend } from 'iris-prosemirror';
 import { cmdOrCtrl } from '../../../utils';
 
 import ExternalLink from '~icons/tabler/external-link';

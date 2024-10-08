@@ -14,7 +14,7 @@ import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
-import { markActive } from '../commands';
+import { markActive } from 'iris-prosemirror';
 import { useVisibility } from '$components/VisibilityContext';
 
 export function isNode(state: EditorState, nodeType: NodeType) {

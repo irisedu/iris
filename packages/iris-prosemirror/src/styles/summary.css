@@ -1,0 +1,15 @@
+.ProseMirror .summary {
+	@apply p-2;
+
+	&::before {
+		@apply inline-block font-sans font-bold content-['Module_Summary'] text-sm bg-iris-200 p-1 cursor-grab mb-2;
+	}
+
+	.summary-page {
+		@apply font-mono text-blue-700;
+	}
+
+	.summary-heading {
+		@apply block font-bold text-xl mt-2;
+	}
+}

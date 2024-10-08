@@ -1,0 +1,31 @@
+/* Styling based on https://edwardtufte.github.io/tufte-css/ and https://practicaltypography.com/ */
+.ProseMirror {
+	counter-reset: sidenote-counter;
+
+	.sidenote-container {
+		@apply inline;
+
+		&:not(.numbered)::before {
+			@apply font-sans text-xs text-black font-bold content-['Note_›'] rounded-md bg-blue-200 p-1 cursor-grab whitespace-nowrap;
+		}
+
+		&.numbered::before {
+			@apply content-[counter(sidenote-counter)] text-xs align-super cursor-grab;
+			counter-increment: sidenote-counter;
+		}
+
+		&.numbered
+			.sidenote
+			> :first-child:not(.math-display):not(.katex-render)::before {
+			@apply content-[counter(sidenote-counter)] text-xs align-super mr-1;
+		}
+
+		.sidenote {
+			@apply font-normal text-sm text-left float-right clear-right -mr-[45%] mb-1 w-[35%];
+
+			p {
+				@apply my-1;
+			}
+		}
+	}
+}

@@ -52,11 +52,22 @@ export default [
 			'react/prop-types': 'off',
 			'react-refresh/only-export-components': 'off',
 			'import/no-absolute-path': 'off',
-			'@typescript-eslint/no-non-null-assertion': 'off'
+			'@typescript-eslint/no-non-null-assertion': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_'
+				}
+			]
 		}
 	},
 	{
-		files: ['packages/iris-frontend/src/**'],
+		files: [
+			'packages/iris-frontend/src/**',
+			'packages/iris-common/src/**',
+			'packages/iris-prosemirror/src/**'
+		],
 
 		languageOptions: {
 			globals: {

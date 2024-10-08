@@ -1,4 +1,5 @@
-import type { Node } from 'prosemirror-model';
+import type { ProseMirrorComponent } from '../';
+import type { MarkSpec, Node, NodeSpec } from 'prosemirror-model';
 import {
 	Plugin,
 	Selection,
@@ -8,9 +9,9 @@ import {
 	type Transaction
 } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-import KaTeX from 'katex';
 import { toggleMark } from 'prosemirror-commands';
-import { insertNode } from './commands';
+import { insertNode } from '../utils';
+import KaTeX from 'katex';
 
 const pluginKey = new PluginKey('katex');
 
@@ -83,7 +84,7 @@ function getKaTeXDecorations(
 	return DecorationSet.create(doc, decos);
 }
 
-export const katexPlugin = new Plugin({
+const katexPlugin = new Plugin({
 	state: {
 		init(_, { doc, selection }) {
 			return {
@@ -152,12 +153,12 @@ export const katexPlugin = new Plugin({
 	}
 });
 
-export function getMathPreviewEnabled(state: EditorState) {
+function getMathPreviewEnabled(state: EditorState) {
 	const pluginState = katexPlugin.getState(state);
 	return pluginState ? pluginState.preview : false;
 }
 
-export function setMathPreviewEnabled(enabled: boolean): Command {
+function setMathPreviewEnabled(enabled: boolean): Command {
 	return (state, dispatch) => {
 		if (dispatch) {
 			const tr = state.tr.setMeta(pluginKey, enabled);
@@ -171,7 +172,7 @@ export function setMathPreviewEnabled(enabled: boolean): Command {
 	};
 }
 
-export const toggleInlineMath: Command = (state, dispatch) => {
+const toggleInlineMath: Command = (state, dispatch) => {
 	const inlineMath = state.schema.marks.math_inline;
 	if (!toggleMark(inlineMath)(state)) return false;
 
@@ -188,7 +189,7 @@ export const toggleInlineMath: Command = (state, dispatch) => {
 	return true;
 };
 
-export const insertDisplayMath: Command = (state, dispatch) => {
+const insertDisplayMath: Command = (state, dispatch) => {
 	const displayMath = state.schema.nodes.math_display;
 	if (!insertNode(displayMath)(state)) return false;
 
@@ -204,3 +205,34 @@ export const insertDisplayMath: Command = (state, dispatch) => {
 
 	return true;
 };
+
+export const mathComponent = {
+	plugins: [katexPlugin],
+	nodes: {
+		math_display: {
+			group: 'block',
+			content: 'text*',
+			marks: '',
+			isolating: true,
+			defining: true,
+			code: true,
+			toDOM() {
+				return ['pre', { class: 'math-display' }, ['code', 0]];
+			}
+		} as NodeSpec
+	},
+	marks: {
+		math_inline: {
+			excludes: '_',
+			toDOM() {
+				return ['code', { class: 'math-inline' }, 0];
+			}
+		} as MarkSpec
+	},
+	commands: {
+		getMathPreviewEnabled,
+		setMathPreviewEnabled,
+		toggleInlineMath,
+		insertDisplayMath
+	}
+} satisfies ProseMirrorComponent;

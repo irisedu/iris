@@ -1,0 +1,25 @@
+.ProseMirror {
+	/* https://github.com/ProseMirror/prosemirror-tables/blob/master/style/tables.css */
+	/* Copyright (C) 2015-2016 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT) */
+
+	.tableWrapper {
+		@apply overflow-x-auto;
+	}
+
+	td,
+	th {
+		@apply relative min-w-24;
+	}
+
+	table .selectedCell::after {
+		@apply absolute content-[''] top-0 bottom-0 left-0 right-0 bg-blue-400/30 z-50 pointer-events-none;
+	}
+
+	.column-resize-handle {
+		@apply absolute w-1 -right-0.5 top-0 bottom-0 z-10 bg-blue-400 pointer-events-none;
+	}
+
+	&.resize-cursor {
+		@apply cursor-ew-resize cursor-col-resize;
+	}
+}

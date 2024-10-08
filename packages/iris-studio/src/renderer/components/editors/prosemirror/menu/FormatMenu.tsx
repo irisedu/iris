@@ -4,7 +4,7 @@ import {
 	VisibilityContext,
 	VisibilityGroup
 } from '$components/VisibilityContext';
-import { docSchema } from '../schema';
+import { docSchema } from 'iris-prosemirror';
 
 import Strikethrough from '~icons/tabler/strikethrough';
 import Subscript from '~icons/tabler/subscript';

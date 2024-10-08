@@ -14,11 +14,8 @@ import {
 	TextField,
 	TextArea
 } from 'react-aria-components';
-import {
-	useEditorEventCallback,
-	type ReactNodeViewConstructor
-} from '@nytimes/react-prosemirror';
 import type { Node } from 'prosemirror-model';
+import { useEditorEventCallback } from '@nytimes/react-prosemirror';
 
 import Edit from '~icons/tabler/edit-circle';
 
@@ -27,7 +24,10 @@ interface FrontmatterViewProps {
 	getPos: () => number | undefined;
 }
 
-function FrontmatterView({ node, getPos }: FrontmatterViewProps) {
+export default function FrontmatterView({
+	node,
+	getPos
+}: FrontmatterViewProps) {
 	const [isOpen, setIsOpenInternal] = useState(false);
 	const authorsRef = useRef<HTMLTextAreaElement | null>(null);
 	const tagsRef = useRef<HTMLTextAreaElement | null>(null);
@@ -114,10 +114,3 @@ function FrontmatterView({ node, getPos }: FrontmatterViewProps) {
 		</div>
 	);
 }
-
-export default {
-	frontmatter_attributes: (node, view, getPos) => ({
-		component: (props) => <FrontmatterView {...props} getPos={getPos} />,
-		dom: document.createElement('div')
-	})
-} as Record<string, ReactNodeViewConstructor>;

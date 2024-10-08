@@ -2,20 +2,22 @@ import { useState, useRef } from 'react';
 import { ProseMirror } from '@nytimes/react-prosemirror';
 import { EditorState } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
-import { docSchema } from './prosemirror/schema';
-import { docPlugins } from './prosemirror/plugins';
+import {
+	docSchema,
+	docPlugins,
+	docNodeViews,
+	docReactNodeViews
+} from 'iris-prosemirror';
 import { useFileEditor } from './editorUtils';
 import MenuBar from './prosemirror/menu/MenuBar';
 import FloatingMenu from './prosemirror/FloatingMenu';
-import nodeViews from './prosemirror/nodeViews';
-import reactNodeViews from './prosemirror/reactNodeViews';
 import { useNodeViews } from '@nytimes/react-prosemirror';
 
 import type { TabData } from '$state/tabsSlice';
 
 import 'prosemirror-view/style/prosemirror.css';
 import './prosemirror/styles.css';
-import 'katex/dist/katex.min.css';
+import 'iris-prosemirror/styles';
 
 const editorProps = {
 	attributes: {
@@ -38,7 +40,7 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 	const [mount, setMount] = useState<HTMLElement | null>(null);
 
 	const { nodeViews: rNodeViews, renderNodeViews } =
-		useNodeViews(reactNodeViews);
+		useNodeViews(docReactNodeViews);
 
 	const [editorState, setEditorState] = useState(defaultState);
 	const stateRef = useRef(defaultState);
@@ -86,7 +88,7 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 				state={editorState}
 				nodeViews={{
 					...rNodeViews,
-					...nodeViews
+					...docNodeViews
 				}}
 				dispatchTransaction={(tr) => {
 					setEditorState((s) => {

@@ -1,5 +1,4 @@
-import { docSchema } from '../schema';
-import { addTable, insertNode } from '../commands';
+import { docSchema, insertNode, tableComponent } from 'iris-prosemirror';
 import { CommandButton } from './components';
 import {
 	useVisibilityParent,
@@ -46,7 +45,7 @@ function InsertMenu({
 					command={(state, dispatch) => {
 						if (dispatch) setTimeout(() => setCurrentTab('table'), 80);
 
-						return addTable({
+						return tableComponent.commands.addTable({
 							rowsCount: 2,
 							colsCount: 2,
 							withHeaderRow: true

@@ -41,5 +41,8 @@ export default {
 	},
 	darkMode: 'class',
 	plugins: [nightwind],
-	safelist: ['font-smallcaps']
+	safelist: [
+		'font-smallcaps',
+		'float-right' // FIXME: this is for the frontmatter node view
+	]
 };

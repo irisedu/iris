@@ -1,0 +1,25 @@
+.ProseMirror-dropcursor {
+	@apply bg-black;
+}
+
+/* https://github.com/ProseMirror/prosemirror-gapcursor/blob/master/style/gapcursor.css */
+/* Copyright (C) 2015-2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others (MIT) */
+
+.ProseMirror-gapcursor {
+	@apply hidden absolute pointer-events-none;
+
+	&::after {
+		@apply absolute block content-[''] -top-1 w-5 border-t-[1px] border-black;
+		animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+	}
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+	@apply block;
+}
+
+@keyframes ProseMirror-cursor-blink {
+	to {
+		visibility: hidden;
+	}
+}

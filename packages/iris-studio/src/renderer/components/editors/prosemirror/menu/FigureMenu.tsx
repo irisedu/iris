@@ -10,8 +10,7 @@ import {
 	VisibilityContext,
 	VisibilityGroup
 } from '$components/VisibilityContext';
-import { docSchema } from '../schema';
-import { setParentAttr, findParent } from '../commands';
+import { docSchema, setParentAttr, findParent } from 'iris-prosemirror';
 import {
 	Button,
 	Modal,

@@ -20,20 +20,13 @@ import {
 	MenuBarTooltip
 } from './components';
 import {
+	linkComponent,
+	mathComponent,
+	sidenoteComponent,
 	clearFormatting,
 	replaceNode,
-	getSidenote,
-	insertSidenote,
-	setSidenoteNumbering,
-	toggleLink
-} from '../commands';
-import { docSchema } from '../schema';
-import {
-	getMathPreviewEnabled,
-	setMathPreviewEnabled,
-	toggleInlineMath,
-	insertDisplayMath
-} from '../katex';
+	docSchema
+} from 'iris-prosemirror';
 import {
 	useVisibility,
 	useVisibilityParent,
@@ -56,6 +49,16 @@ import BulletList from '~icons/tabler/list';
 import Outdent from '~icons/tabler/indent-decrease';
 import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
 import SidenoteNumbering from '~icons/tabler/number-1-small';
+
+const {
+	getMathPreviewEnabled,
+	setMathPreviewEnabled,
+	toggleInlineMath,
+	insertDisplayMath
+} = mathComponent.commands;
+
+const { getSidenote, insertSidenote, setSidenoteNumbering } =
+	sidenoteComponent.commands;
 
 function TextStyleMenu({ index }: { index: number }) {
 	const [visible, setVisible] = useVisibility(index);
@@ -275,7 +278,7 @@ function HomeMenu({ index }: { index: number }) {
 					index={formatIdx++}
 					Icon={Link}
 					markType={docSchema.marks.link}
-					command={toggleLink}
+					command={linkComponent.commands.toggleLink}
 					tooltip="Link"
 					keys={['Mod', 'K']}
 				/>

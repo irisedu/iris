@@ -6,3 +6,6 @@ dist/
 pnpm-lock.yaml
 
 packages/iris-frontend/src/routes/highlightMergeHTMLPlugin.js
+packages/iris-backend/repo/
+packages/iris-backend/content/
+packages/iris-backend/spa/

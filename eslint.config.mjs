@@ -29,7 +29,14 @@ export default [
 		files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx']
 	},
 	{
-		ignores: ['**/dist/', '**/out/', '**/.eslintrc.cjs']
+		ignores: [
+			'**/dist/',
+			'**/out/',
+			'**/.eslintrc.cjs',
+			'packages/iris-backend/repo/',
+			'packages/iris-backend/content/',
+			'packages/iris-backend/spa/'
+		]
 	},
 	{
 		plugins: {

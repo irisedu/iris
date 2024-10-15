@@ -1,8 +1,8 @@
-import logger from './logger';
+import logger from './logger.js';
 import fs from 'fs-extra';
 import { posix as path } from 'path';
 import toml from '@iarna/toml';
-import { defaultUserConfig, type UserConfig } from './config';
+import { defaultUserConfig, type UserConfig } from './config.js';
 
 export async function findFileInParents(filePath: string, fileName: string) {
 	const searchPath = path.join(filePath, fileName);

@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
-import FileInfo from '../../FileInfo';
+import FileInfo from '../../FileInfo.js';
 import nunjucks from 'nunjucks';
-import FileProcessor, { type FileProcessorArgs } from '../../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../../FileProcessor.js';
 
 export default class NunjucksFileProcessor extends FileProcessor {
 	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {

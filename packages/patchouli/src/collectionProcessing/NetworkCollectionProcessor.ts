@@ -1,10 +1,10 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
-import { recurseDirectory } from '../utils';
+import { recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
-} from './CollectionProcessor';
-import type { IriscFile, IriscNode } from '../compile/docTypes';
+} from './CollectionProcessor.js';
+import type { IriscFile, IriscNode } from '../compile/docTypes.d.ts';
 
 interface NetworkNode {
 	id: string;

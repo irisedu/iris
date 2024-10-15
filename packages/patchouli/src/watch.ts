@@ -1,15 +1,15 @@
-import logger from './logger';
+import logger from './logger.js';
 import anymatch from 'anymatch';
 import { EventEmitter } from 'events';
 import { posix as path } from 'path';
 import express, { type Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar, { type FSWatcher } from 'chokidar';
-import { getIgnoredPaths } from './utils';
-import build from './build';
-import type { UserConfig } from './config';
-import distConfig from './distConfig';
-import type FileInfo from './FileInfo';
+import { getIgnoredPaths } from './utils.js';
+import build from './build.js';
+import type { UserConfig } from './config.js';
+import distConfig from './distConfig.js';
+import type FileInfo from './FileInfo.js';
 
 express.static.mime.define({ 'application/json': ['irisc'] });
 
@@ -50,6 +50,10 @@ export class WatchServer extends EventEmitter {
 		});
 
 		this.#app.use('/page', express.static(path.join(projectPath, 'build')));
+
+		this.#app.get('/series', (req, res) => {
+			res.sendFile(path.join(projectPath, 'build', 'series.json'));
+		});
 	}
 
 	async #build() {
@@ -85,7 +89,9 @@ export class WatchServer extends EventEmitter {
 		// Start watcher
 		this.#watcher = chokidar.watch('.', {
 			ignored: (file) =>
-				anymatch(
+				// FIXME
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				(anymatch as any)(
 					getIgnoredPaths(this.#config),
 					path.relative(this.#projectPath, file)
 				),

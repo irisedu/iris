@@ -3,7 +3,7 @@ import { posix as path } from 'path';
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
 import rehypeStringify from 'rehype-stringify';
-import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
 
 import rehypeMinifyAttributeWhitespace from 'rehype-minify-attribute-whitespace';
 import rehypeMinifyCssStyle from 'rehype-minify-css-style';

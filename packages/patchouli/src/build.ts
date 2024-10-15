@@ -1,26 +1,26 @@
-import logger from './logger';
+import logger from './logger.js';
 import { posix as path } from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
-import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils';
-import type { UserConfig } from './config';
-import type FileProcessor from './FileProcessor';
-import type FileInfo from './FileInfo';
-import type CollectionProcessor from './collectionProcessing/CollectionProcessor';
+import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils.js';
+import type { UserConfig } from './config.js';
+import type FileProcessor from './FileProcessor.js';
+import type FileInfo from './FileInfo.js';
+import type CollectionProcessor from './collectionProcessing/CollectionProcessor.js';
 
-import IrisFileProcessor from './compile/IrisFileProcessor';
-import TeXFileProcessor from './compile/assets/TeXFileProcessor';
-import NunjucksFileProcessor from './compile/assets/NunjucksFileProcessor';
-import TomlFileProcessor from './compile/TomlFileProcessor';
-import CatchAllFileProcessor from './compile/assets/CatchAllFileProcessor';
+import IrisFileProcessor from './compile/IrisFileProcessor.js';
+import TeXFileProcessor from './compile/assets/TeXFileProcessor.js';
+import NunjucksFileProcessor from './compile/assets/NunjucksFileProcessor.js';
+import TomlFileProcessor from './compile/TomlFileProcessor.js';
+import CatchAllFileProcessor from './compile/assets/CatchAllFileProcessor.js';
 
-import SvgFileProcessor from './postCompile/SvgFileProcessor';
-import HtmlFileProcessor from './postCompile/HtmlFileProcessor';
+import SvgFileProcessor from './postCompile/SvgFileProcessor.js';
+import HtmlFileProcessor from './postCompile/HtmlFileProcessor.js';
 
-import IrisCollectionProcessor from './collectionProcessing/IrisCollectionProcessor';
-import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor';
-import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor';
-import SeriesCollectionProcessor from './collectionProcessing/SeriesCollectionProcessor';
+import IrisCollectionProcessor from './collectionProcessing/IrisCollectionProcessor.js';
+import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor.js';
+import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor.js';
+import SeriesCollectionProcessor from './collectionProcessing/SeriesCollectionProcessor.js';
 
 /**
  * Step 1: per-file compilation
@@ -38,7 +38,9 @@ async function compileStep(config: UserConfig, inDir: string, outDir: string) {
 	const handledFiles: Record<string, string> = {};
 
 	await recurseDirectory(inDir, async (filePath) => {
-		if (anymatch(getIgnoredPaths(config), filePath)) {
+		// FIXME
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		if ((anymatch as any)(getIgnoredPaths(config), filePath)) {
 			return;
 		}
 

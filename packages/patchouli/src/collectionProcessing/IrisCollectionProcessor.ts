@@ -1,10 +1,14 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
-import { internalLinkToPageLink, recurseDirectory } from '../utils';
+import { internalLinkToPageLink, recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
-} from './CollectionProcessor';
-import type { IriscFile, IriscNode, SummaryNode } from '../compile/docTypes';
+} from './CollectionProcessor.js';
+import type {
+	IriscFile,
+	IriscNode,
+	SummaryNode
+} from '../compile/docTypes.d.ts';
 
 export default class IrisCollectionProcessor extends CollectionProcessor {
 	override async process({ outDir }: CollectionProcessorArgs) {

@@ -1,14 +1,21 @@
-import logger from '../logger';
+import logger from '../logger.js';
 import fs from 'fs-extra';
 import { posix as path } from 'path';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
-} from './CollectionProcessor';
-import { IriscFile } from '../compile/docTypes';
+} from './CollectionProcessor.js';
+import type { IriscFile, IriscNode } from '../compile/docTypes.d.ts';
+
+export interface SeriesInfo {
+	title: IriscNode[];
+	authors: string[];
+	tags: string[];
+	href: string;
+}
 
 export default class SeriesCollectionProcessor extends CollectionProcessor {
 	async process({ outDir }: CollectionProcessorArgs) {
-		const series = [];
+		const series: SeriesInfo[] = [];
 
 		const directory = await fs.readdir(outDir, { withFileTypes: true });
 
@@ -31,7 +38,7 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 			}
 
 			series.push({
-				title: summaryData.meta.title ?? '',
+				title: summaryData.meta.title ?? [],
 				authors: summaryData.meta.docAttrs?.authors ?? [],
 				tags: summaryData.meta.docAttrs?.tags ?? [],
 				href: `/page/${dirent.name}`

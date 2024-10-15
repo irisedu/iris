@@ -1,7 +1,7 @@
 // For testing purposes only.
 
-import { findProject } from './utils';
-import { WatchServer } from './watch';
+import { findProject } from './utils.js';
+import { WatchServer } from './watch.js';
 
 (async function () {
 	const { config, projectPath } = await findProject();

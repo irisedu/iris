@@ -1,5 +1,5 @@
-import type FileInfo from '../FileInfo';
-import type { UserConfig } from '../config';
+import type FileInfo from '../FileInfo.js';
+import type { UserConfig } from '../config.js';
 
 export interface CollectionProcessorArgs {
 	inDir: string;

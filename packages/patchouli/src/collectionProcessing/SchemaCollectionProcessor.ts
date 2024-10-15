@@ -3,10 +3,10 @@ import { posix as path } from 'path';
 import anymatch from 'anymatch';
 import type { Json } from '@hyperjump/json-pointer';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
-import TomlFileProcessor from '../compile/TomlFileProcessor';
+import TomlFileProcessor from '../compile/TomlFileProcessor.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
-} from './CollectionProcessor';
+} from './CollectionProcessor.js';
 
 export default class SchemaCollectionProcessor extends CollectionProcessor {
 	override async process({ inDir, outDir, fileInfo }: CollectionProcessorArgs) {
@@ -16,7 +16,9 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
 			let schemaUri: string | undefined;
 
 			for (const [key, schema] of Object.entries(this.config.schemas)) {
-				if (!anymatch(key, fi.path)) {
+				// FIXME
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				if (!(anymatch as any)(key, fi.path)) {
 					continue;
 				}
 

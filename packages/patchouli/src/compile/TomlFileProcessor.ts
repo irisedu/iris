@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
-import FileInfo from '../FileInfo';
+import FileInfo from '../FileInfo.js';
 import toml from '@iarna/toml';
-import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
 
 export default class TomlFileProcessor extends FileProcessor {
 	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
-import FileInfo from '../FileInfo';
-import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
+import FileInfo from '../FileInfo.js';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
 import type {
 	IrisFile,
 	IrisNode,
@@ -10,8 +10,8 @@ import type {
 	IriscMetadata,
 	SummaryNode,
 	TocNode
-} from './docTypes.d';
-import { resolveInternalLink, internalLinkToPageLink } from '../utils';
+} from './docTypes.d.ts';
+import { resolveInternalLink, internalLinkToPageLink } from '../utils.js';
 import GithubSlugger from 'github-slugger';
 import KaTeX from 'katex';
 

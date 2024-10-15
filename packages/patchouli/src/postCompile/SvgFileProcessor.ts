@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import { posix as path } from 'path';
 import { optimize as svgoOptimize } from 'svgo';
-import FileProcessor, { type FileProcessorArgs } from '../FileProcessor';
+import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
 
 export default class SvgFileProcessor extends FileProcessor {
 	override async process({ inDir, outDir, filePath }: FileProcessorArgs) {

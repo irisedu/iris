@@ -12,6 +12,15 @@ export function Component() {
 				Iris is your no-nonsense, open-source content management system built
 				for education.
 			</p>
+
+			<h2>For authors</h2>
+			<p>
+				To start creating Iris documents, download Iris Studio from{' '}
+				<a href="https://github.com/irisedu/iris/releases" className="external">
+					the GitHub release page
+				</a>
+				.
+			</p>
 		</>
 	);
 }

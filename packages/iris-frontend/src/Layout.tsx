@@ -27,8 +27,7 @@ function Layout() {
 				</Link>
 
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
-					<Link to="#">Link 1</Link>
-					<Link to="#">Link 2</Link>
+					<Link to="/catalog">Catalog</Link>
 				</div>
 			</nav>
 

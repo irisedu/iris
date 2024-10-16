@@ -7,7 +7,7 @@ export function Component() {
 
 	return (
 		<>
-			<h1>Welcome to Iris!</h1>
+			<h1 className="mt-0">Welcome to Iris!</h1>
 			<p>
 				Iris is your no-nonsense, open-source content management system built
 				for education.

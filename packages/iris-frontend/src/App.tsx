@@ -15,6 +15,7 @@ const router = createBrowserRouter(
 	createRoutesFromElements(
 		<Route path="/" element={<Layout />}>
 			<Route index lazy={() => import('./routes/Landing')} />
+			<Route path="/catalog" lazy={() => import('./routes/Catalog')} />
 			<Route path="/page/*" lazy={() => import('./routes/Article')} />
 		</Route>
 	)

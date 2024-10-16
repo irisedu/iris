@@ -34,7 +34,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			'^\\/page\\/[^.]+\\..*$': 'http://localhost:58063'
+			'^\\/(page\\/[^.]+\\..*)|(series\\/?)$': 'http://localhost:58063'
 		}
 	}
 });

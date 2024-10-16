@@ -39,6 +39,10 @@ app.get('/page/:series/(*.*)', async (req, res) => {
 	}
 });
 
+app.get('/series', (req, res) => {
+	res.sendFile(path.join(contentRoot, 'series.json'));
+});
+
 app.use(express.static(spaRoot));
 
 app.get('*', (req, res) => {

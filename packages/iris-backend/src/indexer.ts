@@ -1,8 +1,13 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import { indexerLogger } from './logger.js';
+import type { SeriesInfo } from 'patchouli';
 
-export async function indexRepoDir(repoDir: string, contentRoot: string) {
+export async function indexRepoDir(
+	repoDir: string,
+	contentRoot: string,
+	seriesInfo: SeriesInfo[]
+) {
 	indexerLogger.info({ repoDir }, `Indexing ${repoDir} ...`);
 
 	const buildDir = path.join(repoDir, 'build');
@@ -25,6 +30,20 @@ export async function indexRepoDir(repoDir: string, contentRoot: string) {
 			);
 		}
 	}
+
+	// Series info
+	try {
+		const seriesContents: SeriesInfo[] = JSON.parse(
+			await fs.readFile(path.join(buildDir, 'series.json'), 'utf-8')
+		);
+
+		seriesContents.forEach((s) => seriesInfo.push(s));
+	} catch {
+		indexerLogger.warn(
+			{ repoDir },
+			`Failed to read series.json for ${repoDir}`
+		);
+	}
 }
 
 export async function indexRepoFiles(repoRoot: string, contentRoot: string) {
@@ -32,9 +51,16 @@ export async function indexRepoFiles(repoRoot: string, contentRoot: string) {
 
 	const repoDirs = await fs.readdir(repoRoot);
 
+	const seriesInfo: SeriesInfo[] = [];
+
 	await Promise.all(
 		repoDirs.map((buildDir) =>
-			indexRepoDir(path.join(repoRoot, buildDir), contentRoot)
+			indexRepoDir(path.join(repoRoot, buildDir), contentRoot, seriesInfo)
 		)
+	);
+
+	await fs.writeFile(
+		path.join(contentRoot, 'series.json'),
+		JSON.stringify(seriesInfo)
 	);
 }

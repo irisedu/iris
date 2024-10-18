@@ -61,4 +61,4 @@ COPY --from=backend-prod-deps /iris/node_modules /iris/node_modules
 COPY --from=backend-build /iris/packages/iris-backend/out ./out
 COPY --from=frontend-build /iris/packages/iris-frontend/dist ./spa
 
-CMD pnpm start
+CMD ["pnpm", "start"]

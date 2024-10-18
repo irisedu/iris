@@ -58,8 +58,7 @@
 		"build": "electron-vite build",
 		"preview": "electron-vite preview",
 		"postinstall": "electron-builder install-app-deps",
-		"pack": "electron-builder --dir",
-		"dist": "electron-builder",
+		"dist": "patchouli-prebuild && electron-builder",
 		"tsc": "tsc --noEmit"
 	},
 	"devDependencies": {

@@ -1,6 +1,9 @@
 {
 	"type": "module",
 	"name": "patchouli",
+	"bin": {
+		"patchouli-prebuild": "src/prebuild.mjs"
+	},
 	"exports": {
 		".": "./src/index.ts"
 	},

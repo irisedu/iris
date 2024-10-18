@@ -7,6 +7,9 @@ RUN corepack enable
 
 COPY . /iris
 
+# Dummy config (doesn't matter for FE/BE)
+RUN cp /iris/packages/patchouli/src/distConfig.example.ts /iris/packages/patchouli/src/distConfig.ts
+
 ##################
 # Frontend build #
 ##################

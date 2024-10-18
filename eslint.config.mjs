@@ -83,6 +83,14 @@ export default [
 		}
 	},
 	{
+		files: ['packages/iris-frontend/src/**'],
+		languageOptions: {
+			globals: {
+				__APP_VERSION__: true
+			}
+		}
+	},
+	{
 		files: ['packages/iris-studio/src/renderer/**'],
 
 		languageOptions: {

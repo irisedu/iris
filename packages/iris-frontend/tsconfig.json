@@ -5,7 +5,7 @@
 		"moduleResolution": "bundler",
 		"baseUrl": "./",
 		"jsx": "preserve",
-		"types": ["vite/client", "unplugin-icons/types/react"],
+		"types": ["vite/client", "unplugin-icons/types/react", "./src/globals"],
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,

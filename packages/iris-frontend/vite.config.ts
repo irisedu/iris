@@ -36,5 +36,8 @@ export default defineConfig({
 		proxy: {
 			'^\\/(page\\/[^.]+\\..*)|(series\\/?)$': 'http://localhost:58063'
 		}
+	},
+	define: {
+		__APP_VERSION__: JSON.stringify(process.env.npm_package_version)
 	}
 });

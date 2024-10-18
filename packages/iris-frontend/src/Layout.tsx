@@ -67,7 +67,10 @@ function Layout() {
 					</p>
 
 					<div className="flex flex-row flex-wrap items-center gap-1">
-						<AriaLink href="https://github.com/irisedu/iris" aria-label="GitHub">
+						<AriaLink
+							href="https://github.com/irisedu/iris"
+							aria-label="GitHub"
+						>
 							<Git className="w-5 h-5" />
 						</AriaLink>
 						<AriaLink href="https://react.dev/" aria-label="React">
@@ -81,6 +84,8 @@ function Layout() {
 						</AriaLink>
 						<Heart className="w-5 h-5 text-iris-900" />
 					</div>
+
+					<span className="text-xs mt-2 text-gray-700">v{__APP_VERSION__}</span>
 				</div>
 			</footer>
 		</div>

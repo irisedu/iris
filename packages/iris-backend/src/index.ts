@@ -12,9 +12,17 @@ const contentRoot =
 const spaRoot = process.env.SPA_ROOT || path.join(process.cwd(), 'spa');
 
 // TODO: should run more smartly
-fs.rm(contentRoot, { recursive: true }).then(() =>
-	indexRepoFiles(repoRoot, contentRoot)
-);
+fs.readdir(contentRoot)
+	.then((contents) =>
+		Promise.all(
+			contents.map((file) =>
+				fs.rm(path.join(contentRoot, file), { recursive: true })
+			)
+		)
+	)
+	.then(() => {
+		indexRepoFiles(repoRoot, contentRoot);
+	});
 
 app.get('/page/:series/(*.*)', async (req, res) => {
 	const series = req.params.series;

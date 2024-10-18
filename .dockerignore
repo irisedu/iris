@@ -1,0 +1,11 @@
+Dockerfile
+
+**/.direnv/
+**/node_modules/
+
+/packages/iris-backend/out
+/packages/iris-backend/repo
+/packages/iris-backend/content
+/packages/iris-backend/spa
+
+/packages/iris-frontend/dist

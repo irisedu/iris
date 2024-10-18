@@ -49,7 +49,7 @@ app.get('*', (req, res) => {
 	res.sendFile(path.join(spaRoot, 'index.html'));
 });
 
-const port = process.env.EXPRESS_PORT || 58063;
+const port = process.env.PORT || 58063;
 
 app.listen(port, () => {
 	expressLogger.info({ port }, `Listening on port ${port}`);

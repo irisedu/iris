@@ -1,7 +1,6 @@
 {
 	"name": "iris-common",
 	"description": "Common components and styles for Iris",
-	"version": "0.0.0",
 	"type": "module",
 	"exports": {
 		"./styles": "./src/styles/index.css",

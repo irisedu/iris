@@ -1,7 +1,7 @@
 {
 	"name": "iris-backend",
 	"description": "Backend for Iris website",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
 		"tsc": "tsc --noEmit",

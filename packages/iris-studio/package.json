@@ -1,6 +1,6 @@
 {
 	"name": "iris-studio",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "WYSIWYM editor for Iris documents",
 	"author": "ksk",
 	"private": true,

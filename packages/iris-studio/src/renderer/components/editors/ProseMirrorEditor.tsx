@@ -6,7 +6,8 @@ import {
 	docSchema,
 	docPlugins,
 	docNodeViews,
-	docReactNodeViews
+	docReactNodeViews,
+	saveFile
 } from 'iris-prosemirror';
 import { useFileEditor } from './editorUtils';
 import MenuBar from './prosemirror/menu/MenuBar';
@@ -61,14 +62,7 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 			stateRef.current = prevState;
 		},
 		getFile() {
-			return JSON.stringify(
-				{
-					version: 1,
-					data: stateRef.current.doc.toJSON()
-				},
-				null,
-				'\t'
-			);
+			return saveFile(stateRef.current.doc);
 		},
 		restoreFile(contents) {
 			const newState = EditorState.create({

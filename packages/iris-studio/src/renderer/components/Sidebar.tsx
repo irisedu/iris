@@ -36,6 +36,7 @@ import DeleteDialog from '$components/DeleteDialog';
 import OverwriteDialog from '$components/OverwriteDialog';
 import { FILE_PREFIX, pathIcon, makeTabData } from '$components/tabs/FileTab';
 import '$components/Sidebar.css';
+import { emptyTemplate, summaryTemplate } from 'iris-prosemirror';
 
 import Folder from '~icons/tabler/folder-filled';
 import ChevronDown from '~icons/tabler/chevron-down';
@@ -324,7 +325,9 @@ function Sidebar() {
 
 			dispatch(
 				setTabs(
-					tabs.filter((t) => !nodes.some((n) => t.id === FILE_PREFIX + n.id))
+					tabs.filter(
+						(t) => !nodes.some((n) => t.id.startsWith(FILE_PREFIX + n.id))
+					)
 				)
 			);
 		};
@@ -340,6 +343,7 @@ function Sidebar() {
 	const contextTarget = useRef<HTMLDivElement>(null);
 
 	const createExtension = useRef('');
+	const createCallback = useRef<(id: string) => void | Promise<void>>(() => {});
 
 	useEffect(() => {
 		if (!openDirectory) return;
@@ -372,7 +376,33 @@ function Sidebar() {
 							<MenuItem
 								onAction={() => {
 									if (!tree.current) return;
+									createExtension.current = '';
+									createCallback.current = async (id) => {
+										await fs.mkdir(id);
+										await fs.writeTextFile({
+											file: id + os.sep + 'SUMMARY.iris',
+											data: summaryTemplate
+										});
+
+										reloadDir();
+									};
+
+									treeCreate(tree.current, 'internal');
+								}}
+							>
+								Iris module
+							</MenuItem>
+							<MenuItem
+								onAction={() => {
+									if (!tree.current) return;
 									createExtension.current = '.iris';
+									createCallback.current = (id) => {
+										return fs.writeTextFile({
+											file: id,
+											data: emptyTemplate
+										});
+									};
+
 									treeCreate(tree.current, 'leaf');
 								}}
 							>
@@ -382,6 +412,10 @@ function Sidebar() {
 								onAction={() => {
 									if (!tree.current) return;
 									createExtension.current = '';
+									createCallback.current = (id) => {
+										return fs.mkdir(id);
+									};
+
 									treeCreate(tree.current, 'internal');
 								}}
 							>
@@ -391,6 +425,13 @@ function Sidebar() {
 								onAction={() => {
 									if (!tree.current) return;
 									createExtension.current = '';
+									createCallback.current = (id) => {
+										return fs.writeTextFile({
+											file: id,
+											data: ''
+										});
+									};
+
 									treeCreate(tree.current, 'leaf');
 								}}
 							>
@@ -500,11 +541,7 @@ function Sidebar() {
 							);
 							setTreeData(newTree);
 
-							if (newNode.isFolder) {
-								await fs.mkdir(newNode.id);
-							} else {
-								await fs.writeTextFile({ file: newNode.id, data: '' });
-							}
+							await createCallback.current(newNode.id);
 
 							return newNode;
 						}}
@@ -525,7 +562,7 @@ function Sidebar() {
 								if (!openDirectory) return;
 
 								setTreeData(newTree);
-								setTimeout(() => tree.current?.select(newId), 20);
+								setTimeout(() => tree.current?.select(newId), 50);
 
 								await fs.mkdir(immediateParentId);
 								await fs.rename({ from: oldId, to: newId });

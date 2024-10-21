@@ -19,3 +19,4 @@ export interface ProseMirrorComponent {
 export * from './configs';
 export * from './utils';
 export * from './components';
+export * from './templates';

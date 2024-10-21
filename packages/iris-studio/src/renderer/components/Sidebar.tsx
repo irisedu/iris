@@ -446,10 +446,10 @@ function Sidebar() {
 								<MenuItem
 									onAction={() => {
 										if (!tree.current) return;
-										shell.showItemInFolder(tree.current.selectedNodes[0].id);
+										shell.openPath(tree.current.selectedNodes[0].id);
 									}}
 								>
-									Show in file explorer
+									Open in external app
 								</MenuItem>
 							</>
 						)}
@@ -461,10 +461,10 @@ function Sidebar() {
 										? tree.current.selectedNodes[0].id
 										: openDirectory;
 
-								if (target) shell.openPath(target);
+								if (target) shell.showItemInFolder(target);
 							}}
 						>
-							Open in external app
+							Show in file explorer
 						</MenuItem>
 
 						<MenuItem onAction={() => openDirectory && reloadDir()}>

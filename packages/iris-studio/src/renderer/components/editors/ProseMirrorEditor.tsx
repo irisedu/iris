@@ -42,7 +42,8 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 	const { nodeViews: rNodeViews, renderNodeViews } =
 		useNodeViews(docReactNodeViews);
 
-	const [editorState, setEditorState] = useState(defaultState);
+	const [defaultEditorState, setDefaultEditorState] =
+		useState<EditorState | null>(null);
 	const stateRef = useRef(defaultState);
 
 	const { onEditorChange, autosave } = useFileEditor({
@@ -56,7 +57,7 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 				state
 			);
 
-			setEditorState(prevState);
+			setDefaultEditorState(prevState);
 			stateRef.current = prevState;
 		},
 		getFile() {
@@ -75,45 +76,41 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 				doc: Node.fromJSON(docSchema, JSON.parse(contents).data)
 			});
 
-			setEditorState(newState);
+			setDefaultEditorState(newState);
 			stateRef.current = newState;
 		}
 	});
 
 	return (
-		<div className="flex flex-col h-full">
-			<ProseMirror
-				{...editorProps}
-				mount={mount}
-				state={editorState}
-				nodeViews={{
-					...rNodeViews,
-					...docNodeViews
-				}}
-				dispatchTransaction={(tr) => {
-					setEditorState((s) => {
-						const newState = s.apply(tr);
+		defaultEditorState && (
+			<div className="flex flex-col h-full">
+				<ProseMirror
+					{...editorProps}
+					mount={mount}
+					defaultState={defaultEditorState}
+					nodeViews={{
+						...rNodeViews,
+						...docNodeViews
+					}}
+					dispatchTransaction={(tr) => {
+						if (tr.docChanged) onEditorChange();
+						stateRef.current = stateRef.current.apply(tr);
+					}}
+					handleDOMEvents={{
+						focusout: autosave
+					}}
+				>
+					<MenuBar />
+					<FloatingMenu />
 
-						if (!s.doc.eq(newState.doc)) onEditorChange();
+					<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
+						<div ref={setMount} />
+					</div>
 
-						stateRef.current = newState;
-						return newState;
-					});
-				}}
-				handleDOMEvents={{
-					focusout: autosave
-				}}
-			>
-				<MenuBar />
-				<FloatingMenu />
-
-				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
-					<div ref={setMount} />
-				</div>
-
-				{renderNodeViews()}
-			</ProseMirror>
-		</div>
+					{renderNodeViews()}
+				</ProseMirror>
+			</div>
+		)
 	);
 }
 

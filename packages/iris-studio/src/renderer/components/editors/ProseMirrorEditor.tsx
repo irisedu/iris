@@ -86,9 +86,9 @@ function ProseMirrorEditor({ tabData }: { tabData: TabData }) {
 						...rNodeViews,
 						...docNodeViews
 					}}
-					dispatchTransaction={(tr) => {
+					dispatchTransaction={function (tr) {
 						if (tr.docChanged) onEditorChange();
-						stateRef.current = stateRef.current.apply(tr);
+						stateRef.current = this.state.apply(tr);
 					}}
 					handleDOMEvents={{
 						focusout: autosave

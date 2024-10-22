@@ -1,5 +1,9 @@
-import { useState, useEffect, Fragment } from 'react';
-import { useParams, type LoaderFunctionArgs } from 'react-router-dom';
+import { useEffect, Fragment } from 'react';
+import {
+	useRevalidator,
+	useLoaderData,
+	type LoaderFunctionArgs
+} from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import {
 	Link as AriaLink,
@@ -20,7 +24,7 @@ import {
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
 
 import { useSelector } from 'react-redux';
-import { type RootState } from '$state/store';
+import store, { type RootState } from '$state/store';
 
 import './Article.css';
 import 'katex/dist/katex.css';
@@ -32,53 +36,6 @@ hljs.configure({
 });
 
 hljs.addPlugin(mergeHTMLPlugin);
-
-async function getPageData(
-	fullPath: string,
-	devEnabled: boolean,
-	devHost: string
-) {
-	if (devEnabled) {
-		const res = await fetch(`http://${devHost}${fullPath}`);
-
-		if (res.status === 200) {
-			return await res.json();
-		}
-	}
-
-	const res = await fetch(fullPath);
-	if (res.status !== 200) {
-		throw new Response('', { status: res.status });
-	}
-
-	return await res.json();
-}
-
-function parsePath(splat: string) {
-	const routePath = splat.replace(/\/+$/g, '');
-	const routePathSegments = routePath.split('/');
-
-	return { routePath, routePathSegments };
-}
-
-async function load(splat: string, devEnabled: boolean, devHost: string) {
-	const { routePath, routePathSegments } = parsePath(splat);
-
-	let fullPath;
-	let seriesPath;
-
-	if (routePathSegments.length === 1) {
-		fullPath = '/page/' + routePath + '/SUMMARY.irisc';
-	} else {
-		fullPath = '/page/' + routePath + '.irisc';
-		seriesPath = '/page/' + routePathSegments[0] + '/SUMMARY.irisc';
-	}
-
-	return await Promise.all([
-		getPageData(fullPath, devEnabled, devHost),
-		seriesPath && getPageData(seriesPath, devEnabled, devHost)
-	]);
-}
 
 function ArticleOutline({
 	articleData,
@@ -153,12 +110,34 @@ function Sidebar({
 	);
 }
 
+async function getPageData(
+	fullPath: string,
+	devEnabled: boolean,
+	devHost: string
+) {
+	if (devEnabled) {
+		const res = await fetch(`http://${devHost}${fullPath}`).catch(() => null);
+
+		if (res && res.status === 200) {
+			return await res.json();
+		}
+	}
+
+	const res = await fetch(fullPath);
+	if (res.status !== 200) {
+		throw new Response('', { status: res.status });
+	}
+
+	return await res.json();
+}
+
 export function loader({ params }: LoaderFunctionArgs) {
 	if (!params['*']) {
 		throw new Response('', { status: 404 });
 	}
 
-	const { routePath, routePathSegments } = parsePath(params['*']);
+	const routePath = params['*'].replace(/\/+$/g, '');
+	const routePathSegments = routePath.split('/');
 
 	if (
 		!routePath ||
@@ -170,7 +149,22 @@ export function loader({ params }: LoaderFunctionArgs) {
 		throw new Response('', { status: 404 });
 	}
 
-	return null;
+	let fullPath;
+	let seriesPath;
+
+	if (routePathSegments.length === 1) {
+		fullPath = '/page/' + routePath + '/SUMMARY.irisc';
+	} else {
+		fullPath = '/page/' + routePath + '.irisc';
+		seriesPath = '/page/' + routePathSegments[0] + '/SUMMARY.irisc';
+	}
+
+	const { enabled: devEnabled, host: devHost } = store.getState().dev;
+
+	return Promise.all([
+		getPageData(fullPath, devEnabled, devHost),
+		seriesPath && getPageData(seriesPath, devEnabled, devHost)
+	]);
 }
 
 export function Component() {
@@ -178,9 +172,12 @@ export function Component() {
 	const devHost = useSelector((state: RootState) => state.dev.host);
 	const devState = useSelector((state: RootState) => state.dev.state);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
-	const params = useParams();
-	const [articleData, setArticleData] = useState<IriscFile | null>(null);
-	const [seriesData, setSeriesData] = useState<IriscFile | null>(null);
+
+	const revalidator = useRevalidator();
+	const [articleData, seriesData] = useLoaderData() as [
+		IriscFile,
+		IriscFile | undefined
+	];
 
 	useEffect(() => {
 		if (window.location.hash) {
@@ -191,15 +188,10 @@ export function Component() {
 	}, []);
 
 	useEffect(() => {
-		if (!params['*']) return;
-
-		load(params['*'], devEnabled, devHost).then(
-			([newArticleData, newSeriesData]) => {
-				setArticleData(newArticleData);
-				setSeriesData(newSeriesData);
-			}
-		);
-	}, [devEnabled, devHost, devState, params, refresh]);
+		revalidator.revalidate();
+		// No revalidator
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [devEnabled, devHost, devState, refresh]);
 
 	useEffect(() => {
 		if (!articleData) {

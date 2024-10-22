@@ -1,17 +1,26 @@
-import { useState, useEffect } from 'react';
-import { useLoaderData, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useRevalidator, useLoaderData, Link } from 'react-router-dom';
 import { TagGroup, TagList, Tag } from 'react-aria-components';
 import type { SeriesInfo } from 'patchouli';
 import IrisCard from '$components/IrisCard';
 
 import { useSelector } from 'react-redux';
-import { type RootState } from '$state/store';
+import store, { type RootState } from '$state/store';
 
 import ArrowRight from '~icons/tabler/arrow-right';
 import { IriscInlineContent } from '$components/nodes/IriscNode';
 
 export function loader() {
-	return fetch('/series');
+	const { enabled: devEnabled, host: devHost } = store.getState().dev;
+
+	const seriesData = fetch('/series').then((res) => res.json());
+	const devSeriesData = devEnabled
+		? fetch(`http://${devHost}/series`)
+				.then((res) => res.json())
+				.catch(() => [])
+		: [];
+
+	return Promise.all([seriesData, devSeriesData]);
 }
 
 function SeriesCollection({ seriesData }: { seriesData: SeriesInfo[] }) {
@@ -52,18 +61,16 @@ export function Component() {
 	const devState = useSelector((state: RootState) => state.dev.state);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 
-	const seriesData = useLoaderData() as SeriesInfo[];
-	const [devSeriesData, setDevSeriesData] = useState<SeriesInfo[]>([]);
+	const revalidator = useRevalidator();
+	const [seriesData, devSeriesData] = useLoaderData() as [
+		SeriesInfo[],
+		SeriesInfo[]
+	];
 
 	useEffect(() => {
-		if (!devEnabled) {
-			setDevSeriesData([]);
-			return;
-		}
-
-		fetch(`http://${devHost}/series`)
-			.then((res) => res.json())
-			.then(setDevSeriesData);
+		revalidator.revalidate();
+		// No revalidator
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [devEnabled, devHost, devState, refresh]);
 
 	// Existing series are overridden when dev mode is enabled

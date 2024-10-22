@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 export function Component() {
 	useEffect(() => {
 		document.title = 'Iris';
-	});
+	}, []);
 
 	return (
 		<>

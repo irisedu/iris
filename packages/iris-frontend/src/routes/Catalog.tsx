@@ -68,6 +68,10 @@ export function Component() {
 	];
 
 	useEffect(() => {
+		document.title = 'Catalog • Iris';
+	}, []);
+
+	useEffect(() => {
 		revalidator.revalidate();
 		// No revalidator
 		// eslint-disable-next-line react-hooks/exhaustive-deps

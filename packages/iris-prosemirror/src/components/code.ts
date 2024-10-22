@@ -351,7 +351,17 @@ export const codeComponent = {
 			/^```([a-z]*)\s+$/,
 			schema.nodes.code_block,
 			(match) => {
-				return { language: match[1] };
+				const language = LanguageDescription.matchLanguageName(
+					languages,
+					match[1]
+				);
+				if (language) {
+					const alias =
+						language.alias.length && !language.alias[0].includes(' ')
+							? language.alias[0]
+							: language.name;
+					return { language: alias };
+				}
 			}
 		)
 	],

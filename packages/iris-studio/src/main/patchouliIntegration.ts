@@ -7,6 +7,7 @@ import {
 } from 'patchouli';
 import path from 'node:path';
 import url from 'node:url';
+import chokidar, { type FSWatcher } from 'chokidar';
 
 export type PatchouliCdArgs = string | undefined;
 export type PatchouliSetOpenFileArgs = string | undefined;
@@ -17,8 +18,11 @@ export default function initPatchouliIntegration(win: BrowserWindow) {
 	let openDirectory: string | undefined;
 	let openFile: string | undefined;
 	let watchServer: WatchServer | undefined;
+	let fileWatcher: FSWatcher | undefined;
 
-	async function startServer(config: UserConfig, openDirectory: string) {
+	async function startServer(config: UserConfig) {
+		if (!openDirectory) return;
+
 		await stopServer();
 
 		watchServer = new WatchServer(config, openDirectory);
@@ -42,11 +46,31 @@ export default function initPatchouliIntegration(win: BrowserWindow) {
 		watchServer = undefined;
 	}
 
+	async function startFileWatcher() {
+		if (!openDirectory) return;
+
+		await stopFileWatcher();
+
+		fileWatcher = chokidar.watch(openDirectory, {
+			ignoreInitial: true
+		});
+
+		fileWatcher
+			.on('add', () => win.webContents.send('patchouli:dirChanged'))
+			.on('unlink', () => win.webContents.send('patchouli:dirChanged'));
+	}
+
+	async function stopFileWatcher() {
+		await fileWatcher?.close();
+		fileWatcher = undefined;
+	}
+
 	ipcMain.on('patchouli:cd', async (_, args: PatchouliCdArgs) => {
 		if (openDirectory === args) return;
 		openDirectory = args;
 
 		await stopServer();
+		await startFileWatcher();
 	});
 
 	ipcMain.on('patchouli:setOpenFile', (_, args: PatchouliSetOpenFileArgs) => {
@@ -73,7 +97,7 @@ export default function initPatchouliIntegration(win: BrowserWindow) {
 				// Check this after awaiting to avoid races
 				if (watchServer?.isOpen) return;
 
-				if (config) await startServer(config, openDirectory);
+				if (config) await startServer(config);
 			} else {
 				await stopServer();
 			}

@@ -351,6 +351,13 @@ function Sidebar() {
 		reloadDir();
 	}, [reloadDir, openDirectory]);
 
+	useEffect(() => {
+		const off = app.on('patchouli:dirChanged', reloadDir);
+		return () => {
+			off();
+		};
+	}, [reloadDir]);
+
 	return (
 		<div ref={dndRoot} className="font-sans w-full h-full p-2">
 			<DeleteDialog

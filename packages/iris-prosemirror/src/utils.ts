@@ -2,16 +2,10 @@ import type {
 	Node,
 	NodeType,
 	MarkType,
-	Attrs,
 	ResolvedPos,
 	Fragment
 } from 'prosemirror-model';
-import {
-	Selection,
-	TextSelection,
-	type Command,
-	type EditorState
-} from 'prosemirror-state';
+import { Selection, type Command, type EditorState } from 'prosemirror-state';
 
 export function markActive(state: EditorState, markType: MarkType) {
 	// https://github.com/ProseMirror/prosemirror-example-setup/blob/43c1d95fb8669a86c3869338da00dd6bd974197d/src/menu.ts#L58-L62
@@ -89,25 +83,6 @@ export function insertNode(
 
 		if (dispatch) {
 			dispatch(state.tr.replaceSelectionWith(node).scrollIntoView());
-		}
-
-		return true;
-	};
-}
-
-export function replaceNode(nodeType: NodeType, attrs?: Attrs): Command {
-	return (state, dispatch) => {
-		const { $from } = state.selection;
-		const from = $from.before();
-		const to = $from.after();
-
-		if (dispatch) {
-			const node = nodeType.createAndFill(attrs);
-
-			if (node) {
-				const tr = state.tr.replaceWith(from, to, node);
-				dispatch(tr.setSelection(TextSelection.near(tr.doc.resolve(from))));
-			}
 		}
 
 		return true;

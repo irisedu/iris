@@ -24,7 +24,6 @@ import {
 	mathComponent,
 	sidenoteComponent,
 	clearFormatting,
-	replaceNode,
 	docSchema
 } from 'iris-prosemirror';
 import {
@@ -71,11 +70,24 @@ function TextStyleMenu({ index }: { index: number }) {
 	const [codeDialogOpen, setCodeDialogOpen] = useState(false);
 	const [language, setLanguage] = useState('');
 	const setCode = useEditorEventCallback((view, language) => {
-		replaceNode(docSchema.nodes.code_block, { language })(
-			view.state,
-			view.dispatch,
-			view
-		);
+		const { $head } = view.state.selection;
+
+		const tr = view.state.tr;
+
+		if ($head.parent.type === docSchema.nodes.code_block) {
+			view.dispatch(
+				tr.setNodeAttribute($head.before($head.depth), 'language', language)
+			);
+		} else {
+			view.dispatch(
+				tr.setBlockType(
+					$head.pos,
+					undefined,
+					docSchema.nodes.code_block,
+					() => ({ language })
+				)
+			);
+		}
 
 		view.focus();
 	});
@@ -99,11 +111,9 @@ function TextStyleMenu({ index }: { index: number }) {
 				undefined,
 				view
 			) && !getSidenote(view.state);
-		const codeBlock = setBlockType(docSchema.nodes.code_block)(
-			view.state,
-			undefined,
-			view
-		);
+		const codeBlock = setBlockType(docSchema.nodes.code_block, {
+			language: '???'
+		})(view.state, undefined, view);
 
 		if (setVisible) setVisible(normal || headings || codeBlock);
 		setNormalVisible(normal);

@@ -16,17 +16,12 @@ import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
 
 import type { Node } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
-import { InputRule } from 'prosemirror-inputrules';
+import { textblockTypeInputRule } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
-import {
-	Selection,
-	TextSelection,
-	type Transaction,
-	type Command
-} from 'prosemirror-state';
+import { Selection, TextSelection, type Command } from 'prosemirror-state';
 import { exitCode } from 'prosemirror-commands';
 import { undo, redo } from 'prosemirror-history';
-import { clearFormatting, replaceNode } from '../utils';
+import { clearFormatting } from '../utils';
 
 // https://github.com/ProseMirror/website/blob/master/example/codemirror/index.js
 // https://prosemirror.net/examples/codemirror/
@@ -38,6 +33,7 @@ class CodeBlockView {
 	getPos: () => number | undefined;
 
 	language: Compartment;
+	label: HTMLElement;
 	theme: Compartment;
 
 	cm: CodeMirror;
@@ -90,10 +86,9 @@ class CodeBlockView {
 
 		const label = document.createElement('span');
 		label.className = 'CodeMirror-languagelabel';
-		label.innerText = node.attrs.language.length
-			? node.attrs.language
-			: 'plaintext';
 		container.appendChild(label);
+
+		this.label = label;
 
 		this.dom = container;
 
@@ -116,11 +111,19 @@ class CodeBlockView {
 		const lang = this.node.attrs.language;
 		const extension = LanguageDescription.matchLanguageName(languages, lang);
 
+		this.label.innerText = this.node.attrs.language.length
+			? this.node.attrs.language
+			: 'plaintext';
+
 		if (extension) {
 			extension.load().then((ext) => {
 				this.cm.dispatch({
 					effects: this.language.reconfigure(ext)
 				});
+			});
+		} else {
+			this.cm.dispatch({
+				effects: this.language.reconfigure([])
 			});
 		}
 	}
@@ -136,7 +139,7 @@ class CodeBlockView {
 
 		const pmSel = this.view.state.selection;
 
-		if (update.docChanged || pmSel.from != selFrom || pmSel.to != selTo) {
+		if (update.docChanged || pmSel.from !== selFrom || pmSel.to !== selTo) {
 			const tr = this.view.state.tr;
 			update.changes.iterChanges((fromA, toA, fromB, toB, text) => {
 				if (text.length) {
@@ -236,16 +239,20 @@ class CodeBlockView {
 	}
 
 	update(node: Node) {
-		if (node.type != this.node.type) return false;
+		if (node.type !== this.node.type) return false;
+
+		const langChanged = node.attrs.language !== this.node.attrs.language;
 
 		this.node = node;
+
+		if (langChanged) this.updateLanguage();
 
 		if (this.updating) return true;
 
 		const newText = node.textContent;
 		const curText = this.cm.state.doc.toString();
 
-		if (newText != curText) {
+		if (newText !== curText) {
 			let start = 0;
 			let curEnd = curText.length;
 			let newEnd = newText.length;
@@ -340,18 +347,13 @@ export const codeComponent = {
 		} as NodeSpec
 	},
 	inputRules: (schema) => [
-		new InputRule(/^```(\S*)\s+$/, (state, match) => {
-			let tr: Transaction | undefined;
-
-			replaceNode(schema.nodes.code_block, { language: match[1] })(
-				state,
-				(cmdTr) => {
-					tr = cmdTr;
-				}
-			);
-
-			return tr ?? null;
-		})
+		textblockTypeInputRule(
+			/^```([a-z]*)\s+$/,
+			schema.nodes.code_block,
+			(match) => {
+				return { language: match[1] };
+			}
+		)
 	],
 	nodeViews: {
 		code_block: (node, view, getPos) => new CodeBlockView(node, view, getPos)

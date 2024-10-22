@@ -40,7 +40,10 @@ function processList(
 
 		const link: SummaryNode = {};
 
-		const internalLink = resolveInternalLink(pageText.text, fileInfo.path);
+		const internalLink = resolveInternalLink(
+			'$' + pageText.text,
+			fileInfo.path
+		);
 		if (internalLink) link.hrefInternal = internalLink;
 		else link.href = pageText.text;
 

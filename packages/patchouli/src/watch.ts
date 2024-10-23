@@ -1,7 +1,7 @@
 import logger from './logger.js';
 import anymatch from 'anymatch';
 import { EventEmitter } from 'events';
-import { posix as path } from 'path';
+import path from 'path';
 import express, { type Express } from 'express';
 import { WebSocket, WebSocketServer } from 'ws';
 import chokidar, { type FSWatcher } from 'chokidar';

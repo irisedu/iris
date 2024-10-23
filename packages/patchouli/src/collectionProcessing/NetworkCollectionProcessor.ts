@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import { recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
@@ -37,10 +37,9 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 			const summarySuffix = '/SUMMARY' + articleExt;
 			const isSummary = filePath.endsWith(summarySuffix);
 
-			const id = filePath.slice(
-				0,
-				isSummary ? -summarySuffix.length : -articleExt.length
-			);
+			const id = filePath
+				.slice(0, isSummary ? -summarySuffix.length : -articleExt.length)
+				.replace(path.sep, '/');
 			const articleData: IriscFile = JSON.parse(
 				await fs.readFile(path.join(outDir, filePath), 'utf-8')
 			);

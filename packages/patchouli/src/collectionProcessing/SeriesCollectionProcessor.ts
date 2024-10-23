@@ -1,6 +1,6 @@
 import logger from '../logger.js';
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';

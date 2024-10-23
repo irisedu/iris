@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import anymatch from 'anymatch';
 import type { Json } from '@hyperjump/json-pointer';
 import { validate } from '@hyperjump/json-schema/draft-2020-12';
@@ -22,7 +22,8 @@ export default class SchemaCollectionProcessor extends CollectionProcessor {
 					continue;
 				}
 
-				schemaUri = 'file://' + path.join(inDir, schema);
+				schemaUri =
+					'file://' + path.join(inDir, schema).replaceAll(path.sep, '/');
 				break;
 			}
 

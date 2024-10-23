@@ -1,6 +1,6 @@
 import logger from './logger.js';
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import toml from '@iarna/toml';
 import { defaultUserConfig, type UserConfig } from './config.js';
 
@@ -107,7 +107,7 @@ export function resolveInternalLink(link: string, filePath: string) {
 	} else if (link.startsWith('$')) {
 		// Relative
 		const dir = path.dirname(filePath);
-		const target = path.join(dir, link.slice(1));
+		const target = path.join(dir, link.slice(1)).replaceAll(path.sep, '/');
 
 		return '/' + target;
 	}

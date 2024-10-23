@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import { internalLinkToPageLink, recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs

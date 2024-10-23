@@ -1,5 +1,5 @@
 import logger from './logger.js';
-import { posix as path } from 'path';
+import path from 'path';
 import fs from 'fs-extra';
 import anymatch from 'anymatch';
 import { shouldBuild, recurseDirectory, getIgnoredPaths } from './utils.js';

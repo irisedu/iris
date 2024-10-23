@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { posix as path } from 'path';
+import path from 'path';
 import FileInfo from '../FileInfo.js';
 import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
 import type {

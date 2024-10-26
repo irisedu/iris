@@ -48,6 +48,7 @@ pnpm dist:all
 
 popd
 
-mv -v $SCRIPT_DIR/../packages/iris-studio/dist .
+rm -rf $SCRIPT_DIR/dist
+mv -v $SCRIPT_DIR/../packages/iris-studio/dist $SCRIPT_DIR
 
 echo "Done!"

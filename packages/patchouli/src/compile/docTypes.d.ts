@@ -53,6 +53,7 @@ export interface IriscMetadata {
 		tags?: string[];
 	};
 	summary?: SummaryNode[];
+	unlinkedPages?: SummaryNode[];
 	toc?: TocNode[];
 	links?: string[];
 }

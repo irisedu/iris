@@ -1,4 +1,4 @@
-import { useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import {
 	useRevalidator,
 	useLoaderData,
@@ -214,6 +214,8 @@ export function Component() {
 		});
 	});
 
+	const [unlinkedVisible, setUnlinkedVisible] = useState(false);
+
 	if (!articleData) return;
 
 	return (
@@ -231,6 +233,25 @@ export function Component() {
 				</h1>
 
 				<IriscNode node={articleData.data} meta={articleData.meta} />
+
+				<div className="text-sm mt-5">
+					{articleData.meta.unlinkedPages &&
+						articleData.meta.unlinkedPages.length === 1 && (
+							<>
+								<AriaLink onPress={() => setUnlinkedVisible((vis) => !vis)}>
+									Show {articleData.meta.unlinkedPages[0].children?.length}{' '}
+									unlinked page(s)
+								</AriaLink>
+
+								{unlinkedVisible && (
+									<Summary
+										summary={articleData.meta.unlinkedPages}
+										meta={articleData.meta}
+									/>
+								)}
+							</>
+						)}
+				</div>
 
 				<hr className="my-3 last:mb-0" />
 

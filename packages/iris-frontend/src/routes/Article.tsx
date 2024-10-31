@@ -2,9 +2,11 @@ import { useState, useEffect, Fragment } from 'react';
 import {
 	useRevalidator,
 	useLoaderData,
-	type LoaderFunctionArgs
+	type LoaderFunctionArgs,
+	useParams
 } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
 import {
 	Link as AriaLink,
 	TagGroup,
@@ -36,6 +38,13 @@ hljs.configure({
 });
 
 hljs.addPlugin(mergeHTMLPlugin);
+
+function parsePath(slug: string): [string, string[]] {
+	const routePath = slug.replace(/\/+$/g, '');
+	const routePathSegments = routePath.split('/');
+
+	return [routePath, routePathSegments];
+}
 
 function ArticleOutline({
 	articleData,
@@ -75,17 +84,20 @@ function Sidebar({
 	articleData: IriscFile;
 	seriesData: IriscFile;
 }) {
+	const params = useParams();
+	const [_, routePathSegments] = parsePath(params['*']!);
+
 	const isLg = useMediaQuery({ query: '(min-width: 1024px)' });
 
 	return (
-		<div className="flex flex-col gap-8 lg:max-w-[25ch] text-sm">
+		<div className="flex flex-col gap-8 lg:w-[25ch] text-sm">
 			<div className="px-2 max-h-56 lg:max-h-80 overflow-y-auto">
-				<span className="text-xl">
+				<Link className="text-xl" to={'/page/' + routePathSegments[0]}>
 					<IriscInlineContent
 						nodes={seriesData.meta.title ?? []}
 						meta={seriesData.meta}
 					/>
-				</span>
+				</Link>
 
 				{seriesData.meta.summary && (
 					<Summary summary={seriesData.meta.summary} meta={seriesData.meta} />
@@ -136,8 +148,7 @@ export function loader({ params }: LoaderFunctionArgs) {
 		throw new Response('', { status: 404 });
 	}
 
-	const routePath = params['*'].replace(/\/+$/g, '');
-	const routePathSegments = routePath.split('/');
+	const [routePath, routePathSegments] = parsePath(params['*']);
 
 	if (
 		!routePath ||

@@ -103,7 +103,7 @@ export class WatchServer extends EventEmitter {
 			logger.raw();
 			logger.await(`File event \`${event}\` at ${path}, rebuilding ...`);
 
-			this.#build();
+			await this.#build();
 
 			this.#wss?.clients.forEach((client) => {
 				if (client.readyState === WebSocket.OPEN) {

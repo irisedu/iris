@@ -221,7 +221,7 @@ function SummaryList({
 	meta: IriscMetadata;
 }) {
 	return (
-		<ul className="list-none">
+		<ul className="list-none mt-1 mb-2">
 			{nodes.map((node, i) => {
 				const contents = (
 					<IriscInlineContent nodes={node.title ?? []} meta={meta} />
@@ -249,7 +249,11 @@ export function Summary({
 		<div>
 			{summary.map((node, i) => (
 				<Fragment key={i}>
-					{node.title && <IriscInlineContent nodes={node.title} meta={meta} />}
+					{node.title && (
+						<span className="text-[1.125em]">
+							<IriscInlineContent nodes={node.title} meta={meta} />
+						</span>
+					)}
 					{node.children && <SummaryList nodes={node.children} meta={meta} />}
 				</Fragment>
 			))}
@@ -432,7 +436,7 @@ export function IriscNode({
 			if (!meta.summary) return null;
 			return (
 				<>
-					<h2>Contents</h2>
+					<h2 className="mb-2">Contents</h2>
 					<Summary summary={meta.summary} meta={meta} />
 				</>
 			);

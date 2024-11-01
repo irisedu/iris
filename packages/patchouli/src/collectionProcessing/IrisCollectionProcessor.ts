@@ -38,7 +38,7 @@ async function addSummaryTitles(
 	if (!summaryNodes.length) return;
 
 	for (const node of summaryNodes) {
-		if (!node.hrefInternal) return;
+		if (!node.hrefInternal) continue;
 
 		const id = node.hrefInternal.slice(1);
 		const fullPath = path.join(outDir, node.hrefInternal + articleExt);

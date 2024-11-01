@@ -92,7 +92,10 @@ function Sidebar({
 	return (
 		<div className="flex flex-col gap-8 lg:w-[25ch] text-sm">
 			<div className="px-2 max-h-56 lg:max-h-80 overflow-y-auto">
-				<Link className="text-xl" to={'/page/' + routePathSegments[0]}>
+				<Link
+					className="block text-xl mb-2"
+					to={'/page/' + routePathSegments[0]}
+				>
 					<IriscInlineContent
 						nodes={seriesData.meta.title ?? []}
 						meta={seriesData.meta}

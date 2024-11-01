@@ -1,7 +1,31 @@
 import type { ProseMirrorComponent } from '../';
-import type { NodeSpec, NodeType } from 'prosemirror-model';
+import type { NodeSpec, NodeType, Node } from 'prosemirror-model';
 import { Selection, type Command } from 'prosemirror-state';
 import { bulletList, listItem } from 'prosemirror-schema-list';
+import { Plugin } from 'prosemirror-state';
+
+const summaryPlugin = new Plugin({
+	filterTransaction(tr, state) {
+		if (!tr.docChanged) return true;
+
+		// Disallow creation and removal of summary node
+		const { summary } = state.schema.nodes;
+
+		let summaryNode: Node | undefined;
+
+		state.doc.forEach((node) => {
+			if (node.type === summary) summaryNode = node;
+		});
+
+		let newSummaryNode: Node | undefined;
+
+		tr.doc.forEach((node) => {
+			if (node.type === summary) newSummaryNode = node;
+		});
+
+		return !!summaryNode === !!newSummaryNode;
+	}
+});
 
 const toggleSummaryHeading: Command = (state, dispatch) => {
 	const { summary, summary_page, summary_heading, summary_list } =
@@ -52,6 +76,7 @@ const toggleSummaryHeading: Command = (state, dispatch) => {
 };
 
 export const summaryComponent = {
+	plugins: [summaryPlugin],
 	nodes: {
 		summary: {
 			content: '(summary_list | summary_heading)+',

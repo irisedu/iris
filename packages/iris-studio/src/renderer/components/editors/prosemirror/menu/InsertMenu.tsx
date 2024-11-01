@@ -8,7 +8,6 @@ import {
 
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';
-import Summary from '~icons/tabler/baseline-density-small';
 import Image from '~icons/tabler/photo';
 
 function InsertMenu({
@@ -52,12 +51,6 @@ function InsertMenu({
 						})(state, dispatch);
 					}}
 					tooltip="Table"
-				/>
-				<CommandButton
-					index={mainIdx++}
-					Icon={Summary}
-					command={insertNode(docSchema.nodes.summary)}
-					tooltip="Module Summary"
 				/>
 				<CommandButton
 					index={mainIdx++}

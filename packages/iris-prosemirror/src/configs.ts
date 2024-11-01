@@ -354,7 +354,8 @@ export const basePlugins = [
 export const docPlugins = [
 	...commonPlugins,
 	keymap(docKeymap),
-	inputRules({ rules: docRules })
+	inputRules({ rules: docRules }),
+	...summaryComponent.plugins
 ];
 
 ////////////////

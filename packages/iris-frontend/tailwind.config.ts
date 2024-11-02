@@ -6,7 +6,7 @@ export default {
 			serif: ['Vollkorn'],
 			smallcaps: ['"Vollkorn SC"'],
 			sans: ['"Atkinson Hyperlegible"'],
-			mono: ['"JetBrains Mono"']
+			mono: ['"Source Code Pro"']
 		},
 		extend: {
 			colors: {

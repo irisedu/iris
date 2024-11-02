@@ -128,9 +128,9 @@ importers:
       '@fontsource/atkinson-hyperlegible':
         specifier: ^5.1.0
         version: 5.1.0
-      '@fontsource/jetbrains-mono':
-        specifier: ^5.1.1
-        version: 5.1.1
+      '@fontsource/source-code-pro':
+        specifier: ^5.1.0
+        version: 5.1.0
       '@fontsource/vollkorn':
         specifier: ^5.1.1
         version: 5.1.1
@@ -278,9 +278,9 @@ importers:
       '@fontsource/atkinson-hyperlegible':
         specifier: ^5.1.0
         version: 5.1.0
-      '@fontsource/jetbrains-mono':
-        specifier: ^5.1.1
-        version: 5.1.1
+      '@fontsource/source-code-pro':
+        specifier: ^5.1.0
+        version: 5.1.0
       '@fontsource/vollkorn':
         specifier: ^5.1.1
         version: 5.1.1
@@ -1167,8 +1167,8 @@ packages:
   '@fontsource/atkinson-hyperlegible@5.1.0':
     resolution: {integrity: sha512-2qT7mpgHWYM0bB3+5zbcfy49PD5xil/8t3maXxdgFpJo2dFaD9qBgk5u72KgK7ZtmGOWbCjCoAk5e+vpOIqfvA==}
 
-  '@fontsource/jetbrains-mono@5.1.1':
-    resolution: {integrity: sha512-5rwvmdQQpXev4LlBX1P+7h2dguu6iwW/9Npjde4+DEq+HgpVJI/7QY8DI1NVVFdvLtXZNP+vO2L/5BQED6FUhA==}
+  '@fontsource/source-code-pro@5.1.0':
+    resolution: {integrity: sha512-aT6pQbwEM/oGyK4Q8XOOknFcrXTAnP+GLVuEADBnB4avOYAOa4U5BG/D5JrTobwckuWyKrbMZ8EdcXPsqizfSw==}
 
   '@fontsource/vollkorn-sc@5.1.0':
     resolution: {integrity: sha512-CGRQbUjm2dejK6AtN52sFvoEn0ensQmI3UO1KBRoomd5qctkxivfX1PaTbPtmH1fFcPbVC46i0Wugxl6KcW8mA==}
@@ -6769,7 +6769,7 @@ snapshots:
 
   '@fontsource/atkinson-hyperlegible@5.1.0': {}
 
-  '@fontsource/jetbrains-mono@5.1.1': {}
+  '@fontsource/source-code-pro@5.1.0': {}
 
   '@fontsource/vollkorn-sc@5.1.0': {}
 

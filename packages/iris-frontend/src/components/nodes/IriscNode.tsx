@@ -372,6 +372,16 @@ export function IriscNode({
 			);
 		}
 
+		case 'note': {
+			const noteType = node.attrs?.type;
+			if (noteType === undefined) return null;
+
+			return <div className={`note ${noteType}`}>{getBlockContent()}</div>;
+		}
+		case 'note_label': {
+			return <span className="note__label">{getInlineContent()}</span>;
+		}
+
 		case 'ordered_list':
 			return <ol>{getBlockContent()}</ol>;
 		case 'bullet_list':

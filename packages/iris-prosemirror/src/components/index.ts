@@ -4,6 +4,7 @@ export * from './frontmatter';
 export * from './link';
 export * from './lists';
 export * from './math';
+export * from './note';
 export * from './sidenote';
 export * from './smartypants';
 export * from './spaces';

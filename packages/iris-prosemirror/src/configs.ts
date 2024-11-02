@@ -33,7 +33,7 @@ import {
 	react,
 	type ReactNodeViewConstructor
 } from '@nytimes/react-prosemirror';
-import { insertNode, clearFormatting, exitNode } from './utils';
+import { insertNode, clearFormatting, exitNode, deleteBlock } from './utils';
 import {
 	codeComponent,
 	figureComponent,
@@ -41,6 +41,7 @@ import {
 	linkComponent,
 	listsComponent,
 	mathComponent,
+	noteComponent,
 	sidenoteComponent,
 	smartypantsComponent,
 	spacesComponent,
@@ -84,6 +85,7 @@ const baseSchemaDef = {
 			]
 		} as NodeSpec,
 
+		...noteComponent.nodes,
 		...sidenoteComponent.nodes,
 		...listsComponent.nodes,
 		...tableComponent.nodes,
@@ -209,6 +211,7 @@ export const baseRules = [
 	...smartypantsComponent.inputRules(baseSchema),
 	...listsComponent.inputRules(baseSchema),
 	...codeComponent.inputRules(baseSchema),
+	...noteComponent.inputRules(baseSchema),
 	...schemaCommonRules(baseSchema)
 ];
 
@@ -216,6 +219,7 @@ export const docRules = [
 	...smartypantsComponent.inputRules(docSchema),
 	...listsComponent.inputRules(docSchema),
 	...codeComponent.inputRules(docSchema),
+	...noteComponent.inputRules(docSchema),
 	...schemaCommonRules(docSchema)
 ];
 
@@ -225,6 +229,14 @@ export const docRules = [
 
 function schemaCommonKeymap(schema: Schema) {
 	return {
+		Backspace: chainCommands(
+			deleteSelection,
+			deleteBlock([schema.nodes.math_display, schema.nodes.note]),
+			joinTextblockBackward,
+			joinBackward,
+			selectNodeBackward
+		),
+
 		'Ctrl-Space': insertNode(schema.nodes.nbsp),
 
 		'Mod-i': toggleMark(schema.marks.italic),
@@ -239,12 +251,6 @@ function schemaCommonKeymap(schema: Schema) {
 
 // https://github.com/ProseMirror/prosemirror-commands/blob/master/src/commands.ts
 export const baseKeymap = {
-	Backspace: chainCommands(
-		deleteSelection,
-		joinTextblockBackward,
-		joinBackward,
-		selectNodeBackward
-	),
 	Delete: chainCommands(
 		deleteSelection,
 		joinTextblockForward,
@@ -281,7 +287,7 @@ export const baseKeymap = {
 	),
 	'Mod-Enter': chainCommands(
 		exitCode,
-		exitNode([baseSchema.nodes.figure]),
+		exitNode([baseSchema.nodes.figure, docSchema.nodes.note]),
 		insertNode(baseSchema.nodes.hard_break)
 	),
 
@@ -312,7 +318,11 @@ export const docKeymap = {
 	),
 	'Mod-Enter': chainCommands(
 		exitCode,
-		exitNode([docSchema.nodes.summary, docSchema.nodes.figure]),
+		exitNode([
+			docSchema.nodes.summary,
+			docSchema.nodes.figure,
+			docSchema.nodes.note
+		]),
 		insertNode(docSchema.nodes.hard_break)
 	),
 

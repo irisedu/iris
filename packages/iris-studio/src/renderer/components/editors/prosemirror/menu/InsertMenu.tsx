@@ -1,6 +1,23 @@
-import { docSchema, insertNode, tableComponent } from 'iris-prosemirror';
-import { CommandButton } from './components';
 import {
+	useEditorEffect,
+	useEditorEventCallback
+} from '@nytimes/react-prosemirror';
+import {
+	MenuTrigger,
+	Button,
+	Popover,
+	Menu,
+	MenuItem
+} from 'react-aria-components';
+import {
+	docSchema,
+	insertNode,
+	tableComponent,
+	noteComponent
+} from 'iris-prosemirror';
+import { CommandButton, MenuBarTooltip } from './components';
+import {
+	useVisibility,
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
@@ -9,6 +26,51 @@ import {
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';
 import Image from '~icons/tabler/photo';
+
+import Info from '~icons/tabler/info-circle';
+
+function NoteMenu({ index }: { index: number }) {
+	const [visible, setVisible] = useVisibility(index);
+
+	const insertNote = useEditorEventCallback((view, noteType: string) => {
+		noteComponent.commands.insertNote(noteType)(
+			view.state,
+			view.dispatch,
+			view
+		);
+		view.focus();
+	});
+
+	useEditorEffect((view) => {
+		if (setVisible)
+			setVisible(
+				noteComponent.commands.insertNote('info')(view.state, undefined, view)
+			);
+	});
+
+	return (
+		<MenuTrigger>
+			<MenuBarTooltip tooltip="Note">
+				<Button
+					className={`round-button${visible ? '' : ' hidden'}`}
+					aria-label="Text Style"
+				>
+					<Info className="text-iris-500 w-3/5 h-3/5 m-auto" />
+				</Button>
+			</MenuBarTooltip>
+
+			<Popover>
+				<Menu>
+					<MenuItem onAction={() => insertNote('info')}>Info</MenuItem>
+					<MenuItem onAction={() => insertNote('warning')}>Warning</MenuItem>
+					<MenuItem onAction={() => insertNote('tip')}>Tip</MenuItem>
+					<MenuItem onAction={() => insertNote('problem')}>Problem</MenuItem>
+					<MenuItem onAction={() => insertNote('exercise')}>Exercise</MenuItem>
+				</Menu>
+			</Popover>
+		</MenuTrigger>
+	);
+}
 
 function InsertMenu({
 	index,
@@ -60,6 +122,7 @@ function InsertMenu({
 					)}
 					tooltip="Image"
 				/>
+				<NoteMenu index={mainIdx++} />
 			</VisibilityGroup>
 		</VisibilityContext.Provider>
 	);

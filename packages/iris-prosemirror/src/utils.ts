@@ -110,7 +110,11 @@ export function findParent(state: EditorState, nodeTypes: NodeType[]) {
 
 	for (let depth = $head.depth; depth >= 0; depth--) {
 		if (nodeTypes.includes($head.node(depth).type)) {
-			return { before: $head.before(depth), after: $head.after(depth) };
+			return {
+				before: $head.before(depth),
+				after: $head.after(depth),
+				index: $head.index(depth)
+			};
 		}
 	}
 }
@@ -149,6 +153,25 @@ export function setParentAttr(
 
 		if (dispatch) {
 			dispatch(state.tr.setNodeAttribute(pos.before, attr, value));
+		}
+
+		return true;
+	};
+}
+
+export function deleteBlock(nodeTypes: NodeType[]): Command {
+	return (state, dispatch) => {
+		const { $head, empty } = state.selection;
+		if (!empty || $head.parent.childCount) return false;
+
+		const pos = findParent(state, nodeTypes);
+		if (!pos || pos.index !== 0) return false;
+
+		if (dispatch) {
+			const tr = state.tr.delete(pos.before, pos.after);
+			tr.setSelection(Selection.near(tr.doc.resolve(pos.before - 1)));
+
+			dispatch(tr);
 		}
 
 		return true;

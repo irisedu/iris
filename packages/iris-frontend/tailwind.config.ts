@@ -4,9 +4,9 @@ export default {
 	theme: {
 		fontFamily: {
 			serif: ['Vollkorn'],
-			smallcaps: ['Vollkorn\\ SC'],
-			sans: ['IBM\\ Plex\\ Sans'],
-			mono: ['JetBrains\\ Mono']
+			smallcaps: ['"Vollkorn SC"'],
+			sans: ['"Atkinson Hyperlegible"'],
+			mono: ['"JetBrains Mono"']
 		},
 		extend: {
 			colors: {

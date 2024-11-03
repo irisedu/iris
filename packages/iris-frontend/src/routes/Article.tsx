@@ -108,18 +108,20 @@ function Sidebar({
 			</div>
 
 			{articleData.meta.toc && (
-				<details className="lg:sticky top-8 contents--disabled" open={isLg}>
-					<summary
-						className={`text-lg ${isLg ? 'pointer-events-none' : ''}`}
-						tabIndex={isLg ? -1 : undefined}
-					>
-						Contents
-					</summary>
-					<ArticleOutline
-						articleData={articleData}
-						outline={articleData.meta.toc}
-					/>
-				</details>
+				<div className="lg:sticky top-8 lg:max-h-[80%] lg:overflow-y-auto">
+					<details open={isLg}>
+						<summary
+							className={`text-lg ${isLg ? 'pointer-events-none' : ''}`}
+							tabIndex={isLg ? -1 : undefined}
+						>
+							Contents
+						</summary>
+						<ArticleOutline
+							articleData={articleData}
+							outline={articleData.meta.toc}
+						/>
+					</details>
+				</div>
 			)}
 		</div>
 	);

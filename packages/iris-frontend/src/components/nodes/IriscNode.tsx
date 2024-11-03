@@ -78,6 +78,7 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 					<AriaLink
 						href={href}
 						className={`react-aria-Link${isExternal ? ' external' : ''}`}
+						target={isExternal ? '_blank' : '_self'}
 					>
 						{children}
 					</AriaLink>

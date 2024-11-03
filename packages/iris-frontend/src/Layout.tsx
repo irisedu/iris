@@ -54,13 +54,18 @@ function Layout() {
 						<AriaLink
 							className="font-sans external"
 							href="https://cs.ucsb.edu/"
+							target="_blank"
 						>
 							CS @ UCSB
 						</AriaLink>
 					</span>
 					<p className="text-sm text-center my-1">
 						Please report accessibility issues or other complaints by emailing{' '}
-						<AriaLink href="mailto:contact@seki.pw" className="external">
+						<AriaLink
+							href="mailto:contact@seki.pw"
+							className="external"
+							target="_blank"
+						>
 							contact@seki.pw
 						</AriaLink>
 						.

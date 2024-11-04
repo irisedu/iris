@@ -60,7 +60,7 @@ abbr {
 }
 
 details {
-	@apply mb-2 px-2 py-1 border-iris-700 border-l-[3px] rounded-md open:block;
+	@apply mb-2 px-2 py-1 border-iris-700 border-l-4 rounded-md open:block;
 }
 
 details summary {

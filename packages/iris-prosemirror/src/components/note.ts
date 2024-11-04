@@ -1,7 +1,7 @@
 import { ProseMirrorComponent } from '../';
 import type { Schema, NodeSpec } from 'prosemirror-model';
 import { InputRule } from 'prosemirror-inputrules';
-import { type Command } from 'prosemirror-state';
+import { Selection, type Command } from 'prosemirror-state';
 
 function createNote(schema: Schema, noteType: string) {
 	const noteLabels: Record<string, string> = {
@@ -29,7 +29,14 @@ function insertNote(noteType: string): Command {
 		if (!note) return false;
 
 		if (dispatch) {
-			dispatch(state.tr.replaceSelectionWith(note.node));
+			const { $head } = state.selection;
+			const tr = state.tr.replaceSelectionWith(note.node);
+
+			const newPos =
+				$head.pos + note.label.length + ($head.parent.childCount ? 4 : 2);
+			tr.setSelection(Selection.near(tr.doc.resolve(newPos)));
+
+			dispatch(tr);
 		}
 
 		return true;
@@ -54,12 +61,17 @@ export const noteComponent = {
 		}
 	},
 	inputRules: (schema) => [
-		new InputRule(/<(\S+)\s$/, (state, match, start, end) => {
+		new InputRule(/^<(\S+)\s$/, (state, match, start, end) => {
 			const noteType = match[1];
 			const note = createNote(schema, noteType);
 			if (!note) return null;
 
-			return state.tr.replaceRangeWith(start, end, note.node);
+			const tr = state.tr.replaceRangeWith(start, end, note.node);
+			tr.setSelection(
+				Selection.near(tr.doc.resolve(start + note.label.length + 2))
+			);
+
+			return tr;
 		})
 	],
 	commands: {

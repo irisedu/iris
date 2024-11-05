@@ -110,12 +110,12 @@ async function postCompileStep(
 				continue;
 			}
 
-			logger.await('Post-processing file at', vf.path, '...');
+			logger.await('Post-processing file at', outPath, '...');
 			tasks.push(
 				processor.process({
 					inDir: outDir,
 					outDir,
-					filePath: vf.path
+					filePath: path.relative(outDir, outPath)
 				})
 			);
 			break;

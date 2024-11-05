@@ -235,12 +235,12 @@ export function Component() {
 	if (!articleData) return;
 
 	return (
-		<article className="flex flex-col lg:flex-row gap-8 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
+		<article className="flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
 			{seriesData && (
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}
 
-			<div className="lg:px-8 lg:w-[55%] max-w-[60ch] min-h-72">
+			<div className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72">
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent
 						nodes={articleData.meta.title ?? []}

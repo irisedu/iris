@@ -3,12 +3,12 @@ import { useRevalidator, useLoaderData, Link } from 'react-router-dom';
 import { TagGroup, TagList, Tag } from 'react-aria-components';
 import type { SeriesInfo } from 'patchouli';
 import IrisCard from '$components/IrisCard';
+import { IriscInlineContent } from '$components/nodes/IriscNode';
 
 import { useSelector } from 'react-redux';
 import store, { type RootState } from '$state/store';
 
 import ArrowRight from '~icons/tabler/arrow-right';
-import { IriscInlineContent } from '$components/nodes/IriscNode';
 
 export function loader() {
 	const { enabled: devEnabled, host: devHost } = store.getState().dev;

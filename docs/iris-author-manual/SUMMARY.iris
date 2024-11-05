@@ -1,0 +1,117 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris Author Manual"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": {
+								"authors": [],
+								"tags": [
+									"iris"
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Guides and guidelines for authors using Iris."
+					}
+				]
+			},
+			{
+				"type": "summary",
+				"content": [
+					{
+						"type": "summary_heading",
+						"content": [
+							{
+								"type": "text",
+								"text": "Introduction"
+							}
+						]
+					},
+					{
+						"type": "summary_list",
+						"content": [
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "introduction/setup"
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "summary_heading",
+						"content": [
+							{
+								"type": "text",
+								"text": "Conventions"
+							}
+						]
+					},
+					{
+						"type": "summary_list",
+						"content": [
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "conventions/typographical-guidelines"
+											}
+										]
+									}
+								]
+							},
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "conventions/note-boxes"
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

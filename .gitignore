@@ -24,3 +24,5 @@ out
 *.sw?
 
 .direnv/
+
+/docs/build

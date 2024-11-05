@@ -1,0 +1,453 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Note Boxes"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": {
+								"authors": [],
+								"tags": []
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris provides several types of note boxes to emphasize important text. The title of the note boxes can be changed to any descriptive title (which may or may not be a sentence)."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Info"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Shortcut: "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "<info"
+					},
+					{
+						"type": "text",
+						"text": " followed by a space"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Info boxes are used for useful information related to the surrounding text."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "info"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Example info box"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Info boxes are used for useful information related to the surrounding text."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Warning"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Shortcut: "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "<warning"
+					},
+					{
+						"type": "text",
+						"text": " followed by a space"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Warning boxes are used to warn the reader about possible pitfalls."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Don’t get it twisted!"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Do not confuse problem and exercise boxes."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Tip"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Shortcut: "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "<tip"
+					},
+					{
+						"type": "text",
+						"text": " followed by a space"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Tip boxes are used to inform the reader about nice-to-know information."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "tip"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Tip"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "You can insert info boxes using "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "code"
+									}
+								],
+								"text": "<"
+							},
+							{
+								"type": "text",
+								"text": " followed by a name and a space."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Problem"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Shortcut: "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "<problem"
+					},
+					{
+						"type": "text",
+						"text": " followed by a space"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Problem boxes are used to introduce a thought-provoking issue to a reader, for example at the beginning of a lesson on something that solves that problem."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "problem"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Distances in graphs with negative-weight edges"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Dijkstra’s algorithm fails on graphs with negative-weight cycles because it makes the assumption that the shortest unexplored path is the best one to take. How can we make different assumptions to create an algorithm that supports negative-weight cycles?"
+							},
+							{
+								"type": "sidenote",
+								"attrs": {
+									"numbered": false
+								},
+								"content": [
+									{
+										"type": "paragraph",
+										"content": [
+											{
+												"type": "text",
+												"text": "The solution to this problem is the "
+											},
+											{
+												"type": "text",
+												"marks": [
+													{
+														"type": "link",
+														"attrs": {
+															"href": "https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm"
+														}
+													}
+												],
+												"text": "Bellman–Ford algorithm"
+											},
+											{
+												"type": "text",
+												"text": "."
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Exercise"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Shortcut: "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "<exercise"
+					},
+					{
+						"type": "text",
+						"text": " followed by a space"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Exercise boxes are used to encourage the reader to practice a certain concept."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "exercise"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Practice with big O"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "What is the big O of the following function "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "math_inline"
+									}
+								],
+								"text": "f"
+							},
+							{
+								"type": "text",
+								"text": "?"
+							}
+						]
+					},
+					{
+						"type": "math_display",
+						"content": [
+							{
+								"type": "text",
+								"text": "f(n) = 2^n + n! + n^{100} + 5"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

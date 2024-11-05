@@ -1,0 +1,792 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Typographical Guidelines"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": {
+								"authors": [],
+								"tags": []
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris encourages content to adhere to its typographical conventions. This increases its readability and professional appearance and allows content from different authors to be used together. A list of the most important typographical guidelines is provided here."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "For a more extensive introduction to typography, read Matthew Butterick’s "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://practicaltypography.com/"
+								}
+							},
+							{
+								"type": "italic"
+							}
+						],
+						"text": "Practical Typography"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Capitalization"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris uses the following capitalization styles:"
+					}
+				]
+			},
+			{
+				"type": "bullet_list",
+				"content": [
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Title Case: Capitalize words with four or more letters"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Sentence case: Only capitalize the first word and proper nouns"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Below is a list of which capitalization styles to use where."
+					}
+				]
+			},
+			{
+				"type": "bullet_list",
+				"content": [
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Module, chapter, and document titles: Title Case"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Headings: Sentence case"
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Sentences: Sentence case"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Capitalize proper nouns according to their common and accepted use. For example, if a proper noun that typically begins with a lowercase letter is used at the beginning of a sentence, do not capitalize the proper noun."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Capitalize after colons if they introduce a complete sentence or if they are used as labels (like in the bullet points above)."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Punctuation"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Do not put two spaces between sentences."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Emphasis"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris provides emphasis with "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "italic"
+							}
+						],
+						"text": "italics"
+					},
+					{
+						"type": "text",
+						"text": ", "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "bold"
+							}
+						],
+						"text": "bold"
+					},
+					{
+						"type": "text",
+						"text": ", "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "underline"
+							}
+						],
+						"text": "underline"
+					},
+					{
+						"type": "text",
+						"text": ", and "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "small_caps"
+							}
+						],
+						"text": "small caps"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Use emphasis sparingly—"
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "bold"
+							},
+							{
+								"type": "underline"
+							},
+							{
+								"type": "small_caps"
+							}
+						],
+						"text": "text that is excessively emphasized is not emphasized at all and is difficult to read"
+					},
+					{
+						"type": "text",
+						"text": ". Avoid using more than one style of emphasis together. Avoid ALL CAPS as there is currently no way to increase character spacing to improve readability."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Do not emphasize punctuation."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Accessibility and small caps"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "small_caps"
+									}
+								],
+								"text": "Small caps"
+							},
+							{
+								"type": "text",
+								"text": " may not be available when the reader changes fonts for accessibility reasons. To ensure capitalization is correct when the font changes, type small caps text as if they are not in small caps."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Quotes"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris Studio automatically uses curly quotes (“ ” and ‘ ’) based on context. Always use the correct curly quotes for quotes and apostrophes. Do not use straight quotes (\" and ') unless inside code. Do not use curly quotes to surround strings in code."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "info"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Forcing particular quotes"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "When typing many quotes in a row, Iris Studio will cycle between open, close, and straight quotes. For example, when typing Hawai‘i, you need to type "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "code"
+									}
+								],
+								"text": "Hawai'''i"
+							},
+							{
+								"type": "text",
+								"text": " on your keyboard."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": " Ellipses"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Do not use three periods to substitute for ellipses. Iris Studio will convert three periods typed after another (...) into ellipses (…)."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Dashes"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Do not use hyphens in place of em or en dashes. Do not surround hyphens, em dashes, or en dashes with spaces. Do not use an em dash in place of an en dash or vice versa."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris Studio converts two hyphens (--) into an en dash (–) and three hyphens (---) or an en dash followed by a hyphen (–-) into an em dash (—)."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "For guidelines on how to use hyphens and dashes, see "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://practicaltypography.com/hyphens-and-dashes.html"
+								}
+							},
+							{
+								"type": "italic"
+							}
+						],
+						"text": "Practical Typography"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Math"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Math can be typeset inline or in display mode using "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "math_inline"
+							}
+						],
+						"text": "\\KaTeX"
+					},
+					{
+						"type": "text",
+						"text": ". Use inline mode for math used within text, and display mode for math that should be in its own block. Do not put inline math in its own paragraph."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "If you reference numeric variables (e.g., "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "math_inline"
+							}
+						],
+						"text": "n"
+					},
+					{
+						"type": "text",
+						"text": ") within text, typeset them in inline math mode. If you reference variables in a program, use "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "inline code"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "math_inline"
+									}
+								],
+								"text": "\\TeX \\ne \\KaTeX"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris provides support for compiling and embedding "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "code"
+									}
+								],
+								"text": ".tex"
+							},
+							{
+								"type": "text",
+								"text": " files. Do not use this functionality to typeset content that can otherwise be typeset using "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "math_inline"
+									}
+								],
+								"text": "\\KaTeX"
+							},
+							{
+								"type": "text",
+								"text": ". "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "code"
+									}
+								],
+								"text": ".tex"
+							},
+							{
+								"type": "text",
+								"text": " embedding is primarily intended for embedding other content, such as Ti"
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "italic"
+									}
+								],
+								"text": "k"
+							},
+							{
+								"type": "text",
+								"text": "Z drawings."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Non-breaking spaces"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "A non-breaking space can be inserted in Iris Studio using "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "Ctrl + Space"
+					},
+					{
+						"type": "text",
+						"text": " or in the Insert menu."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "For guidelines on how to use non-breaking spaces, see "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://practicaltypography.com/nonbreaking-spaces.html"
+								}
+							},
+							{
+								"type": "italic"
+							}
+						],
+						"text": "Practical Typography"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Sidenotes"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Footnotes are not available in Iris because they require the reader to scroll to the bottom of the page to read them. Instead, sidenotes (or margin notes) are used."
+					},
+					{
+						"type": "sidenote",
+						"attrs": {
+							"numbered": false
+						},
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "This is an example of a margin note."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "text",
+						"text": " Sidenotes can include most types of block content (e.g., display math and code)."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Sidenotes should be inserted such that if they are removed, the content is formatted correctly—they should not interrupt the flow of the content. Ideally, they should read as a continuation of the preceding text. Insert sidenotes after punctuation."
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Sidenotes can be numbered."
+					},
+					{
+						"type": "sidenote",
+						"attrs": {
+							"numbered": true
+						},
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Here is an example of a numbered sidenote."
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

@@ -365,7 +365,7 @@ export function IriscNode({
 
 			return devEnabled && String(src).startsWith('/') ? (
 				<picture>
-					<source srcSet={'http://' + devHost + String(src)} />
+					<source srcSet={`http://${devHost}${src}?hash=${Date.now()}`} />
 					<img src={String(src)} alt={String(alt)} />
 				</picture>
 			) : (

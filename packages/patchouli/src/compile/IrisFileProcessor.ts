@@ -270,7 +270,7 @@ const nodeProcessors: Record<
 		const src = node.attrs?.src;
 		if (typeof src !== 'string') return [node, false];
 
-		const internalLink = resolveInternalLink(src, fileInfo.path);
+		const internalLink = resolveInternalLink(src, fileInfo.path, true);
 		if (internalLink) {
 			return [
 				{

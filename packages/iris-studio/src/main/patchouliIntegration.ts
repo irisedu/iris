@@ -8,6 +8,7 @@ import {
 import path from 'node:path';
 import url from 'node:url';
 import chokidar, { type FSWatcher } from 'chokidar';
+import fs from 'fs';
 
 export type PatchouliCdArgs = string | undefined;
 export type PatchouliSetOpenFileArgs = string | undefined;
@@ -105,17 +106,21 @@ export default function initPatchouliIntegration(win: BrowserWindow) {
 	);
 
 	app.whenReady().then(() => {
-		protocol.handle('asset', (request) => {
+		protocol.handle('asset', async (request) => {
 			if (!openDirectory || !openFile)
 				return new Response('Not Found', { status: 404 });
 
 			const assetPath = request.url.slice('asset://'.length);
-			const internalLink = resolveInternalLink(assetPath, openFile);
+			const internalLink = resolveInternalLink(assetPath, openFile, true);
 			if (!internalLink) return new Response('Not Found', { status: 404 });
 
-			return net.fetch(
-				url.pathToFileURL(path.join(openDirectory, internalLink)).toString()
-			);
+			const fullPath = path.join(openDirectory, 'build', internalLink);
+
+			if (!fs.existsSync(fullPath)) {
+				await watchServer?.build();
+			}
+
+			return net.fetch(url.pathToFileURL(fullPath).toString());
 		});
 	});
 }

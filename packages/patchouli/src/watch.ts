@@ -30,6 +30,7 @@ export class WatchServer extends EventEmitter {
 	#watcher?: FSWatcher;
 	#server?: ReturnType<Express['listen']>;
 
+	#buildInProgress?: Promise<void>;
 	#isOpen = false;
 	#openFailed = false;
 
@@ -56,17 +57,27 @@ export class WatchServer extends EventEmitter {
 		});
 	}
 
-	async #build() {
-		try {
-			const initResults = await build(this.#config, this.#projectPath);
-			this.emit('build', initResults);
-		} catch (e: unknown) {
-			this.emit('buildError', e);
-		}
+	build() {
+		if (this.#buildInProgress) return this.#buildInProgress;
+
+		const doBuild = async () => {
+			try {
+				const initResults = await build(this.#config, this.#projectPath);
+				this.emit('build', initResults);
+			} catch (e: unknown) {
+				this.emit('buildError', e);
+			}
+
+			this.#buildInProgress = undefined;
+		};
+
+		const p = doBuild();
+		this.#buildInProgress = p;
+		return p;
 	}
 
 	async start(port = 58064) {
-		this.#build();
+		await this.build();
 
 		// Start server
 		this.#server = this.#app.listen(port, '127.0.0.1', () => {
@@ -103,7 +114,7 @@ export class WatchServer extends EventEmitter {
 			logger.raw();
 			logger.await(`File event \`${event}\` at ${path}, rebuilding ...`);
 
-			await this.#build();
+			await this.build();
 
 			this.#wss?.clients.forEach((client) => {
 				if (client.readyState === WebSocket.OPEN) {

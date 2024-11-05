@@ -100,7 +100,17 @@ export async function recurseDirectory(
 	}
 }
 
-export function resolveInternalLink(link: string, filePath: string) {
+export function resolveInternalLink(
+	link: string,
+	filePath: string,
+	extensions: boolean = false
+) {
+	if (extensions) {
+		if (link.endsWith('.tex')) {
+			link = link.slice(0, -4) + '.svg';
+		}
+	}
+
 	if (link.startsWith('@')) {
 		// Absolute
 		return `/${link.slice(1)}`;

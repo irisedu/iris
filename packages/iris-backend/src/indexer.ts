@@ -26,7 +26,8 @@ export async function indexRepoDir(
 		for (const seriesFile of seriesContents) {
 			await fs.cp(
 				path.join(seriesPath, seriesFile),
-				path.join(seriesStaticPath, seriesFile)
+				path.join(seriesStaticPath, seriesFile),
+				{ recursive: true }
 			);
 		}
 	}

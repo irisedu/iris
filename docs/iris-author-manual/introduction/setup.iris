@@ -204,7 +204,37 @@
 							},
 							{
 								"type": "text",
-								"text": ". It is safe to run Iris Studio without code signatures and notarization as long as you downloaded it from the release page linked above."
+								"text": "."
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "For Apple Silicon Macs, Iris Studio will not run at all because it is considered “damaged” without signatures. To bypass this check, run the following command after installation:"
+							}
+						]
+					},
+					{
+						"type": "code_block",
+						"attrs": {
+							"language": "bash"
+						},
+						"content": [
+							{
+								"type": "text",
+								"text": "sudo xattr -rd com.apple.quarantine /Applications/Iris\\ Studio.app"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "It is safe to run Iris Studio without code signatures and notarization as long as you downloaded it from the release page linked above."
 							}
 						]
 					}

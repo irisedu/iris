@@ -68,7 +68,7 @@ const baseSchemaDef = {
 			toDOM() {
 				return ['p', 0];
 			},
-			parseDOM: [{ tag: 'p' }]
+			parseDOM: [{ tag: 'p' }, { tag: 'h5' }, { tag: 'h6' }]
 		} as NodeSpec,
 		...spacesComponent.nodes,
 		heading: {
@@ -79,6 +79,7 @@ const baseSchemaDef = {
 				return ['h' + node.attrs.level, 0];
 			},
 			parseDOM: [
+				{ tag: 'h1', attrs: { level: 2 } },
 				{ tag: 'h2', attrs: { level: 2 } },
 				{ tag: 'h3', attrs: { level: 3 } },
 				{ tag: 'h4', attrs: { level: 4 } }

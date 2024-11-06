@@ -58,7 +58,6 @@ export const sidenoteComponent = {
 			content: 'block+',
 			attrs: { numbered: { default: false, validate: 'boolean' } },
 			inline: true,
-			isolating: true,
 			draggable: true,
 			toDOM(node) {
 				let containerClass = 'sidenote-container';

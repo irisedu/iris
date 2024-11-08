@@ -14,6 +14,12 @@ import parse from 'html-react-parser';
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 
+import Info from '~icons/tabler/info-circle';
+import Warning from '~icons/tabler/alert-triangle';
+import Tip from '~icons/tabler/star';
+import Problem from '~icons/tabler/zoom-question';
+import Exercise from '~icons/tabler/pencil';
+
 function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
 	switch (node.type) {
 		case 'text':
@@ -262,6 +268,21 @@ export function Summary({
 	);
 }
 
+function NoteIcon({ noteType }: { noteType: string }) {
+	switch (noteType) {
+		case 'info':
+			return <Info className="inline w-4 h-4" />;
+		case 'warning':
+			return <Warning className="inline w-4 h-4" />;
+		case 'tip':
+			return <Tip className="inline w-4 h-4" />;
+		case 'problem':
+			return <Problem className="inline w-5 h-5" />;
+		case 'exercise':
+			return <Exercise className="inline w-5 h-5" />;
+	}
+}
+
 export function IriscNode({
 	node,
 	meta
@@ -374,13 +395,21 @@ export function IriscNode({
 		}
 
 		case 'note': {
-			const noteType = node.attrs?.type;
-			if (noteType === undefined) return null;
+			const noteType = node.attrs?.type as string | undefined;
+			if (!node.content || !noteType) return null;
 
-			return <div className={`note ${noteType}`}>{getBlockContent()}</div>;
-		}
-		case 'note_label': {
-			return <span className="note__label">{getInlineContent()}</span>;
+			const label = node.content[0];
+			if (!label.content || label.type !== 'note_label') return null;
+
+			return (
+				<div className={`note ${noteType}`}>
+					<span className="note__label flex flex-row gap-2 items-center">
+						<NoteIcon noteType={noteType} />
+						<IriscInlineContent nodes={label.content} meta={meta} />
+					</span>
+					<IriscBlockContent nodes={node.content.slice(1)} meta={meta} />
+				</div>
+			);
 		}
 
 		case 'ordered_list':

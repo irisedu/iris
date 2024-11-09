@@ -10,7 +10,7 @@ const devStates: Record<string, [string, string]> = {
 	connected: ['Connected', 'bg-green-500']
 };
 
-function DevAlert({ className }: { className: string }) {
+function DevAlert({ className }: { className?: string }) {
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 	const devHost = useSelector((state: RootState) => state.dev.host);
 	const devState = useSelector((state: RootState) => state.dev.state);
@@ -18,10 +18,10 @@ function DevAlert({ className }: { className: string }) {
 	return (
 		devEnabled && (
 			<div
-				className={`dev-alert relative font-sans bg-red-200 p-2 after:contents-[''] after:absolute after:-bottom-1 after:right-1 after:w-24 after:h-2 ${className || ''}`}
+				className={`dev-alert relative font-sans text-sm bg-red-100 p-2 ${className ?? ''}`}
 			>
 				<p className="my-0 text-red-600">
-					<strong>Developer mode is enabled.</strong>
+					<strong>Preview mode is enabled.</strong>
 				</p>
 				<p className="my-0">
 					Host: <code>{devHost}</code>

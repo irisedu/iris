@@ -31,7 +31,7 @@ function Layout() {
 				</div>
 			</nav>
 
-			<DevAlert className="m-4 md:absolute md:top-0 md:right-0" />
+			<DevAlert className="m-4" />
 
 			<div className="grow p-8">
 				<Outlet />
@@ -82,7 +82,7 @@ function Layout() {
 							<React className="w-5 h-5" />
 						</AriaLink>
 						<AriaLink
-							aria-label="Developer mode"
+							aria-label="Preview mode"
 							onPress={() => dispatch(setDevEnabled(!devEnabled))}
 						>
 							<Braces className="w-5 h-5" />

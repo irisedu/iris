@@ -3,7 +3,6 @@ export interface UserConfig {
 	nunjucks: {
 		templatePath: string;
 	};
-	schemas: Record<string, string>;
 }
 
 export const defaultUserConfig = `ignoredPaths = [
@@ -19,6 +18,4 @@ export const defaultUserConfig = `ignoredPaths = [
 [nunjucks]
 
 templatePath = "templates"
-
-[schemas]
 `;

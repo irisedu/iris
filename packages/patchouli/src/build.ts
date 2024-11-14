@@ -19,7 +19,6 @@ import HtmlFileProcessor from './postCompile/HtmlFileProcessor.js';
 
 import IrisCollectionProcessor from './collectionProcessing/IrisCollectionProcessor.js';
 import NetworkCollectionProcessor from './collectionProcessing/NetworkCollectionProcessor.js';
-import SchemaCollectionProcessor from './collectionProcessing/SchemaCollectionProcessor.js';
 import SeriesCollectionProcessor from './collectionProcessing/SeriesCollectionProcessor.js';
 
 /**
@@ -153,7 +152,6 @@ async function collectionProcessStep(
 	const processors: CollectionProcessor[] = [
 		new IrisCollectionProcessor(config),
 		new NetworkCollectionProcessor(config),
-		new SchemaCollectionProcessor(config),
 		new SeriesCollectionProcessor(config)
 	];
 

@@ -10,7 +10,7 @@ import type {
 	IriscMetadata,
 	SummaryNode,
 	TocNode
-} from './docTypes.d.ts';
+} from '../schemas/index.js';
 import { resolveInternalLink, internalLinkToPageLink } from '../utils.js';
 import GithubSlugger from 'github-slugger';
 import KaTeX from 'katex';

@@ -4,11 +4,7 @@ import { internalLinkToPageLink, recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import type {
-	IriscFile,
-	IriscNode,
-	SummaryNode
-} from '../compile/docTypes.d.ts';
+import type { IriscFile, IriscNode, SummaryNode } from '../schemas/index.js';
 
 const articleExt = '.irisc';
 

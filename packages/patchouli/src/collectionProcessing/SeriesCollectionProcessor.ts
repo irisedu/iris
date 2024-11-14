@@ -4,7 +4,7 @@ import path from 'path';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import type { IriscFile, IriscNode } from '../compile/docTypes.d.ts';
+import type { IriscFile, IriscNode } from '../schemas/index.js';
 
 export interface SeriesInfo {
 	title: IriscNode[];

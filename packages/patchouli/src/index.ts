@@ -1,4 +1,4 @@
-export type * from './compile/docTypes.js';
+export * from './schemas/index.js';
 export { resolveInternalLink, readConfig } from './utils.js';
 export { WatchServer } from './watch.js';
 export type { UserConfig } from './config.js';

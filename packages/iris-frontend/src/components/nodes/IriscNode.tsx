@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from 'react';
 import type {
-	IriscNode,
+	IriscNode as IriscNodeT,
 	IriscMark,
 	SummaryNode,
 	IriscMetadata
@@ -20,7 +20,7 @@ import Tip from '~icons/tabler/star';
 import Problem from '~icons/tabler/zoom-question';
 import Exercise from '~icons/tabler/pencil';
 
-function InlineNode({ node, meta }: { node: IriscNode; meta: IriscMetadata }) {
+function InlineNode({ node, meta }: { node: IriscNodeT; meta: IriscMetadata }) {
 	switch (node.type) {
 		case 'text':
 			return node.text ?? '';
@@ -120,13 +120,13 @@ export function IriscInlineContent({
 	meta,
 	markStart = 0
 }: {
-	nodes: IriscNode[];
+	nodes: IriscNodeT[];
 	meta: IriscMetadata;
 	markStart?: number;
 }) {
 	const output: ReactNode[] = [];
 	let currentMark: IriscMark | undefined;
-	let partition: IriscNode[] = [];
+	let partition: IriscNodeT[] = [];
 
 	function popPartition() {
 		if (!partition.length) return;
@@ -173,7 +173,7 @@ export function IriscBlockContent({
 	nodes,
 	meta
 }: {
-	nodes: IriscNode[];
+	nodes: IriscNodeT[];
 	meta: IriscMetadata;
 }) {
 	return nodes.map((n, i) => <IriscNode key={i} node={n} meta={meta} />);
@@ -182,7 +182,7 @@ export function IriscBlockContent({
 // https://github.com/ProseMirror/prosemirror-tables/blob/master/src/tableview.ts
 // Copyright (C) 2015-2016 by Marijn Haverbeke <marijnh@gmail.com> and others (MIT)
 const cellMinWidth = 25;
-function tableSize(table: IriscNode) {
+function tableSize(table: IriscNodeT) {
 	let totalWidth = 0;
 	let fixedWidth = true;
 	const widths: (number | null)[] = [];
@@ -287,7 +287,7 @@ export function IriscNode({
 	node,
 	meta
 }: {
-	node: IriscNode;
+	node: IriscNodeT;
 	meta: IriscMetadata;
 }) {
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);

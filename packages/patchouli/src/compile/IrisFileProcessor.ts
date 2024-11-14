@@ -2,14 +2,14 @@ import fs from 'fs-extra';
 import path from 'path';
 import FileInfo from '../FileInfo.js';
 import FileProcessor, { type FileProcessorArgs } from '../FileProcessor.js';
-import type {
+import {
 	IrisFile,
-	IrisNode,
-	IriscFile,
-	IriscNode,
-	IriscMetadata,
-	SummaryNode,
-	TocNode
+	type IrisNode,
+	type IriscFile,
+	type IriscNode,
+	type IriscMetadata,
+	type SummaryNode,
+	type TocNode
 } from '../schemas/index.js';
 import { resolveInternalLink, internalLinkToPageLink } from '../utils.js';
 import GithubSlugger from 'github-slugger';
@@ -27,13 +27,13 @@ function processList(
 	children: SummaryNode[],
 	fileInfo: FileInfo
 ) {
-	if (!Array.isArray(listNode.content)) return;
+	if (!listNode.content) return;
 
 	for (const li of listNode.content) {
-		if (!Array.isArray(li.content)) continue;
+		if (!li.content) continue;
 
 		const page = li.content[0];
-		if (page.type !== 'summary_page' || !Array.isArray(page.content)) continue;
+		if (page.type !== 'summary_page' || !page.content) continue;
 
 		const pageText = page.content[0];
 		if (pageText.type !== 'text' || !pageText.text) continue;
@@ -48,8 +48,7 @@ function processList(
 		else link.href = pageText.text;
 
 		for (const liChild of li.content.slice(1)) {
-			if (liChild.type !== 'summary_list' || !Array.isArray(liChild.content))
-				continue;
+			if (liChild.type !== 'summary_list' || !liChild.content) continue;
 
 			const linkChildren = link.children || (link.children = []);
 			processList(liChild, linkChildren, fileInfo);
@@ -89,7 +88,7 @@ const nodeProcessors: Record<
 		return [null, true];
 	},
 	title(node, meta, fileInfo, ctx) {
-		if (node.content && Array.isArray(node.content)) {
+		if (node.content) {
 			meta.title = processIrisNodes(node.content, meta, fileInfo, ctx);
 			meta.titleString = nodesToString(meta.title);
 		}
@@ -105,29 +104,28 @@ const nodeProcessors: Record<
 	},
 	summary(node, meta, fileInfo, ctx) {
 		const summary: SummaryNode[] = [];
+		if (!node.content) return [null, false];
 
 		let section: SummaryNode | undefined;
 
-		if (node.content && Array.isArray(node.content)) {
-			for (const child of node.content) {
-				if (child.type === 'summary_heading') {
-					if (section) {
-						summary.push(section);
-					}
-
-					section = {
-						title: Array.isArray(child.content)
-							? processIrisNodes(child.content, meta, fileInfo, ctx)
-							: []
-					};
-				} else if (child.type === 'summary_list') {
-					if (!section) {
-						section = {};
-					}
-
-					const children = section.children || (section.children = []);
-					processList(child, children, fileInfo);
+		for (const child of node.content) {
+			if (child.type === 'summary_heading') {
+				if (section) {
+					summary.push(section);
 				}
+
+				section = {
+					title: child.content
+						? processIrisNodes(child.content, meta, fileInfo, ctx)
+						: []
+				};
+			} else if (child.type === 'summary_list') {
+				if (!section) {
+					section = {};
+				}
+
+				const children = section.children || (section.children = []);
+				processList(child, children, fileInfo);
 			}
 		}
 
@@ -140,8 +138,7 @@ const nodeProcessors: Record<
 	heading(node, meta, fileInfo, ctx) {
 		const { slugger, currentStack } = ctx.headings;
 		const rank = node.attrs?.level;
-		if (typeof rank !== 'number' || !Array.isArray(node.content))
-			return [node, true];
+		if (typeof rank !== 'number' || !node.content) return [node, true];
 
 		const headingContent = processIrisNodes(node.content, meta, fileInfo, ctx);
 		const headingId = slugger.slug(nodesToString(headingContent));
@@ -179,7 +176,7 @@ const nodeProcessors: Record<
 		];
 	},
 	text(node, meta, fileInfo) {
-		if (!Array.isArray(node.marks)) return [node, false];
+		if (!node.marks) return [node, false];
 
 		const mathMark = node.marks.find((m) => m.type === 'math_inline');
 		if (mathMark) {
@@ -242,8 +239,7 @@ const nodeProcessors: Record<
 		return [node, false];
 	},
 	math_display(node) {
-		if (!Array.isArray(node.content) || node.content.length === 0)
-			return [null, false];
+		if (!node.content?.length) return [null, false];
 
 		const text = node.content[0];
 		if (text.type !== 'text') return [null, false];
@@ -294,15 +290,6 @@ function processIrisNode(
 	fileInfo: FileInfo,
 	ctx: ProcessorCtx
 ): IriscNode | null {
-	if (!node.type) {
-		fileInfo.message({
-			id: 'iris-file-corrupted',
-			message: 'Iris file is corrupted: node type missing'
-		});
-
-		return null;
-	}
-
 	let newNode: IriscNode | null = node;
 	let recurse = true;
 
@@ -313,15 +300,6 @@ function processIrisNode(
 
 	// Allow recursion with no output (e.g. for frontmatter)
 	if (node.content && recurse) {
-		if (!Array.isArray(node.content)) {
-			fileInfo.message({
-				id: 'iris-file-corrupted',
-				message: 'Iris file is corrupted: content is not an array'
-			});
-
-			return null;
-		}
-
 		const content = processIrisNodes(node.content, meta, fileInfo, ctx);
 		if (newNode) newNode.content = content;
 	}
@@ -350,18 +328,7 @@ export default class IrisFileProcessor extends FileProcessor {
 
 		const fileInfo = new FileInfo(filePath);
 
-		let data: IrisFile;
-
-		try {
-			data = JSON.parse(await fs.readFile(inPath, 'utf-8'));
-		} catch (e: unknown) {
-			fileInfo.message({
-				id: 'iris-file-invalid',
-				message: 'Failed to parse Iris file: ' + e
-			});
-
-			return fileInfo;
-		}
+		const data = IrisFile.parse(JSON.parse(await fs.readFile(inPath, 'utf-8')));
 
 		if (data.version !== 1) {
 			fileInfo.message({

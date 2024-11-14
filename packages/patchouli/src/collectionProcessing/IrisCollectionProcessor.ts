@@ -4,7 +4,11 @@ import { internalLinkToPageLink, recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import type { IriscFile, IriscNode, SummaryNode } from '../schemas/index.js';
+import {
+	IriscFile,
+	type IriscNode,
+	type SummaryNode
+} from '../schemas/index.js';
 
 const articleExt = '.irisc';
 
@@ -12,7 +16,7 @@ function getSummaryNodes(toc: SummaryNode[]) {
 	const nodes: SummaryNode[] = [];
 
 	function addSummaryNode(node: SummaryNode) {
-		if (Array.isArray(node.children)) node.children.forEach(addSummaryNode);
+		if (node.children) node.children.forEach(addSummaryNode);
 		nodes.push(node);
 	}
 
@@ -99,8 +103,8 @@ export default class IrisCollectionProcessor extends CollectionProcessor {
 				return existing;
 			} else if (existing !== null) {
 				if (await fs.exists(filePath)) {
-					const titleData: IriscFile = JSON.parse(
-						await fs.readFile(filePath, 'utf-8')
+					const titleData = IriscFile.parse(
+						JSON.parse(await fs.readFile(filePath, 'utf-8'))
 					);
 
 					if (titleData.meta && titleData.meta.title) {
@@ -118,13 +122,13 @@ export default class IrisCollectionProcessor extends CollectionProcessor {
 		await recurseDirectory(outDir, async (filePath) => {
 			if (!filePath.endsWith(articleExt)) return;
 
-			const articleData: IriscFile = JSON.parse(
-				await fs.readFile(path.join(outDir, filePath), 'utf-8')
+			const articleData = IriscFile.parse(
+				JSON.parse(await fs.readFile(path.join(outDir, filePath), 'utf-8'))
 			);
 
 			if (!articleData.meta) return;
 
-			const summaryNodes = Array.isArray(articleData.meta.summary)
+			const summaryNodes = articleData.meta.summary
 				? getSummaryNodes(articleData.meta.summary)
 				: [];
 

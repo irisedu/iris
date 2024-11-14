@@ -4,7 +4,7 @@ import path from 'path';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import type { IriscFile, IriscNode } from '../schemas/index.js';
+import { IriscFile, type IriscNode } from '../schemas/index.js';
 
 export interface SeriesInfo {
 	title: IriscNode[];
@@ -29,9 +29,10 @@ export default class SeriesCollectionProcessor extends CollectionProcessor {
 				continue;
 			}
 
-			const summaryData: IriscFile = JSON.parse(
-				await fs.readFile(summaryPath, 'utf-8')
+			const summaryData = IriscFile.parse(
+				JSON.parse(await fs.readFile(summaryPath, 'utf-8'))
 			);
+
 			if (!summaryData.meta.summary) {
 				logger.warn(`Series '${dirent.name}' has no summary`);
 				continue;

@@ -4,7 +4,7 @@ import { recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import type { IriscFile, IriscNode } from '../schemas/index.js';
+import { IriscFile, type IriscNode } from '../schemas/index.js';
 
 interface NetworkNode {
 	id: string;
@@ -40,8 +40,9 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 			const id = filePath
 				.slice(0, isSummary ? -summarySuffix.length : -articleExt.length)
 				.replace(path.sep, '/');
-			const articleData: IriscFile = JSON.parse(
-				await fs.readFile(path.join(outDir, filePath), 'utf-8')
+
+			const articleData: IriscFile = IriscFile.parse(
+				JSON.parse(await fs.readFile(path.join(outDir, filePath), 'utf-8'))
 			);
 
 			const node: NetworkNode = {
@@ -53,7 +54,7 @@ export default class NetworkCollectionProcessor extends CollectionProcessor {
 
 			network.nodes.push(node);
 
-			if (!Array.isArray(articleData.meta.links)) return;
+			if (!articleData.meta.links) return;
 
 			for (const otherId of articleData.meta.links) {
 				const links = backlinks[otherId] || (backlinks[otherId] = []);

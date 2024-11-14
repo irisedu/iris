@@ -187,10 +187,10 @@ function tableSize(table: IriscNodeT) {
 	let fixedWidth = true;
 	const widths: (number | null)[] = [];
 
-	if (!Array.isArray(table.content) || table.content.length === 0) return null;
+	if (!table.content?.length) return null;
 
 	const row = table.content[0];
-	if (row.type !== 'table_row' || !Array.isArray(row.content)) return null;
+	if (row.type !== 'table_row' || !row.content) return null;
 
 	for (const child of row.content) {
 		const { colspan, colwidth }: { colspan?: number; colwidth?: number[] } =

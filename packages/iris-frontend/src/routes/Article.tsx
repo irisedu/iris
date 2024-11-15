@@ -108,7 +108,7 @@ function Sidebar({
 			</div>
 
 			{articleData.meta.toc && (
-				<div className="lg:sticky top-8 lg:max-h-[80%] lg:overflow-y-auto">
+				<div className="lg:sticky top-8 lg:max-h-[80vh] lg:overflow-y-auto">
 					<details open={isLg}>
 						<summary
 							className={`text-lg ${isLg ? 'pointer-events-none' : ''}`}

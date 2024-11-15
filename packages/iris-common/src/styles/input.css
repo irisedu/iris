@@ -38,3 +38,23 @@
 		@apply bg-iris-200 outline-none;
 	}
 }
+
+.react-aria-RadioGroup {
+	@apply flex flex-col;
+}
+
+.react-aria-Radio {
+	@apply flex flex-row items-center gap-2;
+
+	&::before {
+		@apply content-[''] block w-3 h-3 border-2 border-iris-700 rounded-full transition-[border-width] duration-100;
+	}
+
+	&[data-selected]::before {
+		@apply border-4;
+	}
+
+	&[data-pressed]::before {
+		@apply border-iris-500;
+	}
+}

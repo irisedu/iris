@@ -306,8 +306,6 @@ export function IriscNode({
 	}
 
 	switch (node.type) {
-		case 'doc':
-			return getBlockContent();
 		case 'paragraph':
 			return <p>{getInlineContent()}</p>;
 		case 'heading': {

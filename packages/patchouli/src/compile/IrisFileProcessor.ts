@@ -347,16 +347,9 @@ export default class IrisFileProcessor extends FileProcessor {
 		};
 
 		const meta: IriscMetadata = {};
-		const newData = processIrisNode(data.data, meta, fileInfo, ctx);
-
-		if (!newData) {
-			fileInfo.message({
-				id: 'iris-no-output',
-				message: 'Iris compiler output is empty'
-			});
-
-			return fileInfo;
-		}
+		const newData = data.data.content
+			? processIrisNodes(data.data.content, meta, fileInfo, ctx)
+			: [];
 
 		const newFile: IriscFile = { meta, data: newData };
 

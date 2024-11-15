@@ -18,7 +18,7 @@ import type { IriscFile, TocNode } from 'patchouli';
 import hljs from 'highlight.js';
 import { goToAnchor } from '$components/utils';
 import {
-	IriscNode,
+	IriscBlockContent,
 	IriscInlineContent,
 	Summary
 } from '$components/nodes/IriscNode';
@@ -248,7 +248,7 @@ export function Component() {
 					/>
 				</h1>
 
-				<IriscNode node={articleData.data} meta={articleData.meta} />
+				<IriscBlockContent nodes={articleData.data} meta={articleData.meta} />
 
 				<div className="text-sm mt-5">
 					{articleData.meta.unlinkedPages &&

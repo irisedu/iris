@@ -165,7 +165,10 @@ async function collectionProcessStep(
 	await Promise.all(tasks);
 }
 
-const BUILD_VERSION = 1;
+// Version history:
+// 1: Init
+// 2: Remove the `doc` node
+const BUILD_VERSION = 2;
 
 export default async function build(config: UserConfig, inDir: string) {
 	const outDir = path.join(inDir, 'build');

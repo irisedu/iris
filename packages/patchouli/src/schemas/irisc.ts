@@ -82,7 +82,7 @@ export type IriscMetadata = z.infer<typeof IriscMetadata>;
 
 export const IriscFile = z.object({
 	meta: IriscMetadata,
-	data: IriscNode
+	data: IriscNode.array()
 });
 
 export type IriscFile = z.infer<typeof IriscFile>;

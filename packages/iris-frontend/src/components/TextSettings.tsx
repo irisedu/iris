@@ -8,6 +8,7 @@ import {
 	SliderThumb,
 	SliderTrack
 } from 'react-aria-components';
+import { Link } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -35,7 +36,15 @@ function TextSettings() {
 
 	return (
 		<div className="font-sans">
-			<h2 className="my-0">Text & Accessibility Settings</h2>
+			<h2 className="my-0">
+				Text & Accessibility Settings{' '}
+				<Link
+					className="text-sm"
+					to="/page/iris-user-manual/accessibility/accessibility-settings"
+				>
+					(info)
+				</Link>
+			</h2>
 
 			<div className="flex flex-row flex-wrap gap-8">
 				<div className="flex flex-col gap-2">

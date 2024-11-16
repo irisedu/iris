@@ -7,7 +7,7 @@ interface DevState {
 	refresh: number;
 }
 
-export const devSlice = createSlice({
+const devSlice = createSlice({
 	name: 'dev',
 	initialState: {
 		enabled: false,
@@ -34,4 +34,4 @@ export const devSlice = createSlice({
 export const { setDevEnabled, setDevHost, setDevState, devRefresh } =
 	devSlice.actions;
 
-export default devSlice.reducer;
+export default devSlice;

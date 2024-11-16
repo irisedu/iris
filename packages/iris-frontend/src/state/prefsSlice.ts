@@ -11,7 +11,7 @@ interface PrefsState {
 	hueShift: number;
 }
 
-export const prefsSlice = createSlice({
+const prefsSlice = createSlice({
 	name: 'prefs',
 	initialState: {
 		text: {
@@ -54,4 +54,4 @@ export const {
 	setHueShift
 } = prefsSlice.actions;
 
-export default prefsSlice.reducer;
+export default prefsSlice;

@@ -41,7 +41,7 @@ function getTabByOffset(state: TabsState, offset: number) {
 	return state.tabs[newIdx].id;
 }
 
-export const tabsSlice = createSlice({
+const tabsSlice = createSlice({
 	name: 'tabs',
 	initialState: {
 		tabs: [welcomeTabData],
@@ -119,7 +119,7 @@ export const {
 	cleanTabState
 } = tabsSlice.actions;
 
-export default tabsSlice.reducer;
+export default tabsSlice;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const tabMiddleware: Middleware<{}, RootState> =

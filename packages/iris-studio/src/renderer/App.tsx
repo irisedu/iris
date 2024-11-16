@@ -64,7 +64,7 @@ function App() {
 
 	// Sync with patchouli integration
 	useEffect(() => {
-		patchouli.cd(openDirectory);
+		patchouli.cd(openDirectory ?? undefined);
 	}, [openDirectory]);
 
 	useEffect(() => {

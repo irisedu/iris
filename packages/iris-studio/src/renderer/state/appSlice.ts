@@ -5,13 +5,14 @@ import { setTabs } from './tabsSlice';
 
 interface AppState {
 	darkTheme: boolean;
-	openDirectory?: string;
+	openDirectory: string | null;
 }
 
-export const appSlice = createSlice({
+const appSlice = createSlice({
 	name: 'app',
 	initialState: {
-		darkTheme: false
+		darkTheme: false,
+		openDirectory: null
 	} as AppState,
 	reducers: {
 		setDarkTheme(state, action) {
@@ -25,7 +26,7 @@ export const appSlice = createSlice({
 
 export const { setDarkTheme, setOpenDirectory } = appSlice.actions;
 
-export default appSlice.reducer;
+export default appSlice;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const openDirectoryMiddleware: Middleware<{}, RootState> =

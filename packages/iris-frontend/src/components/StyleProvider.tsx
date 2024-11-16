@@ -25,6 +25,7 @@ const fontSettings: Record<string, FontSettings> = {
 function StyleProvider({ children }: { children: ReactNode }) {
 	const font = useSelector((state: RootState) => state.prefs.text.font);
 	const fontSize = useSelector((state: RootState) => state.prefs.text.fontSize);
+
 	const charSpacing = useSelector(
 		(state: RootState) => state.prefs.text.charSpacing
 	);
@@ -35,9 +36,18 @@ function StyleProvider({ children }: { children: ReactNode }) {
 		(state: RootState) => state.prefs.text.lineSpacing
 	);
 
+	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
+
 	useEffect(() => {
 		document.documentElement.style.fontSize = fontSize + '%';
 	}, [fontSize]);
+
+	useEffect(() => {
+		document.documentElement.style.setProperty(
+			'--hue-shift',
+			hueShift.toString()
+		);
+	}, [hueShift]);
 
 	const settings = fontSettings[font];
 
@@ -45,11 +55,11 @@ function StyleProvider({ children }: { children: ReactNode }) {
 		'--font-body': font,
 		'--font-smallcaps': settings?.smallcaps ?? font,
 		'--font-sans': settings?.sans ?? font,
-		'font-synthesis': settings?.fontSynthesis ?? 'none',
+		fontSynthesis: settings?.fontSynthesis ?? 'none',
 
-		'letter-spacing': charSpacing + 'em',
-		'word-spacing': wordSpacing < 0 ? 'normal' : wordSpacing + 'em',
-		'line-height': lineSpacing + ''
+		letterSpacing: charSpacing + 'em',
+		wordSpacing: wordSpacing < 0 ? 'normal' : wordSpacing + 'em',
+		lineHeight: lineSpacing.toString()
 	} as CSSProperties;
 
 	return (

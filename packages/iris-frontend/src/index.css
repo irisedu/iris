@@ -42,4 +42,13 @@
 	--font-body: Vollkorn;
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
+
+	--color-sat: calc(
+		70% - var(--hue-shift) * 0.333% + var(--hue-shift) * var(--hue-shift) *
+			0.000925%
+	);
+}
+
+.iris-rotate {
+	@apply hue-rotate-[calc(var(--hue-shift)*1deg)];
 }

@@ -36,7 +36,7 @@ function Layout() {
 
 			<nav className="flex flex-col items-center md:flex-row md:pr-4 gap-1">
 				<Link to="/" className="h-12">
-					<img src={irisWord} alt="Iris logo" className="h-full" />
+					<img src={irisWord} alt="Iris logo" className="iris-rotate h-full" />
 				</Link>
 
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
@@ -79,7 +79,7 @@ function Layout() {
 					<img
 						src={irisFlower}
 						alt="Iris flower"
-						className="h-full bg-white rounded-full shadow-md"
+						className="iris-rotate h-full bg-white rounded-full shadow-md"
 					/>
 					<div className="grow h-1 bg-iris-600" />
 				</div>

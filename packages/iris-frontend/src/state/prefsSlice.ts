@@ -8,6 +8,7 @@ interface PrefsState {
 		wordSpacing: number;
 		lineSpacing: number;
 	};
+	hueShift: number;
 }
 
 export const prefsSlice = createSlice({
@@ -19,7 +20,8 @@ export const prefsSlice = createSlice({
 			charSpacing: 0,
 			wordSpacing: 0.1,
 			lineSpacing: 1.5
-		}
+		},
+		hueShift: 0
 	} as PrefsState,
 	reducers: {
 		setFont(state, action) {
@@ -36,6 +38,9 @@ export const prefsSlice = createSlice({
 		},
 		setLineSpacing(state, action) {
 			state.text.lineSpacing = action.payload;
+		},
+		setHueShift(state, action) {
+			state.hueShift = action.payload;
 		}
 	}
 });
@@ -45,7 +50,8 @@ export const {
 	setFontSize,
 	setCharSpacing,
 	setWordSpacing,
-	setLineSpacing
+	setLineSpacing,
+	setHueShift
 } = prefsSlice.actions;
 
 export default prefsSlice.reducer;

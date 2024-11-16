@@ -17,13 +17,16 @@ import {
 	setFontSize,
 	setCharSpacing,
 	setWordSpacing,
-	setLineSpacing
+	setLineSpacing,
+	setHueShift
 } from '$state/prefsSlice';
 
 function TextSettings() {
 	const dispatch = useAppDispatch();
+
 	const font = useSelector((state: RootState) => state.prefs.text.font);
 	const fontSize = useSelector((state: RootState) => state.prefs.text.fontSize);
+
 	const charSpacing = useSelector(
 		(state: RootState) => state.prefs.text.charSpacing
 	);
@@ -33,6 +36,8 @@ function TextSettings() {
 	const lineSpacing = useSelector(
 		(state: RootState) => state.prefs.text.lineSpacing
 	);
+
+	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
 
 	return (
 		<div className="font-sans">
@@ -140,7 +145,7 @@ function TextSettings() {
 
 					<span>Custom Spacing</span>
 
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-2 min-w-56">
 						<Slider
 							minValue={0}
 							maxValue={0.1}
@@ -187,6 +192,24 @@ function TextSettings() {
 							</SliderTrack>
 						</Slider>
 					</div>
+				</div>
+
+				<div className="flex flex-col min-w-56">
+					<span className="text-lg font-bold">Color</span>
+
+					<Slider
+						minValue={0}
+						maxValue={360}
+						step={1}
+						value={hueShift}
+						onChange={(val) => dispatch(setHueShift(val))}
+					>
+						<Label>Interface Hue Shift</Label>
+						<SliderOutput />
+						<SliderTrack>
+							<SliderThumb />
+						</SliderTrack>
+					</Slider>
 				</div>
 			</div>
 		</div>

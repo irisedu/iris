@@ -14,7 +14,7 @@ function IrisCard({
 		>
 			<img
 				src={irisFlower}
-				className="absolute w-72 -bottom-32 -left-32 rotate-12 opacity-10 select-none z-10"
+				className="iris-rotate absolute w-72 -bottom-32 -left-32 rotate-12 opacity-10 select-none z-10"
 			/>
 
 			<div className="relative z-20 h-full">{children}</div>

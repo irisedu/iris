@@ -25,6 +25,9 @@
 	},
 	"devDependencies": {
 		"@fontsource/atkinson-hyperlegible": "^5.1.0",
+		"@fontsource/comic-neue": "^5.1.0",
+		"@fontsource/lexend": "^5.1.1",
+		"@fontsource/opendyslexic": "^5.1.0",
 		"@fontsource/source-code-pro": "^5.1.0",
 		"@fontsource/vollkorn": "^5.1.1",
 		"@fontsource/vollkorn-sc": "^5.1.0",

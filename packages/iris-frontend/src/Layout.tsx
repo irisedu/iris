@@ -1,6 +1,14 @@
+import { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { Link as AriaLink } from 'react-aria-components';
+import {
+	Link as AriaLink,
+	ToggleButton,
+	TooltipTrigger,
+	Tooltip
+} from 'react-aria-components';
 import DevAlert from '$components/DevAlert';
+import TextSettings from '$components/TextSettings';
+import StyleProvider from '$components/StyleProvider';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -10,6 +18,9 @@ import Git from '~icons/tabler/brand-git';
 import React from '~icons/tabler/brand-react';
 import Braces from '~icons/tabler/braces';
 import Heart from '~icons/tabler/heart-filled';
+import TextSize from '~icons/tabler/text-size';
+import Accessible from '~icons/tabler/accessible';
+
 import irisWord from '$assets/iris-word.svg';
 import irisFlower from '$assets/iris.svg';
 
@@ -17,11 +28,13 @@ function Layout() {
 	const dispatch = useAppDispatch();
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 
+	const [textSettingsVisible, setTextSettingsVisible] = useState(false);
+
 	return (
 		<div className="relative flex flex-col bg-iris-50 min-h-screen">
 			<div className="h-1 w-screen bg-iris-600" />
 
-			<nav className="flex flex-col items-center md:flex-row">
+			<nav className="flex flex-col items-center md:flex-row md:pr-4 gap-1">
 				<Link to="/" className="h-12">
 					<img src={irisWord} alt="Iris logo" className="h-full" />
 				</Link>
@@ -29,12 +42,35 @@ function Layout() {
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
 					<Link to="/catalog">Catalog</Link>
 				</div>
+
+				<div className="grow" />
+
+				<TooltipTrigger delay={200}>
+					<ToggleButton
+						aria-label="Text & Accessibility Settings"
+						className="flex flex-row gap-2 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-200 data-[selected]:bg-iris-150"
+						isSelected={textSettingsVisible}
+						onChange={setTextSettingsVisible}
+					>
+						<TextSize className="w-4 h-4 m-auto text-iris-900" />
+						<Accessible className="w-4 h-4 m-auto text-iris-900" />
+					</ToggleButton>
+					<Tooltip placement="bottom">Text & Accessibility Settings</Tooltip>
+				</TooltipTrigger>
 			</nav>
+
+			{textSettingsVisible && (
+				<div className="my-2 p-8 w-full bg-iris-100">
+					<TextSettings />
+				</div>
+			)}
 
 			<DevAlert className="m-4" />
 
 			<div className="grow p-8">
-				<Outlet />
+				<StyleProvider>
+					<Outlet />
+				</StyleProvider>
 			</div>
 
 			<footer className="relative pt-8 pb-4 bg-iris-200">

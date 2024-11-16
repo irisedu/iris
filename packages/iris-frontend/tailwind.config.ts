@@ -3,9 +3,9 @@ export default {
 	important: true,
 	theme: {
 		fontFamily: {
-			serif: ['Vollkorn'],
-			smallcaps: ['"Vollkorn SC"'],
-			sans: ['"Atkinson Hyperlegible"'],
+			body: ['var(--font-body)'],
+			smallcaps: ['var(--font-smallcaps)'],
+			sans: ['var(--font-sans)'],
 			mono: ['"Source Code Pro"']
 		},
 		extend: {

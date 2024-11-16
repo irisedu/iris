@@ -3,16 +3,18 @@ import { configureStore } from '@reduxjs/toolkit';
 import { rememberReducer, rememberEnhancer } from 'redux-remember';
 
 import devReducer from './devSlice';
+import prefsReducer from './prefsSlice';
 
 const rootReducer = rememberReducer({
-	dev: devReducer
+	dev: devReducer,
+	prefs: prefsReducer
 });
 
 const store = configureStore({
 	reducer: rootReducer,
 	enhancers: (getDefaultEnhancers) =>
 		getDefaultEnhancers().concat([
-			rememberEnhancer(window.localStorage, ['dev'])
+			rememberEnhancer(window.localStorage, ['dev', 'prefs'])
 		])
 });
 

@@ -10,7 +10,6 @@
 	"description": "Modular, rich document processor",
 	"license": "MIT",
 	"scripts": {
-		"cli:build": "esbuild --platform=node --bundle src/cli.ts --outfile=out/cli.cjs",
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -43,7 +42,6 @@
 		"@types/fs-extra": "^11.0.4",
 		"@types/katex": "^0.16.7",
 		"@types/nunjucks": "^3.2.6",
-		"@types/ws": "^8.5.12",
-		"esbuild": "^0.24.0"
+		"@types/ws": "^8.5.12"
 	}
 }

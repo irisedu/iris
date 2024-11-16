@@ -67,6 +67,48 @@
 								]
 							}
 						]
+					},
+					{
+						"type": "summary_heading",
+						"content": [
+							{
+								"type": "text",
+								"text": "Credits and Attributions"
+							}
+						]
+					},
+					{
+						"type": "summary_list",
+						"content": [
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "credits/credits"
+											}
+										]
+									}
+								]
+							},
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "credits/oss-attributions"
+											}
+										]
+									}
+								]
+							}
+						]
 					}
 				]
 			}

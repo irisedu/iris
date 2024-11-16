@@ -114,5 +114,14 @@ export default [
 				...globals.node
 			}
 		}
+	},
+	{
+		files: ['tools/**'],
+
+		languageOptions: {
+			globals: {
+				...globals.node
+			}
+		}
 	}
 ];

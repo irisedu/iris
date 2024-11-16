@@ -1,0 +1,82 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Credits"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": null
+						}
+					}
+				]
+			},
+			{
+				"type": "figure",
+				"attrs": {
+					"float": "",
+					"width": "75%"
+				},
+				"content": [
+					{
+						"type": "image",
+						"attrs": {
+							"src": "$assets/iris-flower.webp",
+							"alt": "A photo of Iris versicolor, the flower."
+						}
+					},
+					{
+						"type": "figure_caption",
+						"content": [
+							{
+								"type": "text",
+								"text": "The Iris logo is based off of this image of "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "italic"
+									}
+								],
+								"text": "Iris versicolor"
+							},
+							{
+								"type": "text",
+								"text": ", taken by Danielle Langlois, "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "link",
+										"attrs": {
+											"href": "https://creativecommons.org/licenses/by-sa/3.0/deed.en"
+										}
+									}
+								],
+								"text": "CC BY-SA 3.0"
+							},
+							{
+								"type": "text",
+								"text": "."
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

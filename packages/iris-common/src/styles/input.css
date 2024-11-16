@@ -58,3 +58,48 @@
 		@apply border-iris-500;
 	}
 }
+
+.react-aria-Slider {
+	@apply grid;
+
+	grid-template-areas: 'label output' 'track track';
+	grid-template-columns: 1fr auto;
+
+	.react-aria-Label {
+		grid-area: label;
+	}
+
+	.react-aria-SliderOutput {
+		grid-area: output;
+
+		@apply text-sm;
+	}
+
+	.react-aria-SliderTrack {
+		grid-area: track;
+
+		@apply relative;
+
+		&::before {
+			@apply content-[''] block absolute bg-iris-200;
+		}
+	}
+
+	.react-aria-SliderThumb {
+		@apply w-3 h-3 rounded-full bg-iris-500 border-2 border-iris-700;
+	}
+
+	&[data-orientation='horizontal'] {
+		.react-aria-SliderTrack {
+			@apply h-3 w-full;
+
+			&::before {
+				@apply h-0.5 w-full top-1/2 -translate-y-1/2;
+			}
+		}
+
+		.react-aria-SliderThumb {
+			@apply top-1/2;
+		}
+	}
+}

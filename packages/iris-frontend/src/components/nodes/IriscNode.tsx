@@ -388,7 +388,7 @@ export function IriscNode({
 					<img src={String(src)} alt={String(alt)} />
 				</picture>
 			) : (
-				<img src={String(src)} alt={String(alt)} />
+				<img src={String(src)} alt={String(alt)} loading="lazy" />
 			);
 		}
 

@@ -6,6 +6,7 @@ import {
 	RouterProvider
 } from 'react-router-dom';
 import Layout from './Layout';
+import ErrorElement from './ErrorElement';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -13,7 +14,15 @@ import { setDevState, devRefresh } from '$state/devSlice';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
-		<Route path="/" element={<Layout />}>
+		<Route
+			path="/"
+			element={<Layout />}
+			errorElement={
+				<Layout>
+					<ErrorElement />
+				</Layout>
+			}
+		>
 			<Route index lazy={() => import('./routes/Landing')} />
 			<Route path="/catalog" lazy={() => import('./routes/Catalog')} />
 			<Route path="/page/*" lazy={() => import('./routes/Article')} />

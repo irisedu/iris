@@ -22,7 +22,13 @@ const fontSettings: Record<string, FontSettings> = {
 	}
 };
 
-function StyleProvider({ children }: { children: ReactNode }) {
+function StyleProvider({
+	children,
+	className
+}: {
+	children: ReactNode;
+	className: string;
+}) {
 	const font = useSelector((state: RootState) => state.prefs.text.font);
 	const fontSize = useSelector((state: RootState) => state.prefs.text.fontSize);
 
@@ -63,7 +69,10 @@ function StyleProvider({ children }: { children: ReactNode }) {
 	} as CSSProperties;
 
 	return (
-		<div style={style} className="font-body">
+		<div
+			style={style}
+			className={`font-body${className ? ' ' + className : ''}`}
+		>
 			{children}
 		</div>
 	);

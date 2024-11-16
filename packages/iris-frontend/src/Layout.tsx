@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import {
 	Link as AriaLink,
@@ -24,7 +24,7 @@ import Accessible from '~icons/tabler/accessible';
 import irisWord from '$assets/iris-word.svg';
 import irisFlower from '$assets/iris.svg';
 
-function Layout() {
+function Layout({ children }: { children?: ReactNode }) {
 	const dispatch = useAppDispatch();
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 
@@ -67,11 +67,9 @@ function Layout() {
 
 			<DevAlert className="m-4" />
 
-			<div className="grow p-8">
-				<StyleProvider>
-					<Outlet />
-				</StyleProvider>
-			</div>
+			<StyleProvider className="grow p-8">
+				{children ?? <Outlet />}
+			</StyleProvider>
 
 			<footer className="relative pt-8 pb-4 bg-iris-200">
 				<div className="absolute -top-5 h-10 w-full flex flex-row items-center">

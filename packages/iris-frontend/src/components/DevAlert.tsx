@@ -18,7 +18,7 @@ function DevAlert({ className }: { className?: string }) {
 	return (
 		devEnabled && (
 			<div
-				className={`dev-alert relative font-sans text-sm bg-red-100 p-2 ${className ?? ''}`}
+				className={`dev-alert relative font-sans text-sm border-2 border-red-200 p-2 ${className ?? ''}`}
 			>
 				<p className="my-0 text-red-600">
 					<strong>Preview mode is enabled.</strong>

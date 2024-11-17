@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import {
 	Link as AriaLink,
@@ -30,8 +30,17 @@ function Layout({ children }: { children?: ReactNode }) {
 
 	const [textSettingsVisible, setTextSettingsVisible] = useState(false);
 
+	const mainContent = useRef<HTMLDivElement>(null);
+
 	return (
 		<div className="relative flex flex-col bg-iris-50 min-h-screen">
+			<AriaLink
+				className="absolute top-4 left-4 bg-iris-100 border-2 border-iris-200 p-2 -z-50 data-[focus-visible]:z-50 cursor-pointer"
+				onPress={() => mainContent.current?.focus()}
+			>
+				Skip to main content
+			</AriaLink>
+
 			<div className="h-1 w-screen bg-iris-600" />
 
 			<nav className="flex flex-col items-center md:flex-row md:pr-4 gap-1">
@@ -67,9 +76,11 @@ function Layout({ children }: { children?: ReactNode }) {
 
 			<DevAlert className="m-4" />
 
-			<StyleProvider className="grow p-8">
-				{children ?? <Outlet />}
-			</StyleProvider>
+			<main className="grow p-8" ref={mainContent} tabIndex={-1}>
+				<StyleProvider className="min-h-full">
+					{children ?? <Outlet />}
+				</StyleProvider>
+			</main>
 
 			<footer className="relative pt-8 pb-4 bg-iris-200">
 				<div className="absolute -top-5 h-10 w-full flex flex-row items-center">

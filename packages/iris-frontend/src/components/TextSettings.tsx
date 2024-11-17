@@ -41,7 +41,7 @@ function TextSettings() {
 
 	return (
 		<div className="font-sans">
-			<h2 className="my-0">
+			<h2 className="mt-0 mb-2">
 				Text & Accessibility Settings{' '}
 				<Link
 					className="text-sm"

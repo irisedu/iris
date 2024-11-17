@@ -1,5 +1,5 @@
 export const greyBar = {
-	focusArea: 48,
+	focusArea: 3.5,
 	focusColor: 'rgba(0, 0, 0, 50%)',
 
 	underlineColor: 'transparent',
@@ -11,7 +11,7 @@ export const greyBar = {
 };
 
 export const lightbox = {
-	focusArea: 48,
+	focusArea: 3.5,
 	focusColor: 'transparent',
 
 	underlineColor: 'transparent',

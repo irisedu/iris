@@ -47,6 +47,11 @@ function ReadingRuler() {
 			const ctx = canvas.current?.getContext('2d');
 			if (!ctx) return;
 
+			const remSize = parseFloat(
+				getComputedStyle(document.documentElement).fontSize
+			);
+			const focusAreaPx = focusArea * remSize;
+
 			const { offsetWidth: width, offsetHeight: height } = ctx.canvas;
 			ctx.canvas.width = width;
 			ctx.canvas.height = height;
@@ -58,8 +63,8 @@ function ReadingRuler() {
 			const { y, node: element } = mouse.current;
 			if (element && shouldSkipNode(element)) return;
 
-			const focusUpper = y - focusArea / 2;
-			const focusLower = y + focusArea / 2;
+			const focusUpper = y - focusAreaPx / 2;
+			const focusLower = y + focusAreaPx / 2;
 
 			ctx.fillStyle = topShadeColor;
 			ctx.fillRect(0, 0, width, focusUpper);
@@ -68,7 +73,7 @@ function ReadingRuler() {
 			ctx.fillRect(0, focusLower, width, height - focusLower);
 
 			ctx.fillStyle = focusColor;
-			ctx.fillRect(0, y - focusArea / 2, width, focusArea);
+			ctx.fillRect(0, y - focusAreaPx / 2, width, focusAreaPx);
 
 			ctx.fillStyle = overlineColor;
 			ctx.fillRect(0, focusUpper - lineThickness / 2, width, lineThickness);

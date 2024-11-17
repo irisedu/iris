@@ -16,7 +16,11 @@ export function Component() {
 			<h2>For authors</h2>
 			<p>
 				To start creating Iris documents, download Iris Studio from{' '}
-				<a href="https://github.com/irisedu/iris/releases" className="external">
+				<a
+					href="https://github.com/irisedu/iris/releases"
+					target="_blank"
+					className="external"
+				>
 					the GitHub release page
 				</a>
 				.

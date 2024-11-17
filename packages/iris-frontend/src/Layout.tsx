@@ -119,11 +119,16 @@ function Layout({ children }: { children?: ReactNode }) {
 					<div className="flex flex-row flex-wrap items-center gap-1">
 						<AriaLink
 							href="https://github.com/irisedu/iris"
+							target="_blank"
 							aria-label="GitHub"
 						>
 							<Git className="w-5 h-5" />
 						</AriaLink>
-						<AriaLink href="https://react.dev/" aria-label="React">
+						<AriaLink
+							href="https://react.dev/"
+							target="_blank"
+							aria-label="React"
+						>
 							<React className="w-5 h-5" />
 						</AriaLink>
 						<AriaLink

@@ -1,3 +1,5 @@
+/* See react-aria-components documentation */
+
 .react-aria-Label {
 	@apply text-sm;
 }
@@ -100,6 +102,42 @@
 
 		.react-aria-SliderThumb {
 			@apply top-1/2;
+		}
+	}
+}
+
+.react-aria-Switch {
+	@apply flex items-center gap-2;
+
+	.indicator {
+		@apply w-[1.4rem] h-[0.9rem] border-[0.1rem] border-iris-500 bg-iris-200 rounded-full duration-200;
+
+		&::before {
+			@apply content-[''] block m-[0.1rem] w-[0.5rem] h-[0.5rem] bg-iris-500 rounded-full transition-transform transition-all duration-200;
+		}
+	}
+
+	&[data-pressed] .indicator {
+		@apply border-iris-600 bg-iris-300;
+
+		&::before {
+			@apply bg-iris-600;
+		}
+	}
+
+	&[data-selected] .indicator {
+		@apply border-iris-800 bg-iris-800;
+
+		&::before {
+			@apply bg-iris-100 translate-x-full;
+		}
+	}
+
+	&[data-focus-visible] {
+		@apply outline-none;
+
+		.indicator {
+			@apply outline outline-2 outline-iris-500;
 		}
 	}
 }

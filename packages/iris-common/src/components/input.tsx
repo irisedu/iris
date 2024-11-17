@@ -1,11 +1,14 @@
+import { type ReactNode } from 'react';
 import {
 	Select,
 	Label,
 	Button,
 	SelectValue,
 	Popover,
+	Switch as AriaSwitch,
 	ListBox,
-	type SelectProps
+	type SelectProps,
+	type SwitchProps
 } from 'react-aria-components';
 
 import ChevronDown from '~icons/tabler/chevron-down';
@@ -30,5 +33,17 @@ export function Dropdown<T extends object>({
 				<ListBox>{children}</ListBox>
 			</Popover>
 		</Select>
+	);
+}
+
+export function Switch({
+	children,
+	...props
+}: SwitchProps & { children: ReactNode }) {
+	return (
+		<AriaSwitch {...props}>
+			<div className="indicator" />
+			{children}
+		</AriaSwitch>
 	);
 }

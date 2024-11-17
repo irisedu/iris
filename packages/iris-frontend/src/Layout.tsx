@@ -43,7 +43,10 @@ function Layout({ children }: { children?: ReactNode }) {
 
 			<div className="h-1 w-screen bg-iris-600" />
 
-			<nav className="flex flex-col items-center md:flex-row md:pr-4 gap-1">
+			<nav
+				className="flex flex-col items-center md:flex-row md:pr-4 gap-1"
+				data-hide-reading-ruler
+			>
 				<Link to="/" className="h-12">
 					<img src={irisWord} alt="Iris logo" className="iris-rotate h-full" />
 				</Link>
@@ -82,7 +85,10 @@ function Layout({ children }: { children?: ReactNode }) {
 				</StyleProvider>
 			</main>
 
-			<footer className="relative pt-8 pb-4 bg-iris-200">
+			<footer
+				className="relative pt-8 pb-4 bg-iris-200"
+				data-hide-reading-ruler
+			>
 				<div className="absolute -top-5 h-10 w-full flex flex-row items-center">
 					<div className="grow h-1 bg-iris-600" />
 					<img

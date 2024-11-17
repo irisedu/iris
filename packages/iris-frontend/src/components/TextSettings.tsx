@@ -8,7 +8,9 @@ import {
 	SliderThumb,
 	SliderTrack
 } from 'react-aria-components';
+import { Switch } from 'iris-common/components';
 import { Link } from 'react-router-dom';
+import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -18,7 +20,9 @@ import {
 	setCharSpacing,
 	setWordSpacing,
 	setLineSpacing,
-	setHueShift
+	setHueShift,
+	setRulerEnabled,
+	setRulerSettings
 } from '$state/prefsSlice';
 
 function TextSettings() {
@@ -39,6 +43,10 @@ function TextSettings() {
 
 	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
 
+	const rulerEnabled = useSelector(
+		(state: RootState) => state.prefs.ruler.enabled
+	);
+
 	return (
 		<div className="font-sans">
 			<h2 className="mt-0 mb-2">
@@ -52,9 +60,9 @@ function TextSettings() {
 			</h2>
 
 			<div className="flex flex-row flex-wrap gap-8">
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col min-w-56">
 					<RadioGroup
-						className="react-aria-RadioGroup"
+						className="react-aria-RadioGroup mb-2"
 						value={font}
 						onChange={(val) => dispatch(setFont(val))}
 					>
@@ -104,7 +112,7 @@ function TextSettings() {
 					</Slider>
 				</div>
 
-				<div className="flex flex-col">
+				<div className="flex flex-col min-w-56">
 					<span className="text-lg font-bold">Spacing</span>
 
 					<span>Presets</span>
@@ -210,6 +218,56 @@ function TextSettings() {
 							<SliderThumb />
 						</SliderTrack>
 					</Slider>
+				</div>
+
+				<div className="flex flex-col w-56">
+					<span className="text-lg font-bold">Reading Ruler</span>
+
+					<Switch
+						className="react-aria-Switch mb-1"
+						isSelected={rulerEnabled}
+						onChange={(val) => dispatch(setRulerEnabled(val))}
+					>
+						Enable Reading Ruler
+					</Switch>
+
+					<span>Presets</span>
+
+					<div className="flex flex-row flex-wrap gap-2 mb-2">
+						{/* Based on https://dl.acm.org/doi/pdf/10.1145/3544548.3581367 */}
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => {
+								dispatch(setRulerSettings(lightbox));
+							}}
+						>
+							Lightbox
+						</Button>
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => {
+								dispatch(setRulerSettings(greyBar));
+							}}
+						>
+							Gray Bar
+						</Button>
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => {
+								dispatch(setRulerSettings(shade));
+							}}
+						>
+							Shade
+						</Button>
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => {
+								dispatch(setRulerSettings(underline));
+							}}
+						>
+							Underline
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>

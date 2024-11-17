@@ -260,6 +260,91 @@
 						"text": "), for readers to customize the spacing between characters, words, and lines. Custom spacing settings are also provided."
 					}
 				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Reading rulers"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Reading rulers help readers with and without dyslexia focus on the part of the text they are reading. Several presets are provided based on "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://dl.acm.org/doi/abs/10.1145/3544548.3581367"
+								}
+							}
+						],
+						"text": "this paper"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "tip"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Touchscreen devices"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "The reading rulers provided by Iris work best when not using a touchscreen. To move the ruler on a touchscreen, tap the screen."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "The ruler can be hidden by holding "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "Shift"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
 			}
 		]
 	}

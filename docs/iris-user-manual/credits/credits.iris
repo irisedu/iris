@@ -76,6 +76,114 @@
 						]
 					}
 				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Accessibility features"
+					}
+				]
+			},
+			{
+				"type": "bullet_list",
+				"content": [
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Iris’s “COR” themes and reading ruler implementation are based on work by Adobe Research:"
+									}
+								]
+							},
+							{
+								"type": "bullet_list",
+								"content": [
+									{
+										"type": "list_item",
+										"content": [
+											{
+												"type": "paragraph",
+												"content": [
+													{
+														"type": "text",
+														"marks": [
+															{
+																"type": "small_caps"
+															}
+														],
+														"text": "Cai, T., Niklaus, A. G., Kerr, B., Kraley, M., and Bylinskii, Z."
+													},
+													{
+														"type": "text",
+														"text": " COR Themes for Readability from Iterative Feedback. In "
+													},
+													{
+														"type": "text",
+														"marks": [
+															{
+																"type": "italic"
+															}
+														],
+														"text": "Proceedings of the 2024 CHI Conference on Human Factors in Computing Systems"
+													},
+													{
+														"type": "text",
+														"text": " (New York, NY, USA, May 2024), CHI ’24, Association for Computing Machinery, pp. 1–23."
+													}
+												]
+											}
+										]
+									},
+									{
+										"type": "list_item",
+										"content": [
+											{
+												"type": "paragraph",
+												"content": [
+													{
+														"type": "text",
+														"marks": [
+															{
+																"type": "small_caps"
+															}
+														],
+														"text": "Niklaus, A. G., Cai, T., Bylinskii, Z., and Wallace, S."
+													},
+													{
+														"type": "text",
+														"text": " Digital Reading Rulers: Evaluating Inclusively Designed Rulers for Readers With Dyslexia and Without. In "
+													},
+													{
+														"type": "text",
+														"marks": [
+															{
+																"type": "italic"
+															}
+														],
+														"text": "Proceedings of the 2023 CHI Conference on Human Factors in Computing Systems"
+													},
+													{
+														"type": "text",
+														"text": " (New York, NY, USA, Apr. 2023), CHI ’23, Association for Computing Machinery, pp. 1–17."
+													}
+												]
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	}

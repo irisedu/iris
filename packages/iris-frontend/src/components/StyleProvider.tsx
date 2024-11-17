@@ -1,4 +1,5 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
+import ReadingRuler from './ReadingRuler';
 
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
@@ -73,6 +74,7 @@ function StyleProvider({
 			style={style}
 			className={`font-body${className ? ' ' + className : ''}`}
 		>
+			<ReadingRuler />
 			{children}
 		</div>
 	);

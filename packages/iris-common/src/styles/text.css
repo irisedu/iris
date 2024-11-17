@@ -52,7 +52,7 @@ pre code {
 p code,
 li code {
 	/* Try to match font sizes */
-	@apply text-sm text-blue-700;
+	@apply text-sm text-blue-700 hyphens-none;
 }
 
 abbr {

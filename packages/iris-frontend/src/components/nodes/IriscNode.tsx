@@ -310,9 +310,9 @@ export function IriscNode({
 			const children = (
 				<>
 					{id && (
-						<AriaLink onPress={() => goToAnchor(id)}>
+						<a onClick={() => goToAnchor(id)} tabIndex={-1}>
 							<span className="anchor-link"></span>
-						</AriaLink>
+						</a>
 					)}
 					{getInlineContent()}
 				</>

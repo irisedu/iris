@@ -110,10 +110,10 @@
 	@apply flex items-center gap-2;
 
 	.indicator {
-		@apply w-[1.4rem] h-[0.9rem] border-[0.1rem] border-iris-500 bg-iris-200 rounded-full duration-200;
+		@apply w-[1.4rem] h-[0.9rem] border-[0.1rem] border-iris-500 bg-iris-200 rounded-full;
 
 		&::before {
-			@apply content-[''] block m-[0.1rem] w-[0.5rem] h-[0.5rem] bg-iris-500 rounded-full transition-transform transition-all duration-200;
+			@apply content-[''] block m-[0.1rem] w-[0.5rem] h-[0.5rem] bg-iris-500 rounded-full transition-transform duration-200;
 		}
 	}
 

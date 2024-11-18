@@ -1,7 +1,8 @@
 figure {
 	@apply max-w-full my-2 text-center mx-auto;
 
-	img {
+	img,
+	object[type='image/svg+xml'] {
 		@apply w-full;
 	}
 

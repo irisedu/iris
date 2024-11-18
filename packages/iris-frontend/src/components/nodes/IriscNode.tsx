@@ -9,10 +9,8 @@ import deepEqual from 'deep-equal';
 import { Link as AriaLink } from 'react-aria-components';
 import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
+import Image from './Image';
 import parse from 'html-react-parser';
-
-import { useSelector } from 'react-redux';
-import { type RootState } from '$state/store';
 
 import Info from '~icons/tabler/info-circle';
 import Warning from '~icons/tabler/alert-triangle';
@@ -290,9 +288,6 @@ export function IriscNode({
 	node: IriscNodeT;
 	meta: IriscMetadata;
 }) {
-	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
-	const devHost = useSelector((state: RootState) => state.dev.host);
-
 	function getBlockContent() {
 		return (
 			node.content && <IriscBlockContent nodes={node.content} meta={meta} />
@@ -378,18 +373,11 @@ export function IriscNode({
 			return <figcaption>{getInlineContent()}</figcaption>;
 		}
 		case 'image': {
-			const src = node.attrs?.src;
-			const alt = node.attrs?.alt;
+			const src = node.attrs?.src as string | undefined;
+			const alt = node.attrs?.alt as string | undefined;
 			if (src === undefined || alt === undefined) return null;
 
-			return devEnabled && String(src).startsWith('/') ? (
-				<picture>
-					<source srcSet={`http://${devHost}${src}?hash=${Date.now()}`} />
-					<img src={String(src)} alt={String(alt)} />
-				</picture>
-			) : (
-				<img src={String(src)} alt={String(alt)} loading="lazy" />
-			);
+			return <Image src={src} alt={alt} />;
 		}
 
 		case 'note': {

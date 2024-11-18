@@ -8,7 +8,7 @@ import {
 	SliderThumb,
 	SliderTrack,
 	Switch
-} from 'iris-common';
+} from 'iris-components';
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
 import { compact, open, relaxed } from '$state/presets/text';

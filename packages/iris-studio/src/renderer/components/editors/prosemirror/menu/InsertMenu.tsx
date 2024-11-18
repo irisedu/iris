@@ -2,7 +2,7 @@ import {
 	useEditorEffect,
 	useEditorEventCallback
 } from '@nytimes/react-prosemirror';
-import { MenuTrigger, Button, Popover, Menu, MenuItem } from 'iris-common';
+import { MenuTrigger, Button, Popover, Menu, MenuItem } from 'iris-components';
 import {
 	docSchema,
 	insertNode,

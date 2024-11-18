@@ -10,7 +10,7 @@ import {
 	Tooltip,
 	type ButtonProps,
 	type ToggleButtonProps
-} from 'iris-common';
+} from 'iris-components';
 import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';

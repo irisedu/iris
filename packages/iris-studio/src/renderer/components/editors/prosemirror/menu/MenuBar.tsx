@@ -6,7 +6,7 @@ import {
 	TabPanel,
 	Tab,
 	type Key
-} from 'iris-common';
+} from 'iris-components';
 import { undo, redo } from 'prosemirror-history';
 import { CommandButton } from './components';
 import {

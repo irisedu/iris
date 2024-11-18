@@ -11,7 +11,14 @@ import {
 	VisibilityGroup
 } from '$components/VisibilityContext';
 import { docSchema, setParentAttr, findParent } from 'iris-prosemirror';
-import { Button, Modal, Dialog, Heading, TextField, Input } from 'iris-common';
+import {
+	Button,
+	Modal,
+	Dialog,
+	Heading,
+	TextField,
+	Input
+} from 'iris-components';
 
 import FloatLeft from '~icons/tabler/float-left';
 import FloatNone from '~icons/tabler/float-none';

@@ -72,7 +72,7 @@ export default [
 	{
 		files: [
 			'packages/iris-frontend/src/**',
-			'packages/iris-common/src/**',
+			'packages/iris-components/src/**',
 			'packages/iris-prosemirror/src/**'
 		],
 

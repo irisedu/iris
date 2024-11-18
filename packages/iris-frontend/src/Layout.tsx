@@ -5,7 +5,7 @@ import {
 	ToggleButton,
 	TooltipTrigger,
 	Tooltip
-} from 'iris-common';
+} from 'iris-components';
 import DevAlert from '$components/DevAlert';
 import TextSettings from '$components/TextSettings';
 import StyleProvider from '$components/StyleProvider';

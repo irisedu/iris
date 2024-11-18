@@ -9,7 +9,7 @@ import {
 	Input,
 	Menu,
 	Submenu
-} from 'iris-common';
+} from 'iris-components';
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
 import { cmdOrCtrl } from '../utils';

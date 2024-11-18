@@ -11,7 +11,7 @@ import {
 	TextArea,
 	Button,
 	Label
-} from 'iris-common';
+} from 'iris-components';
 import { markExtend } from 'iris-prosemirror';
 import { cmdOrCtrl } from '../../../utils';
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useRevalidator, useLoaderData, Link } from 'react-router-dom';
-import { TagGroup, TagList, Tag } from 'iris-common';
+import { TagGroup, TagList, Tag } from 'iris-components';
 import type { SeriesInfo } from 'patchouli';
 import IrisCard from '$components/IrisCard';
 import { IriscInlineContent } from '$components/nodes/IriscNode';

@@ -1,5 +1,5 @@
 {
-	"name": "iris-common",
+	"name": "iris-components",
 	"description": "Common components and styles for Iris",
 	"type": "module",
 	"exports": {

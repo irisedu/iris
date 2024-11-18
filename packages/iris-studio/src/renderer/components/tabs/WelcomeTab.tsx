@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from 'react';
-import { Button, type ButtonProps } from 'iris-common';
+import { Button, type ButtonProps } from 'iris-components';
 import Iris from '$assets/iris-word.svg?react';
 import irisLogo from '$assets/iris-mono.svg';
 

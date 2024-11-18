@@ -1,4 +1,4 @@
-# iris-common
+# iris-components
 
 Common components and styles for Iris.
 

@@ -32,7 +32,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 
-@import 'iris-common/styles';
+@import 'iris-components/styles';
 
 @import 'tailwindcss/utilities';
 

@@ -6,7 +6,7 @@ import {
 	Heading,
 	ListBoxItem,
 	Dropdown
-} from 'iris-common';
+} from 'iris-components';
 
 interface CodeLanguageDialogProps {
 	isOpen: boolean;

@@ -6,7 +6,7 @@ import type {
 	IriscMetadata
 } from 'patchouli';
 import deepEqual from 'deep-equal';
-import { Link as AriaLink } from 'iris-common';
+import { Link as AriaLink } from 'iris-components';
 import { Link } from 'react-router-dom';
 import { goToAnchor } from '$components/utils';
 import Image from './Image';

@@ -19,7 +19,7 @@
 		"@codemirror/view": "^6.34.3",
 		"@nytimes/react-prosemirror": "^0.6.1",
 		"@uiw/codemirror-theme-github": "^4.23.6",
-		"iris-common": "workspace:^",
+		"iris-components": "workspace:^",
 		"katex": "^0.16.11",
 		"prosemirror-commands": "^1.6.2",
 		"prosemirror-dropcursor": "^1.8.1",

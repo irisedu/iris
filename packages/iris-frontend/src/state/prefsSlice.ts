@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { lightbox } from './presets/ruler';
+import { compact } from './presets/text';
 
 interface PrefsState {
 	text: {
@@ -31,9 +32,7 @@ const prefsSlice = createSlice({
 		text: {
 			font: 'Vollkorn',
 			fontSize: 125,
-			charSpacing: 0,
-			wordSpacing: 0.1,
-			lineSpacing: 1.5
+			...compact
 		},
 		hueShift: 0,
 		ruler: {
@@ -57,6 +56,13 @@ const prefsSlice = createSlice({
 		setLineSpacing(state, action) {
 			state.text.lineSpacing = action.payload;
 		},
+		setSpacing(state, action) {
+			state.text = {
+				...action.payload,
+				font: state.text.font,
+				fontSize: state.text.fontSize
+			};
+		},
 		setHueShift(state, action) {
 			state.hueShift = action.payload;
 		},
@@ -78,6 +84,7 @@ export const {
 	setCharSpacing,
 	setWordSpacing,
 	setLineSpacing,
+	setSpacing,
 	setHueShift,
 	setRulerEnabled,
 	setRulerSettings

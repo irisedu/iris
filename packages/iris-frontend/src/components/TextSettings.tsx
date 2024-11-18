@@ -11,6 +11,7 @@ import {
 import { Switch } from 'iris-common/components';
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
+import { compact, open, relaxed } from '$state/presets/text';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -20,6 +21,7 @@ import {
 	setCharSpacing,
 	setWordSpacing,
 	setLineSpacing,
+	setSpacing,
 	setHueShift,
 	setRulerEnabled,
 	setRulerSettings
@@ -121,31 +123,19 @@ function TextSettings() {
 						{/* Based on https://dl.acm.org/action/downloadSupplement?doi=10.1145%2F3613904.3642108&file=pn3179-supplemental-material-1.pdf */}
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setCharSpacing(0));
-								dispatch(setWordSpacing(-0.01));
-								dispatch(setLineSpacing(1.4));
-							}}
+							onPress={() => dispatch(setSpacing(compact))}
 						>
 							Compact
 						</Button>
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setCharSpacing(0.02));
-								dispatch(setWordSpacing(0.2));
-								dispatch(setLineSpacing(2.2));
-							}}
+							onPress={() => dispatch(setSpacing(open))}
 						>
 							Open
 						</Button>
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setCharSpacing(0.04));
-								dispatch(setWordSpacing(0.3));
-								dispatch(setLineSpacing(4.5));
-							}}
+							onPress={() => dispatch(setSpacing(relaxed))}
 						>
 							Relaxed
 						</Button>
@@ -237,33 +227,25 @@ function TextSettings() {
 						{/* Based on https://dl.acm.org/doi/pdf/10.1145/3544548.3581367 */}
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setRulerSettings(lightbox));
-							}}
+							onPress={() => dispatch(setRulerSettings(lightbox))}
 						>
 							Lightbox
 						</Button>
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setRulerSettings(greyBar));
-							}}
+							onPress={() => dispatch(setRulerSettings(greyBar))}
 						>
 							Gray Bar
 						</Button>
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setRulerSettings(shade));
-							}}
+							onPress={() => dispatch(setRulerSettings(shade))}
 						>
 							Shade
 						</Button>
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => {
-								dispatch(setRulerSettings(underline));
-							}}
+							onPress={() => dispatch(setRulerSettings(underline))}
 						>
 							Underline
 						</Button>

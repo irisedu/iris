@@ -7,13 +7,7 @@ import {
 } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
-import {
-	Link as AriaLink,
-	TagGroup,
-	TagList,
-	Tag,
-	Label
-} from 'react-aria-components';
+import { Link as AriaLink, TagGroup, TagList, Tag, Label } from 'iris-common';
 import type { IriscFile, TocNode } from 'patchouli';
 import hljs from 'highlight.js';
 import { goToAnchor } from '$components/utils';

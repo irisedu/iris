@@ -4,9 +4,9 @@ import {
 	Modal,
 	Dialog,
 	Heading,
-	ListBoxItem
-} from 'react-aria-components';
-import { Dropdown } from 'iris-common/components';
+	ListBoxItem,
+	Dropdown
+} from 'iris-common';
 
 interface CodeLanguageDialogProps {
 	isOpen: boolean;

@@ -8,8 +8,9 @@ import {
 	ToggleButton,
 	TooltipTrigger,
 	Tooltip,
-	type ButtonProps
-} from 'react-aria-components';
+	type ButtonProps,
+	type ToggleButtonProps
+} from 'iris-common';
 import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
@@ -116,7 +117,7 @@ export function CommandButton({
 	);
 }
 
-interface ToggleMarkButton extends ButtonProps {
+interface ToggleMarkButtonProps extends ToggleButtonProps {
 	index?: number;
 	Icon: FC<{ className: string }>;
 	markType: MarkType;
@@ -134,7 +135,7 @@ export function ToggleMarkButton({
 	tooltip,
 	keys,
 	...props
-}: ToggleMarkButton) {
+}: ToggleMarkButtonProps) {
 	const [visible, setVisible] = useVisibility(index);
 	const [active, setActive] = useState(false);
 	const onChange = useEditorEventCallback((view, value) => {

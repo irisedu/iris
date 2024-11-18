@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-aria-components';
+import { Link } from 'iris-common';
 import type { TabData, TabRender } from '$state/tabsSlice';
 
 import Bug from '~icons/tabler/bug';

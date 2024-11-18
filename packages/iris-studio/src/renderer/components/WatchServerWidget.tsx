@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Button, TooltipTrigger, Tooltip } from 'react-aria-components';
+import { Button, TooltipTrigger, Tooltip } from 'iris-common';
 import type { FileInfo } from 'patchouli';
 
 import Play from '~icons/tabler/player-play-filled';

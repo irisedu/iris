@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button, MenuTrigger, Popover, Menu } from 'react-aria-components';
+import { Button, MenuTrigger, Popover, Menu } from 'iris-common';
 import irisLogo from '$assets/iris-mono.svg';
 
 import { useSelector } from 'react-redux';

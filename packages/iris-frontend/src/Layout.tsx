@@ -5,7 +5,7 @@ import {
 	ToggleButton,
 	TooltipTrigger,
 	Tooltip
-} from 'react-aria-components';
+} from 'iris-common';
 import DevAlert from '$components/DevAlert';
 import TextSettings from '$components/TextSettings';
 import StyleProvider from '$components/StyleProvider';

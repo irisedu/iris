@@ -13,7 +13,7 @@ import {
 	Tag,
 	TextField,
 	TextArea
-} from 'react-aria-components';
+} from 'iris-common';
 import type { Node } from 'prosemirror-model';
 import { useEditorEventCallback } from '@nytimes/react-prosemirror';
 

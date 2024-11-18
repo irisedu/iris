@@ -11,7 +11,7 @@ import {
 	TextArea,
 	Button,
 	Label
-} from 'react-aria-components';
+} from 'iris-common';
 import { markExtend } from 'iris-prosemirror';
 import { cmdOrCtrl } from '../../../utils';
 

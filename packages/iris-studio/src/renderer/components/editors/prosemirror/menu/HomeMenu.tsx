@@ -9,7 +9,7 @@ import {
 	Popover,
 	Menu,
 	MenuItem
-} from 'react-aria-components';
+} from 'iris-common';
 import type { NodeType, Attrs } from 'prosemirror-model';
 import { setBlockType } from 'prosemirror-commands';
 import { wrapInList, liftListItem } from 'prosemirror-schema-list';

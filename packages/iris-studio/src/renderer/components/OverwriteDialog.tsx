@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import { Button, Modal, Dialog, Heading } from 'react-aria-components';
+import { Button, Modal, Dialog, Heading } from 'iris-common';
 
 interface OverwriteDialogProps {
 	isOpen: boolean;

@@ -6,7 +6,7 @@ import {
 	TabPanel,
 	Tab,
 	type Key
-} from 'react-aria-components';
+} from 'iris-common';
 import { undo, redo } from 'prosemirror-history';
 import { CommandButton } from './components';
 import {

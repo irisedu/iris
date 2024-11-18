@@ -15,7 +15,7 @@ import {
 	MenuItem,
 	Separator,
 	Collection
-} from 'react-aria-components';
+} from 'iris-common';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import { cmdOrCtrl } from './utils';
 

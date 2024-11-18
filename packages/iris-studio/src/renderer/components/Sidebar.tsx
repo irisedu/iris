@@ -3,15 +3,15 @@ import {
 	Button,
 	MenuTrigger,
 	Popover,
-	Menu,
 	MenuItem,
 	Separator,
 	TextField,
-	Input
-} from 'react-aria-components';
+	Input,
+	Menu,
+	Submenu
+} from 'iris-common';
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
-import { Submenu } from 'iris-common/components';
 import { cmdOrCtrl } from '../utils';
 
 import { useSelector } from 'react-redux';

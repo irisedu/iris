@@ -11,14 +11,7 @@ import {
 	VisibilityGroup
 } from '$components/VisibilityContext';
 import { docSchema, setParentAttr, findParent } from 'iris-prosemirror';
-import {
-	Button,
-	Modal,
-	Dialog,
-	Heading,
-	TextField,
-	Input
-} from 'react-aria-components';
+import { Button, Modal, Dialog, Heading, TextField, Input } from 'iris-common';
 
 import FloatLeft from '~icons/tabler/float-left';
 import FloatNone from '~icons/tabler/float-none';

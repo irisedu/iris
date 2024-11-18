@@ -6,9 +6,9 @@ import {
 	Slider,
 	SliderOutput,
 	SliderThumb,
-	SliderTrack
-} from 'react-aria-components';
-import { Switch } from 'iris-common/components';
+	SliderTrack,
+	Switch
+} from 'iris-common';
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
 import { compact, open, relaxed } from '$state/presets/text';

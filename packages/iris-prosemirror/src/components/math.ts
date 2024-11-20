@@ -198,6 +198,9 @@ const insertDisplayMath: Command = (state, dispatch) => {
 		insertNode(displayMath)(state, (cmdTr) => (tr = cmdTr));
 
 		if (tr) {
+			const { $head } = state.selection;
+			const newPos = $head.pos + ($head.parent.childCount ? 1 : 0);
+			tr.setSelection(Selection.near(tr.doc.resolve(newPos)));
 			tr.setMeta(pluginKey, false);
 			dispatch(tr);
 		}

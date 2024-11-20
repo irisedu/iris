@@ -6,11 +6,11 @@
 
 .react-aria-TextField {
 	@apply flex flex-col my-2;
+}
 
-	.react-aria-Input,
-	.react-aria-TextArea {
-		@apply p-1 rounded-md bg-iris-200 border-2 border-iris-300;
-	}
+.react-aria-Input,
+.react-aria-TextArea {
+	@apply p-1 rounded-md bg-iris-200 border-2 border-iris-300;
 }
 
 .react-aria-Button {
@@ -62,7 +62,7 @@
 }
 
 .react-aria-Slider {
-	@apply grid;
+	@apply grid px-2;
 
 	grid-template-areas: 'label output' 'track track';
 	grid-template-columns: 1fr auto;

@@ -1,5 +1,10 @@
+import path from 'path';
+
 export default {
-	content: ['./src/**/*.tsx'],
+	content: [
+		'./src/**/*.tsx',
+		path.join(path.dirname(require.resolve('iris-components')), '**/*.tsx')
+	],
 	important: true,
 	theme: {
 		fontFamily: {

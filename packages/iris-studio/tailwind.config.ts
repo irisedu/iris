@@ -1,8 +1,13 @@
 // @ts-expect-error Nightwind does not support TypeScript
 import nightwind from 'nightwind';
+import path from 'path';
 
 export default {
-	content: ['./src/**/*.tsx'],
+	content: [
+		'./src/**/*.tsx',
+		path.join(path.dirname(require.resolve('iris-components')), '**/*.tsx'),
+		path.join(path.dirname(require.resolve('iris-prosemirror')), '**/*.tsx')
+	],
 	important: true,
 	theme: {
 		fontFamily: {
@@ -41,8 +46,5 @@ export default {
 	},
 	darkMode: 'class',
 	plugins: [nightwind],
-	safelist: [
-		'font-smallcaps',
-		'float-right' // FIXME: this is for the frontmatter node view
-	]
+	safelist: ['font-smallcaps']
 };

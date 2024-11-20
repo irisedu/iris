@@ -4,5 +4,5 @@ export * from './input';
 export * from './menu';
 
 // Overrides
-export { Switch } from './input';
+export { Switch, ColorPicker } from './input';
 export { Menu } from './menu';

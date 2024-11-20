@@ -97,7 +97,7 @@ export function ColorPicker({
 					<span>{label}</span>
 				</Button>
 				<Popover placement="bottom start">
-					<Dialog className="react-aria-Dialog flex flex-col gap-2 p-2 w-48 max-h-[inherit] overflow-auto">
+					<Dialog className="react-aria-Dialog flex flex-col gap-2 p-2 w-48 max-h-[inherit] overflow-auto font-sans">
 						<ColorArea
 							colorSpace="hsl"
 							xChannel="saturation"

@@ -137,7 +137,7 @@ function ReadingRuler() {
 		enabled && (
 			<canvas
 				ref={canvas}
-				className="fixed top-0 left-0 w-full h-full pointer-events-none z-50"
+				className="fixed top-0 left-0 w-full h-full pointer-events-none z-[2147483647]"
 			></canvas>
 		)
 	);

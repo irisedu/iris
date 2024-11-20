@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
 	RadioGroup,
 	Label,
@@ -12,15 +13,14 @@ import {
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
 import { compact, open, relaxed } from '$state/presets/text';
+import SpacingDialog from './SpacingDialog';
+import RulerDialog from './RulerDialog';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
 import {
 	setFont,
 	setFontSize,
-	setCharSpacing,
-	setWordSpacing,
-	setLineSpacing,
 	setSpacing,
 	setHueShift,
 	setRulerEnabled,
@@ -33,24 +33,20 @@ function TextSettings() {
 	const font = useSelector((state: RootState) => state.prefs.text.font);
 	const fontSize = useSelector((state: RootState) => state.prefs.text.fontSize);
 
-	const charSpacing = useSelector(
-		(state: RootState) => state.prefs.text.charSpacing
-	);
-	const wordSpacing = useSelector(
-		(state: RootState) => state.prefs.text.wordSpacing
-	);
-	const lineSpacing = useSelector(
-		(state: RootState) => state.prefs.text.lineSpacing
-	);
-
 	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
 
 	const rulerEnabled = useSelector(
 		(state: RootState) => state.prefs.ruler.enabled
 	);
 
+	const [spacingOpen, setSpacingOpen] = useState(false);
+	const [rulerOpen, setRulerOpen] = useState(false);
+
 	return (
 		<div className="font-sans">
+			<SpacingDialog isOpen={spacingOpen} setIsOpen={setSpacingOpen} />
+			<RulerDialog isOpen={rulerOpen} setIsOpen={setRulerOpen} />
+
 			<h2 className="mt-0 mb-2">
 				Text & Accessibility Settings{' '}
 				<Link
@@ -114,12 +110,10 @@ function TextSettings() {
 					</Slider>
 				</div>
 
-				<div className="flex flex-col min-w-56">
+				<div className="flex flex-col max-w-72">
 					<span className="text-lg font-bold">Spacing</span>
 
-					<span>Presets</span>
-
-					<div className="flex flex-row flex-wrap gap-2 mb-2">
+					<div className="flex flex-row flex-wrap gap-2">
 						{/* Based on https://dl.acm.org/action/downloadSupplement?doi=10.1145%2F3613904.3642108&file=pn3179-supplemental-material-1.pdf */}
 						<Button
 							className="react-aria-Button bg-iris-200 border-iris-400"
@@ -139,56 +133,12 @@ function TextSettings() {
 						>
 							Relaxed
 						</Button>
-					</div>
-
-					<span>Custom Spacing</span>
-
-					<div className="flex flex-col gap-2 min-w-56">
-						<Slider
-							minValue={0}
-							maxValue={0.1}
-							step={0.005}
-							value={charSpacing}
-							onChange={(val) => dispatch(setCharSpacing(val))}
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => setSpacingOpen(true)}
 						>
-							<Label>Character Spacing</Label>
-							<SliderOutput className="react-aria-SliderOutput after:content-['em']" />
-							<SliderTrack>
-								<SliderThumb />
-							</SliderTrack>
-						</Slider>
-
-						<Slider
-							minValue={-0.01}
-							maxValue={0.5}
-							step={0.01}
-							value={wordSpacing}
-							onChange={(val) => dispatch(setWordSpacing(val))}
-						>
-							<Label>Word Spacing</Label>
-							{wordSpacing < 0 ? (
-								<span className="react-aria-SliderOutput">font default</span>
-							) : (
-								<SliderOutput className="react-aria-SliderOutput after:content-['em']" />
-							)}
-							<SliderTrack>
-								<SliderThumb />
-							</SliderTrack>
-						</Slider>
-
-						<Slider
-							minValue={1}
-							maxValue={5}
-							step={0.1}
-							value={lineSpacing}
-							onChange={(val) => dispatch(setLineSpacing(val))}
-						>
-							<Label>Line Spacing</Label>
-							<SliderOutput />
-							<SliderTrack>
-								<SliderThumb />
-							</SliderTrack>
-						</Slider>
+							Customize
+						</Button>
 					</div>
 				</div>
 
@@ -221,8 +171,6 @@ function TextSettings() {
 						Enable Reading Ruler
 					</Switch>
 
-					<span>Presets</span>
-
 					<div className="flex flex-row flex-wrap gap-2 mb-2">
 						{/* Based on https://dl.acm.org/doi/pdf/10.1145/3544548.3581367 */}
 						<Button
@@ -248,6 +196,12 @@ function TextSettings() {
 							onPress={() => dispatch(setRulerSettings(underline))}
 						>
 							Underline
+						</Button>
+						<Button
+							className="react-aria-Button bg-iris-200 border-iris-400"
+							onPress={() => setRulerOpen(true)}
+						>
+							Customize
 						</Button>
 					</div>
 				</div>

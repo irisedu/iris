@@ -60,7 +60,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 							dispatch(
 								setRulerSettings({
 									...rulerSettings,
-									topShadeColor: val
+									topShadeColor: val.toString('rgba')
 								})
 							)
 						}
@@ -74,7 +74,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 							dispatch(
 								setRulerSettings({
 									...rulerSettings,
-									focusColor: val
+									focusColor: val.toString('rgba')
 								})
 							)
 						}
@@ -88,7 +88,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 							dispatch(
 								setRulerSettings({
 									...rulerSettings,
-									bottomShadeColor: val
+									bottomShadeColor: val.toString('rgba')
 								})
 							)
 						}
@@ -123,7 +123,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 							dispatch(
 								setRulerSettings({
 									...rulerSettings,
-									overlineColor: val
+									overlineColor: val.toString('rgba')
 								})
 							)
 						}
@@ -137,7 +137,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 							dispatch(
 								setRulerSettings({
 									...rulerSettings,
-									underlineColor: val
+									underlineColor: val.toString('rgba')
 								})
 							)
 						}

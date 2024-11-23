@@ -14,7 +14,7 @@ import {
 	Tag,
 	Label
 } from 'iris-components';
-import type { IriscFile, TocNode } from 'patchouli';
+import type { IriscFile, TocNode } from '@irisedu/schemas';
 import hljs from 'highlight.js';
 import { goToAnchor } from '$components/utils';
 import {

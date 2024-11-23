@@ -4,7 +4,7 @@ import { recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import { IriscFile, type IriscNode } from '../schemas/index.js';
+import { IriscFile, type IriscNode } from '@irisedu/schemas';
 
 interface NetworkNode {
 	id: string;

@@ -4,11 +4,7 @@ import { internalLinkToPageLink, recurseDirectory } from '../utils.js';
 import CollectionProcessor, {
 	type CollectionProcessorArgs
 } from './CollectionProcessor.js';
-import {
-	IriscFile,
-	type IriscNode,
-	type SummaryNode
-} from '../schemas/index.js';
+import { IriscFile, type IriscNode, type SummaryNode } from '@irisedu/schemas';
 
 const articleExt = '.irisc';
 

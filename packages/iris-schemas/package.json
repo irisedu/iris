@@ -1,0 +1,22 @@
+{
+	"name": "@irisedu/schemas",
+	"version": "0.0.1",
+	"description": "Common schemas for Iris",
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/irisedu/iris.git"
+	},
+	"type": "module",
+	"main": "out/index.js",
+	"types": "out/index.d.ts",
+	"scripts": {
+		"tsc": "tsc --noEmit",
+		"prepare": "tsc"
+	},
+	"dependencies": {
+		"zod": "^3.23.8"
+	}
+}

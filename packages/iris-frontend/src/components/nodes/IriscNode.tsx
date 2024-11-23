@@ -4,7 +4,7 @@ import type {
 	IriscMark,
 	SummaryNode,
 	IriscMetadata
-} from 'patchouli';
+} from '@irisedu/schemas';
 import deepEqual from 'deep-equal';
 import { Link as AriaLink } from 'iris-components';
 import { Link } from 'react-router-dom';

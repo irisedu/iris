@@ -44,7 +44,8 @@ FROM base AS backend-prod-deps
 
 WORKDIR /iris/packages/iris-backend
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter iris-backend... install --prod --frozen-lockfile
+# FIXME: ignore scripts bypasses schema prepare step to avoid running tsc
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter iris-backend... install --prod --frozen-lockfile --ignore-scripts
 
 # Output: /iris/node_modules
 

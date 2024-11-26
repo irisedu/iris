@@ -93,6 +93,12 @@ function TextSettings() {
 						>
 							OpenDyslexic
 						</Radio>
+						<Radio
+							value="system-ui"
+							className="react-aria-Radio font-[system-ui]"
+						>
+							System UI
+						</Radio>
 					</RadioGroup>
 
 					<Slider

@@ -35,7 +35,7 @@ export default class NunjucksFileProcessor extends FileProcessor {
 		const contents = await fs.readFile(inPath, 'utf-8');
 
 		try {
-			const res = nunjucks.renderString(contents, {});
+			const res = env.renderString(contents, {});
 			await fs.writeFile(outPath, res);
 		} catch (e: unknown) {
 			fileInfo.message({

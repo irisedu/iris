@@ -10,12 +10,13 @@
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@irisedu/schemas": "workspace:^",
 		"@reduxjs/toolkit": "^2.3.0",
+		"@trpc/client": "11.0.0-rc.660",
 		"deep-equal": "^2.2.3",
 		"highlight.js": "^11.10.0",
 		"html-react-parser": "^5.1.18",
 		"iris-components": "workspace:^",
-		"@irisedu/schemas": "workspace:^",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-redux": "^9.1.2",
@@ -40,6 +41,7 @@
 		"@types/react-dom": "^18.3.1",
 		"@vitejs/plugin-react-swc": "^3.7.1",
 		"autoprefixer": "^10.4.20",
+		"iris-backend": "workspace:^",
 		"iris-prosemirror": "workspace:^",
 		"katex": "^0.16.11",
 		"patchouli": "workspace:^",

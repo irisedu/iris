@@ -4,11 +4,17 @@ import {
 	Link as AriaLink,
 	ToggleButton,
 	TooltipTrigger,
-	Tooltip
+	Tooltip,
+	Button,
+	MenuTrigger,
+	Popover,
+	Menu,
+	MenuItem
 } from 'iris-components';
 import DevAlert from '$components/DevAlert';
 import TextSettings from '$components/TextSettings';
 import StyleProvider from '$components/StyleProvider';
+import { useLogOut } from '$hooks/user';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -20,6 +26,7 @@ import Braces from '~icons/tabler/braces';
 import Heart from '~icons/tabler/heart-filled';
 import TextSize from '~icons/tabler/text-size';
 import Accessible from '~icons/tabler/accessible';
+import ChevronDown from '~icons/tabler/chevron-down';
 
 import irisWord from '$assets/iris-word.svg';
 import irisFlower from '$assets/iris.svg';
@@ -27,6 +34,9 @@ import irisFlower from '$assets/iris.svg';
 function Layout({ children }: { children?: ReactNode }) {
 	const dispatch = useAppDispatch();
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
+	const user = useSelector((state: RootState) => state.user.user);
+
+	const logOut = useLogOut();
 
 	const [textSettingsVisible, setTextSettingsVisible] = useState(false);
 
@@ -44,7 +54,7 @@ function Layout({ children }: { children?: ReactNode }) {
 			<div className="h-1 w-screen bg-iris-600" />
 
 			<nav
-				className="flex flex-col items-center md:flex-row md:pr-4 gap-1"
+				className="flex flex-col items-center md:flex-row md:pr-6 gap-1"
 				data-hide-reading-ruler
 			>
 				<Link to="/" className="h-12">
@@ -60,7 +70,7 @@ function Layout({ children }: { children?: ReactNode }) {
 				<TooltipTrigger delay={200}>
 					<ToggleButton
 						aria-label="Text & Accessibility Settings"
-						className="flex flex-row gap-2 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-200 data-[selected]:bg-iris-150"
+						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-200 data-[selected]:bg-iris-150"
 						isSelected={textSettingsVisible}
 						onChange={setTextSettingsVisible}
 					>
@@ -69,6 +79,23 @@ function Layout({ children }: { children?: ReactNode }) {
 					</ToggleButton>
 					<Tooltip placement="bottom">Text & Accessibility Settings</Tooltip>
 				</TooltipTrigger>
+
+				{user && user.type === 'registered' ? (
+					<MenuTrigger>
+						<Button className="react-aria-Link" aria-label="Account menu">
+							{user.data.given_name ?? 'Account'}{' '}
+							<ChevronDown className="inline w-4 h-4" />
+						</Button>
+
+						<Popover>
+							<Menu>
+								<MenuItem onAction={logOut}>Log out</MenuItem>
+							</Menu>
+						</Popover>
+					</MenuTrigger>
+				) : (
+					<Link to="/login">Log in</Link>
+				)}
 			</nav>
 
 			{textSettingsVisible && (

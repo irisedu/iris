@@ -11,6 +11,7 @@ import ErrorElement from './ErrorElement';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
 import { setDevState, devRefresh } from '$state/devSlice';
+import { fetchUser } from '$state/userSlice';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -24,6 +25,13 @@ const router = createBrowserRouter(
 			}
 		>
 			<Route index lazy={() => import('./routes/Landing')} />
+
+			<Route path="/login" lazy={() => import('./routes/Login')} />
+			<Route
+				path="/login/pending-federation"
+				lazy={() => import('./routes/PendingFederation')}
+			/>
+
 			<Route path="/catalog" lazy={() => import('./routes/Catalog')} />
 			<Route path="/page/*" lazy={() => import('./routes/Article')} />
 		</Route>
@@ -83,6 +91,10 @@ function App() {
 			ws.close();
 		};
 	}, [dispatch, devHost, devEnabled, devRetry]);
+
+	useEffect(() => {
+		dispatch(fetchUser());
+	}, [dispatch]);
 
 	return <RouterProvider router={router} />;
 }

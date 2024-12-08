@@ -9,6 +9,7 @@ in pkgs.mkShell {
     nodejs_22
     pnpm
     postgresql
+    valkey # redis
   ];
 
   PGDATA = toString ./.pg;
@@ -20,7 +21,14 @@ in pkgs.mkShell {
     echo "Starting PostgreSQL..."
     pg_ctl -o "-p 5555 -k $PGDATA" start
 
+    echo "Starting Valkey..."
+    valkey-server --port 6666 --daemonize yes
+
+    trap "echo Stopping databases... && pg_ctl stop && valkey-cli -p 6666 shutdown" EXIT
+
     alias pg="psql -p 5555 -U postgres"
-    trap "pg_ctl stop" EXIT
+    alias pg-gen="pnpm db:codegen --url=postgres://postgres@127.0.0.1:5555/iris"
+
+    alias vk="valkey-cli -p 6666"
   '';
 }

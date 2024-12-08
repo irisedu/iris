@@ -34,7 +34,10 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			'^\\/(page\\/[^.]+\\..*)|(series\\/?)$': 'http://localhost:58063'
+			'^\\/(page\\/[^.]+\\..*)|(series\\/?)|(auth\\/.*)|(trpc\\/.*)$': {
+				target: 'http://localhost:58063',
+				changeOrigin: true
+			}
 		}
 	},
 	define: {

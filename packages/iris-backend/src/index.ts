@@ -1,10 +1,24 @@
 import express from 'express';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { expressLogger } from './logger.js';
+import { expressLogger, dbLogger } from './logger.js';
 import { indexRepoFiles } from './indexer.js';
+import { migrateToLatest } from './db/migrator.js';
+import cookieParser from 'cookie-parser';
+
+import { authSetup, authRouter } from './routes/auth/index.js';
+import { trpcSetup } from './trpc/app.js';
+
+expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
 
 const app = express();
+
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
+authSetup(app);
+app.use('/auth', authRouter);
+
+trpcSetup(app);
 
 const repoRoot = process.env.BUILD_ROOT || path.join(process.cwd(), 'repo');
 const contentRoot =
@@ -59,6 +73,10 @@ app.get('*', (req, res) => {
 
 const port = process.env.PORT || 58063;
 
-app.listen(port, () => {
-	expressLogger.info({ port }, `Listening on port ${port}`);
+migrateToLatest().then(() => {
+	dbLogger.info('Running migrations...');
+
+	app.listen(port, () => {
+		expressLogger.info({ port }, `Listening on port ${port}`);
+	});
 });

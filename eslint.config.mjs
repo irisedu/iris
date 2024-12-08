@@ -35,7 +35,8 @@ export default [
 			'**/.eslintrc.cjs',
 			'packages/iris-backend/repo/',
 			'packages/iris-backend/content/',
-			'packages/iris-backend/spa/'
+			'packages/iris-backend/spa/',
+			'packages/iris-backend/src/db/migrations/'
 		]
 	},
 	{

@@ -2,4 +2,6 @@
 /content/
 /spa/
 
+/.env
 /.pg/
+/dump.rdb

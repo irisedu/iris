@@ -127,7 +127,7 @@ function Layout({ children }: { children?: ReactNode }) {
 				</div>
 
 				<div className="flex flex-col items-center">
-					<span>
+					<div>
 						<span className="font-bold text-xl">Iris</span> •{' '}
 						<AriaLink
 							className="font-sans external"
@@ -136,7 +136,7 @@ function Layout({ children }: { children?: ReactNode }) {
 						>
 							CS @ UCSB
 						</AriaLink>
-					</span>
+					</div>
 					<p className="text-sm text-center my-1">
 						Please report accessibility issues or other complaints by emailing{' '}
 						<AriaLink
@@ -173,7 +173,7 @@ function Layout({ children }: { children?: ReactNode }) {
 						<Heart className="w-5 h-5 text-iris-900" />
 					</div>
 
-					<span className="text-xs mt-2 text-gray-700">v{__APP_VERSION__}</span>
+					<div className="text-xs mt-2 text-gray-700">v{__APP_VERSION__}</div>
 				</div>
 			</footer>
 		</div>

@@ -53,6 +53,7 @@ import {
 	tableComponent
 } from './components';
 import { type Command } from 'prosemirror-state';
+import { questionComponent } from './components/question';
 
 const { toggleInlineMath, insertDisplayMath } = mathComponent.commands;
 
@@ -187,7 +188,8 @@ const docSchemaDef = {
 		doc: { content: 'frontmatter (block | heading | summary)+' } as NodeSpec,
 
 		...frontmatterComponent.nodes,
-		...summaryComponent.nodes
+		...summaryComponent.nodes,
+		...questionComponent.nodes
 	},
 	marks: {
 		...baseSchemaDef.marks

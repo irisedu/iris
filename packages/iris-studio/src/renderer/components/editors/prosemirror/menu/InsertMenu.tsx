@@ -20,8 +20,8 @@ import {
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';
 import Image from '~icons/tabler/photo';
-
 import Info from '~icons/tabler/info-circle';
+import Question from '~icons/tabler/question-mark';
 
 function NoteMenu({ index }: { index: number }) {
 	const [visible, setVisible] = useVisibility(index);
@@ -117,6 +117,12 @@ function InsertMenu({
 					tooltip="Image"
 				/>
 				<NoteMenu index={mainIdx++} />
+				<CommandButton
+					index={mainIdx++}
+					Icon={Question}
+					command={insertNode(docSchema.nodes.question)}
+					tooltip="Interactive Question"
+				/>
 			</VisibilityGroup>
 		</VisibilityContext.Provider>
 	);

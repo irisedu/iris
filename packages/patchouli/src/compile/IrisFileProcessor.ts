@@ -267,6 +267,23 @@ const nodeProcessors: Record<
 		}
 
 		return [node, false];
+	},
+	question(node, _, fileInfo) {
+		if (!node.content) return [null, false];
+
+		const src = nodesToString(node.content);
+		const internalLink = resolveInternalLink(src, fileInfo.path, true);
+		if (!internalLink) return [null, false];
+
+		return [
+			{
+				...node,
+				attrs: {
+					src: internalLinkToPageLink(internalLink) + '.iq.json'
+				}
+			},
+			false
+		];
 	}
 };
 

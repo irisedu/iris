@@ -1,0 +1,7 @@
+.ProseMirror .question {
+	@apply flex gap-3 font-mono border-2 border-iris-300 bg-iris-50 rounded-md p-2 my-2;
+
+	&::before {
+		@apply font-sans font-bold content-['Interactive_Question'];
+	}
+}

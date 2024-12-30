@@ -1,0 +1,25 @@
+.react-aria-GridList {
+	@apply flex flex-col gap-1;
+
+	.react-aria-GridListItem {
+		@apply p-1 rounded-md;
+
+		&[data-selected] {
+			@apply bg-iris-100;
+		}
+
+		&[data-pressed] {
+			@apply bg-iris-150;
+		}
+
+		&[data-disabled] {
+			@apply text-iris-300;
+		}
+	}
+}
+
+.react-aria-DropIndicator {
+	&[data-drop-target] {
+		@apply outline-2 outline-iris-500;
+	}
+}

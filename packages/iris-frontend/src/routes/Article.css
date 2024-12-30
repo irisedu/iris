@@ -1,0 +1,98 @@
+@import 'iris-prosemirror/styles/note.css';
+
+article {
+	counter-reset: sidenote-counter;
+
+	/* HEADINGS */
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		@apply relative;
+	}
+
+	:has(> .anchor-link) {
+		@apply absolute top-0 bottom-0 my-auto h-6 right-[calc(100%+0.75ch)] hover:no-underline;
+	}
+
+	.anchor-link {
+		@apply text-iris-500 text-sm align-top after:content-['¶'] opacity-0 hover:opacity-100 transition-opacity duration-200;
+	}
+
+	/* MATH */
+
+	.katex {
+		@apply whitespace-nowrap;
+	}
+
+	.katex-display {
+		@apply w-full overflow-x-scroll overflow-y-hidden p-2;
+	}
+
+	.katex-display::-webkit-scrollbar {
+		@apply hidden;
+	}
+
+	/* SIDENOTES */
+	/* https://edwardtufte.github.io/tufte-css/ */
+	/* Copyright (c) 2014 Dave Liepmann (MIT) */
+	.sidenote-toggle {
+		&.sidenote--numbered::before {
+			@apply content-[counter(sidenote-counter)] align-super;
+			counter-increment: sidenote-counter;
+		}
+	}
+
+	.sidenote-checkbox {
+		@apply hidden;
+	}
+
+	.sidenote {
+		@apply font-normal text-left;
+		font-size: 0.875rem; /* sm; do not override leading */
+
+		p {
+			@apply my-1;
+		}
+
+		.katex-display {
+			@apply my-1;
+		}
+
+		&.sidenote--numbered > :first-child:not(.katex-display)::before {
+			@apply content-[counter(sidenote-counter)] align-super mr-1;
+		}
+	}
+
+	/* Tailwind: lg */
+	@media (min-width: 1024px) {
+		.sidenote-toggle::before {
+			@apply text-xs;
+		}
+
+		.sidenote {
+			@apply float-right clear-right -mr-[42%] mb-1 w-[35%];
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.sidenote-toggle::before {
+			@apply content-['⊕'] cursor-pointer;
+		}
+
+		.sidenote {
+			@apply hidden;
+		}
+
+		.sidenote-checkbox:checked + .sidenote {
+			@apply block w-[95%] mx-auto p-3 my-2;
+		}
+	}
+
+	/* MISC */
+
+	iframe {
+		@apply mx-auto my-3 max-w-full;
+	}
+}

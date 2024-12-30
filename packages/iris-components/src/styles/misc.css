@@ -1,0 +1,7 @@
+.react-aria-Separator {
+	@apply bg-iris-200 h-0.5 mx-2 my-1;
+}
+
+hr {
+	@apply border-iris-300;
+}

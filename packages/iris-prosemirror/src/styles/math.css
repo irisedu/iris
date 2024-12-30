@@ -1,0 +1,69 @@
+@import 'katex/dist/katex.css';
+
+.math-inline {
+	@apply text-blue-500;
+
+	&::before,
+	&::after {
+		@apply text-blue-800 content-['$'];
+	}
+}
+
+.math-display {
+	@apply text-blue-500;
+
+	&::before,
+	&::after {
+		@apply block text-blue-800 content-['$$'];
+	}
+}
+
+.ProseMirror-widget.katex-render {
+	@apply hidden before:hidden;
+
+	& > .katex {
+		@apply text-[1.1rem];
+	}
+
+	&.katex-render--error,
+	&.katex-render--empty {
+		@apply font-mono text-red-500 before:my-2;
+
+		&.katex-render--display {
+			@apply block text-center;
+		}
+	}
+
+	&.katex-render--error {
+		@apply text-xs;
+	}
+
+	&.katex-render--empty {
+		@apply before:content-['(empty)'];
+	}
+
+	&.katex-render--preview {
+		@apply inline before:inline;
+
+		&.katex-render--display {
+			@apply block before:block;
+		}
+
+		& + .math-inline,
+		& + .math-display {
+			@apply hidden;
+		}
+	}
+}
+
+.ProseMirror-focused .ProseMirror-widget.katex-render.katex-render--focus {
+	@apply inline before:inline absolute bg-iris-200/85 dark:bg-iris-900/80 p-2 -translate-y-full pointer-events-none;
+
+	&.katex-render--display {
+		@apply min-w-[50%];
+	}
+
+	.katex-display {
+		@apply m-0;
+	}
+}

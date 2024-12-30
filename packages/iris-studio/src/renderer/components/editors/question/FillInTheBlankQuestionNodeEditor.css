@@ -1,0 +1,13 @@
+.ProseMirror {
+	counter-reset: fill-in-blank;
+
+	.fill-in-blank {
+		counter-increment: fill-in-blank;
+
+		@apply inline-block h-[1rem] w-[9ch] pl-1 pb-1 border-b-2 border-b-black dark:border-b-white box-content cursor-grab;
+
+		&::before {
+			@apply content-[counter(fill-in-blank)] font-bold;
+		}
+	}
+}

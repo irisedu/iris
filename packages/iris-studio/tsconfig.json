@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"baseUrl": "./",
+		"jsx": "preserve",
+		"types": [
+			"vite/client",
+			"electron-vite/node",
+			"unplugin-icons/types/react",
+			"vite-plugin-svgr/client",
+			"./src/renderer/globals"
+		],
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"paths": {
+			"$assets/*": ["src/renderer/assets/*"],
+			"$hooks/*": ["src/renderer/hooks/*"],
+			"$components/*": ["src/renderer/components/*"],
+			"$state/*": ["src/renderer/state/*"]
+		}
+	}
+}

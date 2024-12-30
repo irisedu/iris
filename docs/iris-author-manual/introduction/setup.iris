@@ -1,0 +1,419 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Setup"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": null
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris projects are managed using a desktop application called Iris Studio, which can be downloaded from Iris’s "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://github.com/irisedu/iris/releases"
+								}
+							}
+						],
+						"text": "GitHub release page"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "No automatic updates"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris Studio currently does not support automatic updates. When a new version of Iris is released, update the application manually by downloading the new version."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Windows"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Windows users should download the setup executable and run it. Iris Studio should automatically install and open."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Running unsigned executables"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris Studio is distributed without code signatures. When run on Windows, a SmartScreen warning may appear. It is safe to ignore the SmartScreen message as long as you downloaded Iris Studio from the release page linked above."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "macOS"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "macOS users should download the DMG file containing Iris Studio, mount it, and copy the application to the Applications folder."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "info"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "No universal distribution"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "To reduce distribution size, Iris Studio distributes Apple Silicon and Intel Mac binaries separately. Make sure to download the correct one for your Mac. "
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "warning"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Unsigned and un-notarized"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris Studio is distributed without code signatures or notarization from Apple. To run apps without signatures or notarization, refer to Apple’s documentation "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "link",
+										"attrs": {
+											"href": "https://support.apple.com/en-us/102445"
+										}
+									}
+								],
+								"text": "here"
+							},
+							{
+								"type": "text",
+								"text": "."
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "For Apple Silicon Macs, Iris Studio will not run at all because it is considered “damaged” without signatures. To bypass this check, run the following command after installation:"
+							}
+						]
+					},
+					{
+						"type": "code_block",
+						"attrs": {
+							"language": "bash"
+						},
+						"content": [
+							{
+								"type": "text",
+								"text": "sudo xattr -rd com.apple.quarantine /Applications/Iris\\ Studio.app"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "It is safe to run Iris Studio without code signatures and notarization as long as you downloaded it from the release page linked above."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Linux"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Linux users should download the AppImage file and launch Iris Studio directly. Ensure your distribution has support for AppImages."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Dependency installation"
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 3
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "TeX Live"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "In order to compile "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": ".tex"
+					},
+					{
+						"type": "text",
+						"text": " files, Iris Studio requires the "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "latex"
+					},
+					{
+						"type": "text",
+						"text": " compiler to be installed and present in the "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "PATH"
+					},
+					{
+						"type": "text",
+						"text": ". To install a distribution of "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "math_inline"
+							}
+						],
+						"text": "\\TeX"
+					},
+					{
+						"type": "text",
+						"text": ", refer to the "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://tug.org/texlive/"
+								}
+							}
+						],
+						"text": "TeX Live documentation"
+					},
+					{
+						"type": "text",
+						"text": ". On Linux, it may be easier to use your distribution’s package manager. Any installation scheme may be used."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "info"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "You might not need this!"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "A "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "math_inline"
+									}
+								],
+								"text": "\\TeX"
+							},
+							{
+								"type": "text",
+								"text": " compiler is not required to typeset math using "
+							},
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "math_inline"
+									}
+								],
+								"text": "\\KaTeX"
+							},
+							{
+								"type": "text",
+								"text": "."
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

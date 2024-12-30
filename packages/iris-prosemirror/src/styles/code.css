@@ -1,0 +1,11 @@
+.CodeMirror-container {
+	@apply relative my-2;
+
+	.CodeMirror-languagelabel {
+		@apply absolute top-0 right-0 font-mono text-xs bg-iris-200 px-1 py-0.5 select-none rounded-bl-sm;
+	}
+
+	.cm-scroller {
+		@apply font-mono;
+	}
+}

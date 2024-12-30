@@ -1,0 +1,28 @@
+figure {
+	@apply max-w-full my-2 text-center mx-auto;
+
+	img,
+	object[type='image/svg+xml'] {
+		@apply w-full;
+	}
+
+	figcaption {
+		@apply my-1 text-sm;
+	}
+
+	&.figure-left {
+		@apply float-left mr-2 clear-left mx-0;
+
+		figcaption {
+			@apply text-left;
+		}
+	}
+
+	&.figure-right {
+		@apply float-right ml-2 clear-right mx-0;
+
+		figcaption {
+			@apply text-right;
+		}
+	}
+}

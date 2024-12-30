@@ -1,0 +1,117 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Iris User Manual"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": {
+								"authors": [],
+								"tags": [
+									"iris"
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Notes for Iris end users."
+					}
+				]
+			},
+			{
+				"type": "summary",
+				"content": [
+					{
+						"type": "summary_heading",
+						"content": [
+							{
+								"type": "text",
+								"text": "Accessibility"
+							}
+						]
+					},
+					{
+						"type": "summary_list",
+						"content": [
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "accessibility/accessibility-settings"
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "summary_heading",
+						"content": [
+							{
+								"type": "text",
+								"text": "Credits and Attributions"
+							}
+						]
+					},
+					{
+						"type": "summary_list",
+						"content": [
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "credits/credits"
+											}
+										]
+									}
+								]
+							},
+							{
+								"type": "summary_list_item",
+								"content": [
+									{
+										"type": "summary_page",
+										"content": [
+											{
+												"type": "text",
+												"text": "credits/oss-attributions"
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}

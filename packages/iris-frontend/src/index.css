@@ -1,0 +1,54 @@
+@import '@fontsource/vollkorn/400.css';
+@import '@fontsource/vollkorn/400-italic.css';
+@import '@fontsource/vollkorn/700.css';
+@import '@fontsource/vollkorn/700-italic.css';
+
+@import '@fontsource/vollkorn-sc/400.css';
+@import '@fontsource/vollkorn-sc/700.css';
+
+@import '@fontsource/atkinson-hyperlegible/400.css';
+@import '@fontsource/atkinson-hyperlegible/400-italic.css';
+@import '@fontsource/atkinson-hyperlegible/700.css';
+@import '@fontsource/atkinson-hyperlegible/700-italic.css';
+
+@import '@fontsource/lexend/400.css';
+@import '@fontsource/lexend/700.css';
+
+@import '@fontsource/comic-neue/400.css';
+@import '@fontsource/comic-neue/400-italic.css';
+@import '@fontsource/comic-neue/700.css';
+@import '@fontsource/comic-neue/700-italic.css';
+
+@import '@fontsource/opendyslexic/400.css';
+@import '@fontsource/opendyslexic/400-italic.css';
+@import '@fontsource/opendyslexic/700.css';
+@import '@fontsource/opendyslexic/700-italic.css';
+
+@import '@fontsource/source-code-pro/500.css';
+@import '@fontsource/source-code-pro/500-italic.css';
+@import '@fontsource/source-code-pro/700.css';
+@import '@fontsource/source-code-pro/700-italic.css';
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+
+@import 'iris-components/styles';
+
+@import 'tailwindcss/utilities';
+
+:root {
+	@apply scroll-smooth font-body;
+
+	--font-body: Vollkorn;
+	--font-smallcaps: Vollkorn SC;
+	--font-sans: Atkinson Hyperlegible;
+
+	--color-sat: calc(
+		70% - var(--hue-shift) * 0.333% + var(--hue-shift) * var(--hue-shift) *
+			0.000925%
+	);
+}
+
+.iris-rotate {
+	@apply hue-rotate-[calc(var(--hue-shift)*1deg)];
+}

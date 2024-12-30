@@ -1,0 +1,72 @@
+.react-aria-ColorArea {
+	@apply w-full aspect-square rounded-md;
+}
+
+.react-aria-ColorThumb {
+	@apply border-2 border-white rounded-full w-4 h-4 shadow-md;
+}
+
+.react-aria-ColorField {
+	@apply flex flex-col;
+
+	.react-aria-Input {
+		@apply text-sm;
+	}
+}
+
+.react-aria-ColorSlider {
+	@apply grid;
+
+	grid-template-areas: 'label output' 'track track';
+	grid-template-columns: 1fr auto;
+
+	.react-aria-Label {
+		grid-area: label;
+	}
+
+	.react-aria-SliderOutput {
+		grid-area: output;
+
+		@apply text-sm;
+	}
+
+	.react-aria-SliderTrack {
+		grid-area: track;
+
+		@apply relative rounded-md;
+	}
+
+	&[data-orientation='horizontal'] {
+		.react-aria-SliderTrack {
+			@apply h-5 w-full;
+
+			&::before {
+				@apply h-0.5 w-full top-1/2 -translate-y-1/2;
+			}
+		}
+
+		.react-aria-ColorThumb {
+			@apply top-1/2;
+		}
+	}
+}
+
+.react-aria-ColorSwatch {
+	@apply w-7 h-7 rounded-md shadow-lg;
+}
+
+.react-aria-ColorSwatchPicker {
+	@apply flex flex-row flex-wrap gap-2;
+}
+
+.react-aria-ColorSwatchPickerItem {
+	@apply relative outline-none rounded-md;
+
+	&[data-focus-visible] {
+		@apply outline-offset-4;
+	}
+
+	&[data-selected]::after {
+		@apply absolute content-[''] outline outline-white border-4 border-black rounded-md inset-0;
+	}
+}

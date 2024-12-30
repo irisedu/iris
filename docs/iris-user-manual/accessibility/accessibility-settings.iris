@@ -1,0 +1,365 @@
+{
+	"version": 1,
+	"data": {
+		"type": "doc",
+		"content": [
+			{
+				"type": "frontmatter",
+				"content": [
+					{
+						"type": "title",
+						"content": [
+							{
+								"type": "text",
+								"text": "Text and Accessibility Settings"
+							}
+						]
+					},
+					{
+						"type": "frontmatter_attributes",
+						"attrs": {
+							"data": null
+						}
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "The "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "bold"
+							}
+						],
+						"text": "Text & Accessibility Settings"
+					},
+					{
+						"type": "text",
+						"text": " are available in Iris’s navigation bar."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "info"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "No universal best choices"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"marks": [
+									{
+										"type": "bold"
+									}
+								],
+								"text": "Readers should choose the options that feel the most comfortable to them."
+							},
+							{
+								"type": "text",
+								"text": " No set of text settings is truly “one size fits all.”"
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Font customization"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris provides the following font choices:"
+					}
+				]
+			},
+			{
+				"type": "bullet_list",
+				"content": [
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Vollkorn: The default font for Iris."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Atkinson Hyperlegible: A font designed to make characters easily distinguishable (e.g., for those with visual impairments)."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Lexend: A font designed to improve reading performance, especially for “struggling readers” or those with dyslexia."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "Comic Sans: A font known for high legibility. Some readers with dyslexia may prefer this font."
+									}
+								]
+							},
+							{
+								"type": "note",
+								"attrs": {
+									"type": "info"
+								},
+								"content": [
+									{
+										"type": "note_label",
+										"content": [
+											{
+												"type": "text",
+												"text": "Alternative font usage"
+											}
+										]
+									},
+									{
+										"type": "paragraph",
+										"content": [
+											{
+												"type": "text",
+												"text": "Iris does not distribute the Comic Sans font files for licensing reasons. If you do not have Comic Sans installed, Comic Neue will be used as an alternative."
+											}
+										]
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "OpenDyslexic: A font that "
+									},
+									{
+										"type": "text",
+										"marks": [
+											{
+												"type": "bold"
+											}
+										],
+										"text": "may"
+									},
+									{
+										"type": "text",
+										"text": " aid readers with dyslexia."
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "list_item",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "System UI: The default font set by your operating system."
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Font size adjustments are also provided. Changing the font size will change the scale of the entire website. On Chromium-based browsers (Google Chrome, Edge, Opera, Vivaldi, etc.), zooming using the browser’s zoom setting may yield better results."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Spacing customization"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Iris provides three presets, Compact, Open, and Relaxed (based on "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://doi.org/10.1145/3613904.3642108"
+								}
+							}
+						],
+						"text": "this paper"
+					},
+					{
+						"type": "text",
+						"text": "), for readers to customize the spacing between characters, words, and lines. Custom spacing settings are also provided."
+					}
+				]
+			},
+			{
+				"type": "heading",
+				"attrs": {
+					"level": 2
+				},
+				"content": [
+					{
+						"type": "text",
+						"text": "Reading rulers"
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "Reading rulers help readers with and without dyslexia focus on the part of the text they are reading. Several presets are provided based on "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "link",
+								"attrs": {
+									"href": "https://dl.acm.org/doi/abs/10.1145/3544548.3581367"
+								}
+							}
+						],
+						"text": "this paper"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			},
+			{
+				"type": "note",
+				"attrs": {
+					"type": "tip"
+				},
+				"content": [
+					{
+						"type": "note_label",
+						"content": [
+							{
+								"type": "text",
+								"text": "Touchscreen devices"
+							}
+						]
+					},
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "The reading rulers provided by Iris work best when not using a touchscreen. To move the ruler on a touchscreen, tap the screen."
+							}
+						]
+					}
+				]
+			},
+			{
+				"type": "paragraph",
+				"content": [
+					{
+						"type": "text",
+						"text": "The ruler can be hidden by holding "
+					},
+					{
+						"type": "text",
+						"marks": [
+							{
+								"type": "code"
+							}
+						],
+						"text": "Shift"
+					},
+					{
+						"type": "text",
+						"text": "."
+					}
+				]
+			}
+		]
+	}
+}

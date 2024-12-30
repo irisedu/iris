@@ -1,0 +1,11 @@
+.dev-alert::after {
+	@apply absolute content-[''] -bottom-1 right-1 w-24 h-2;
+
+	background-image: repeating-linear-gradient(
+		-45deg,
+		white,
+		white 10px,
+		red 10px,
+		red 20px
+	);
+}

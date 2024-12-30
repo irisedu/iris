@@ -1,0 +1,34 @@
+/* https://react-spectrum.adobe.com/react-aria/Modal.html */
+.react-aria-ModalOverlay {
+	@apply fixed top-0 left-0 w-screen h-screen bg-black/40 flex items-center justify-center z-50;
+
+	&[data-entering] {
+		animation: modal-fade 150ms;
+	}
+
+	&[data-exiting] {
+		animation: modal-fade 100ms reverse ease-in;
+	}
+}
+
+.react-aria-Modal {
+	@apply font-sans p-4 shadow-xl rounded-md bg-iris-100 border-2 border-iris-300 max-w-xl max-h-[90vh];
+
+	.react-aria-Heading {
+		@apply text-2xl font-normal mt-0 mb-3;
+	}
+}
+
+.react-aria-Dialog {
+	@apply outline-none;
+}
+
+@keyframes modal-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}

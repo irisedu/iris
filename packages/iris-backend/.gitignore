@@ -1,0 +1,7 @@
+/repo/
+/assets/
+/spa/
+
+/.env
+/.pg/
+/dump.rdb

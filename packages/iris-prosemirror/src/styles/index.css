@@ -1,0 +1,17 @@
+@import './code.css';
+@import './cursor.css';
+@import './figure.css';
+@import './frontmatter.css';
+@import './note.css';
+@import './link.css';
+@import './math.css';
+@import './sidenote.css';
+@import './spaces.css';
+@import './summary.css';
+@import './table.css';
+
+.ProseMirror {
+	/* Override ProseMirror default (works on Electron) */
+	font-variant-ligatures: inherit;
+	font-feature-settings: inherit;
+}

@@ -1,0 +1,53 @@
+.note {
+	@apply p-3 border-black border-l-4 rounded-lg my-3;
+
+	.note__label {
+		@apply my-0 font-sans font-bold;
+	}
+
+	p {
+		@apply my-1;
+	}
+
+	/* Types */
+
+	&.info {
+		@apply border-blue-700;
+
+		& > .note__label {
+			@apply text-blue-700;
+		}
+	}
+
+	&.warning {
+		@apply border-amber-700;
+
+		& > .note__label {
+			@apply text-amber-700;
+		}
+	}
+
+	&.tip {
+		@apply border-emerald-700;
+
+		& > .note__label {
+			@apply text-emerald-700;
+		}
+	}
+
+	&.problem {
+		@apply border-pink-700;
+
+		& > .note__label {
+			@apply text-pink-700;
+		}
+	}
+
+	&.exercise {
+		@apply border-indigo-700;
+
+		& > .note__label {
+			@apply text-indigo-700;
+		}
+	}
+}

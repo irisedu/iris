@@ -1,0 +1,44 @@
+.react-aria-Tooltip {
+	@apply py-1 px-2 font-sans rounded-md bg-iris-100 border-2 border-iris-200;
+
+	/* From react-aria docs */
+	&[data-placement='top'] {
+		@apply mb-2;
+		--origin: translateY(4px);
+	}
+
+	&[data-placement='bottom'] {
+		@apply mt-2;
+		--origin: translateY(-4px);
+	}
+
+	&[data-placement='right'] {
+		@apply ml-2;
+		--origin: translateX(-4px);
+	}
+
+	&[data-placement='left'] {
+		@apply mr-2;
+		--origin: translateX(4px);
+	}
+
+	&[data-entering] {
+		animation: slide 150ms;
+	}
+
+	&[data-exiting] {
+		animation: slide 150ms reverse ease-in;
+	}
+}
+
+@keyframes slide {
+	from {
+		transform: var(--origin);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}

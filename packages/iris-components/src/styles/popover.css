@@ -1,0 +1,40 @@
+.react-aria-Popover {
+	@apply outline-none rounded-lg bg-iris-100 border-2 border-iris-200;
+
+	/* Animation from react-aria docs */
+	&[data-placement='top'] {
+		--origin: translateY(5px);
+	}
+
+	&[data-placement='bottom'] {
+		--origin: translateY(-5px);
+	}
+
+	&[data-placement='left'] {
+		--origin: translateY(5px);
+	}
+
+	&[data-placement='right'] {
+		--origin: translateY(-5px);
+	}
+
+	&[data-entering] {
+		animation: popover-slide 150ms;
+	}
+
+	&[data-exiting] {
+		animation: popover-slide 150ms reverse ease-in;
+	}
+}
+
+@keyframes popover-slide {
+	from {
+		transform: var(--origin);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}

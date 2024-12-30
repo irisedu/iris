@@ -1,0 +1,184 @@
+/* See react-aria-components documentation */
+
+.react-aria-Label {
+	@apply text-sm;
+}
+
+.react-aria-TextField,
+.react-aria-NumberField {
+	@apply flex flex-col my-2;
+}
+
+.react-aria-Input:not([type='file']),
+.react-aria-TextArea {
+	@apply p-1 rounded-md bg-iris-100 border-2 border-iris-300;
+}
+
+.react-aria-Input[type='file'] {
+	@apply block my-2;
+
+	&::file-selector-button {
+		@apply rounded-md px-2 py-1 border-2 border-iris-400 bg-iris-200 border-solid font-[inherit];
+	}
+}
+
+.react-aria-Button {
+	@apply rounded-md px-2 py-1 border-2;
+
+	&[data-disabled] {
+		@apply text-gray-500;
+	}
+}
+
+.react-aria-Select {
+	@apply my-2;
+
+	.react-aria-Button {
+		@apply bg-iris-100 border-iris-300;
+	}
+}
+
+.react-aria-ListBox {
+	@apply font-sans min-w-44 max-h-[30vh] overflow-auto;
+}
+
+.react-aria-ListBoxItem {
+	@apply m-1 px-2 py-0.5 rounded-lg cursor-pointer;
+
+	&[data-focused] {
+		@apply bg-iris-200 outline-none;
+	}
+}
+
+.react-aria-RadioGroup {
+	@apply flex flex-col;
+}
+
+.react-aria-Radio {
+	@apply flex flex-row items-center gap-2;
+
+	&::before {
+		@apply content-[''] block w-3 h-3 border-2 border-iris-700 rounded-full transition-[border-width] duration-100;
+	}
+
+	&[data-selected]::before {
+		@apply border-4;
+	}
+
+	&[data-pressed]::before {
+		@apply border-iris-500;
+	}
+}
+
+.react-aria-Slider {
+	@apply grid px-2;
+
+	grid-template-areas: 'label output' 'track track';
+	grid-template-columns: 1fr auto;
+
+	.react-aria-Label {
+		grid-area: label;
+	}
+
+	.react-aria-SliderOutput {
+		grid-area: output;
+
+		@apply text-sm;
+	}
+
+	.react-aria-SliderTrack {
+		grid-area: track;
+
+		@apply relative;
+
+		&::before {
+			@apply content-[''] block absolute bg-iris-200;
+		}
+	}
+
+	.react-aria-SliderThumb {
+		@apply w-3 h-3 rounded-full bg-iris-500 border-2 border-iris-700;
+	}
+
+	&[data-orientation='horizontal'] {
+		.react-aria-SliderTrack {
+			@apply h-3 w-full;
+
+			&::before {
+				@apply h-0.5 w-full top-1/2 -translate-y-1/2;
+			}
+		}
+
+		.react-aria-SliderThumb {
+			@apply top-1/2;
+		}
+	}
+}
+
+.react-aria-Checkbox {
+	@apply flex items-center gap-2;
+
+	.checkbox {
+		@apply w-4 h-4 rounded-[33%] border-2 p-[0.1rem] border-iris-500 text-iris-500 box-content;
+
+		transition: stroke-dashoffset 150ms;
+		stroke-dasharray: 22px;
+		stroke-dashoffset: 66;
+	}
+
+	&[data-pressed] .checkbox {
+		@apply border-iris-600 bg-iris-300;
+	}
+
+	&[data-selected],
+	&[data-indeterminate] {
+		.checkbox {
+			@apply border-iris-800 bg-iris-800 text-iris-50;
+			stroke-dashoffset: 44;
+		}
+	}
+
+	&[data-focus-visible] {
+		@apply outline-none;
+
+		.checkbox {
+			@apply outline outline-2 outline-iris-500;
+		}
+	}
+}
+
+.react-aria-Switch {
+	@apply flex items-center gap-2;
+
+	.indicator {
+		@apply w-[1.4rem] h-[0.9rem] border-[0.1rem] border-iris-500 bg-iris-200 rounded-full;
+
+		&::before {
+			@apply content-[''] block m-[0.1rem] w-[0.5rem] h-[0.5rem] bg-iris-500 rounded-full transition-transform duration-200;
+		}
+	}
+
+	&[data-pressed] .indicator {
+		@apply border-iris-600 bg-iris-300;
+
+		&::before {
+			@apply bg-iris-600;
+		}
+	}
+
+	&[data-selected] .indicator {
+		@apply border-iris-800 bg-iris-800;
+
+		&::before {
+			@apply bg-iris-100 translate-x-full;
+		}
+	}
+
+	&[data-focus-visible] {
+		@apply outline-none;
+
+		.indicator {
+			@apply outline outline-2 outline-iris-500;
+		}
+	}
+}

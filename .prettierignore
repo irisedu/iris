@@ -1,0 +1,16 @@
+node_modules/
+.DS_Store
+out/
+dist/
+
+pnpm-lock.yaml
+
+packages/iris-frontend/src/routes/highlightMergeHTMLPlugin.js
+
+packages/iris-backend/.pg/
+packages/iris-backend/src/db/db.d.ts
+packages/iris-backend/repo/
+packages/iris-backend/assets/
+packages/iris-backend/spa/
+
+docs/

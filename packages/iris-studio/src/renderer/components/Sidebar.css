@@ -1,0 +1,16 @@
+.sidebar__button {
+	@apply text-left w-full p-1 rounded-md border-2 border-iris-200;
+
+	&[data-hovered],
+	&[data-selected] {
+		@apply bg-iris-200;
+	}
+
+	&[data-pressed] {
+		@apply bg-iris-300;
+	}
+}
+
+[role='treeitem'] {
+	@apply outline-none;
+}

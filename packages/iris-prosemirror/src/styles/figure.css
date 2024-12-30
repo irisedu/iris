@@ -1,0 +1,13 @@
+.ProseMirror {
+	figure {
+		@apply border-4 border-iris-200 p-1;
+
+		img:not([src]) {
+			@apply min-h-24;
+		}
+	}
+
+	img {
+		@apply dark:bg-iris-900;
+	}
+}

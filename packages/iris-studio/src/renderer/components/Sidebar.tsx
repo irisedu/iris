@@ -37,7 +37,7 @@ import OverwriteDialog from '$components/OverwriteDialog';
 import { FILE_PREFIX, pathIcon, makeTabData } from '$components/tabs/FileTab';
 import '$components/Sidebar.css';
 import { emptyTemplate, summaryTemplate } from 'iris-prosemirror';
-import type { Question } from '@irisedu/schemas';
+import type { QuestionFile } from '@irisedu/schemas';
 
 import Folder from '~icons/tabler/folder-filled';
 import ChevronDown from '~icons/tabler/chevron-down';
@@ -424,9 +424,12 @@ function Sidebar() {
 										return fs.writeTextFile({
 											file: id,
 											data: JSON.stringify({
-												meta: {},
-												data: []
-											} as Question)
+												version: 1,
+												data: {
+													meta: {},
+													data: []
+												}
+											} as QuestionFile)
 										});
 									};
 

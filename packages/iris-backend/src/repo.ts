@@ -60,7 +60,7 @@ export async function indexFile(
 			.execute();
 
 		return;
-	} else if (file.endsWith('.irisc')) {
+	} else if (file.endsWith('.irisc') || file.endsWith('.iq.json')) {
 		// Document
 		let docId: string | undefined;
 

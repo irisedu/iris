@@ -175,7 +175,7 @@ function createQuestion(type: QuestionNodeType): QuestionNode {
 				blanks: []
 			};
 		case QuestionNodeType.FreeResponse:
-			return { id, type, points: 0, multiline: true, options: [] };
+			return { id, type, points: 0, multiline: false, options: [] };
 		case QuestionNodeType.Question:
 			return { id, type, contents: [] };
 	}

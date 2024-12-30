@@ -1,17 +1,45 @@
 import { Router } from 'express';
-import { db } from '../db/index.js';
+import { db, JsonValue } from '../db/index.js';
 import path from 'path';
 import { assetsRoot } from '../constants.js';
 
 export const documentsRouter = Router();
 
-documentsRouter.get('/page/(*.*)', async (req, res, next) => {
-	const wildcards = req.params as unknown as string[]; // TODO
-	const name = wildcards[0];
-	const extension = wildcards[1];
-	const docPath = name + '.' + extension;
+const questionToRedact = [
+	'comment',
+	'correct',
+	'explanation',
+	'catchAllExplanation'
+];
 
-	if (extension === 'irisc') {
+// TODO: pretty bad
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function recursiveRedact(doc: any, toRedact: string[]) {
+	// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+	toRedact.forEach((k) => delete doc[k]);
+
+	for (const v of Object.values(doc)) {
+		if (Array.isArray(v)) {
+			v.forEach((x) => recursiveRedact(x, toRedact));
+		} else if (typeof v === 'object') {
+			recursiveRedact(v, toRedact);
+		}
+	}
+}
+
+function redactInfo(docPath: string, doc: JsonValue): JsonValue {
+	if (docPath.endsWith('.iq.json')) {
+		recursiveRedact(doc, questionToRedact);
+	}
+
+	return doc;
+}
+
+documentsRouter.get('/page/*', async (req, res, next) => {
+	const wildcards = req.params as unknown as string[]; // TODO
+	const docPath = wildcards[0];
+
+	if (docPath.endsWith('.irisc') || docPath.endsWith('.iq.json')) {
 		// Document
 		db.selectFrom('document_ptr')
 			.where('document_ptr.path', '=', docPath)
@@ -21,7 +49,7 @@ documentsRouter.get('/page/(*.*)', async (req, res, next) => {
 			.then((doc) => {
 				if (!doc) return res.sendStatus(404);
 				res.contentType('application/json');
-				res.json(doc.data);
+				res.json(redactInfo(docPath, doc.data));
 			})
 			.catch(next);
 	} else {

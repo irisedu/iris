@@ -121,30 +121,14 @@ function TextSettings() {
 
 					<div className="flex flex-row flex-wrap gap-2">
 						{/* Based on https://dl.acm.org/action/downloadSupplement?doi=10.1145%2F3613904.3642108&file=pn3179-supplemental-material-1.pdf */}
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setSpacing(compact))}
-						>
+						<Button onPress={() => dispatch(setSpacing(compact))}>
 							Compact
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setSpacing(open))}
-						>
-							Open
-						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setSpacing(relaxed))}
-						>
+						<Button onPress={() => dispatch(setSpacing(open))}>Open</Button>
+						<Button onPress={() => dispatch(setSpacing(relaxed))}>
 							Relaxed
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => setSpacingOpen(true)}
-						>
-							Customize
-						</Button>
+						<Button onPress={() => setSpacingOpen(true)}>Customize</Button>
 					</div>
 				</div>
 
@@ -179,36 +163,19 @@ function TextSettings() {
 
 					<div className="flex flex-row flex-wrap gap-2 mb-2">
 						{/* Based on https://dl.acm.org/doi/pdf/10.1145/3544548.3581367 */}
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setRulerSettings(lightbox))}
-						>
+						<Button onPress={() => dispatch(setRulerSettings(lightbox))}>
 							Lightbox
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setRulerSettings(greyBar))}
-						>
+						<Button onPress={() => dispatch(setRulerSettings(greyBar))}>
 							Gray Bar
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setRulerSettings(shade))}
-						>
+						<Button onPress={() => dispatch(setRulerSettings(shade))}>
 							Shade
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => dispatch(setRulerSettings(underline))}
-						>
+						<Button onPress={() => dispatch(setRulerSettings(underline))}>
 							Underline
 						</Button>
-						<Button
-							className="react-aria-Button bg-iris-200 border-iris-400"
-							onPress={() => setRulerOpen(true)}
-						>
-							Customize
-						</Button>
+						<Button onPress={() => setRulerOpen(true)}>Customize</Button>
 					</div>
 				</div>
 			</div>

@@ -89,11 +89,7 @@ function SpacingDialog({ isOpen, setIsOpen }: SpacingDialogProps) {
 					</Slider>
 				</div>
 
-				<Button
-					className="react-aria-Button bg-iris-200 border-iris-400"
-					autoFocus
-					onPress={() => setIsOpen(false)}
-				>
+				<Button autoFocus onPress={() => setIsOpen(false)}>
 					Done
 				</Button>
 			</Dialog>

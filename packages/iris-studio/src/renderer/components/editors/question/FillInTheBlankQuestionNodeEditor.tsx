@@ -269,7 +269,6 @@ function BlankEditor({ i, blank, updateBlank }: BlankEditorProps) {
 					))}
 				</GridList>
 				<Button
-					className="react-aria-Button bg-iris-200 border-iris-400"
 					onPress={() =>
 						updateBlank({
 							...blank,

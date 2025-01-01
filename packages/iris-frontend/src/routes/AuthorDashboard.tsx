@@ -36,12 +36,7 @@ export function Component() {
 				}}
 			>
 				<Input name="file" type="file" accept={'application/zip'} required />
-				<Button
-					className="react-aria-Button bg-iris-200 border-iris-400"
-					type="submit"
-				>
-					Submit
-				</Button>
+				<Button type="submit">Submit</Button>
 			</Form>
 		</>
 	);

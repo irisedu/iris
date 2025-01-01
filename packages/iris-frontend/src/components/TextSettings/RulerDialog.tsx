@@ -144,11 +144,7 @@ function RulerDialog({ isOpen, setIsOpen }: RulerDialogProps) {
 					/>
 				</div>
 
-				<Button
-					className="react-aria-Button bg-iris-200 border-iris-400"
-					autoFocus
-					onPress={() => setIsOpen(false)}
-				>
+				<Button autoFocus onPress={() => setIsOpen(false)}>
 					Done
 				</Button>
 			</Dialog>

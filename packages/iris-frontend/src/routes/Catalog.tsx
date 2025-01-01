@@ -30,7 +30,7 @@ function SeriesCollection({ seriesData }: { seriesData: SeriesInfo[] }) {
 				<Link key={i} className="text-black no-underline" to={series.href}>
 					<IrisCard className="group w-full md:w-80">
 						<span className="block text-xl">
-							<IriscInlineContent nodes={series.title} meta={{}} />
+							<IriscInlineContent nodes={series.title} />
 						</span>
 
 						{series.tags.length > 0 && (

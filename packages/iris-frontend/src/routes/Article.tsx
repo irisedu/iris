@@ -15,29 +15,19 @@ import {
 	Label
 } from 'iris-components';
 import type { IriscFile, TocNode } from '@irisedu/schemas';
-import hljs from 'highlight.js';
 import { goToAnchor } from '../utils';
 import {
 	IriscBlockContent,
 	IriscInlineContent,
 	Summary
 } from '$components/nodes/IriscNode';
-// @ts-expect-error External code without types
-import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
+import { useHighlight } from '$hooks/useHighlight';
 
 import { useSelector } from 'react-redux';
 import store, { type RootState } from '$state/store';
 
 import './Article.css';
 import 'katex/dist/katex.css';
-import 'highlight.js/styles/xcode.css';
-
-hljs.configure({
-	ignoreUnescapedHTML: true,
-	languages: []
-});
-
-hljs.addPlugin(mergeHTMLPlugin);
 
 function parsePath(slug: string): [string, string[]] {
 	const routePath = slug.replace(/\/+$/g, '');
@@ -59,10 +49,7 @@ function ArticleOutline({
 				<Fragment key={heading.id}>
 					<li className="mb-1 text-gray-800">
 						<AriaLink onPress={() => goToAnchor(heading.id)}>
-							<IriscInlineContent
-								nodes={heading.content}
-								meta={articleData.meta}
-							/>
+							<IriscInlineContent nodes={heading.content} ctx={articleData} />
 						</AriaLink>
 					</li>
 					{heading.children && (
@@ -98,12 +85,12 @@ function Sidebar({
 				>
 					<IriscInlineContent
 						nodes={seriesData.meta.title ?? []}
-						meta={seriesData.meta}
+						ctx={seriesData}
 					/>
 				</Link>
 
 				{seriesData.meta.summary && (
-					<Summary summary={seriesData.meta.summary} meta={seriesData.meta} />
+					<Summary summary={seriesData.meta.summary} ctx={seriesData} />
 				)}
 			</div>
 
@@ -221,14 +208,7 @@ export function Component() {
 		}
 	}, [articleData, seriesData]);
 
-	useEffect(() => {
-		document.querySelectorAll('pre code').forEach((elem) => {
-			if (!(elem instanceof HTMLElement)) return;
-
-			delete elem.dataset.highlighted;
-			hljs.highlightElement(elem);
-		});
-	});
+	useHighlight();
 
 	const [unlinkedVisible, setUnlinkedVisible] = useState(false);
 
@@ -244,11 +224,11 @@ export function Component() {
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent
 						nodes={articleData.meta.title ?? []}
-						meta={articleData.meta}
+						ctx={articleData}
 					/>
 				</h1>
 
-				<IriscBlockContent nodes={articleData.data} meta={articleData.meta} />
+				<IriscBlockContent nodes={articleData.data} ctx={articleData} />
 
 				<div className="text-sm mt-5">
 					{articleData.meta.unlinkedPages &&
@@ -262,7 +242,7 @@ export function Component() {
 								{unlinkedVisible && (
 									<Summary
 										summary={articleData.meta.unlinkedPages}
-										meta={articleData.meta}
+										ctx={articleData}
 									/>
 								)}
 							</>

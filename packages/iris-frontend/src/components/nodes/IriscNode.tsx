@@ -6,11 +6,12 @@ import type {
 	IriscMetadata
 } from '@irisedu/schemas';
 import deepEqual from 'deep-equal';
-import { Link as AriaLink } from 'iris-components';
+import { Link as AriaLink, Input } from 'iris-components';
 import { Link } from 'react-router-dom';
 import { goToAnchor } from '../../utils';
 import Image from './Image';
 import parse from 'html-react-parser';
+import { NetQuestionComponent } from '$components/QuestionComponent';
 
 import Info from '~icons/tabler/info-circle';
 import Warning from '~icons/tabler/alert-triangle';
@@ -18,7 +19,14 @@ import Tip from '~icons/tabler/star';
 import Problem from '~icons/tabler/zoom-question';
 import Exercise from '~icons/tabler/pencil';
 
-function InlineNode({ node, meta }: { node: IriscNodeT; meta: IriscMetadata }) {
+export interface IriscContext {
+	meta?: IriscMetadata;
+
+	getBlankValue?: (id: string) => string;
+	setBlankValue?: (id: string, val: string) => void;
+}
+
+function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
 	switch (node.type) {
 		case 'text':
 			return node.text ?? '';
@@ -44,10 +52,27 @@ function InlineNode({ node, meta }: { node: IriscNodeT; meta: IriscMetadata }) {
 					<input className="sidenote-checkbox" id={id} type="checkbox" />
 					<span className={`sidenote${numbered ? ' sidenote--numbered' : ''}`}>
 						{node.content && (
-							<IriscBlockContent nodes={node.content} meta={meta} />
+							<IriscBlockContent nodes={node.content} ctx={ctx} />
 						)}
 					</span>
 				</>
+			);
+		}
+
+		case 'fill_in_blank': {
+			const id = node.attrs?.id as string;
+			if (!id) return null;
+
+			return (
+				<Input
+					className="react-aria-Input w-[16ch]"
+					aria-label="Fill in the blank response"
+					required
+					value={ctx?.getBlankValue && ctx.getBlankValue(id)}
+					onChange={(e) =>
+						ctx?.setBlankValue && ctx.setBlankValue(id, e.target.value)
+					}
+				/>
 			);
 		}
 	}
@@ -115,11 +140,11 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 // node. This is especially important for links.
 export function IriscInlineContent({
 	nodes,
-	meta,
+	ctx,
 	markStart = 0
 }: {
 	nodes: IriscNodeT[];
-	meta: IriscMetadata;
+	ctx?: IriscContext;
 	markStart?: number;
 }) {
 	const output: ReactNode[] = [];
@@ -134,7 +159,7 @@ export function IriscInlineContent({
 				<Mark key={output.length} mark={currentMark}>
 					<IriscInlineContent
 						nodes={partition}
-						meta={meta}
+						ctx={ctx}
 						markStart={markStart + 1}
 					/>
 				</Mark>
@@ -158,7 +183,7 @@ export function IriscInlineContent({
 			currentMark = node.marks[markStart];
 			partition.push(node);
 		} else {
-			output.push(<InlineNode key={output.length} node={node} meta={meta} />);
+			output.push(<InlineNode key={output.length} node={node} ctx={ctx} />);
 		}
 	}
 
@@ -169,12 +194,12 @@ export function IriscInlineContent({
 
 export function IriscBlockContent({
 	nodes,
-	meta
+	ctx
 }: {
 	nodes: IriscNodeT[];
-	meta: IriscMetadata;
+	ctx?: IriscContext;
 }) {
-	return nodes.map((n, i) => <IriscNode key={i} node={n} meta={meta} />);
+	return nodes.map((n, i) => <IriscNode key={i} node={n} ctx={ctx} />);
 }
 
 // https://github.com/ProseMirror/prosemirror-tables/blob/master/src/tableview.ts
@@ -220,22 +245,22 @@ function tableSize(table: IriscNodeT) {
 
 function SummaryList({
 	nodes,
-	meta
+	ctx
 }: {
 	nodes: SummaryNode[];
-	meta: IriscMetadata;
+	ctx?: IriscContext;
 }) {
 	return (
 		<ul className="list-none mt-1 mb-2">
 			{nodes.map((node, i) => {
 				const contents = (
-					<IriscInlineContent nodes={node.title ?? []} meta={meta} />
+					<IriscInlineContent nodes={node.title ?? []} ctx={ctx} />
 				);
 
 				return (
 					<li key={i}>
 						<Link to={node.href ?? ''}>{contents}</Link>
-						{node.children && <SummaryList nodes={node.children} meta={meta} />}
+						{node.children && <SummaryList nodes={node.children} ctx={ctx} />}
 					</li>
 				);
 			})}
@@ -245,10 +270,10 @@ function SummaryList({
 
 export function Summary({
 	summary,
-	meta
+	ctx
 }: {
 	summary: SummaryNode[];
-	meta: IriscMetadata;
+	ctx?: IriscContext;
 }) {
 	return (
 		<div>
@@ -256,10 +281,10 @@ export function Summary({
 				<Fragment key={i}>
 					{node.title && (
 						<span className="text-[1.125em]">
-							<IriscInlineContent nodes={node.title} meta={meta} />
+							<IriscInlineContent nodes={node.title} ctx={ctx} />
 						</span>
 					)}
-					{node.children && <SummaryList nodes={node.children} meta={meta} />}
+					{node.children && <SummaryList nodes={node.children} ctx={ctx} />}
 				</Fragment>
 			))}
 		</div>
@@ -283,20 +308,18 @@ function NoteIcon({ noteType }: { noteType: string }) {
 
 export function IriscNode({
 	node,
-	meta
+	ctx
 }: {
 	node: IriscNodeT;
-	meta: IriscMetadata;
+	ctx?: IriscContext;
 }) {
 	function getBlockContent() {
-		return (
-			node.content && <IriscBlockContent nodes={node.content} meta={meta} />
-		);
+		return node.content && <IriscBlockContent nodes={node.content} ctx={ctx} />;
 	}
 
 	function getInlineContent() {
 		return (
-			node.content && <IriscInlineContent nodes={node.content} meta={meta} />
+			node.content && <IriscInlineContent nodes={node.content} ctx={ctx} />
 		);
 	}
 
@@ -391,9 +414,9 @@ export function IriscNode({
 				<div className={`note ${noteType}`}>
 					<span className="note__label flex flex-row gap-2 items-center">
 						<NoteIcon noteType={noteType} />
-						<IriscInlineContent nodes={label.content} meta={meta} />
+						<IriscInlineContent nodes={label.content} ctx={ctx} />
 					</span>
-					<IriscBlockContent nodes={node.content.slice(1)} meta={meta} />
+					<IriscBlockContent nodes={node.content.slice(1)} ctx={ctx} />
 				</div>
 			);
 		}
@@ -459,12 +482,19 @@ export function IriscNode({
 			return node.html?.code && parse(node.html.code);
 
 		case 'summary':
-			if (!meta.summary) return null;
+			if (!ctx?.meta?.summary) return null;
 			return (
 				<>
 					<h2 className="mb-2">Contents</h2>
-					<Summary summary={meta.summary} meta={meta} />
+					<Summary summary={ctx.meta.summary} ctx={ctx} />
 				</>
 			);
+
+		case 'question': {
+			const src = node.attrs?.src as string | undefined;
+			if (!src) return null;
+
+			return <NetQuestionComponent src={src} />;
+		}
 	}
 }

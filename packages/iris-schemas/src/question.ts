@@ -177,6 +177,49 @@ export const QuestionFile = z.object({
 
 export type QuestionFile = z.infer<typeof QuestionFile>;
 
+////////////////
+// Submission //
+////////////////
+
+export const MultipleChoiceQuestionResponse = z.object({
+	type: z.literal(QuestionNodeType.MCQ),
+	choices: z.string().uuid().array()
+});
+
+export type MultipleChoiceQuestionResponse = z.infer<
+	typeof MultipleChoiceQuestionResponse
+>;
+
+export const FillInTheBlankQuestionResponse = z.object({
+	type: z.literal(QuestionNodeType.FillInTheBlank),
+	blanks: z.record(z.string().uuid(), z.string())
+});
+
+export type FillInTheBlankQuestionResponse = z.infer<
+	typeof FillInTheBlankQuestionResponse
+>;
+
+export const FreeResponseQuestionResponse = z.object({
+	type: z.literal(QuestionNodeType.FreeResponse),
+	response: z.string()
+});
+
+export type FreeResponseQuestionResponse = z.infer<
+	typeof FreeResponseQuestionResponse
+>;
+
+export const QuestionResponse = z.union([
+	MultipleChoiceQuestionResponse,
+	FillInTheBlankQuestionResponse,
+	FreeResponseQuestionResponse
+]);
+
+export type QuestionResponse = z.infer<typeof QuestionResponse>;
+
+export const QuestionSubmission = z.record(z.string().uuid(), QuestionResponse);
+
+export type QuestionSubmission = z.infer<typeof QuestionSubmission>;
+
 ///////////////
 // Utilities //
 ///////////////

@@ -5,17 +5,21 @@ import useAuthorization from '$hooks/useAuthorization';
 import iris from '$assets/iris.svg';
 
 import Google from '~icons/tabler/brand-google-filled';
+import Ticket from '~icons/tabler/alpha';
 import Right from '~icons/tabler/arrow-right';
 
 function ProviderIcon({ provider }: { provider: string }) {
 	switch (provider) {
 		case 'google':
 			return <Google className="w-8 h-8 text-iris-700" />;
+		case 'ticket':
+			return <Ticket className="w-8 h-8 text-iris-700" />;
 	}
 }
 
 const providers: Record<string, string> = {
-	google: 'Google'
+	google: 'Google',
+	ticket: 'Innostruction (Artemis)'
 };
 
 export function Component() {

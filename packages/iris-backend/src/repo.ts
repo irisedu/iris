@@ -257,10 +257,7 @@ export async function repoUpdate(zipFile: string, userId: string) {
 
 	if (!user) throw new Error('User vanished!');
 
-	const displayName =
-		user.family_name && user.given_name
-			? `${user.given_name} ${user.family_name}`
-			: (user.given_name ?? user.family_name ?? '<no name>');
+	const displayName = user.name ?? '<no name>';
 
 	const commit = await git
 		.addConfig('user.email', user.email)

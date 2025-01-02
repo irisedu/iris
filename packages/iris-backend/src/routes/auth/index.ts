@@ -5,6 +5,7 @@ import { Redis } from 'ioredis';
 import { db } from '../../db/index.js';
 
 import { googleRouter } from './google.js';
+import { ticketRouter } from './ticket.js';
 
 export interface RegisteredSessionData {
 	type: 'registered';
@@ -13,13 +14,12 @@ export interface RegisteredSessionData {
 
 export interface PendingFederationSessionData {
 	type: 'pendingFederation';
-	provider: 'google';
+	provider: 'google' | 'ticket';
 	data: {
 		existingAccount?: string;
 		id: string;
 		email: string;
-		family_name?: string;
-		given_name?: string;
+		name?: string;
 	};
 }
 
@@ -93,8 +93,7 @@ authRouter.post('/confirm-federation', (req, res, next) => {
 		db.insertInto('user_account')
 			.values({
 				email: user.data.email,
-				family_name: user.data.family_name,
-				given_name: user.data.given_name
+				name: user.data.name
 			})
 			.returning('id as id')
 			.executeTakeFirstOrThrow()
@@ -104,6 +103,7 @@ authRouter.post('/confirm-federation', (req, res, next) => {
 });
 
 authRouter.use('/google', googleRouter);
+authRouter.use('/ticket', ticketRouter);
 
 export function requireAuth({ group }: { group?: string }): RequestHandler {
 	return (req, res, next) => {

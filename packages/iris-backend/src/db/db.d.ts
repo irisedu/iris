@@ -67,9 +67,8 @@ export interface Series {
 export interface UserAccount {
   created: Generated<Timestamp>;
   email: string;
-  family_name: string | null;
-  given_name: string | null;
   id: Generated<string>;
+  name: string | null;
 }
 
 export interface UserFederatedIdentity {

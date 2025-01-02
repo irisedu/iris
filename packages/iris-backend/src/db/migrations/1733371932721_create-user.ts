@@ -17,7 +17,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.notNull().defaultTo(sql`(timezone('utc', now()))`)
 		)
 		.addColumn('email', sql`email`, (col) => col.notNull().unique())
-		.addColumn('given_name', 'varchar')
+		.addColumn('given_name', 'text')
 		.addColumn('family_name', 'text')
 		.execute();
 

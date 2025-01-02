@@ -13,6 +13,10 @@ Business logic for Iris.
 - `AUTH_GOOGLE_CLIENT_ID`: The client ID for Google SSO.
 - `AUTH_GOOGLE_CLIENT_SECRET`: The secret for Google SSO.
 - `AUTH_GOOGLE_REDIRECT_URL`: The redirect URL for Google SSO.
+- `AUTH_TICKET_AUTH_URL`: URL to redirect to for ticket SSO.
+- `AUTH_TICKET_SERVICE_ID`: Service ID for ticket SSO.
+- `AUTH_TICKET_REDIRECT_URL`: The callback URL for ticket SSO.
+- `AUTH_TICKET_VALIDATE_URL`: The validation URL for ticket SSO.
 
 - `BUILD_ROOT`: Directory for git repositories of all projects.
 - `ASSETS_ROOT`: Directory for storing assets.

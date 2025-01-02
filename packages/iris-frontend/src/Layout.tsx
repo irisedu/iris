@@ -84,7 +84,7 @@ function Layout({ children }: { children?: ReactNode }) {
 				{user && user.type === 'registered' ? (
 					<MenuTrigger>
 						<Button className="react-aria-Link" aria-label="Account menu">
-							{user.data.given_name ?? 'Account'}{' '}
+							{user.data.name ?? 'Account'}{' '}
 							<ChevronDown className="inline w-4 h-4" />
 						</Button>
 

@@ -73,8 +73,7 @@ googleRouter.get('/callback', doubleCsrfProtection, (req, res, next) => {
 						existingAccount: existingUser?.id,
 						id: userInfo.data.id,
 						email: userInfo.data.email,
-						family_name: userInfo.data.family_name ?? undefined,
-						given_name: userInfo.data.given_name ?? undefined
+						name: `${userInfo.data.given_name ?? ''} ${userInfo.data.family_name ?? ''}`.trim()
 					}
 				};
 

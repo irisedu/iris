@@ -258,11 +258,21 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 	const devHost = useSelector((state: RootState) => state.dev.host);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 
+	const [isDev, setIsDev] = useState(false);
 	const [question, setQuestion] = useState<Question | null>(null);
 	const [submission, setSubmission] = useState<QuestionSubmission>({});
 
 	useEffect(() => {
 		fetch(devEnabled ? `http://${devHost}${src}` : src)
+			.then((res) => {
+				if (devEnabled && res.status !== 200) {
+					setIsDev(false);
+					return fetch(src);
+				}
+
+				setIsDev(devEnabled);
+				return res;
+			})
 			.then((res) => res.json())
 			.then(setQuestion)
 			.catch(console.error);
@@ -281,7 +291,7 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 					<p>Loading question…</p>
 				)}
 
-				<Button type="submit">Submit</Button>
+				{!isDev && <Button type="submit">Submit</Button>}
 			</Form>
 		</Activity>
 	);

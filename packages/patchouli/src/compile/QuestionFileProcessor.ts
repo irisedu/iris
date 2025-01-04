@@ -33,11 +33,9 @@ function processQuestionNode(
 				options: node.options.map((opt) => ({
 					...opt,
 					label: processIrisNodes(opt.label, {}, fileInfo, {}),
-					...(opt.explanation
-						? {
-								explanation: processIrisNodes(opt.explanation, {}, fileInfo, {})
-							}
-						: {})
+					explanation: opt.explanation
+						? processIrisNodes(opt.explanation, {}, fileInfo, {})
+						: undefined
 				}))
 			};
 
@@ -47,28 +45,14 @@ function processQuestionNode(
 				prompt: processIrisNodes(node.prompt, {}, fileInfo, {}),
 				blanks: node.blanks.map((blank) => ({
 					...blank,
-					...(blank.catchAllExplanation
-						? {
-								catchAllExplanation: processIrisNodes(
-									blank.catchAllExplanation,
-									{},
-									fileInfo,
-									{}
-								)
-							}
-						: {}),
+					catchAllExplanation: blank.catchAllExplanation
+						? processIrisNodes(blank.catchAllExplanation, {}, fileInfo, {})
+						: undefined,
 					options: blank.options.map((opt) => ({
 						...opt,
-						...(opt.explanation
-							? {
-									explanation: processIrisNodes(
-										opt.explanation,
-										{},
-										fileInfo,
-										{}
-									)
-								}
-							: {})
+						explanation: opt.explanation
+							? processIrisNodes(opt.explanation, {}, fileInfo, {})
+							: undefined
 					}))
 				}))
 			};
@@ -76,23 +60,14 @@ function processQuestionNode(
 		case QuestionNodeType.FreeResponse:
 			return {
 				...node,
-				...(node.catchAllExplanation
-					? {
-							catchAllExplanation: processIrisNodes(
-								node.catchAllExplanation,
-								{},
-								fileInfo,
-								{}
-							)
-						}
-					: {}),
+				catchAllExplanation: node.catchAllExplanation
+					? processIrisNodes(node.catchAllExplanation, {}, fileInfo, {})
+					: undefined,
 				options: node.options.map((opt) => ({
 					...opt,
-					...(opt.explanation
-						? {
-								explanation: processIrisNodes(opt.explanation, {}, fileInfo, {})
-							}
-						: {})
+					explanation: opt.explanation
+						? processIrisNodes(opt.explanation, {}, fileInfo, {})
+						: undefined
 				}))
 			};
 	}

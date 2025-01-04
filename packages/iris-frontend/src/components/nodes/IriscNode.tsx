@@ -65,7 +65,7 @@ function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
 
 			return (
 				<Input
-					className="react-aria-Input w-[16ch]"
+					className="w-[16ch] border-b-2 border-iris-400 data-[focused]:border-iris-600 bg-iris-100 px-0.5 my-0.5"
 					aria-label="Fill in the blank response"
 					required
 					value={ctx?.getBlankValue && ctx.getBlankValue(id)}

@@ -58,6 +58,15 @@ export interface ProjectGroup {
   user_id: string;
 }
 
+export interface QuestionSubmission {
+  created: Generated<Timestamp>;
+  id: Generated<string>;
+  outcome: Json | null;
+  question_id: string;
+  submission: Json;
+  user_id: string;
+}
+
 export interface Series {
   data: Json;
   href: string;
@@ -91,6 +100,7 @@ export interface DB {
   document_ptr: DocumentPtr;
   project: Project;
   project_group: ProjectGroup;
+  question_submission: QuestionSubmission;
   series: Series;
   user_account: UserAccount;
   user_federated_identity: UserFederatedIdentity;

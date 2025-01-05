@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
+import { generateToken } from '../../csrf.js';
 
 export const ticketRouter = Router();
 
@@ -9,7 +10,10 @@ interface TicketUser {
 	name: string;
 }
 
-ticketRouter.get('/login', (_, res) => {
+ticketRouter.get('/login', (req, res) => {
+	// Generate CSRF for development
+	generateToken(req, res, false, false);
+
 	res.redirect(
 		`${process.env.AUTH_TICKET_AUTH_URL!}?service=${process.env.AUTH_TICKET_SERVICE_ID!}`
 	);

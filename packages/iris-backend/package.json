@@ -32,6 +32,7 @@
 		"ts-node": "^10.9.2"
 	},
 	"dependencies": {
+		"@irisedu/schemas": "workspace:^",
 		"@trpc/server": "11.0.0-rc.660",
 		"connect-redis": "^8.0.1",
 		"cookie-parser": "^1.4.7",

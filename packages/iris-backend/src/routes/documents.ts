@@ -35,7 +35,7 @@ function redactInfo(docPath: string, doc: JsonValue): JsonValue {
 	return doc;
 }
 
-documentsRouter.get('/page/*', async (req, res, next) => {
+documentsRouter.get('/page/*', (req, res, next) => {
 	const wildcards = req.params as unknown as string[]; // TODO
 	const docPath = wildcards[0];
 
@@ -48,7 +48,6 @@ documentsRouter.get('/page/*', async (req, res, next) => {
 			.executeTakeFirst()
 			.then((doc) => {
 				if (!doc) return res.sendStatus(404);
-				res.contentType('application/json');
 				res.json(redactInfo(docPath, doc.data));
 			})
 			.catch(next);

@@ -220,6 +220,61 @@ export const QuestionSubmission = z.record(z.string().uuid(), QuestionResponse);
 
 export type QuestionSubmission = z.infer<typeof QuestionSubmission>;
 
+/////////////
+// Outcome //
+/////////////
+
+export const MultipleChoiceQuestionGrade = z.object({
+	type: z.literal(QuestionNodeType.MCQ),
+	options: z.record(
+		z.string().uuid(),
+		z.object({
+			correct: z.boolean(),
+			explanation: z.optional(IriscNode.array())
+		})
+	),
+	points: z.number().gte(0)
+});
+
+export type MultipleChoiceQuestionGrade = z.infer<
+	typeof MultipleChoiceQuestionGrade
+>;
+
+export const FillInTheBlankQuestionGrade = z.object({
+	type: z.literal(QuestionNodeType.FillInTheBlank),
+	blanks: z.record(
+		z.string().uuid(),
+		z.object({
+			correct: z.boolean(),
+			explanation: z.optional(IriscNode.array())
+		})
+	),
+	points: z.number().gte(0)
+});
+
+export type FillInTheBlankQuestionGrade = z.infer<
+	typeof FillInTheBlankQuestionGrade
+>;
+
+export const FreeResponseQuestionGrade = z.object({
+	type: z.literal(QuestionNodeType.FreeResponse),
+	correct: z.boolean(),
+	explanation: z.optional(IriscNode.array()),
+	points: z.number().gte(0)
+});
+
+export const QuestionGrade = z.union([
+	MultipleChoiceQuestionGrade,
+	FillInTheBlankQuestionGrade,
+	FreeResponseQuestionGrade
+]);
+
+export type QuestionGrade = z.infer<typeof QuestionGrade>;
+
+export const QuestionOutcome = z.record(z.string().uuid(), QuestionGrade);
+
+export type QuestionOutcome = z.infer<typeof QuestionOutcome>;
+
 ///////////////
 // Utilities //
 ///////////////
@@ -229,4 +284,150 @@ export function ensurePoints(q: QuestionNode): QuestionNodePointsBase | null {
 		return q;
 
 	return null;
+}
+
+export function getTotalPoints(q: Question) {
+	function getNodesPoints(qs: QuestionNode[]) {
+		let points = 0;
+
+		for (const qn of qs) {
+			if (qn.type === QuestionNodeType.Question) {
+				points += getNodesPoints(qn.contents);
+			} else {
+				const pts = ensurePoints(qn);
+				if (pts) points += pts.points;
+			}
+		}
+
+		return points;
+	}
+
+	return getNodesPoints(q.data);
+}
+
+export function gradeQuestionNode(
+	q: QuestionNode,
+	s: QuestionResponse
+): QuestionGrade | null {
+	switch (q.type) {
+		case QuestionNodeType.MCQ: {
+			if (s.type !== q.type) return null;
+
+			const chosenOptions = s.choices
+				.map((c) => q.options.find((o) => o.id === c))
+				.filter((o) => o !== undefined);
+
+			const options: MultipleChoiceQuestionGrade['options'] = {};
+
+			if (q.multipleResponse) {
+				const choicesSet = new Set(s.choices);
+				const correctChoices = chosenOptions.filter((co) => co.correct);
+				const correctOmissions = q.options.filter(
+					(o) => !choicesSet.has(o.id) && !o.correct
+				);
+
+				chosenOptions.forEach(
+					(co) =>
+						(options[co.id] = {
+							correct: co.correct,
+							explanation: co.explanation
+						})
+				);
+
+				const points =
+					q.points *
+					((correctChoices.length + correctOmissions.length) /
+						q.options.length);
+
+				return {
+					type: q.type,
+					options,
+					points
+				};
+			} else {
+				if (chosenOptions.length !== 1) return null;
+
+				const opt = chosenOptions[0];
+
+				options[opt.id] = {
+					correct: opt.correct,
+					explanation: opt.explanation
+				};
+
+				return {
+					type: q.type,
+					options,
+					points: opt.correct ? q.points : 0
+				};
+			}
+		}
+		case QuestionNodeType.FillInTheBlank: {
+			if (s.type !== q.type) return null;
+
+			const blanks: FillInTheBlankQuestionGrade['blanks'] = {};
+			let numCorrect = 0;
+
+			for (const blank of q.blanks) {
+				const resp = s.blanks[blank.id];
+				if (!resp) {
+					blanks[blank.id] = {
+						correct: false,
+						explanation: blank.catchAllExplanation
+					};
+
+					continue;
+				}
+
+				const opt = blank.options.find((o) => o.value === resp);
+
+				if (opt?.correct) numCorrect++;
+
+				blanks[blank.id] = {
+					correct: opt?.correct ?? false,
+					explanation: opt?.explanation ?? blank.catchAllExplanation
+				};
+			}
+
+			return {
+				type: q.type,
+				blanks,
+				points: q.points * (numCorrect / q.blanks.length)
+			};
+		}
+		case QuestionNodeType.FreeResponse: {
+			if (s.type !== q.type) return null;
+
+			const opt = q.options.find((o) => o.value === s.response);
+
+			return {
+				type: q.type,
+				correct: opt?.correct ?? false,
+				explanation: opt?.explanation ?? q.catchAllExplanation,
+				points: opt?.correct ? q.points : 0
+			};
+		}
+	}
+
+	return null;
+}
+
+export function gradeQuestion(
+	q: Question,
+	s: QuestionSubmission
+): QuestionOutcome {
+	const outcome: QuestionOutcome = {};
+
+	function gradeQuestionNodes(qn: QuestionNode[]) {
+		for (const n of qn) {
+			if (n.type === QuestionNodeType.Question) {
+				gradeQuestionNodes(n.contents);
+			} else {
+				const grade = gradeQuestionNode(n, s[n.id]);
+				if (grade) outcome[n.id] = grade;
+			}
+		}
+	}
+
+	gradeQuestionNodes(q.data);
+	return JSON.parse(JSON.stringify(outcome)); // strip undefined
 }

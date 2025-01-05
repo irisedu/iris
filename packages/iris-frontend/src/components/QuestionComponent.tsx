@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 import Activity from './Activity';
 import {
-	type MultipleChoiceQuestionNode,
-	type MultipleChoiceQuestionResponse,
 	QuestionNodeType,
+	ensurePoints,
+	nodesToString,
 	type Question,
 	type QuestionNode,
 	type QuestionSubmission,
-	type FillInTheBlankQuestionResponse,
-	ensurePoints,
-	type FreeResponseQuestionResponse,
-	nodesToString
+	type QuestionOutcome,
+	type QuestionResponse,
+	type QuestionGrade,
+	type MultipleChoiceQuestionNode,
+	type MultipleChoiceQuestionResponse,
+	type MultipleChoiceQuestionGrade,
+	type IriscNode,
+	getTotalPoints
 } from '@irisedu/schemas';
 import { IriscBlockContent } from './nodes/IriscNode';
 import {
@@ -25,32 +29,79 @@ import {
 	TextField
 } from 'iris-components';
 import { useHighlight } from '$hooks/useHighlight';
+import { fetchCsrf } from '../utils';
 
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 
+import Correct from '~icons/tabler/check';
+import Incorrect from '~icons/tabler/x';
+
+function QuestionFeedback({
+	label,
+	correct,
+	explanation
+}: {
+	label?: string;
+	correct: boolean;
+	explanation?: IriscNode[];
+}) {
+	return (
+		<div
+			className={`my-2 p-2 border-l-4 ${correct ? 'bg-green-100 border-green-500' : 'bg-red-100 border-red-500'}`}
+		>
+			{correct ? (
+				<div className="text-green-800 font-bold">
+					<Correct className="inline-block -mt-1 w-5 h-5" />{' '}
+					{label && label + ': '}Correct
+				</div>
+			) : (
+				<div className="text-red-800 font-bold">
+					<Incorrect className="inline-block -mt-1 w-5 h-5" />{' '}
+					{label && label + ': '}Incorrect
+				</div>
+			)}
+			{explanation && (
+				<div>
+					<IriscBlockContent nodes={explanation} />
+				</div>
+			)}
+		</div>
+	);
+}
+
 interface MCQNodeComponentProps {
 	node: MultipleChoiceQuestionNode;
-	response: MultipleChoiceQuestionResponse;
+	response?: MultipleChoiceQuestionResponse;
 	setResponse: (newVal: MultipleChoiceQuestionResponse) => void;
+	grade?: MultipleChoiceQuestionGrade;
 }
 
 function MCQNodeComponent({
 	node,
 	response,
-	setResponse
+	setResponse,
+	grade
 }: MCQNodeComponentProps) {
 	return node.multipleResponse ? (
 		<CheckboxGroup
 			aria-label="Multiple choice response"
-			value={response.choices}
-			onChange={(choices) => setResponse({ ...response, choices })}
+			value={response?.choices ?? []}
+			onChange={(choices) =>
+				setResponse({ type: QuestionNodeType.MCQ, choices })
+			}
 		>
 			{node.options.map((opt, i) => (
 				<div className="flex gap-2 items-start my-2" key={opt.id}>
 					<Checkbox value={opt.id} aria-label={`Option ${i + 1}`}></Checkbox>
 					<div>
 						<IriscBlockContent nodes={opt.label} />
+						{grade?.options[opt.id] && (
+							<QuestionFeedback
+								correct={grade.options[opt.id].correct}
+								explanation={grade.options[opt.id].explanation}
+							/>
+						)}
 					</div>
 				</div>
 			))}
@@ -58,15 +109,23 @@ function MCQNodeComponent({
 	) : (
 		<RadioGroup
 			aria-label="Multiple choice response"
-			value={response.choices.length ? response.choices[0] : null}
-			onChange={(choice) => setResponse({ ...response, choices: [choice] })}
+			value={response?.choices?.length ? response.choices[0] : null}
+			onChange={(choice) =>
+				setResponse({ type: QuestionNodeType.MCQ, choices: [choice] })
+			}
 			isRequired
 		>
-			{node.options.map((opt, i) => (
+			{node.options.map((opt) => (
 				<div className="flex gap-2 items-start my-2" key={opt.id}>
 					<Radio value={opt.id} aria-label={nodesToString(opt.label)}></Radio>
-					<div className="-mt-1" aria-label={`Option ${i + 1}`}>
+					<div className="-mt-1">
 						<IriscBlockContent nodes={opt.label} />
+						{grade?.options[opt.id] && (
+							<QuestionFeedback
+								correct={grade.options[opt.id].correct}
+								explanation={grade.options[opt.id].explanation}
+							/>
+						)}
 					</div>
 				</div>
 			))}
@@ -76,96 +135,104 @@ function MCQNodeComponent({
 
 interface QuestionNodeComponentProps {
 	node: QuestionNode;
-	submission: QuestionSubmission;
-	setSubmission: (newVal: QuestionSubmission) => void;
+	response?: QuestionResponse;
+	setResponse: (newVal: QuestionResponse) => void;
+	grade?: QuestionGrade;
 }
 
 function QuestionNodeComponent({
 	node,
-	submission,
-	setSubmission
+	response,
+	setResponse,
+	grade
 }: QuestionNodeComponentProps) {
 	switch (node.type) {
 		case QuestionNodeType.Iris:
 			return <IriscBlockContent nodes={node.data} />;
 
-		case QuestionNodeType.MCQ:
+		case QuestionNodeType.MCQ: {
+			// Average TypeScript nonsense
+			const resp = response?.type === node.type ? response : undefined;
+			const grd = grade?.type === node.type ? grade : undefined;
+
 			return (
 				<MCQNodeComponent
 					node={node}
-					response={
-						(submission[node.id] as
-							| MultipleChoiceQuestionResponse
-							| undefined) ?? {
-							type: QuestionNodeType.MCQ,
-							choices: []
-						}
-					}
-					setResponse={(newVal) => {
-						const newSubmission = { ...submission };
-						newSubmission[node.id] = newVal;
-						setSubmission(newSubmission);
-					}}
+					response={resp}
+					setResponse={setResponse}
+					grade={grd}
 				/>
 			);
+		}
 
-		case QuestionNodeType.FillInTheBlank:
+		case QuestionNodeType.FillInTheBlank: {
+			const resp = response?.type === node.type ? response : undefined;
+			const grd = grade?.type === node.type ? grade : undefined;
+
 			return (
-				<div>
-					<IriscBlockContent
-						nodes={node.prompt}
-						ctx={{
-							getBlankValue(id) {
-								const resp = submission[node.id] as
-									| FillInTheBlankQuestionResponse
-									| undefined;
-								return resp?.blanks[id] ?? '';
-							},
-							setBlankValue(id, val) {
-								const resp = (submission[node.id] as
-									| FillInTheBlankQuestionResponse
-									| undefined) ?? {
-									type: QuestionNodeType.FillInTheBlank,
-									blanks: {}
-								};
-
-								const newBlanks = { ...resp.blanks };
-								newBlanks[id] = val;
-
-								const newSubmission = { ...submission };
-								newSubmission[node.id] = { ...resp, blanks: newBlanks };
-								setSubmission(newSubmission);
-							}
-						}}
-					/>
-				</div>
+				<>
+					<div>
+						<IriscBlockContent
+							nodes={node.prompt}
+							ctx={{
+								getBlankValue(id) {
+									return resp?.blanks[id] ?? '';
+								},
+								setBlankValue(id, val) {
+									const newBlanks = { ...resp?.blanks };
+									newBlanks[id] = val;
+									setResponse({
+										type: QuestionNodeType.FillInTheBlank,
+										blanks: newBlanks
+									});
+								}
+							}}
+						/>
+					</div>
+					{grd && (
+						<div>
+							{node.blanks.map((b, i) => (
+								<QuestionFeedback
+									key={b.id}
+									label={`Blank ${i + 1}`}
+									correct={grd.blanks[b.id].correct}
+									explanation={grd.blanks[b.id].explanation}
+								/>
+							))}
+						</div>
+					)}
+				</>
 			);
+		}
 
-		case QuestionNodeType.FreeResponse:
+		case QuestionNodeType.FreeResponse: {
+			const resp = response?.type === node.type ? response : undefined;
+			const grd = grade?.type === node.type ? grade : undefined;
+
 			return (
-				<TextField
-					aria-label="Free response"
-					isRequired
-					value={
-						(submission[node.id] as FreeResponseQuestionResponse | undefined)
-							?.response ?? ''
-					}
-					onChange={(newVal) => {
-						const resp = (submission[node.id] as
-							| FreeResponseQuestionResponse
-							| undefined) ?? {
-							type: QuestionNodeType.FreeResponse,
-							response: ''
-						};
-
-						const newSubmission = { ...submission };
-						newSubmission[node.id] = { ...resp, response: newVal };
-						setSubmission(newSubmission);
-					}}
-				>
-					{node.multiline ? <TextArea /> : <Input />}
-				</TextField>
+				<>
+					<TextField
+						aria-label="Free response"
+						isRequired
+						value={resp?.response ?? ''}
+						onChange={(newVal) =>
+							setResponse({
+								type: QuestionNodeType.FreeResponse,
+								response: newVal
+							})
+						}
+					>
+						{node.multiline ? <TextArea /> : <Input />}
+					</TextField>
+					{grd && (
+						<QuestionFeedback
+							correct={grd.correct}
+							explanation={grd.explanation}
+						/>
+					)}
+				</>
 			);
+		}
 	}
 }
 
@@ -174,13 +241,15 @@ interface QuestionNodesProps {
 	nodes: QuestionNode[];
 	submission: QuestionSubmission;
 	setSubmission: (newVal: QuestionSubmission) => void;
+	outcome: QuestionOutcome;
 }
 
 function QuestionNodes({
 	baseNumber,
 	nodes,
 	submission,
-	setSubmission
+	setSubmission,
+	outcome
 }: QuestionNodesProps) {
 	let partNumber = 0;
 
@@ -199,6 +268,7 @@ function QuestionNodes({
 						nodes={n.contents}
 						submission={submission}
 						setSubmission={setSubmission}
+						outcome={outcome}
 					/>
 				</div>
 			);
@@ -210,13 +280,20 @@ function QuestionNodes({
 			<div key={n.id} className="my-2">
 				{pts && (
 					<div className="text-sm text-zinc-700">
+						{outcome[n.id] &&
+							Math.round(outcome[n.id].points * 100) / 100 + '/'}
 						{pts.points} {pts.points === 1 ? 'point' : 'points'}
 					</div>
 				)}
 				<QuestionNodeComponent
 					node={n}
-					submission={submission}
-					setSubmission={setSubmission}
+					response={submission[n.id]}
+					setResponse={(newVal) => {
+						const newSubmission = { ...submission };
+						newSubmission[n.id] = newVal;
+						setSubmission(newSubmission);
+					}}
+					grade={outcome[n.id]}
 				/>
 			</div>
 		);
@@ -231,12 +308,14 @@ export interface QuestionComponentProps {
 	question: Question;
 	submission: QuestionSubmission;
 	setSubmission: (newVal: QuestionSubmission) => void;
+	outcome: QuestionOutcome;
 }
 
 export function QuestionComponent({
 	question,
 	submission,
-	setSubmission
+	setSubmission,
+	outcome
 }: QuestionComponentProps) {
 	useHighlight();
 
@@ -245,6 +324,7 @@ export function QuestionComponent({
 			nodes={question.data}
 			submission={submission}
 			setSubmission={setSubmission}
+			outcome={outcome}
 		/>
 	);
 }
@@ -260,7 +340,9 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 
 	const [isDev, setIsDev] = useState(false);
 	const [question, setQuestion] = useState<Question | null>(null);
+	const [unsaved, setUnsaved] = useState(false);
 	const [submission, setSubmission] = useState<QuestionSubmission>({});
+	const [outcome, setOutcome] = useState<QuestionOutcome>({});
 
 	useEffect(() => {
 		fetch(devEnabled ? `http://${devHost}${src}` : src)
@@ -278,20 +360,99 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 			.catch(console.error);
 	}, [devEnabled, devHost, src, refresh]);
 
+	useEffect(() => {
+		if (isDev) return setSubmission({});
+
+		fetch(`/api/judge${src}/submissions`)
+			.then((res) => res.json())
+			.then((sub) => {
+				setSubmission(sub.submission ?? {});
+				setOutcome(sub.outcome ?? {});
+			})
+			.catch(console.error);
+	}, [src, isDev]);
+
+	useEffect(() => {
+		if (!unsaved) return;
+
+		function onBeforeUnload(e: BeforeUnloadEvent) {
+			e.preventDefault();
+		}
+
+		window.addEventListener('beforeunload', onBeforeUnload);
+		return () => window.removeEventListener('beforeunload', onBeforeUnload);
+	}, [unsaved]);
+
+	const totalPointsEarned = Object.values(outcome).reduce(
+		(acc, curr) => acc + curr.points,
+		0
+	);
+
+	const totalPointsPossible = question && getTotalPoints(question);
+
+	let status;
+
+	if (totalPointsEarned === totalPointsPossible) {
+		status = 'done';
+	} else if (Object.values(outcome).length === 0) {
+		status = 'incomplete';
+	} else {
+		status = 'progress';
+	}
+
 	return (
-		<Activity title="Question">
-			<Form>
+		<Activity title="Question" unsaved={unsaved} status={status}>
+			<Form
+				onSubmit={(e) => {
+					e.preventDefault();
+
+					fetchCsrf(`/api/judge${src}/submissions`, {
+						body: JSON.stringify(submission),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then((res) => res.json())
+						.then((res) => {
+							setOutcome(res);
+							setUnsaved(false);
+						});
+				}}
+			>
 				{question ? (
 					<QuestionComponent
 						question={question}
 						submission={submission}
-						setSubmission={setSubmission}
+						setSubmission={(newVal) => {
+							setUnsaved(true);
+							setSubmission(newVal);
+						}}
+						outcome={isDev ? {} : outcome}
 					/>
 				) : (
 					<p>Loading question…</p>
 				)}
 
-				{!isDev && <Button type="submit">Submit</Button>}
+				{!isDev && (
+					<div className="flex gap-2">
+						<Button type="submit">Submit</Button>
+						<Button
+							onPress={() => {
+								fetchCsrf(`/api/judge${src}/submissions?saveOnly=1`, {
+									body: JSON.stringify(submission),
+									headers: {
+										'Content-Type': 'application/json'
+									}
+								}).then(() => {
+									setOutcome({});
+									setUnsaved(false);
+								});
+							}}
+						>
+							Save Answers
+						</Button>
+					</div>
+				)}
 			</Form>
 		</Activity>
 	);

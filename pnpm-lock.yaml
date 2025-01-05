@@ -53,6 +53,9 @@ importers:
 
   packages/iris-backend:
     dependencies:
+      '@irisedu/schemas':
+        specifier: workspace:^
+        version: link:../iris-schemas
       '@trpc/server':
         specifier: 11.0.0-rc.660
         version: 11.0.0-rc.660(typescript@5.6.3)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import Activity from './Activity';
 import {
 	QuestionNodeType,
@@ -40,11 +40,13 @@ import Incorrect from '~icons/tabler/x';
 function QuestionFeedback({
 	label,
 	correct,
-	explanation
+	explanation,
+	children
 }: {
 	label?: string;
 	correct: boolean;
 	explanation?: IriscNode[];
+	children?: ReactNode;
 }) {
 	return (
 		<div
@@ -66,6 +68,7 @@ function QuestionFeedback({
 					<IriscBlockContent nodes={explanation} />
 				</div>
 			)}
+			{children}
 		</div>
 	);
 }
@@ -84,28 +87,35 @@ function MCQNodeComponent({
 	grade
 }: MCQNodeComponentProps) {
 	return node.multipleResponse ? (
-		<CheckboxGroup
-			aria-label="Multiple choice response"
-			value={response?.choices ?? []}
-			onChange={(choices) =>
-				setResponse({ type: QuestionNodeType.MCQ, choices })
-			}
-		>
-			{node.options.map((opt, i) => (
-				<div className="flex gap-2 items-start my-2" key={opt.id}>
-					<Checkbox value={opt.id} aria-label={`Option ${i + 1}`}></Checkbox>
-					<div>
-						<IriscBlockContent nodes={opt.label} />
-						{grade?.options[opt.id] && (
-							<QuestionFeedback
-								correct={grade.options[opt.id].correct}
-								explanation={grade.options[opt.id].explanation}
-							/>
-						)}
+		<>
+			<CheckboxGroup
+				aria-label="Multiple choice response"
+				value={response?.choices ?? []}
+				onChange={(choices) =>
+					setResponse({ type: QuestionNodeType.MCQ, choices })
+				}
+			>
+				{node.options.map((opt, i) => (
+					<div className="flex gap-2 items-start my-2" key={opt.id}>
+						<Checkbox value={opt.id} aria-label={`Option ${i + 1}`}></Checkbox>
+						<div>
+							<IriscBlockContent nodes={opt.label} />
+							{grade?.options[opt.id] && (
+								<QuestionFeedback
+									correct={grade.options[opt.id].correct}
+									explanation={grade.options[opt.id].explanation}
+								/>
+							)}
+						</div>
 					</div>
-				</div>
-			))}
-		</CheckboxGroup>
+				))}
+			</CheckboxGroup>
+			{grade?.missingResponses && (
+				<QuestionFeedback correct={false}>
+					Your response is missing one or more correct options.
+				</QuestionFeedback>
+			)}
+		</>
 	) : (
 		<RadioGroup
 			aria-label="Multiple choice response"

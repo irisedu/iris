@@ -233,6 +233,7 @@ export const MultipleChoiceQuestionGrade = z.object({
 			explanation: z.optional(IriscNode.array())
 		})
 	),
+	missingResponses: z.optional(z.boolean()), // multipleResponse only
 	points: z.number().gte(0)
 });
 
@@ -322,9 +323,8 @@ export function gradeQuestionNode(
 			if (q.multipleResponse) {
 				const choicesSet = new Set(s.choices);
 				const correctChoices = chosenOptions.filter((co) => co.correct);
-				const correctOmissions = q.options.filter(
-					(o) => !choicesSet.has(o.id) && !o.correct
-				);
+				const omissions = q.options.filter((o) => !choicesSet.has(o.id));
+				const correctOmissions = omissions.filter((o) => !o.correct);
 
 				chosenOptions.forEach(
 					(co) =>
@@ -342,6 +342,7 @@ export function gradeQuestionNode(
 				return {
 					type: q.type,
 					options,
+					missingResponses: omissions.length > correctOmissions.length,
 					points
 				};
 			} else {

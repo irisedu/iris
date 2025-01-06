@@ -24,6 +24,12 @@ const ignoredFiles = new Set([
 	'content/build/network.json'
 ]);
 
+function getFileType(file: string) {
+	if (file.endsWith('.irisc') || file.endsWith('.iq.json')) return 'doc';
+
+	return 'asset';
+}
+
 export async function indexFile(
 	project: string,
 	repo: string,
@@ -60,7 +66,11 @@ export async function indexFile(
 			.execute();
 
 		return;
-	} else if (file.endsWith('.irisc') || file.endsWith('.iq.json')) {
+	}
+
+	const fileType = getFileType(file);
+
+	if (fileType === 'doc') {
 		// Document
 		let docId: string | undefined;
 
@@ -78,7 +88,7 @@ export async function indexFile(
 		}
 
 		return { type: 'doc', path: relPath, docId };
-	} else {
+	} else if (fileType === 'asset') {
 		// Asset
 		let assetId: string | undefined;
 
@@ -132,11 +142,21 @@ export async function indexRevs(
 					.insertInto('document_ptr')
 					.values({
 						path: res.path,
-						doc_id: res.docId
+						doc_id: res.docId,
+						rev: 'latest'
 					})
 					.onConflict((c) =>
-						c.column('path').doUpdateSet({ doc_id: res.docId })
+						c.columns(['path', 'rev']).doUpdateSet({ doc_id: res.docId })
 					)
+					.execute();
+
+				await db
+					.insertInto('document_ptr')
+					.values({
+						path: res.path,
+						doc_id: res.docId,
+						rev: to
+					})
 					.execute();
 			} else {
 				await db
@@ -150,15 +170,77 @@ export async function indexRevs(
 					.insertInto('asset_ptr')
 					.values({
 						path: res.path,
-						asset_id: res.assetId
+						asset_id: res.assetId,
+						rev: 'latest'
 					})
 					.onConflict((c) =>
-						c.column('path').doUpdateSet({ asset_id: res.assetId })
+						c.columns(['path', 'rev']).doUpdateSet({ asset_id: res.assetId })
 					)
+					.execute();
+
+				await db
+					.insertInto('asset_ptr')
+					.values({
+						path: res.path,
+						asset_id: res.assetId,
+						rev: to
+					})
 					.execute();
 			} else {
 				await db.deleteFrom('asset_ptr').where('path', '=', res.path).execute();
 			}
+		}
+	}
+
+	const ls = (await git.raw(['ls-files']))
+		.split(/\r?\n/)
+		.filter((file) => file.length);
+
+	// Update rest of files (excluding modified)
+	for (const file of ls) {
+		if (ignoredFiles.has(file)) continue;
+
+		const relPath = path.relative('content/build', file);
+		const fileType = getFileType(relPath);
+
+		if (fileType === 'doc') {
+			const latest = await db
+				.selectFrom('document_ptr')
+				.where('path', '=', relPath)
+				.where('rev', '=', 'latest')
+				.selectAll()
+				.executeTakeFirst();
+
+			if (!latest) continue;
+
+			await db
+				.insertInto('document_ptr')
+				.values({
+					path: relPath,
+					doc_id: latest.doc_id,
+					rev: to
+				})
+				.onConflict((c) => c.doNothing())
+				.execute();
+		} else if (fileType === 'asset') {
+			const latest = await db
+				.selectFrom('asset_ptr')
+				.where('path', '=', relPath)
+				.where('rev', '=', 'latest')
+				.selectAll()
+				.executeTakeFirst();
+
+			if (!latest) continue;
+
+			await db
+				.insertInto('asset_ptr')
+				.values({
+					path: relPath,
+					asset_id: latest.asset_id,
+					rev: to
+				})
+				.onConflict((c) => c.doNothing())
+				.execute();
 		}
 	}
 

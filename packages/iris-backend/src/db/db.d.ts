@@ -33,6 +33,7 @@ export interface Asset {
 export interface AssetPtr {
   asset_id: string;
   path: string;
+  rev: Generated<string>;
 }
 
 export interface Document {
@@ -45,6 +46,7 @@ export interface Document {
 export interface DocumentPtr {
   doc_id: string;
   path: string;
+  rev: Generated<string>;
 }
 
 export interface Project {

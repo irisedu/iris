@@ -52,10 +52,8 @@ function Layout({ children }: { children?: ReactNode }) {
 				Skip to main content
 			</AriaLink>
 
-			<div className="h-1 w-screen bg-iris-600" />
-
 			<nav
-				className="flex flex-col items-center md:flex-row md:pr-6 gap-1"
+				className="flex flex-col items-center md:flex-row md:pr-6 gap-1 border-t-[0.25rem] border-iris-600"
 				data-hide-reading-ruler
 			>
 				<Link to="/" className="h-12">

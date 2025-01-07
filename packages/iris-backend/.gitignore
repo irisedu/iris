@@ -3,5 +3,6 @@
 /spa/
 
 /.env
+/.shell-lock
 /.pg/
 /dump.rdb

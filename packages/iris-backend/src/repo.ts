@@ -80,7 +80,8 @@ export async function indexFile(
 				.values({
 					path: relPath,
 					rev,
-					data: await fs.readFile(filePath, 'utf-8')
+					data: await fs.readFile(filePath, 'utf-8'),
+					project_name: project
 				})
 				.onConflict((c) => c.doNothing())
 				.returning('id as id')
@@ -112,7 +113,8 @@ export async function indexFile(
 				.values({
 					path: relPath,
 					rev,
-					hash: assetHash
+					hash: assetHash,
+					project_name: project
 				})
 				.returning('id as id')
 				.executeTakeFirst())!.id;
@@ -143,7 +145,8 @@ export async function indexRevs(
 					.values({
 						path: res.path,
 						doc_id: res.docId,
-						rev: 'latest'
+						rev: 'latest',
+						project_name: project
 					})
 					.onConflict((c) =>
 						c.columns(['path', 'rev']).doUpdateSet({ doc_id: res.docId })
@@ -155,7 +158,8 @@ export async function indexRevs(
 					.values({
 						path: res.path,
 						doc_id: res.docId,
-						rev: to
+						rev: to,
+						project_name: project
 					})
 					.execute();
 			} else {
@@ -171,7 +175,8 @@ export async function indexRevs(
 					.values({
 						path: res.path,
 						asset_id: res.assetId,
-						rev: 'latest'
+						rev: 'latest',
+						project_name: project
 					})
 					.onConflict((c) =>
 						c.columns(['path', 'rev']).doUpdateSet({ asset_id: res.assetId })
@@ -183,7 +188,8 @@ export async function indexRevs(
 					.values({
 						path: res.path,
 						asset_id: res.assetId,
-						rev: to
+						rev: to,
+						project_name: project
 					})
 					.execute();
 			} else {
@@ -218,7 +224,8 @@ export async function indexRevs(
 				.values({
 					path: relPath,
 					doc_id: latest.doc_id,
-					rev: to
+					rev: to,
+					project_name: project
 				})
 				.onConflict((c) => c.doNothing())
 				.execute();
@@ -237,7 +244,8 @@ export async function indexRevs(
 				.values({
 					path: relPath,
 					asset_id: latest.asset_id,
-					rev: to
+					rev: to,
+					project_name: project
 				})
 				.onConflict((c) => c.doNothing())
 				.execute();

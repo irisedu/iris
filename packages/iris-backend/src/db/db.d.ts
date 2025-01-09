@@ -27,25 +27,44 @@ export interface Asset {
   hash: string;
   id: Generated<string>;
   path: string;
+  project_name: string | null;
   rev: string;
 }
 
 export interface AssetPtr {
   asset_id: string;
   path: string;
+  project_name: string | null;
   rev: Generated<string>;
+}
+
+export interface Assignment {
+  data: Json;
+  external_id: string;
+  user_id: string;
+}
+
+export interface AssignmentSubmission {
+  created: Generated<Timestamp>;
+  external_id: string;
+  id: Generated<string>;
+  outcome: Json | null;
+  submission: Json;
+  user_id: string;
 }
 
 export interface Document {
   data: Json;
   id: Generated<string>;
   path: string;
+  project_name: string | null;
   rev: string;
 }
 
 export interface DocumentPtr {
   doc_id: string;
   path: string;
+  project_name: string | null;
   rev: Generated<string>;
 }
 
@@ -72,7 +91,7 @@ export interface QuestionSubmission {
 export interface Series {
   data: Json;
   href: string;
-  project_name: string;
+  project_name: string | null;
 }
 
 export interface UserAccount {
@@ -98,6 +117,8 @@ export interface UserGroup {
 export interface DB {
   asset: Asset;
   asset_ptr: AssetPtr;
+  assignment: Assignment;
+  assignment_submission: AssignmentSubmission;
   document: Document;
   document_ptr: DocumentPtr;
   project: Project;

@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import trpc from '../trpc';
+import type { UserInfoResult } from 'iris-backend';
 
 interface UserState {
-	user?: Awaited<ReturnType<typeof trpc.user.info.query>>;
+	user?: UserInfoResult;
 }
 
-export const fetchUser = createAsyncThunk('user/fetchUser', () => {
-	return trpc.user.info.query();
+export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
+	const res = await fetch('/auth/info');
+	return await res.json();
 });
 
 const userSlice = createSlice({

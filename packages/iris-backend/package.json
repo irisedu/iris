@@ -4,7 +4,7 @@
 	"version": "0.0.5",
 	"type": "module",
 	"exports": {
-		"./trpc": "./src/trpc/app.ts"
+		".": "./src/index.ts"
 	},
 	"scripts": {
 		"tsc": "tsc --noEmit",
@@ -33,7 +33,6 @@
 	},
 	"dependencies": {
 		"@irisedu/schemas": "workspace:^",
-		"@trpc/server": "11.0.0-rc.660",
 		"connect-redis": "^8.0.1",
 		"cookie-parser": "^1.4.7",
 		"csrf-csrf": "^3.1.0",

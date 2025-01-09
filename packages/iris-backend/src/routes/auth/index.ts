@@ -3,6 +3,7 @@ import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { Redis } from 'ioredis';
 import { db } from '../../db/index.js';
+import { InferResult } from 'kysely';
 
 import { googleRouter } from './google.js';
 import { ticketRouter } from './ticket.js';
@@ -51,6 +52,55 @@ export function authSetup(app: Express) {
 }
 
 export const authRouter = Router();
+
+const _userQuery = db.selectFrom('user_account').selectAll();
+
+export type UserInfoResult =
+	| {
+			type: 'registered';
+			data: InferResult<typeof _userQuery>[0];
+			groups: string[];
+	  }
+	| {
+			type: 'loggedOut';
+	  }
+	| PendingFederationSessionData;
+
+authRouter.get('/info', (req, res, next) => {
+	const user = req.session.user;
+	if (!user) {
+		res.json({ type: 'loggedOut' });
+		return;
+	}
+
+	if (user.type === 'registered') {
+		db.selectFrom('user_account')
+			.where('id', '=', user.id)
+			.selectAll()
+			.executeTakeFirst()
+			.then(async (dbUser) => {
+				if (!dbUser) {
+					res.json({ type: 'loggedOut' });
+					return;
+				}
+
+				const groups = await db
+					.selectFrom('user_group')
+					.where('user_id', '=', dbUser.id)
+					.selectAll()
+					.execute();
+
+				res.json({
+					type: 'registered',
+					data: dbUser,
+					groups: groups.map((g) => g.group_name)
+				});
+			})
+			.catch(next);
+	} else if (user.type === 'pendingFederation') {
+		res.json(user);
+	}
+});
 
 authRouter.post('/logout', (req, res, next) => {
 	req.session.destroy((err) => {

@@ -12,7 +12,6 @@
 	"dependencies": {
 		"@irisedu/schemas": "workspace:^",
 		"@reduxjs/toolkit": "^2.3.0",
-		"@trpc/client": "11.0.0-rc.660",
 		"deep-equal": "^2.2.3",
 		"highlight.js": "^11.10.0",
 		"html-react-parser": "^5.1.18",

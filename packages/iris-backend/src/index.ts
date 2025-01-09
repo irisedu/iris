@@ -9,7 +9,6 @@ import { authSetup, authRouter } from './routes/auth/index.js';
 import { authorRouter } from './routes/author/index.js';
 import { documentsRouter } from './routes/documents.js';
 import { judgeRouter } from './routes/judge/index.js';
-import { trpcSetup } from './trpc/app.js';
 import { doubleCsrfProtection, generateToken } from './csrf.js';
 
 expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
@@ -32,8 +31,6 @@ app.use('/auth', authRouter);
 app.use('/api/author', authorRouter);
 app.use('/api/judge', judgeRouter);
 
-trpcSetup(app);
-
 app.use(express.static(spaRoot));
 
 app.get('*', (req, res) => {
@@ -49,3 +46,5 @@ migrateToLatest().then(() => {
 		expressLogger.info({ port }, `Listening on port ${port}`);
 	});
 });
+
+export type * from './routes/auth/index.js';

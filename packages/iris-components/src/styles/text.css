@@ -47,6 +47,7 @@ blockquote {
 
 pre code {
 	@apply my-2;
+	padding: 0.5rem !important;
 }
 
 p code,

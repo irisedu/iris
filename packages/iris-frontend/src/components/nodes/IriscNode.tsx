@@ -421,8 +421,10 @@ export function IriscNode({
 			);
 		}
 
-		case 'ordered_list':
-			return <ol>{getBlockContent()}</ol>;
+		case 'ordered_list': {
+			const order = node.attrs?.order as number | undefined;
+			return <ol start={order}>{getBlockContent()}</ol>;
+		}
 		case 'bullet_list':
 			return <ul>{getBlockContent()}</ul>;
 		case 'list_item':

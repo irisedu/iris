@@ -8,7 +8,11 @@ import {
 	SliderOutput,
 	SliderThumb,
 	SliderTrack,
-	Switch
+	Switch,
+	Tabs,
+	TabList,
+	Tab,
+	TabPanel
 } from 'iris-components';
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
@@ -47,7 +51,7 @@ function TextSettings() {
 			<SpacingDialog isOpen={spacingOpen} setIsOpen={setSpacingOpen} />
 			<RulerDialog isOpen={rulerOpen} setIsOpen={setRulerOpen} />
 
-			<h2 className="mt-0 mb-2">
+			<h2 className="m-0">
 				Text & Accessibility Settings{' '}
 				<Link
 					className="text-sm"
@@ -57,14 +61,41 @@ function TextSettings() {
 				</Link>
 			</h2>
 
-			<div className="flex flex-row flex-wrap gap-8">
-				<div className="flex flex-col min-w-56">
+			<Tabs className="outline-none">
+				<TabList className="flex flex-wrap gap-x-4 gap-y-2 text-lg mb-3">
+					<Tab
+						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
+						id="font"
+					>
+						Font
+					</Tab>
+					<Tab
+						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
+						id="spacing"
+					>
+						Spacing
+					</Tab>
+					<Tab
+						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
+						id="ruler"
+					>
+						Reading Ruler
+					</Tab>
+					<Tab
+						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
+						id="color"
+					>
+						Color
+					</Tab>
+				</TabList>
+
+				<TabPanel id="font" className="react-aria-TabPanel max-w-72">
 					<RadioGroup
 						className="react-aria-RadioGroup mb-2"
+						aria-label="Font"
 						value={font}
 						onChange={(val) => dispatch(setFont(val))}
 					>
-						<Label className="text-lg font-bold">Font</Label>
 						<Radio
 							value="Vollkorn"
 							className="react-aria-Radio font-['Vollkorn']"
@@ -114,11 +145,10 @@ function TextSettings() {
 							<SliderThumb />
 						</SliderTrack>
 					</Slider>
-				</div>
+				</TabPanel>
 
-				<div className="flex flex-col max-w-72">
-					<span className="text-lg font-bold">Spacing</span>
-
+				<TabPanel id="spacing">
+					<div className="mb-1">Presets</div>
 					<div className="flex flex-row flex-wrap gap-2">
 						{/* Based on https://dl.acm.org/action/downloadSupplement?doi=10.1145%2F3613904.3642108&file=pn3179-supplemental-material-1.pdf */}
 						<Button onPress={() => dispatch(setSpacing(compact))}>
@@ -130,11 +160,9 @@ function TextSettings() {
 						</Button>
 						<Button onPress={() => setSpacingOpen(true)}>Customize</Button>
 					</div>
-				</div>
+				</TabPanel>
 
-				<div className="flex flex-col min-w-56">
-					<span className="text-lg font-bold">Color</span>
-
+				<TabPanel id="color" className="react-aria-TabPanel max-w-72">
 					<Slider
 						minValue={0}
 						maxValue={360}
@@ -148,11 +176,9 @@ function TextSettings() {
 							<SliderThumb />
 						</SliderTrack>
 					</Slider>
-				</div>
+				</TabPanel>
 
-				<div className="flex flex-col w-56">
-					<span className="text-lg font-bold">Reading Ruler</span>
-
+				<TabPanel id="ruler">
 					<Switch
 						className="react-aria-Switch mb-1"
 						isSelected={rulerEnabled}
@@ -161,6 +187,7 @@ function TextSettings() {
 						Enable Reading Ruler
 					</Switch>
 
+					<div className="mb-1">Presets</div>
 					<div className="flex flex-row flex-wrap gap-2 mb-2">
 						{/* Based on https://dl.acm.org/doi/pdf/10.1145/3544548.3581367 */}
 						<Button onPress={() => dispatch(setRulerSettings(lightbox))}>
@@ -177,8 +204,8 @@ function TextSettings() {
 						</Button>
 						<Button onPress={() => setRulerOpen(true)}>Customize</Button>
 					</div>
-				</div>
-			</div>
+				</TabPanel>
+			</Tabs>
 		</div>
 	);
 }

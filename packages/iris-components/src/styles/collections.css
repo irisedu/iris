@@ -9,7 +9,7 @@
 		}
 
 		&[data-pressed] {
-			@apply bg-iris-150;
+			@apply bg-iris-200;
 		}
 
 		&[data-disabled] {

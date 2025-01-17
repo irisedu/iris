@@ -18,12 +18,10 @@ export default {
 		},
 		extend: {
 			colors: {
-				// Same as Tailwind "zinc" + 75 and 150 interpolated
+				// Same as Tailwind "zinc"
 				iris: {
 					50: '#fafafa',
-					75: '#f7f7f7',
 					100: '#f4f4f5',
-					150: '#ececec',
 					200: '#e4e4e7',
 					300: '#d4d4d8',
 					400: '#a1a1aa',

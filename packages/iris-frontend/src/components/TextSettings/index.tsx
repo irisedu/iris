@@ -12,7 +12,9 @@ import {
 	Tabs,
 	TabList,
 	Tab,
-	TabPanel
+	TabPanel,
+	Dropdown,
+	ListBoxItem
 } from 'iris-components';
 import { Link } from 'react-router-dom';
 import { greyBar, lightbox, shade, underline } from '$state/presets/ruler';
@@ -26,6 +28,7 @@ import {
 	setFont,
 	setFontSize,
 	setSpacing,
+	setTheme,
 	setHueShift,
 	setRulerEnabled,
 	setRulerSettings
@@ -37,6 +40,7 @@ function TextSettings() {
 	const font = useSelector((state: RootState) => state.prefs.text.font);
 	const fontSize = useSelector((state: RootState) => state.prefs.text.fontSize);
 
+	const theme = useSelector((state: RootState) => state.prefs.theme);
 	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
 
 	const rulerEnabled = useSelector(
@@ -163,6 +167,15 @@ function TextSettings() {
 				</TabPanel>
 
 				<TabPanel id="color" className="react-aria-TabPanel max-w-72">
+					<Dropdown
+						label="Theme"
+						selectedKey={theme}
+						onSelectionChange={(key) => dispatch(setTheme(key as string))}
+					>
+						<ListBoxItem id="auto">Auto</ListBoxItem>
+						<ListBoxItem id="light">Light</ListBoxItem>
+						<ListBoxItem id="dark">Dark</ListBoxItem>
+					</Dropdown>
 					<Slider
 						minValue={0}
 						maxValue={360}

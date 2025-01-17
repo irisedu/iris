@@ -49,6 +49,10 @@
 	);
 }
 
+body {
+	@apply text-black;
+}
+
 .iris-rotate {
 	@apply hue-rotate-[calc(var(--hue-shift)*1deg)];
 }

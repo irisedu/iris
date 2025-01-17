@@ -1,3 +1,5 @@
+// @ts-expect-error Nightwind does not support TypeScript
+import nightwind from 'nightwind';
 import path from 'path';
 
 export default {
@@ -19,9 +21,7 @@ export default {
 				// hsl(270, 100%, 50%)
 				iris: {
 					50: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 98%)',
-					75: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 97%)',
 					100: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 95%)',
-					150: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 93%)',
 					200: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 90%)',
 					300: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 85%)',
 					400: 'hsl(calc(270 + var(--hue-shift)), var(--color-sat), 75%)',
@@ -40,7 +40,25 @@ export default {
 				'upper-alpha': 'upper-alpha',
 				square: 'square'
 			}
+		},
+		nightwind: {
+			colors: {
+				iris: {
+					50: 'hsl(calc(270 + var(--hue-shift)), 40%, 5%)',
+					100: 'hsl(calc(270 + var(--hue-shift)), 40%, 15%)',
+					200: 'hsl(calc(270 + var(--hue-shift)), 40%, 25%)',
+					300: 'hsl(calc(270 + var(--hue-shift)), 40%, 35%)',
+					400: 'hsl(calc(270 + var(--hue-shift)), 40%, 45%)',
+					500: 'hsl(calc(270 + var(--hue-shift)), 40%, 55%)',
+					600: 'hsl(calc(270 + var(--hue-shift)), 40%, 65%)',
+					700: 'hsl(calc(270 + var(--hue-shift)), 40%, 70%)',
+					800: 'hsl(calc(270 + var(--hue-shift)), 40%, 75%)',
+					900: 'hsl(calc(270 + var(--hue-shift)), 40%, 85%)',
+					950: 'hsl(calc(270 + var(--hue-shift)), 40%, 95%)'
+				}
+			}
 		}
 	},
-	plugins: []
+	darkMode: 'class',
+	plugins: [nightwind]
 };

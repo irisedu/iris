@@ -3,7 +3,7 @@ import hljs from 'highlight.js';
 // @ts-expect-error External code without types
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
 
-import 'highlight.js/styles/xcode.css';
+import './useHighlight.css';
 
 hljs.configure({
 	ignoreUnescapedHTML: true,

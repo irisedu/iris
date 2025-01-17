@@ -1,5 +1,6 @@
 import { useEffect, type CSSProperties, type ReactNode } from 'react';
 import ReadingRuler from './ReadingRuler';
+import { useMediaQuery } from 'react-responsive';
 
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
@@ -31,7 +32,10 @@ function StyleProvider({
 	className: string;
 }) {
 	const textSettings = useSelector((state: RootState) => state.prefs.text);
+	const theme = useSelector((state: RootState) => state.prefs.theme);
 	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
+
+	const prefersDark = useMediaQuery({ query: '(prefers-color-scheme: dark)' });
 
 	const { font, fontSize, charSpacing, wordSpacing, lineSpacing } =
 		textSettings;
@@ -50,8 +54,14 @@ function StyleProvider({
 	}, [textSettings]);
 
 	useEffect(() => {
-		const style = document.documentElement.style;
+		const dark = theme === 'auto' ? prefersDark : theme === 'dark';
 
+		if (dark) document.documentElement.classList.add('dark');
+		else document.documentElement.classList.remove('dark');
+	}, [theme, prefersDark]);
+
+	useEffect(() => {
+		const style = document.documentElement.style;
 		style.setProperty('--hue-shift', hueShift.toString());
 	}, [hueShift]);
 

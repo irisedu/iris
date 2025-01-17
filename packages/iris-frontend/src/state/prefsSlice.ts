@@ -10,6 +10,7 @@ interface PrefsState {
 		wordSpacing: number;
 		lineSpacing: number;
 	};
+	theme: string; // auto, light, dark
 	hueShift: number;
 	ruler: {
 		enabled: boolean;
@@ -34,6 +35,7 @@ const prefsSlice = createSlice({
 			fontSize: 125,
 			...compact
 		},
+		theme: 'auto',
 		hueShift: 0,
 		ruler: {
 			enabled: false,
@@ -63,6 +65,9 @@ const prefsSlice = createSlice({
 				fontSize: state.text.fontSize
 			};
 		},
+		setTheme(state, action) {
+			state.theme = action.payload;
+		},
 		setHueShift(state, action) {
 			state.hueShift = action.payload;
 		},
@@ -85,6 +90,7 @@ export const {
 	setWordSpacing,
 	setLineSpacing,
 	setSpacing,
+	setTheme,
 	setHueShift,
 	setRulerEnabled,
 	setRulerSettings

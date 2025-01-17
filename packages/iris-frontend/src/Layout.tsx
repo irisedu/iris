@@ -28,7 +28,7 @@ import TextSize from '~icons/tabler/text-size';
 import Accessible from '~icons/tabler/accessible';
 import ChevronDown from '~icons/tabler/chevron-down';
 
-import irisWord from '$assets/iris-word.svg';
+import IrisWord from '$assets/iris-word.svg?react';
 import irisFlower from '$assets/iris.svg';
 
 function Layout({ children }: { children?: ReactNode }) {
@@ -57,7 +57,10 @@ function Layout({ children }: { children?: ReactNode }) {
 				data-hide-reading-ruler
 			>
 				<Link to="/" className="h-12">
-					<img src={irisWord} alt="Iris logo" className="iris-rotate h-full" />
+					<IrisWord
+						aria-label="Iris logo"
+						className="text-black iris-rotate h-full"
+					/>
 				</Link>
 
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
@@ -69,7 +72,7 @@ function Layout({ children }: { children?: ReactNode }) {
 				<TooltipTrigger delay={200}>
 					<ToggleButton
 						aria-label="Text & Accessibility Settings"
-						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-200 data-[selected]:bg-iris-150"
+						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-300 data-[selected]:bg-iris-200"
 						isSelected={textSettingsVisible}
 						onChange={setTextSettingsVisible}
 					>

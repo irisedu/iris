@@ -98,7 +98,7 @@ export function nodesToString(nodes: IriscNode[]): string {
 			} else if (n.type === 'math_inline') {
 				return n.html?.raw ? `$${n.html.raw}$` : '';
 			} else if (n.content) {
-				return nodesToString(n.content);
+				return nodesToString(n.content) + '\n';
 			}
 
 			return '';

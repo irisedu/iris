@@ -7,7 +7,7 @@ import {
 	type ViewUpdate,
 	type KeyBinding
 } from '@codemirror/view';
-import { defaultKeymap } from '@codemirror/commands';
+import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { Compartment } from '@codemirror/state';
 import { indentOnInput, LanguageDescription } from '@codemirror/language';
 import { autocompletion, closeBrackets } from '@codemirror/autocomplete';
@@ -53,7 +53,11 @@ class CodeBlockView {
 		this.cm = new CodeMirror({
 			doc: this.node.textContent,
 			extensions: [
-				cmKeymap.of([...this.codeMirrorKeymap(), ...defaultKeymap]),
+				cmKeymap.of([
+					...this.codeMirrorKeymap(),
+					...defaultKeymap,
+					indentWithTab
+				]),
 				drawSelection(),
 				indentOnInput(),
 				autocompletion(),

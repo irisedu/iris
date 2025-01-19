@@ -95,7 +95,7 @@ export function useCellEditMode() {
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
 			// ???
-			if (e.ctrlKey && e.key === 's') return;
+			if (e.ctrlKey && ['s', '[', ']'].includes(e.key)) return;
 
 			if (isFocusedRef.current) {
 				if (e.code === 'Enter') {

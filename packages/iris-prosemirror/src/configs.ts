@@ -244,6 +244,7 @@ export function makeCommonKeymap(schema: Schema) {
 			joinForward,
 			selectNodeForward
 		),
+		'Mod-Shift-Enter': insertNode(schema.nodes.hard_break),
 
 		'Mod-a': selectAll,
 		'Mod-z': chainCommands(undoInputRule, undo),
@@ -263,9 +264,6 @@ export function makeCommonKeymap(schema: Schema) {
 		'Mod-`': toggleMark(schema.marks.code),
 
 		'Mod-k': linkComponent.commands.toggleLink,
-
-		'Shift-Tab': goToNextCell(-1),
-		Tab: goToNextCell(1),
 
 		'Alt-m': toggleInlineMath,
 		'Alt-Shift-m': insertDisplayMath
@@ -290,10 +288,14 @@ export function makeBaseKeymap(schema: Schema) {
 		),
 		'Mod-Enter': chainCommands(
 			exitCode,
-			exitNode([schema.nodes.figure, schema.nodes.note]),
-			insertNode(schema.nodes.hard_break)
+			exitNode([schema.nodes.figure, schema.nodes.note, schema.nodes.table])
 		),
 
+		'Shift-Tab': chainCommands(
+			goToNextCell(-1),
+			liftListItem(schema.nodes.list_item)
+		),
+		Tab: chainCommands(goToNextCell(1), sinkListItem(schema.nodes.list_item)),
 		'Mod-[': liftListItem(schema.nodes.list_item),
 		'Mod-]': sinkListItem(schema.nodes.list_item),
 
@@ -325,11 +327,21 @@ export const docKeymap = {
 		exitNode([
 			docSchema.nodes.summary,
 			docSchema.nodes.figure,
-			docSchema.nodes.note
-		]),
-		insertNode(docSchema.nodes.hard_break)
+			docSchema.nodes.note,
+			docSchema.nodes.table
+		])
 	),
 
+	'Shift-Tab': chainCommands(
+		goToNextCell(-1),
+		liftListItem(docSchema.nodes.list_item),
+		liftListItem(docSchema.nodes.summary_list_item)
+	),
+	Tab: chainCommands(
+		goToNextCell(1),
+		sinkListItem(docSchema.nodes.list_item),
+		sinkListItem(docSchema.nodes.summary_list_item)
+	),
 	'Mod-[': chainCommands(
 		liftListItem(docSchema.nodes.list_item),
 		liftListItem(docSchema.nodes.summary_list_item)

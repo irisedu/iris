@@ -74,7 +74,7 @@ function Sidebar({
 	const params = useParams();
 	const [_, routePathSegments] = parsePath(params['*']!);
 
-	const isLg = useMediaQuery({ query: '(min-width: 1024px)' });
+	const isLg = useMediaQuery({ query: '(min-width: 64em)' });
 
 	return (
 		<div className="flex flex-col gap-8 lg:w-[25ch] text-sm">

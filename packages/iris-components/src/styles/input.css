@@ -18,7 +18,7 @@
 	@apply block my-2;
 
 	&::file-selector-button {
-		@apply rounded-md px-2 py-1 border-2 border-iris-400 bg-iris-200 border-solid font-[inherit];
+		@apply rounded-md text-black px-2 py-1 border-2 border-iris-400 bg-iris-200 border-solid font-[inherit];
 	}
 }
 

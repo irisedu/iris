@@ -330,6 +330,23 @@ function BlankEditor({ i, blank, updateBlank }: BlankEditorProps) {
 				<Label>Validator RegEx (optional)</Label>
 				<Input className="react-aria-Input font-mono" />
 			</TextField>
+			<TextField
+				value={blank.validatorMessage ?? ''}
+				onChange={(newVal) => {
+					if (newVal.length) {
+						updateBlank({
+							...blank,
+							validatorMessage: newVal
+						});
+					} else {
+						const { validatorMessage: _, ...rest } = blank;
+						updateBlank(rest);
+					}
+				}}
+			>
+				<Label>Validator message (optional)</Label>
+				<Input />
+			</TextField>
 		</div>
 	);
 }

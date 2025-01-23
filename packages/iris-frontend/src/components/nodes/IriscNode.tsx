@@ -24,6 +24,8 @@ export interface IriscContext {
 
 	getBlankValue?: (id: string) => string;
 	setBlankValue?: (id: string, val: string) => void;
+	getBlankValidator?: (id: string) => string | undefined;
+	getBlankValidatorMessage?: (id: string) => string | undefined;
 }
 
 function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
@@ -71,6 +73,10 @@ function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
 					value={ctx?.getBlankValue && ctx.getBlankValue(id)}
 					onChange={(e) =>
 						ctx?.setBlankValue && ctx.setBlankValue(id, e.target.value)
+					}
+					pattern={ctx?.getBlankValidator && ctx.getBlankValidator(id)}
+					title={
+						ctx?.getBlankValidatorMessage && ctx.getBlankValidatorMessage(id)
 					}
 				/>
 			);

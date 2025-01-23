@@ -195,6 +195,12 @@ function QuestionNodeComponent({
 										type: QuestionNodeType.FillInTheBlank,
 										blanks: newBlanks
 									});
+								},
+								getBlankValidator(id) {
+									return node.blanks.find((b) => b.id == id)?.validator;
+								},
+								getBlankValidatorMessage(id) {
+									return node.blanks.find((b) => b.id == id)?.validatorMessage;
 								}
 							}}
 						/>
@@ -232,7 +238,11 @@ function QuestionNodeComponent({
 							})
 						}
 					>
-						{node.multiline ? <TextArea /> : <Input />}
+						{node.multiline ? (
+							<TextArea />
+						) : (
+							<Input pattern={node.validator} title={node.validatorMessage} />
+						)}
 					</TextField>
 					{grd && (
 						<QuestionFeedback

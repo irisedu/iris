@@ -92,6 +92,7 @@ export const FillInTheBlankQuestionNode = QuestionNodePointsBase.extend({
 		.object({
 			id: z.string().uuid(),
 			validator: z.optional(z.string()),
+			validatorMessage: z.optional(z.string()),
 			options: z
 				.object({
 					id: z.string().uuid(),
@@ -117,6 +118,7 @@ export const FreeResponseQuestionNode = QuestionNodePointsBase.extend({
 	type: z.literal(QuestionNodeType.FreeResponse),
 	multiline: z.boolean(),
 	validator: z.optional(z.string()),
+	validatorMessage: z.optional(z.string()),
 	options: z
 		.object({
 			id: z.string().uuid(),

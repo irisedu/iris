@@ -202,23 +202,44 @@ function FreeResponseQuestionNodeEditor({
 				/>
 			</div>
 
-			<TextField
-				value={node.validator ?? ''}
-				onChange={(newVal) => {
-					if (newVal.length) {
-						onUpdate({
-							...node,
-							validator: newVal
-						});
-					} else {
-						const { validator: _, ...rest } = node;
-						onUpdate(rest);
-					}
-				}}
-			>
-				<Label>Validator RegEx (optional)</Label>
-				<Input className="react-aria-Input font-mono" />
-			</TextField>
+			{!node.multiline && (
+				<>
+					<TextField
+						value={node.validator ?? ''}
+						onChange={(newVal) => {
+							if (newVal.length) {
+								onUpdate({
+									...node,
+									validator: newVal
+								});
+							} else {
+								const { validator: _, ...rest } = node;
+								onUpdate(rest);
+							}
+						}}
+					>
+						<Label>Validator RegEx (optional)</Label>
+						<Input className="react-aria-Input font-mono" />
+					</TextField>
+					<TextField
+						value={node.validatorMessage ?? ''}
+						onChange={(newVal) => {
+							if (newVal.length) {
+								onUpdate({
+									...node,
+									validatorMessage: newVal
+								});
+							} else {
+								const { validatorMessage: _, ...rest } = node;
+								onUpdate(rest);
+							}
+						}}
+					>
+						<Label>Validator message (optional)</Label>
+						<Input />
+					</TextField>
+				</>
+			)}
 		</>
 	);
 }

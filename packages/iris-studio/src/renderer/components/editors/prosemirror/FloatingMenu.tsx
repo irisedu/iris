@@ -4,14 +4,7 @@ import {
 	useEditorEventCallback
 } from '@nytimes/react-prosemirror';
 import type { EditorView } from 'prosemirror-view';
-import {
-	Popover,
-	TextField,
-	Input,
-	TextArea,
-	Button,
-	Label
-} from 'iris-components';
+import { Popover, TextField, Input, Button } from 'iris-components';
 import { markExtend } from 'iris-prosemirror';
 import { cmdOrCtrl } from '../../../utils';
 
@@ -155,133 +148,24 @@ function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
 	return { link, component };
 }
 
-function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
-	const [image, setImage] = useState<number | null>(null);
-	const [imageModified, setImageModified] = useState(false);
-
-	const [imageSrc, setImageSrc] = useState('');
-	const [imageAlt, setImageAlt] = useState('');
-
-	const updateImage = useEditorEventCallback((view) => {
-		if (!image) return;
-
-		const state = view.state;
-
-		view.dispatch(
-			state.tr
-				.setNodeAttribute(image, 'src', imageSrc)
-				.setNodeAttribute(image, 'alt', imageAlt)
-		);
-	});
-
-	useEditorEffect((view) => {
-		if (!triggerRef.current) return;
-
-		const state = view.state;
-		const schema = state.schema;
-		const { $head } = state.selection;
-
-		setImage(null);
-
-		const pos = $head.start($head.depth);
-		const node = state.doc.nodeAt(pos);
-
-		if (node?.type !== schema.nodes.image) return;
-
-		setElementPos(triggerRef.current, view, pos, pos);
-
-		const modified = imageModified && image === pos;
-		setImageModified(modified);
-		if (!modified) {
-			setImageSrc(node.attrs.src ?? '');
-			setImageAlt(node.attrs.alt ?? '');
-		}
-
-		setImage(pos);
-	});
-
-	const component = image && (
-		<div className="flex flex-col gap-1 w-56">
-			<TextField
-				className="react-aria-TextField m-0"
-				value={imageSrc}
-				onChange={(value) => {
-					setImageSrc(value);
-					setImageModified(true);
-				}}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter') {
-						updateImage();
-						setImageModified(false);
-					} else if (cmdOrCtrl(e) && e.key === 's') {
-						updateImage();
-						setImageModified(false);
-						e.continuePropagation();
-					}
-				}}
-			>
-				<Label>Source</Label>
-				<Input />
-			</TextField>
-
-			<TextField
-				className="react-aria-TextField m-0"
-				value={imageAlt}
-				onChange={(value) => {
-					setImageAlt(value);
-					setImageModified(true);
-				}}
-				onKeyDown={(e) => {
-					if (cmdOrCtrl(e) && e.key === 'Enter') {
-						updateImage();
-						setImageModified(false);
-					} else if (cmdOrCtrl(e) && e.key === 's') {
-						updateImage();
-						setImageModified(false);
-						e.continuePropagation();
-					}
-				}}
-			>
-				<Label>Alt text</Label>
-				<TextArea />
-			</TextField>
-
-			<Button
-				className="react-aria-Button border-iris-300"
-				isDisabled={!imageModified}
-				onPress={() => {
-					updateImage();
-					setImageModified(false);
-				}}
-			>
-				Save
-			</Button>
-		</div>
-	);
-
-	return { image, component };
-}
-
 function FloatingMenu() {
 	const triggerRef = useRef<HTMLDivElement>(null);
 
 	const { link, component: linkComponent } = useLinkWidget(triggerRef);
-	const { image, component: imageComponent } = useImageWidget(triggerRef);
 
 	return (
 		<>
 			<div ref={triggerRef} className="absolute" />
 			<Popover
 				/* Force position update when focused item changes */
-				key={link ?? image ?? 'none'}
-				isOpen={!!(link || image)}
+				key={link ?? 'none'}
+				isOpen={!!link}
 				className={`react-aria-Popover flex flex-col gap-1 shadow-lg font-sans bg-iris-100 p-1`}
 				placement="top"
 				triggerRef={triggerRef}
 				isNonModal
 			>
 				{linkComponent}
-				{imageComponent}
 			</Popover>
 		</>
 	);

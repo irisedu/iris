@@ -17,54 +17,108 @@ import {
 	Dialog,
 	Heading,
 	TextField,
-	Input
+	Input,
+	Label,
+	TextArea
 } from 'iris-components';
 
 import FloatLeft from '~icons/tabler/float-left';
 import FloatNone from '~icons/tabler/float-none';
 import FloatRight from '~icons/tabler/float-right';
-import Width from '~icons/tabler/viewport-wide';
+import Edit from '~icons/tabler/edit';
 
-function SetWidth({ index }: { index: number }) {
+function EditButton({ index }: { index: number }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [visible, setVisible] = useVisibility(index);
+	const [figure, setFigure] = useState<number | null>(null);
+
 	const [width, setWidth] = useState('');
 
-	const updateWidth = useEditorEventCallback((view) => {
-		setParentAttr(docSchema.nodes.figure, 'width', width)(
-			view.state,
-			view.dispatch,
-			view
-		);
+	const [image, setImage] = useState<number | null>(null);
+	const [imgSrc, setImgSrc] = useState('');
+	const [imgAlt, setImgAlt] = useState('');
+
+	const updateFigure = useEditorEventCallback((view) => {
+		if (!figure) return;
+		const tr = view.state.tr;
+
+		tr.setNodeAttribute(figure, 'width', width);
+
+		if (image !== null) {
+			tr.setNodeAttribute(image, 'src', imgSrc).setNodeAttribute(
+				image,
+				'alt',
+				imgAlt
+			);
+		}
+
+		view.dispatch(tr);
 	});
 
 	useEditorEffect((view) => {
-		if (setVisible) {
-			const figure = findParent(view.state, [docSchema.nodes.figure]);
-			setVisible(!!figure);
+		const newFigure = findParent(view.state, [docSchema.nodes.figure]);
+		if (!newFigure) {
+			setFigure(null);
+			setImage(null);
+
+			if (setVisible) setVisible(false);
+			return;
+		}
+
+		const node = view.state.doc.nodeAt(newFigure.before);
+		if (!node) return;
+		if (setVisible) setVisible(true);
+
+		if (newFigure.before !== figure) {
+			setFigure(newFigure.before);
+
+			setWidth(node.attrs.width ?? '');
+
+			// Reset
+			setImage(null);
+
+			node.forEach((child, offset) => {
+				if (child.type === view.state.schema.nodes.image) {
+					setImage(newFigure.before + 1 + offset);
+					setImgSrc(child.attrs.src ?? '');
+					setImgAlt(child.attrs.alt ?? '');
+				}
+
+				return false;
+			});
 		}
 	});
 
 	return (
 		<>
-			<MenuBarTooltip tooltip="Set Width">
+			<MenuBarTooltip tooltip="Edit Figure">
 				<Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen}>
 					<Dialog>
-						<Heading>Set figure width</Heading>
+						<Heading slot="title">Edit figure</Heading>
 
-						<TextField
-							aria-label="Width (CSS)"
-							value={width}
-							onChange={setWidth}
-						>
-							<Input placeholder="Width (CSS)" />
+						<TextField value={width} onChange={setWidth}>
+							<Label>Width (e.g., 90%)</Label>
+							<Input />
 						</TextField>
+
+						{image !== null && (
+							<>
+								<TextField value={imgSrc} onChange={setImgSrc}>
+									<Label>Image source</Label>
+									<Input />
+								</TextField>
+								<TextField value={imgAlt} onChange={setImgAlt}>
+									<Label>Image alt text</Label>
+									<TextArea />
+								</TextField>
+							</>
+						)}
 
 						<Button
 							className="react-aria-Button border-iris-300"
 							autoFocus
 							onPress={() => {
-								updateWidth();
+								updateFigure();
 								setIsOpen(false);
 							}}
 						>
@@ -75,9 +129,9 @@ function SetWidth({ index }: { index: number }) {
 				<Button
 					className={`round-button${visible ? '' : ' hidden'}`}
 					onPress={() => setIsOpen(true)}
-					aria-label="Set Width"
+					aria-label="Edit Figure"
 				>
-					<Width className="text-iris-500" />
+					<Edit className="text-iris-500" />
 				</Button>
 			</MenuBarTooltip>
 		</>
@@ -111,7 +165,7 @@ function FigureMenu({ index }: { index: number }) {
 					command={setParentAttr(docSchema.nodes.figure, 'float', 'right')}
 					tooltip="Float Right"
 				/>
-				<SetWidth index={mainIdx++} />
+				<EditButton index={mainIdx++} />
 			</VisibilityGroup>
 		</VisibilityContext.Provider>
 	);

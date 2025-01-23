@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
 	Tabs,
 	TabsContext,
@@ -27,14 +27,15 @@ import Redo from '~icons/tabler/arrow-forward-up';
 interface TabData {
 	id: string;
 	name: string;
+	autoVis?: boolean;
 }
 
 const tabs: TabData[] = [
 	{ id: 'home', name: 'Home' },
 	{ id: 'format', name: 'Format' },
 	{ id: 'insert', name: 'Insert' },
-	{ id: 'table', name: 'Table' },
-	{ id: 'figure', name: 'Figure' }
+	{ id: 'table', name: 'Table', autoVis: true },
+	{ id: 'figure', name: 'Figure', autoVis: true }
 ];
 
 const digits: Record<string, number> = {
@@ -47,6 +48,8 @@ const digits: Record<string, number> = {
 function MenuBar() {
 	const { childVisibility, setChildVisibility } = useVisibilityParent();
 	const [currentTab, setCurrentTab] = useState<Key | undefined>();
+
+	const prevChildVisibility = useRef<typeof childVisibility>([]);
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
@@ -69,6 +72,20 @@ function MenuBar() {
 		}
 
 		document.addEventListener('keydown', onKeyDown);
+
+		// Auto open tabs
+		for (let i = 0; i < tabs.length; i++) {
+			const tab = tabs[i];
+			if (!tab.autoVis) continue;
+
+			const prevVis = prevChildVisibility.current[i];
+			const vis = childVisibility[i];
+
+			if (!prevVis && vis) {
+				setCurrentTab(tab.id);
+				break;
+			}
+		}
 
 		return () => document.removeEventListener('keydown', onKeyDown);
 	}, [childVisibility]);

@@ -409,6 +409,10 @@ export function IriscNode({
 			return <Image src={src} alt={alt} />;
 		}
 
+		case 'blockquote': {
+			return <blockquote>{getBlockContent()}</blockquote>;
+		}
+
 		case 'note': {
 			const noteType = node.attrs?.type as string | undefined;
 			if (!node.content || !noteType) return null;

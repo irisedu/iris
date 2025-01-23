@@ -1,3 +1,4 @@
+export * from './blockquote';
 export * from './code';
 export * from './figure';
 export * from './frontmatter';

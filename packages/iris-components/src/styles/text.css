@@ -42,7 +42,7 @@ p {
 }
 
 blockquote {
-	@apply pl-3 my-1 text-gray-700 border-l-4 border-iris-700 dark:border-iris-300;
+	@apply p-3 my-1 text-iris-900 bg-iris-100 border-l-4 border-iris-900;
 }
 
 pre code {

@@ -39,6 +39,7 @@ import {
 } from '@nytimes/react-prosemirror';
 import { insertNode, clearFormatting, exitNode, deleteBlock } from './utils';
 import {
+	blockQuoteComponent,
 	codeComponent,
 	figureComponent,
 	frontmatterComponent,
@@ -92,6 +93,7 @@ export const baseSchemaDef = {
 			]
 		} as NodeSpec,
 
+		...blockQuoteComponent.nodes,
 		...noteComponent.nodes,
 		...sidenoteComponent.nodes,
 		...listsComponent.nodes,
@@ -211,6 +213,7 @@ export function makeBaseInputRules(schema: Schema) {
 		...smartypantsComponent.inputRules(schema),
 		...listsComponent.inputRules(schema),
 		...codeComponent.inputRules(schema),
+		...blockQuoteComponent.inputRules(schema),
 		...noteComponent.inputRules(schema),
 
 		// https://github.com/ProseMirror/prosemirror-example-setup/blob/master/src/inputrules.ts
@@ -288,7 +291,12 @@ export function makeBaseKeymap(schema: Schema) {
 		),
 		'Mod-Enter': chainCommands(
 			exitCode,
-			exitNode([schema.nodes.figure, schema.nodes.note, schema.nodes.table])
+			exitNode([
+				schema.nodes.figure,
+				schema.nodes.blockquote,
+				schema.nodes.note,
+				schema.nodes.table
+			])
 		),
 
 		'Shift-Tab': chainCommands(
@@ -327,6 +335,7 @@ export const docKeymap = {
 		exitNode([
 			docSchema.nodes.summary,
 			docSchema.nodes.figure,
+			docSchema.nodes.blockquote,
 			docSchema.nodes.note,
 			docSchema.nodes.table
 		])

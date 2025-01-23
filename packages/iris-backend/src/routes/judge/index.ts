@@ -21,6 +21,7 @@ judgeRouter.get('/page/*/submissions', async (req, res, next) => {
 
 	db.selectFrom('document_ptr')
 		.where('document_ptr.path', '=', docPath)
+		.where('document_ptr.rev', '=', 'latest')
 		.selectAll()
 		.executeTakeFirst()
 		.then(async (ptr) => {
@@ -56,6 +57,7 @@ judgeRouter.post('/page/*/submissions', async (req, res, next) => {
 
 	db.selectFrom('document_ptr')
 		.where('document_ptr.path', '=', docPath)
+		.where('document_ptr.rev', '=', 'latest')
 		.innerJoin('document', 'document.id', 'document_ptr.doc_id')
 		.selectAll()
 		.executeTakeFirst()

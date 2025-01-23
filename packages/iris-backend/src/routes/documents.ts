@@ -43,6 +43,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 		// Document
 		db.selectFrom('document_ptr')
 			.where('document_ptr.path', '=', docPath)
+			.where('document_ptr.rev', '=', 'latest')
 			.innerJoin('document', 'document.id', 'document_ptr.doc_id')
 			.select('document.data as data')
 			.executeTakeFirst()
@@ -55,6 +56,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 		// Asset
 		db.selectFrom('asset_ptr')
 			.where('asset_ptr.path', '=', docPath)
+			.where('asset_ptr.rev', '=', 'latest')
 			.innerJoin('asset', 'asset.id', 'asset_ptr.asset_id')
 			.select('asset.hash as hash')
 			.executeTakeFirst()

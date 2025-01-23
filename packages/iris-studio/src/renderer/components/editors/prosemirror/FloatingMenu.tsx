@@ -118,6 +118,10 @@ function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
 					if (e.key === 'Enter') {
 						updateLinkMark();
 						setLinkModified(false);
+					} else if (cmdOrCtrl(e) && e.key === 's') {
+						updateLinkMark();
+						setLinkModified(false);
+						e.continuePropagation();
 					}
 				}}
 			>
@@ -209,6 +213,10 @@ function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
 					if (e.key === 'Enter') {
 						updateImage();
 						setImageModified(false);
+					} else if (cmdOrCtrl(e) && e.key === 's') {
+						updateImage();
+						setImageModified(false);
+						e.continuePropagation();
 					}
 				}}
 			>
@@ -224,9 +232,13 @@ function useImageWidget(triggerRef: RefObject<HTMLDivElement>) {
 					setImageModified(true);
 				}}
 				onKeyDown={(e) => {
-					if (e.key === 'Enter' && cmdOrCtrl(e)) {
+					if (cmdOrCtrl(e) && e.key === 'Enter') {
 						updateImage();
 						setImageModified(false);
+					} else if (cmdOrCtrl(e) && e.key === 's') {
+						updateImage();
+						setImageModified(false);
+						e.continuePropagation();
 					}
 				}}
 			>

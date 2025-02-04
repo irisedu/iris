@@ -2,7 +2,7 @@
 
 # https://discourse.nixos.org/t/electron-7-development-environment/5002/3
 # https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/electron/binary/generic.nix
-(pkgs.buildFHSUserEnv {
+(pkgs.buildFHSEnv {
   name = "electron-env";
   targetPkgs = pkgs: (with pkgs;
     [

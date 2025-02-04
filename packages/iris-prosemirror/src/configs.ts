@@ -39,6 +39,7 @@ import {
 } from '@nytimes/react-prosemirror';
 import { insertNode, clearFormatting, exitNode, deleteBlock } from './utils';
 import {
+	asideComponent,
 	blockQuoteComponent,
 	codeComponent,
 	figureComponent,
@@ -47,7 +48,6 @@ import {
 	listsComponent,
 	mathComponent,
 	noteComponent,
-	sidenoteComponent,
 	smartypantsComponent,
 	spacesComponent,
 	summaryComponent,
@@ -71,7 +71,7 @@ export const baseSchemaDef = {
 
 		paragraph: {
 			group: 'block',
-			content: '(inline | sidenote)*',
+			content: 'inline*',
 			toDOM() {
 				return ['p', 0];
 			},
@@ -79,7 +79,7 @@ export const baseSchemaDef = {
 		} as NodeSpec,
 		...spacesComponent.nodes,
 		heading: {
-			content: '(inline | sidenote)*',
+			content: 'inline*',
 			attrs: { level: { default: 2, validate: 'number' } },
 			defining: true,
 			toDOM(node) {
@@ -95,7 +95,7 @@ export const baseSchemaDef = {
 
 		...blockQuoteComponent.nodes,
 		...noteComponent.nodes,
-		...sidenoteComponent.nodes,
+		...asideComponent.nodes,
 		...listsComponent.nodes,
 		...tableComponent.nodes,
 		...mathComponent.nodes,

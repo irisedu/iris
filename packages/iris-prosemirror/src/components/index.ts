@@ -1,3 +1,4 @@
+export * from './aside';
 export * from './blockquote';
 export * from './code';
 export * from './figure';
@@ -6,7 +7,6 @@ export * from './link';
 export * from './lists';
 export * from './math';
 export * from './note';
-export * from './sidenote';
 export * from './smartypants';
 export * from './spaces';
 export * from './summary';

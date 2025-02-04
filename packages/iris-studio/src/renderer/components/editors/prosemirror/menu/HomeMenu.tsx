@@ -20,9 +20,9 @@ import {
 	MenuBarTooltip
 } from './components';
 import {
+	asideComponent,
 	linkComponent,
 	mathComponent,
-	sidenoteComponent,
 	clearFormatting,
 	docSchema
 } from 'iris-prosemirror';
@@ -46,8 +46,7 @@ import MathPreview from '~icons/tabler/math-function';
 import OrderedList from '~icons/tabler/list-numbers';
 import BulletList from '~icons/tabler/list';
 import Outdent from '~icons/tabler/indent-decrease';
-import Sidenote from '~icons/tabler/layout-sidebar-right-collapse-filled';
-import SidenoteNumbering from '~icons/tabler/number-1-small';
+import Aside from '~icons/tabler/layout-sidebar-right-collapse-filled';
 
 const {
 	getMathPreviewEnabled,
@@ -56,8 +55,7 @@ const {
 	insertDisplayMath
 } = mathComponent.commands;
 
-const { getSidenote, insertSidenote, setSidenoteNumbering } =
-	sidenoteComponent.commands;
+const { getAside, insertAside } = asideComponent.commands;
 
 function TextStyleMenu({ index }: { index: number }) {
 	const [visible, setVisible] = useVisibility(index);
@@ -110,7 +108,7 @@ function TextStyleMenu({ index }: { index: number }) {
 				view.state,
 				undefined,
 				view
-			) && !getSidenote(view.state);
+			) && !getAside(view.state);
 		const codeBlock = setBlockType(docSchema.nodes.code_block, {
 			language: '???'
 		})(view.state, undefined, view);
@@ -221,44 +219,13 @@ function MathPreviewToggle() {
 	);
 }
 
-function SidenoteNumberingToggle({ index }: { index: number }) {
-	const [visible, setVisible] = useVisibility(index);
-	const [active, setActive] = useState(false);
-	const onChange = useEditorEventCallback((view, value: boolean) => {
-		setSidenoteNumbering(value)(view.state, view.dispatch, view);
-		setActive(value);
-
-		view.focus();
-	});
-
-	useEditorEffect((view) => {
-		const sidenotePos = getSidenote(view.state);
-		if (setVisible) setVisible(!!sidenotePos);
-		if (sidenotePos)
-			setActive(view.state.doc.resolve(sidenotePos).parent.attrs.numbered);
-	});
-
-	return (
-		<MenuBarTooltip tooltip="Sidenote Numbering">
-			<ToggleButton
-				className={`round-button${visible ? '' : ' hidden'}`}
-				isSelected={active}
-				onChange={onChange}
-				aria-label="Sidenote Numbering"
-			>
-				<SidenoteNumbering className="text-iris-500" />
-			</ToggleButton>
-		</MenuBarTooltip>
-	);
-}
-
 function HomeMenu({ index }: { index: number }) {
 	const { childVisibility, setChildVisibility } = useVisibilityParent(index);
 
 	let groupIdx = 0;
 	let formatIdx = 0;
 	let listIdx = 0;
-	let sidenoteIdx = 0;
+	let asideIdx = 0;
 
 	return (
 		<VisibilityContext.Provider value={{ childVisibility, setChildVisibility }}>
@@ -367,12 +334,11 @@ function HomeMenu({ index }: { index: number }) {
 
 			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
 				<CommandButton
-					index={sidenoteIdx++}
-					Icon={Sidenote}
-					command={insertSidenote}
-					tooltip="Sidenote"
+					index={asideIdx++}
+					Icon={Aside}
+					command={insertAside}
+					tooltip="Aside"
 				/>
-				<SidenoteNumberingToggle index={sidenoteIdx++} />
 			</VisibilityGroup>
 		</VisibilityContext.Provider>
 	);

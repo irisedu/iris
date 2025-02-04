@@ -1,3 +1,4 @@
+@import './aside.css';
 @import './code.css';
 @import './cursor.css';
 @import './figure.css';
@@ -5,7 +6,6 @@
 @import './link.css';
 @import './math.css';
 @import './question.css';
-@import './sidenote.css';
 @import './spaces.css';
 @import './summary.css';
 @import './table.css';

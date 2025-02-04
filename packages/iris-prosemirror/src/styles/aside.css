@@ -1,0 +1,3 @@
+aside::before {
+	@apply font-sans text-xs text-black font-bold content-['Aside'] inline-block rounded-md bg-blue-200 p-1 mb-1 cursor-grab;
+}

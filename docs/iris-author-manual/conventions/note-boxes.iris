@@ -314,44 +314,41 @@
 						]
 					},
 					{
+						"type": "aside",
+						"content": [
+							{
+								"type": "paragraph",
+								"content": [
+									{
+										"type": "text",
+										"text": "The solution to this problem is the "
+									},
+									{
+										"type": "text",
+										"marks": [
+											{
+												"type": "link",
+												"attrs": {
+													"href": "https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm"
+												}
+											}
+										],
+										"text": "Bellman–Ford algorithm"
+									},
+									{
+										"type": "text",
+										"text": "."
+									}
+								]
+							}
+						]
+					},
+					{
 						"type": "paragraph",
 						"content": [
 							{
 								"type": "text",
 								"text": "Dijkstra’s algorithm fails on graphs with negative-weight cycles because it makes the assumption that the shortest unexplored path is the best one to take. How can we make different assumptions to create an algorithm that supports negative-weight cycles?"
-							},
-							{
-								"type": "sidenote",
-								"attrs": {
-									"numbered": false
-								},
-								"content": [
-									{
-										"type": "paragraph",
-										"content": [
-											{
-												"type": "text",
-												"text": "The solution to this problem is the "
-											},
-											{
-												"type": "text",
-												"marks": [
-													{
-														"type": "link",
-														"attrs": {
-															"href": "https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm"
-														}
-													}
-												],
-												"text": "Bellman–Ford algorithm"
-											},
-											{
-												"type": "text",
-												"text": "."
-											}
-										]
-									}
-								]
 							}
 						]
 					}

@@ -718,37 +718,21 @@
 				"content": [
 					{
 						"type": "text",
-						"text": "Sidenotes"
+						"text": "Asides"
 					}
 				]
 			},
 			{
-				"type": "paragraph",
+				"type": "aside",
 				"content": [
 					{
-						"type": "text",
-						"text": "Footnotes are not available in Iris because they require the reader to scroll to the bottom of the page to read them. Instead, sidenotes (or margin notes) are used."
-					},
-					{
-						"type": "sidenote",
-						"attrs": {
-							"numbered": false
-						},
+						"type": "paragraph",
 						"content": [
 							{
-								"type": "paragraph",
-								"content": [
-									{
-										"type": "text",
-										"text": "This is an example of a margin note."
-									}
-								]
+								"type": "text",
+								"text": "This is an example of an aside. It was placed before the paragraph it appears next to (or on top of)."
 							}
 						]
-					},
-					{
-						"type": "text",
-						"text": " Sidenotes can include most types of block content (e.g., display math and code)."
 					}
 				]
 			},
@@ -757,7 +741,7 @@
 				"content": [
 					{
 						"type": "text",
-						"text": "Sidenotes should be inserted such that if they are removed, the content is formatted correctly—they should not interrupt the flow of the content. Ideally, they should read as a continuation of the preceding text. Insert sidenotes after punctuation."
+						"text": "Footnotes are not available in Iris because they require the reader to scroll to the bottom of the page to read them. Instead, asides (or sidenotes) are used. Asides can include most types of block content (e.g., display math and code). They should serve as standalone content that is tangentially related to the surrounding topic."
 					}
 				]
 			},
@@ -766,24 +750,20 @@
 				"content": [
 					{
 						"type": "text",
-						"text": "Sidenotes can be numbered."
+						"text": "If space permits, asides are placed beside the content. Place an aside "
 					},
 					{
-						"type": "sidenote",
-						"attrs": {
-							"numbered": true
-						},
-						"content": [
+						"type": "text",
+						"marks": [
 							{
-								"type": "paragraph",
-								"content": [
-									{
-										"type": "text",
-										"text": "Here is an example of a numbered sidenote."
-									}
-								]
+								"type": "italic"
 							}
-						]
+						],
+						"text": "before"
+					},
+					{
+						"type": "text",
+						"text": " the paragraph or item you want it to be placed beside. If the screen is too small, the aside will be moved into the main content flow as a highlighted block."
 					}
 				]
 			}

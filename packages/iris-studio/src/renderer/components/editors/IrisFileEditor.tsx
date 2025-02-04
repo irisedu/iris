@@ -68,7 +68,7 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 				<ProseMirrorEditor
 					attributes={{
 						class:
-							'relative outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch] border-x-2 border-iris-300'
+							'relative outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
 					}}
 					mount={mount}
 					stateRef={stateRef}

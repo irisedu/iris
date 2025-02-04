@@ -40,27 +40,6 @@ function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
 		case 'math_inline':
 			return node.html?.code && parse(node.html.code);
 
-		case 'sidenote': {
-			const numbered = node.attrs?.numbered as boolean;
-			const uuid = crypto.randomUUID();
-			const id = `sn-${uuid.split('-')[0]}`;
-
-			return (
-				<>
-					<label
-						className={`sidenote-toggle${numbered ? ' sidenote--numbered' : ''}`}
-						htmlFor={id}
-					></label>
-					<input className="sidenote-checkbox" id={id} type="checkbox" />
-					<span className={`sidenote${numbered ? ' sidenote--numbered' : ''}`}>
-						{node.content && (
-							<IriscBlockContent nodes={node.content} ctx={ctx} />
-						)}
-					</span>
-				</>
-			);
-		}
-
 		case 'fill_in_blank': {
 			const id = node.attrs?.id as string;
 			if (!id) return null;
@@ -429,6 +408,9 @@ export function IriscNode({
 					<IriscBlockContent nodes={node.content.slice(1)} ctx={ctx} />
 				</div>
 			);
+		}
+		case 'aside': {
+			return <aside>{getBlockContent()}</aside>;
 		}
 
 		case 'ordered_list': {

@@ -1,0 +1,12 @@
+aside {
+	@apply text-sm;
+
+	/* Tailwind: lg */
+	@media (min-width: 64em) {
+		@apply float-right clear-right -mr-[42%] mb-1 w-[35%];
+	}
+
+	@media (max-width: 64em) {
+		@apply my-2 mx-4 p-3 border-l-4 border-iris-600 bg-iris-100;
+	}
+}

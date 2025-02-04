@@ -27,7 +27,6 @@ export interface Asset {
   hash: string;
   id: Generated<string>;
   path: string;
-  project_name: string | null;
   rev: string;
 }
 

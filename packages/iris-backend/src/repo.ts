@@ -113,8 +113,7 @@ export async function indexFile(
 				.values({
 					path: relPath,
 					rev,
-					hash: assetHash,
-					project_name: project
+					hash: assetHash
 				})
 				.returning('id as id')
 				.executeTakeFirst())!.id;

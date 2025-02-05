@@ -8,7 +8,8 @@ import {
 	TextField,
 	Input,
 	Menu,
-	Submenu
+	Submenu,
+	DeleteDialog
 } from 'iris-components';
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
@@ -32,7 +33,6 @@ import {
 	type TreeNode,
 	type RenameMap
 } from './DirectoryTree';
-import DeleteDialog from '$components/DeleteDialog';
 import OverwriteDialog from '$components/OverwriteDialog';
 import { FILE_PREFIX, pathIcon, makeTabData } from '$components/tabs/FileTab';
 import '$components/Sidebar.css';
@@ -364,9 +364,15 @@ function Sidebar() {
 			<DeleteDialog
 				isOpen={deleteOpen}
 				setIsOpen={setDeleteOpen}
-				targetFiles={deletePaths}
 				callbackRef={deleteCb}
-			/>
+			>
+				{deletePaths.length > 1 ? (
+					`${deletePaths.length} files/folders`
+				) : (
+					<code>{deletePaths[0]}</code>
+				)}{' '}
+				will be deleted permanently.
+			</DeleteDialog>
 
 			<OverwriteDialog
 				isOpen={overwriteOpen}

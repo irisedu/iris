@@ -1,17 +1,17 @@
-import type { MutableRefObject } from 'react';
+import type { MutableRefObject, ReactNode } from 'react';
 import { Button, Modal, Dialog, Heading } from 'iris-components';
 
-interface DeleteDialogProps {
+export interface DeleteDialogProps {
+	children: ReactNode;
 	isOpen: boolean;
 	setIsOpen: (val: boolean) => void;
-	targetFiles: string[];
 	callbackRef: MutableRefObject<(() => void) | null>;
 }
 
-function DeleteDialog({
+export function DeleteDialog({
+	children,
 	isOpen,
 	setIsOpen,
-	targetFiles,
 	callbackRef
 }: DeleteDialogProps) {
 	return (
@@ -19,14 +19,7 @@ function DeleteDialog({
 			<Dialog>
 				<Heading slot="title">Really delete?</Heading>
 
-				<p>
-					{targetFiles.length > 1 ? (
-						`${targetFiles.length} files/folders`
-					) : (
-						<span className="font-mono">{targetFiles[0]}</span>
-					)}{' '}
-					will be deleted permanently.
-				</p>
+				<p>{children}</p>
 
 				<div className="flex flex-row gap-2">
 					<Button
@@ -50,5 +43,3 @@ function DeleteDialog({
 		</Modal>
 	);
 }
-
-export default DeleteDialog;

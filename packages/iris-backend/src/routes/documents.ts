@@ -58,7 +58,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 			.where('asset_ptr.path', '=', docPath)
 			.where('asset_ptr.rev', '=', 'latest')
 			.innerJoin('asset', 'asset.id', 'asset_ptr.asset_id')
-			.select('asset.hash as hash')
+			.select('asset.id')
 			.executeTakeFirst()
 			.then((asset) => {
 				if (!asset) return res.sendStatus(404);
@@ -66,9 +66,9 @@ documentsRouter.get('/page/*', (req, res, next) => {
 				res.sendFile(
 					path.join(
 						assetsRoot,
-						asset.hash.substring(0, 2),
-						asset.hash.substring(0, 4),
-						asset.hash
+						asset.id.substring(0, 2),
+						asset.id.substring(0, 4),
+						asset.id
 					)
 				);
 			})

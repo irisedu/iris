@@ -78,13 +78,12 @@ export async function indexFile(
 			docId = (await db
 				.insertInto('document')
 				.values({
-					path: relPath,
 					rev,
 					data: await fs.readFile(filePath, 'utf-8'),
 					project_name: project
 				})
 				.onConflict((c) => c.doNothing())
-				.returning('id as id')
+				.returning('id')
 				.executeTakeFirst())!.id;
 		}
 
@@ -108,15 +107,16 @@ export async function indexFile(
 			await fs.mkdir(assetDir, { recursive: true });
 			await fs.cp(filePath, path.join(assetDir, assetHash));
 
-			assetId = (await db
+			await db
 				.insertInto('asset')
 				.values({
-					path: relPath,
-					rev,
-					hash: assetHash
+					id: assetHash,
+					rev
 				})
-				.returning('id as id')
-				.executeTakeFirst())!.id;
+				.onConflict((c) => c.doNothing())
+				.execute();
+
+			assetId = assetHash;
 		}
 
 		return { type: 'asset', path: relPath, assetId };
@@ -364,5 +364,47 @@ export async function repoUpdate(zipFile: string, userId: string) {
 		await indexRevs(projectName, repoDir, beginRev, commit.commit);
 	}
 
+	releaseLock();
+}
+
+export async function repoDelete(projectName: string) {
+	const repoDir = path.join(repoRoot, projectName);
+	const releaseLock = await lockfile.lock(repoDir);
+
+	// 1. Delete project
+	// -> Delete project_group, series, document, document_ptr, asset_ptr (ON CASCADE)
+	// -> Delete question_submission (ON CASCADE)
+	await db.deleteFrom('project').where('name', '=', projectName).execute();
+
+	// 2. Delete repo directory
+	await fs.rm(repoDir, { recursive: true, force: true });
+
+	// 3. Delete orphaned assets
+	const deletedAssets = await db
+		.deleteFrom('asset')
+		.where(({ not, exists, selectFrom }) =>
+			not(
+				exists(
+					selectFrom('asset_ptr')
+						.select('asset_ptr.asset_id')
+						.whereRef('asset.id', '=', 'asset_ptr.asset_id')
+				)
+			)
+		)
+		.returning('id')
+		.execute();
+
+	const tasks = deletedAssets.map(({ id }) => {
+		const assetPath = path.join(
+			assetsRoot,
+			id.substring(0, 2),
+			id.substring(0, 4),
+			id
+		);
+
+		return fs.rm(assetPath, { force: true });
+	});
+
+	await Promise.all(tasks);
 	releaseLock();
 }

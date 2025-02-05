@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import formidable from 'formidable';
 import { promises as fs } from 'fs';
-import { repoUpdate } from '../../repo.js';
+import { repoDelete, repoUpdate } from '../../repo.js';
 import { db } from '../../db/index.js';
 
 export const authorRouter = Router();
@@ -32,8 +32,19 @@ authorRouter.get(
 	}
 );
 
+authorRouter.delete(
+	'/projects/:project',
+	requireAuth({ group: 'authors' }),
+	(req, res, next) => {
+		const { project } = req.params;
+		repoDelete(project)
+			.then(() => res.sendStatus(200))
+			.catch(next);
+	}
+);
+
 authorRouter.post(
-	'/upload',
+	'/projects/upload',
 	requireAuth({ group: 'authors' }),
 	(req, res, next) => {
 		const form = formidable({ maxFiles: 1, maxFileSize: 2048 * 1024 * 1024 });

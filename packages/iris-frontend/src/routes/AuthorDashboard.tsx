@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRevalidator, useLoaderData } from 'react-router-dom';
 import useAuthorization from '$hooks/useAuthorization';
-import { Button, Form, Input } from 'iris-components';
+import { Button, Form, Input, DeleteDialog } from 'iris-components';
 import { fetchCsrf } from '../utils';
 
 export function loader() {
@@ -18,15 +18,46 @@ export function Component() {
 	const revalidator = useRevalidator();
 	const projects = useLoaderData() as string[];
 
+	const [deleteOpen, setDeleteOpen] = useState(false);
+	const deleteCb = useRef<(() => void) | null>(null);
+	const [deleteTarget, setDeleteTarget] = useState('');
+
 	return (
 		<>
 			<h1 className="mt-0">Author Dashboard</h1>
+
+			<DeleteDialog
+				isOpen={deleteOpen}
+				setIsOpen={setDeleteOpen}
+				callbackRef={deleteCb}
+			>
+				<code>{deleteTarget}</code> and all associated assets, submissions, etc.
+				will be deleted permanently.
+			</DeleteDialog>
 
 			<h2>Your projects</h2>
 			<ul>
 				{projects.map((project) => (
 					<li key={project}>
-						<code>{project}</code>
+						<div>
+							<code>{project}</code>
+						</div>
+						<div className="flex gap-2">
+							<Button
+								onPress={() => {
+									setDeleteTarget(project);
+									deleteCb.current = () => {
+										fetchCsrf(`/api/author/projects/${project}`, {
+											method: 'DELETE'
+										}).then(() => revalidator.revalidate());
+									};
+
+									setDeleteOpen(true);
+								}}
+							>
+								Delete
+							</Button>
+						</div>
 					</li>
 				))}
 			</ul>
@@ -45,7 +76,7 @@ export function Component() {
 					const form = e.currentTarget;
 					const formData = new FormData(form);
 
-					fetchCsrf('/api/author/upload', {
+					fetchCsrf('/api/author/projects/upload', {
 						body: formData
 					}).then(() => {
 						form.reset();

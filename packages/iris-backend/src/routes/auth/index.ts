@@ -145,7 +145,7 @@ authRouter.post('/confirm-federation', (req, res, next) => {
 				email: user.data.email,
 				name: user.data.name
 			})
-			.returning('id as id')
+			.returning('id')
 			.executeTakeFirstOrThrow()
 			.then((newUser) => createFederatedIdentity(user, newUser.id))
 			.catch(next);

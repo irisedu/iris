@@ -24,9 +24,7 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Asset {
-  hash: string;
-  id: Generated<string>;
-  path: string;
+  id: string;
   rev: string;
 }
 
@@ -55,7 +53,6 @@ export interface AssignmentSubmission {
 export interface Document {
   data: Json;
   id: Generated<string>;
-  path: string;
   project_name: string | null;
   rev: string;
 }

@@ -8,6 +8,7 @@ import {
 } from '@nytimes/react-prosemirror';
 import { type NodeViewConstructor } from 'prosemirror-view';
 import FloatingMenu from './FloatingMenu';
+import { handlePaste } from 'iris-prosemirror';
 
 export interface ProseMirrorEditorProps extends ProseMirrorProps {
 	mount: HTMLElement | null;
@@ -42,6 +43,7 @@ function ProseMirrorEditor({
 				stateRef.current = this.state.apply(tr);
 				if (dt) dt.bind(this)(tr);
 			}}
+			handlePaste={handlePaste}
 		>
 			<FloatingMenu />
 			{children}

@@ -3,6 +3,42 @@ import type { MarkSpec } from 'prosemirror-model';
 import type { Command } from 'prosemirror-state';
 import { toggleMark } from 'prosemirror-commands';
 import { markActive } from '../utils';
+import type { EditorProps } from 'prosemirror-view';
+
+const handlePaste: EditorProps['handlePaste'] = (view, event) => {
+	const data = event.clipboardData?.getData('text/plain');
+	if (!data) return;
+
+	try {
+		new URL(data);
+
+		const { from, to, empty } = view.state.selection;
+		const { link } = view.state.schema.marks;
+
+		const mark = link.create({ href: data });
+
+		if (empty) {
+			// Insert new link with same text as URL
+			view.dispatch(
+				view.state.tr.replaceSelectionWith(
+					view.state.schema.text(data, [
+						link.create({
+							href: data
+						})
+					]),
+					false
+				)
+			);
+		} else {
+			// Convert selection to link
+			view.dispatch(view.state.tr.addMark(from, to, mark));
+		}
+
+		return true;
+	} catch {
+		// Nothing
+	}
+};
 
 const toggleLink: Command = (state, dispatch) => {
 	const link = state.schema.marks.link;
@@ -51,6 +87,7 @@ export const linkComponent = {
 		} as MarkSpec
 	},
 	commands: {
-		toggleLink
+		toggleLink,
+		handlePaste
 	}
 } satisfies ProseMirrorComponent;

@@ -32,7 +32,7 @@ import {
 import { keymap } from 'prosemirror-keymap';
 import { gapCursor } from 'prosemirror-gapcursor';
 import { dropCursor } from 'prosemirror-dropcursor';
-import type { NodeViewConstructor } from 'prosemirror-view';
+import type { EditorProps, NodeViewConstructor } from 'prosemirror-view';
 import {
 	react,
 	type ReactNodeViewConstructor
@@ -417,3 +417,11 @@ export const docReactNodeViews = {
 	...baseReactNodeViews,
 	...frontmatterComponent.reactNodeViews
 } as Record<string, ReactNodeViewConstructor>;
+
+//////////
+// MISC //
+//////////
+
+export const handlePaste: EditorProps['handlePaste'] = (view, event, slice) => {
+	return linkComponent.commands.handlePaste(view, event, slice);
+};

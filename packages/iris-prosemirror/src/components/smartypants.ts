@@ -59,6 +59,12 @@ export const smartypantsComponent = {
 			smartyPantsRule(/(?:^|[\s{[(<`'"\u2018\u201C])(")$/, '“'), // open double quote
 			smartyPantsRule(/"$/, '”'), // close double quote
 			smartyPantsRule(/(?:^|[\s{[(<`'"\u2018\u201C])(')$/, '‘'), // open single quote
-			smartyPantsRule(/'$/, '’') // close single quote
+			smartyPantsRule(/'$/, '’'), // close single quote
+
+			// Other symbols
+			smartyPantsRule(/->$/, '→'),
+			smartyPantsRule(/<-$/, '←'),
+			smartyPantsRule(/=>$/, '⇒'),
+			smartyPantsRule(/<=$/, '⇐')
 		]
 } satisfies ProseMirrorComponent;

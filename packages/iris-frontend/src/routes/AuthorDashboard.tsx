@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
+import { useRevalidator, useLoaderData } from 'react-router-dom';
 import useAuthorization from '$hooks/useAuthorization';
 import { Button, Form, Input } from 'iris-components';
 import { fetchCsrf } from '../utils';
+
+export function loader() {
+	return fetch('/api/author/projects');
+}
 
 export function Component() {
 	useAuthorization({ required: true, group: 'authors' });
@@ -10,9 +15,21 @@ export function Component() {
 		document.title = 'Author Dashboard • Iris';
 	}, []);
 
+	const revalidator = useRevalidator();
+	const projects = useLoaderData() as string[];
+
 	return (
 		<>
 			<h1 className="mt-0">Author Dashboard</h1>
+
+			<h2>Your projects</h2>
+			<ul>
+				{projects.map((project) => (
+					<li key={project}>
+						<code>{project}</code>
+					</li>
+				))}
+			</ul>
 
 			<h2>Upload a project</h2>
 			<p>
@@ -32,6 +49,7 @@ export function Component() {
 						body: formData
 					}).then(() => {
 						form.reset();
+						revalidator.revalidate();
 					});
 				}}
 			>

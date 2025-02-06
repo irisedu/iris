@@ -130,16 +130,27 @@ async function postCompileStep(
  * Step 3: remove files whose source has been deleted
  */
 async function cleanStep(handledFiles: Record<string, string>, outDir: string) {
-	await recurseDirectory(outDir, async (filePath) => {
-		// Special case
-		if (filePath === 'build.json') return;
+	await recurseDirectory(
+		outDir,
+		async (filePath) => {
+			// Special case
+			if (filePath === 'build.json') return;
 
-		const fullPath = path.join(outDir, filePath);
-		if (!handledFiles[fullPath]) {
-			logger.note('Removing file', filePath, '(no source)');
-			await fs.rm(fullPath);
+			const fullPath = path.join(outDir, filePath);
+			if (!handledFiles[fullPath]) {
+				logger.note('Removing file', filePath, '(no source)');
+				await fs.rm(fullPath);
+			}
+		},
+		async (dirPath) => {
+			const fullPath = path.join(outDir, dirPath);
+			const dir = await fs.readdir(fullPath);
+			if (dir.length === 0) {
+				logger.note('Removing empty directory', dirPath);
+				await fs.rm(fullPath, { recursive: true });
+			}
 		}
-	});
+	);
 }
 
 /**

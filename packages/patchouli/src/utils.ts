@@ -77,12 +77,11 @@ export async function shouldBuild(inPath: string, outPath: string) {
  */
 export async function recurseDirectory(
 	dir: string,
-	cb: (rel: string) => void | Promise<void>,
+	fileCb: (rel: string) => void | Promise<void>,
+	dirCb?: (rel: string) => void | Promise<void>,
 	curr?: string
 ) {
-	if (!curr) {
-		curr = '';
-	}
+	curr ??= '';
 
 	const directory = await fs.readdir(path.join(dir, curr), {
 		withFileTypes: true
@@ -92,11 +91,12 @@ export async function recurseDirectory(
 		const filePath = path.join(curr, dirent.name);
 
 		if (dirent.isDirectory()) {
-			await recurseDirectory(dir, cb, filePath);
+			await recurseDirectory(dir, fileCb, dirCb, filePath);
+			if (dirCb) await dirCb(filePath);
 			continue;
 		}
 
-		await cb(filePath);
+		await fileCb(filePath);
 	}
 }
 

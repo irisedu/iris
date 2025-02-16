@@ -9,6 +9,7 @@ import { authSetup, authRouter } from './routes/auth/index.js';
 import { authorRouter } from './routes/author/index.js';
 import { documentsRouter } from './routes/documents.js';
 import { judgeRouter } from './routes/judge/index.js';
+import { llmRouter } from './routes/llm/index.js';
 import { doubleCsrfProtection, generateToken } from './csrf.js';
 
 expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
@@ -30,6 +31,7 @@ app.use('/', documentsRouter);
 app.use('/auth', authRouter);
 app.use('/api/author', authorRouter);
 app.use('/api/judge', judgeRouter);
+app.use('/api/llm', llmRouter);
 
 app.use(express.static(spaRoot));
 

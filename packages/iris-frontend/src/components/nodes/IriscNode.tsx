@@ -28,17 +28,29 @@ export interface IriscContext {
 	getBlankValidatorMessage?: (id: string) => string | undefined;
 }
 
-function InlineNode({ node, ctx }: { node: IriscNodeT; ctx?: IriscContext }) {
+function InlineNode({
+	node,
+	ctx,
+	index
+}: {
+	node: IriscNodeT;
+	ctx?: IriscContext;
+	index?: number;
+}) {
+	const props = {
+		'data-index': index
+	};
+
 	switch (node.type) {
 		case 'text':
-			return node.text ?? '';
+			return <span {...props}>{node.text ?? ''}</span>;
 		case 'nbsp':
 			return '\u00A0';
 		case 'hard_break':
 			return <br />;
 
 		case 'math_inline':
-			return node.html?.code && parse(node.html.code);
+			return node.html?.code && <span {...props}>{parse(node.html.code)}</span>;
 
 		case 'fill_in_blank': {
 			const id = node.attrs?.id as string;
@@ -126,15 +138,18 @@ function Mark({ mark, children }: { mark: IriscMark; children: ReactNode }) {
 export function IriscInlineContent({
 	nodes,
 	ctx,
-	markStart = 0
+	markStart = 0,
+	indexOffset = 0
 }: {
 	nodes: IriscNodeT[];
 	ctx?: IriscContext;
 	markStart?: number;
+	indexOffset?: number;
 }) {
 	const output: ReactNode[] = [];
 	let currentMark: IriscMark | undefined;
 	let partition: IriscNodeT[] = [];
+	let partitionStartIndex = 0;
 
 	function popPartition() {
 		if (!partition.length) return;
@@ -146,6 +161,7 @@ export function IriscInlineContent({
 						nodes={partition}
 						ctx={ctx}
 						markStart={markStart + 1}
+						indexOffset={(indexOffset ?? 0) + partitionStartIndex}
 					/>
 				</Mark>
 			);
@@ -153,7 +169,7 @@ export function IriscInlineContent({
 		partition = [];
 	}
 
-	for (const node of nodes) {
+	nodes.forEach((node, i) => {
 		if (
 			partition.length &&
 			currentMark &&
@@ -166,11 +182,14 @@ export function IriscInlineContent({
 
 		if (node.marks?.length && markStart < node.marks.length) {
 			currentMark = node.marks[markStart];
+			if (!partition.length) partitionStartIndex = i;
 			partition.push(node);
 		} else {
-			output.push(<InlineNode key={output.length} node={node} ctx={ctx} />);
+			output.push(
+				<InlineNode key={i} index={i + indexOffset} node={node} ctx={ctx} />
+			);
 		}
-	}
+	});
 
 	popPartition();
 
@@ -179,12 +198,16 @@ export function IriscInlineContent({
 
 export function IriscBlockContent({
 	nodes,
-	ctx
+	ctx,
+	indexOffset = 0
 }: {
 	nodes: IriscNodeT[];
 	ctx?: IriscContext;
+	indexOffset?: number;
 }) {
-	return nodes.map((n, i) => <IriscNode key={i} node={n} ctx={ctx} />);
+	return nodes.map((n, i) => (
+		<IriscNode key={i} index={i + indexOffset} node={n} ctx={ctx} />
+	));
 }
 
 // https://github.com/ProseMirror/prosemirror-tables/blob/master/src/tableview.ts
@@ -293,11 +316,17 @@ function NoteIcon({ noteType }: { noteType: string }) {
 
 export function IriscNode({
 	node,
-	ctx
+	ctx,
+	index
 }: {
 	node: IriscNodeT;
 	ctx?: IriscContext;
+	index?: number;
 }) {
+	const props = {
+		'data-index': index
+	};
+
 	function getBlockContent() {
 		return node.content && <IriscBlockContent nodes={node.content} ctx={ctx} />;
 	}
@@ -310,7 +339,7 @@ export function IriscNode({
 
 	switch (node.type) {
 		case 'paragraph':
-			return <p>{getInlineContent()}</p>;
+			return <p {...props}>{getInlineContent()}</p>;
 		case 'heading': {
 			const id = node.html?.id;
 			const level = node.attrs?.level;
@@ -327,11 +356,23 @@ export function IriscNode({
 			);
 
 			if (level === 2) {
-				return <h2 id={id}>{children}</h2>;
+				return (
+					<h2 {...props} id={id}>
+						{children}
+					</h2>
+				);
 			} else if (level === 3) {
-				return <h3 id={id}>{children}</h3>;
+				return (
+					<h3 {...props} id={id}>
+						{children}
+					</h3>
+				);
 			} else if (level === 4) {
-				return <h4 id={id}>{children}</h4>;
+				return (
+					<h4 {...props} id={id}>
+						{children}
+					</h4>
+				);
 			}
 
 			break;
@@ -344,7 +385,7 @@ export function IriscNode({
 			if (typeof language !== 'string') return null;
 
 			return (
-				<pre key={Math.random() * 10000}>
+				<pre {...props} key={Math.random() * 10000}>
 					<code
 						className={
 							language && language.length ? `language-${language}` : ''
@@ -372,24 +413,24 @@ export function IriscNode({
 			const domStyle = width ? { width: String(width) } : undefined;
 
 			return (
-				<figure className={domClass} style={domStyle}>
+				<figure {...props} className={domClass} style={domStyle}>
 					{getBlockContent()}
 				</figure>
 			);
 		}
 		case 'figure_caption': {
-			return <figcaption>{getInlineContent()}</figcaption>;
+			return <figcaption {...props}>{getInlineContent()}</figcaption>;
 		}
 		case 'image': {
 			const src = node.attrs?.src as string | undefined;
 			const alt = node.attrs?.alt as string | undefined;
 			if (src === undefined || alt === undefined) return null;
 
-			return <Image src={src} alt={alt} />;
+			return <Image {...props} src={src} alt={alt} />;
 		}
 
 		case 'blockquote': {
-			return <blockquote>{getBlockContent()}</blockquote>;
+			return <blockquote {...props}>{getBlockContent()}</blockquote>;
 		}
 
 		case 'note': {
@@ -400,33 +441,44 @@ export function IriscNode({
 			if (!label.content || label.type !== 'note_label') return null;
 
 			return (
-				<div className={`note ${noteType}`}>
-					<span className="note__label flex flex-row gap-2 items-center">
+				<div {...props} className={`note ${noteType}`}>
+					<span
+						data-index={0}
+						className="note__label flex flex-row gap-2 items-center"
+					>
 						<NoteIcon noteType={noteType} />
 						<IriscInlineContent nodes={label.content} ctx={ctx} />
 					</span>
-					<IriscBlockContent nodes={node.content.slice(1)} ctx={ctx} />
+					<IriscBlockContent
+						indexOffset={1}
+						nodes={node.content.slice(1)}
+						ctx={ctx}
+					/>
 				</div>
 			);
 		}
 		case 'aside': {
-			return <aside>{getBlockContent()}</aside>;
+			return <aside {...props}>{getBlockContent()}</aside>;
 		}
 
 		case 'ordered_list': {
 			const order = node.attrs?.order as number | undefined;
-			return <ol start={order}>{getBlockContent()}</ol>;
+			return (
+				<ol {...props} start={order}>
+					{getBlockContent()}
+				</ol>
+			);
 		}
 		case 'bullet_list':
-			return <ul>{getBlockContent()}</ul>;
+			return <ul {...props}>{getBlockContent()}</ul>;
 		case 'list_item':
-			return <li>{getBlockContent()}</li>;
+			return <li {...props}>{getBlockContent()}</li>;
 
 		case 'table': {
 			const sizeData = tableSize(node);
 			return (
 				<div className="max-w-full overflow-auto">
-					<table style={sizeData?.style}>
+					<table {...props} style={sizeData?.style}>
 						{sizeData && (
 							<colgroup>
 								{sizeData.widths.map((w, i) => (
@@ -440,10 +492,11 @@ export function IriscNode({
 			);
 		}
 		case 'table_row':
-			return <tr>{getBlockContent()}</tr>;
+			return <tr {...props}>{getBlockContent()}</tr>;
 		case 'table_cell':
 			return (
 				<td
+					{...props}
 					colSpan={node.attrs?.colspan as number | undefined}
 					rowSpan={node.attrs?.rowspan as number | undefined}
 					style={{
@@ -459,6 +512,7 @@ export function IriscNode({
 		case 'table_header':
 			return (
 				<th
+					{...props}
 					colSpan={node.attrs?.colspan as number | undefined}
 					rowSpan={node.attrs?.rowspan as number | undefined}
 					style={{
@@ -473,7 +527,7 @@ export function IriscNode({
 			);
 
 		case 'math_display':
-			return node.html?.code && parse(node.html.code);
+			return node.html?.code && <div {...props}>{parse(node.html.code)}</div>;
 
 		case 'summary':
 			if (!ctx?.meta?.summary) return null;

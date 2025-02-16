@@ -80,6 +80,9 @@ importers:
       kysely:
         specifier: ^0.27.4
         version: 0.27.4
+      ollama:
+        specifier: ^0.5.13
+        version: 0.5.13
       pg:
         specifier: ^8.13.1
         version: 8.13.1
@@ -5031,6 +5034,9 @@ packages:
   ohash@1.1.4:
     resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
 
+  ollama@0.5.13:
+    resolution: {integrity: sha512-qK3eE2GjMYjCiTknEJfAHjbUzUqgVtf9qtzjxWrkwBZgBG7kOB6Z4+Ov4fbvDjmKKHv+rpuTsWFg4jZvVjNBtQ==}
+
   on-exit-leak-free@2.1.2:
     resolution: {integrity: sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA==}
     engines: {node: '>=14.0.0'}
@@ -6466,6 +6472,9 @@ packages:
 
   webpack-virtual-modules@0.6.2:
     resolution: {integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==}
+
+  whatwg-fetch@3.6.20:
+    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
@@ -12153,6 +12162,10 @@ snapshots:
 
   ohash@1.1.4: {}
 
+  ollama@0.5.13:
+    dependencies:
+      whatwg-fetch: 3.6.20
+
   on-exit-leak-free@2.1.2: {}
 
   on-finished@2.4.1:
@@ -13870,6 +13883,8 @@ snapshots:
   webidl-conversions@3.0.1: {}
 
   webpack-virtual-modules@0.6.2: {}
+
+  whatwg-fetch@3.6.20: {}
 
   whatwg-url@5.0.0:
     dependencies:

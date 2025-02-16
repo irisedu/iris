@@ -18,11 +18,11 @@
 		--origin: translateY(-5px);
 	}
 
-	&[data-entering] {
+	&[data-entering]:not(.no-animation) {
 		animation: popover-slide 150ms;
 	}
 
-	&[data-exiting] {
+	&[data-exiting]:not(.no-animation) {
 		animation: popover-slide 150ms reverse ease-in;
 	}
 }

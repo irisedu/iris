@@ -17,6 +17,8 @@ Business logic for Iris.
 - `AUTH_TICKET_SERVICE_ID`: Service ID for ticket SSO.
 - `AUTH_TICKET_REDIRECT_URL`: The callback URL for ticket SSO.
 - `AUTH_TICKET_VALIDATE_URL`: The validation URL for ticket SSO.
+- `OLLAMA_HOST`: Ollama API URL.
+- `OLLAMA_MODEL`: Ollama model.
 
 - `BUILD_ROOT`: Directory for git repositories of all projects.
 - `ASSETS_ROOT`: Directory for storing assets.

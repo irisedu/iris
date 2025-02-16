@@ -45,7 +45,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 			.where('document_ptr.path', '=', docPath)
 			.where('document_ptr.rev', '=', 'latest')
 			.innerJoin('document', 'document.id', 'document_ptr.doc_id')
-			.select('document.data as data')
+			.select('document.data')
 			.executeTakeFirst()
 			.then((doc) => {
 				if (!doc) return res.sendStatus(404);

@@ -14,7 +14,7 @@ import {
 	Tag,
 	Label
 } from 'iris-components';
-import type { IriscFile, TocNode } from '@irisedu/schemas';
+import { type IriscFile, type TocNode } from '@irisedu/schemas';
 import { goToAnchor } from '../utils';
 import {
 	IriscBlockContent,
@@ -22,12 +22,14 @@ import {
 	Summary
 } from '$components/nodes/IriscNode';
 import { useHighlight } from '$hooks/useHighlight';
+import SelectionMenu from '$components/SelectionMenu';
 
 import { useSelector } from 'react-redux';
 import store, { type RootState } from '$state/store';
 
 import './Article.css';
 import 'katex/dist/katex.css';
+import useAuthorization from '$hooks/useAuthorization';
 
 function parsePath(slug: string): [string, string[]] {
 	const routePath = slug.replace(/\/+$/g, '');
@@ -182,6 +184,8 @@ export function Component() {
 		IriscFile | undefined
 	];
 
+	const user = useAuthorization({});
+
 	useEffect(() => {
 		if (window.location.hash) {
 			setTimeout(() => {
@@ -215,7 +219,11 @@ export function Component() {
 	if (!articleData) return;
 
 	return (
-		<article className="flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
+		<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
+			{user?.type === 'registered' && (
+				<SelectionMenu articleData={articleData} />
+			)}
+
 			{seriesData && (
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}

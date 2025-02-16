@@ -158,7 +158,7 @@ authRouter.use('/ticket', ticketRouter);
 export function requireAuth({ group }: { group?: string }): RequestHandler {
 	return (req, res, next) => {
 		const user = req.session.user;
-		if (!user || user.type !== 'registered') {
+		if (user?.type !== 'registered') {
 			res.redirect('/login');
 			return;
 		}

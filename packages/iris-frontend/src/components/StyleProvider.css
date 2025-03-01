@@ -1,0 +1,24 @@
+.style-provider {
+	line-height: var(--line-height);
+
+	/* Beat other CSS by specificity */
+	p,
+	ul,
+	ol,
+	blockquote,
+	pre,
+	figure,
+	table,
+	aside {
+		margin-top: var(--paragraph-spacing);
+		margin-bottom: var(--paragraph-spacing);
+
+		&:first {
+			margin-top: 0;
+		}
+
+		&:last {
+			margin-bottom: 0;
+		}
+	}
+}

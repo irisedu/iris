@@ -5,6 +5,8 @@ import { useMediaQuery } from 'react-responsive';
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 
+import './StyleProvider.css';
+
 interface FontSettings {
 	smallcaps?: string;
 	sans?: string;
@@ -37,8 +39,14 @@ function StyleProvider({
 
 	const prefersDark = useMediaQuery({ query: '(prefers-color-scheme: dark)' });
 
-	const { font, fontSize, charSpacing, wordSpacing, lineSpacing } =
-		textSettings;
+	const {
+		font,
+		fontSize,
+		charSpacing,
+		wordSpacing,
+		lineSpacing,
+		paragraphSpacing
+	} = textSettings;
 
 	const settings = fontSettings[font];
 
@@ -69,13 +77,13 @@ function StyleProvider({
 		letterSpacing: charSpacing + 'em',
 		wordSpacing: wordSpacing < 0 ? 'normal' : wordSpacing + 'em',
 		'--line-height': lineSpacing.toString(),
-		lineHeight: 'var(--line-height)'
+		'--paragraph-spacing': paragraphSpacing + 'em'
 	} as CSSProperties;
 
 	return (
 		<div
 			style={style}
-			className={`font-body${className ? ' ' + className : ''}`}
+			className={`style-provider font-body${className ? ' ' + className : ''}`}
 		>
 			<ReadingRuler />
 			{children}

@@ -15,7 +15,8 @@ import { useAppDispatch, type RootState } from '$state/store';
 import {
 	setCharSpacing,
 	setWordSpacing,
-	setLineSpacing
+	setLineSpacing,
+	setParagraphSpacing
 } from '$state/prefsSlice';
 
 interface SpacingDialogProps {
@@ -34,6 +35,9 @@ function SpacingDialog({ isOpen, setIsOpen }: SpacingDialogProps) {
 	);
 	const lineSpacing = useSelector(
 		(state: RootState) => state.prefs.text.lineSpacing
+	);
+	const paragraphSpacing = useSelector(
+		(state: RootState) => state.prefs.text.paragraphSpacing
 	);
 
 	return (
@@ -83,6 +87,20 @@ function SpacingDialog({ isOpen, setIsOpen }: SpacingDialogProps) {
 					>
 						<Label>Line Spacing</Label>
 						<SliderOutput />
+						<SliderTrack>
+							<SliderThumb />
+						</SliderTrack>
+					</Slider>
+
+					<Slider
+						minValue={0}
+						maxValue={5}
+						step={0.1}
+						value={paragraphSpacing}
+						onChange={(val) => dispatch(setParagraphSpacing(val))}
+					>
+						<Label>Paragraph Spacing</Label>
+						<SliderOutput className="react-aria-SliderOutput after:content-['em']" />
 						<SliderTrack>
 							<SliderThumb />
 						</SliderTrack>

@@ -9,6 +9,7 @@ interface PrefsState {
 		charSpacing: number;
 		wordSpacing: number;
 		lineSpacing: number;
+		paragraphSpacing: number;
 	};
 	theme: string; // auto, light, dark
 	hueShift: number;
@@ -58,6 +59,9 @@ const prefsSlice = createSlice({
 		setLineSpacing(state, action) {
 			state.text.lineSpacing = action.payload;
 		},
+		setParagraphSpacing(state, action) {
+			state.text.paragraphSpacing = action.payload;
+		},
 		setSpacing(state, action) {
 			state.text = {
 				...action.payload,
@@ -89,6 +93,7 @@ export const {
 	setCharSpacing,
 	setWordSpacing,
 	setLineSpacing,
+	setParagraphSpacing,
 	setSpacing,
 	setTheme,
 	setHueShift,

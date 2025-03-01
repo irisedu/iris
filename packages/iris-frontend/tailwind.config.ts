@@ -22,6 +22,13 @@ export default {
 			xl: '80em',
 			'2xl': '96em'
 		},
+		lineHeight: {
+			tight: 'calc(var(--line-height) * 0.9)',
+			snug: 'calc(var(--line-height) * 0.95)',
+			normal: 'calc(var(--line-height) * 1)',
+			relaxed: 'calc(var(--line-height) * 1.05)',
+			loose: 'calc(var(--line-height) * 1.1)'
+		},
 		extend: {
 			colors: {
 				// Based on https://uicolors.app/create

@@ -1,5 +1,5 @@
 aside {
-	@apply text-sm;
+	@apply text-sm leading-snug;
 
 	/* Tailwind: lg */
 	@media (min-width: 64em) {

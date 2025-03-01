@@ -1,5 +1,5 @@
 :root {
-	@apply hyphens-auto break-words leading-snug;
+	@apply hyphens-auto break-words leading-[1.375];
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -42,7 +42,7 @@ p {
 }
 
 blockquote {
-	@apply p-3 my-1 text-iris-900 bg-iris-100 border-l-4 border-iris-900;
+	@apply p-3 my-1 text-iris-900 bg-iris-100 border-l-4 border-iris-900 leading-snug;
 }
 
 pre code {

@@ -47,6 +47,8 @@
 		70% - var(--hue-shift) * 0.333% + var(--hue-shift) * var(--hue-shift) *
 			0.000925%
 	);
+
+	--line-height: 1;
 }
 
 body {

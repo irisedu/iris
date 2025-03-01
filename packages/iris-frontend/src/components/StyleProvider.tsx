@@ -68,7 +68,8 @@ function StyleProvider({
 	const style = {
 		letterSpacing: charSpacing + 'em',
 		wordSpacing: wordSpacing < 0 ? 'normal' : wordSpacing + 'em',
-		lineHeight: lineSpacing.toString()
+		'--line-height': lineSpacing.toString(),
+		lineHeight: 'var(--line-height)'
 	} as CSSProperties;
 
 	return (

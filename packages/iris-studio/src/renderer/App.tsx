@@ -78,7 +78,7 @@ function App() {
 		}
 	}, [currentTab, tabData]);
 
-	const lastTabs = useRef<TabRender[]>();
+	const lastTabs = useRef<TabRender[]>([]);
 	const tabs = useMemo(() => {
 		const res = [];
 

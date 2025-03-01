@@ -325,7 +325,7 @@ export async function repoUpdate(zipFile: string, userId: string) {
 		promises.push(
 			fs.mkdir(parentDir, { recursive: true }).then(
 				() =>
-					new Promise((resolve, reject) => {
+					new Promise<void>((resolve, reject) => {
 						file
 							.stream()
 							.pipe(createWriteStream(outPath))

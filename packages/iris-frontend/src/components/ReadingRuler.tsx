@@ -38,7 +38,7 @@ function ReadingRuler() {
 	const animReq = useRef<number | null>(null);
 	const canvas = useRef<HTMLCanvasElement>(null);
 	const shiftPressed = useRef(false);
-	const mouse = useRef<MouseData>();
+	const mouse = useRef<MouseData>(null);
 
 	const animate = useCallback(
 		(_time: number) => {

@@ -8,7 +8,7 @@ import chokidar, { type FSWatcher } from 'chokidar';
 import { getIgnoredPaths } from './utils.js';
 import build from './build.js';
 import type { UserConfig } from './config.js';
-import distConfig from './distConfig.json';
+import distConfig from './distConfig.json' with { type: 'json' };
 import type FileInfo from './FileInfo.js';
 
 express.static.mime.define({ 'application/json': ['irisc'] });

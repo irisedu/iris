@@ -17,7 +17,7 @@
 		"@codemirror/language-data": "^6.5.1",
 		"@codemirror/state": "^6.4.1",
 		"@codemirror/view": "^6.34.3",
-		"@nytimes/react-prosemirror": "^0.6.1",
+		"@nytimes/react-prosemirror": "^1.0.3",
 		"@uiw/codemirror-theme-github": "^4.23.6",
 		"iris-components": "workspace:^",
 		"katex": "^0.16.11",
@@ -33,7 +33,7 @@
 		"prosemirror-tables": "^1.6.1",
 		"prosemirror-transform": "^1.10.2",
 		"prosemirror-view": "^1.36.0",
-		"react": "^18.3.1",
+		"react": "^19.0.0",
 		"react-aria-components": "^1.4.1"
 	}
 }

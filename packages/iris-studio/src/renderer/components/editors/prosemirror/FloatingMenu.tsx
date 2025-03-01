@@ -42,7 +42,7 @@ function setElementPos(
 	elem.style.bottom = box.bottom - start.top + 'px';
 }
 
-function useLinkWidget(triggerRef: RefObject<HTMLDivElement>) {
+function useLinkWidget(triggerRef: RefObject<HTMLDivElement | null>) {
 	const [link, setLink] = useState<number | null>(null);
 	const [linkEnd, setLinkEnd] = useState<number | null>(null);
 	const [linkModified, setLinkModified] = useState(false);

@@ -14,7 +14,7 @@ function QuestionFileEditor({ tabData }: { tabData: TabData }) {
 	const [meta, setMeta] = useState<QuestionMetadata>({});
 	const [nodes, setNodes] = useState<QuestionNode[]>([]);
 
-	const stateRef = useRef<Question>();
+	const stateRef = useRef<Question>(null);
 
 	const { onEditorChange, autosave } = useFileEditor({
 		tabData,

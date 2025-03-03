@@ -167,7 +167,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 	return (
 		<div style={style} className="cursor-pointer select-none">
 			<div
-				className={`px-2 border-2 rounded-md flex flex-row gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ' border-transparent'}`}
+				className={`px-2 border-2 rounded-md flex gap-2 items-center${node.isSelected ? ' bg-iris-200' : ''}${node.isFocused ? ' border-iris-400' : ' border-transparent'}`}
 				ref={dragHandle}
 				onClick={(e) => {
 					if (cmdOrCtrl(e)) {
@@ -196,7 +196,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 				onContextMenu={() => node.select()}
 			>
 				{node.data.isFolder ? (
-					<Folder className="text-iris-500 w-5 h-5" />
+					<Folder className="text-iris-500 w-5 h-5 shrink-0" />
 				) : (
 					pathIcon(node.id)
 				)}

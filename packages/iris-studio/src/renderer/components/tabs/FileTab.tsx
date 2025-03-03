@@ -23,7 +23,7 @@ import QuestionFileEditor from '$components/editors/QuestionFileEditor';
 export const FILE_PREFIX = 'file-';
 
 export function pathIcon(path: string) {
-	const className = 'text-iris-500 w-5 h-5';
+	const className = 'text-iris-500 w-5 h-5 shrink-0';
 
 	if (path.endsWith('.txt')) {
 		return <TXT className={className} />;

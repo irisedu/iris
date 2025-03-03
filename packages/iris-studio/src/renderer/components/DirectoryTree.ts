@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type { TreeApi, NodeApi } from 'react-arborist';
 import type { DirTreeNode } from '../../main/ipc';
 
@@ -13,7 +13,7 @@ export interface TreeNode {
 
 export type TreeData = TreeNode[];
 
-export type TreeRef = MutableRefObject<TreeApi<TreeNode> | null>;
+export type TreeRef = RefObject<TreeApi<TreeNode> | null>;
 export type RenameMap = Record<string, string>;
 
 export const ROOT_ID = '__REACT_ARBORIST_INTERNAL_ROOT__';

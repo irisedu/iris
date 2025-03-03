@@ -1,11 +1,11 @@
-import type { MutableRefObject, ReactNode } from 'react';
+import type { RefObject, ReactNode } from 'react';
 import { Button, Modal, Dialog, Heading } from 'iris-components';
 
 export interface DeleteDialogProps {
 	children: ReactNode;
 	isOpen: boolean;
 	setIsOpen: (val: boolean) => void;
-	callbackRef: MutableRefObject<(() => void) | null>;
+	callbackRef: RefObject<(() => void) | null>;
 }
 
 export function DeleteDialog({

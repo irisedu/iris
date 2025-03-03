@@ -1,10 +1,10 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { Button, Modal, Dialog, Heading } from 'iris-components';
 
 interface CloseDialogProps {
 	isOpen: boolean;
 	setIsOpen: (val: boolean) => void;
-	callbackRef: MutableRefObject<(() => void) | null>;
+	callbackRef: RefObject<(() => void) | null>;
 }
 
 function CloseDialog({ isOpen, setIsOpen, callbackRef }: CloseDialogProps) {

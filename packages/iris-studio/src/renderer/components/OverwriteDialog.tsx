@@ -1,11 +1,11 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { Button, Modal, Dialog, Heading } from 'iris-components';
 
 interface OverwriteDialogProps {
 	isOpen: boolean;
 	setIsOpen: (val: boolean) => void;
 	targetFiles: string[];
-	callbackRef: MutableRefObject<(() => void) | null>;
+	callbackRef: RefObject<(() => void) | null>;
 }
 
 function OverwriteDialog({

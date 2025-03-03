@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type { EditorState } from 'prosemirror-state';
 import {
 	ProseMirror,
@@ -12,7 +12,7 @@ import { handlePaste } from 'iris-prosemirror';
 
 export interface ProseMirrorEditorProps extends ProseMirrorProps {
 	mount: HTMLElement | null;
-	stateRef: MutableRefObject<EditorState>;
+	stateRef: RefObject<EditorState>;
 	nodeViews?: Record<string, NodeViewConstructor>;
 	reactNodeViews?: Record<string, ReactNodeViewConstructor>;
 }

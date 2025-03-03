@@ -1,5 +1,6 @@
 import CodeMirrorEditor from '$components/editors/CodeMirrorEditor';
 import IrisFileEditor from '$components/editors/IrisFileEditor';
+import ImageEditor from '$components/editors/ImageEditor';
 
 import type { TabData, TabRender } from '$state/tabsSlice';
 
@@ -61,11 +62,21 @@ export function pathIcon(path: string) {
 
 function makeFileEditor(tabData: TabData) {
 	const key = `${tabData.id}-${tabData.generation || 0}`;
+	const lowerPath = tabData.path.toLowerCase();
 
-	if (tabData.path.endsWith('.iris')) {
+	if (lowerPath.endsWith('.iris')) {
 		return <IrisFileEditor tabData={tabData} key={key} />;
-	} else if (tabData.path.endsWith('.irisq.json')) {
+	} else if (lowerPath.endsWith('.irisq.json')) {
 		return <QuestionFileEditor tabData={tabData} key={key} />;
+	} else if (
+		lowerPath.endsWith('.png') ||
+		lowerPath.endsWith('.jpg') ||
+		lowerPath.endsWith('.jpeg') ||
+		lowerPath.endsWith('.gif') ||
+		lowerPath.endsWith('.webp')
+	) {
+		// NOTE: Update with ImageEditor mime types.
+		return <ImageEditor tabData={tabData} key={key} />;
 	}
 
 	return <CodeMirrorEditor tabData={tabData} key={key} />;

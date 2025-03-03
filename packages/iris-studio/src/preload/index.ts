@@ -49,6 +49,8 @@ const fsGlobal = {
 		ipcRenderer.invoke('fs:writeText', args),
 	readTextFile: (args: Ipc.FsReadTextArgs) =>
 		ipcRenderer.invoke('fs:readText', args),
+	readBase64File: (args: Ipc.FsReadBase64Args) =>
+		ipcRenderer.invoke('fs:readBase64', args),
 	exists: (args: Ipc.FsExistsArgs) => ipcRenderer.invoke('fs:exists', args),
 	readDir: (args: Ipc.FsReadDirArgs) => ipcRenderer.invoke('fs:readDir', args)
 };

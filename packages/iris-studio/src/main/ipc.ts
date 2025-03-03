@@ -52,6 +52,7 @@ export interface FsWriteTextArgs {
 }
 
 export type FsReadTextArgs = string;
+export type FsReadBase64Args = string;
 export type FsExistsArgs = string;
 export type FsReadDirArgs = string;
 
@@ -125,6 +126,10 @@ ipcMain.handle('fs:writeText', (_, args: FsWriteTextArgs) => {
 
 ipcMain.handle('fs:readText', (_, args: FsReadTextArgs) => {
 	return fs.promises.readFile(args, { encoding: 'utf8' });
+});
+
+ipcMain.handle('fs:readBase64', (_, args: FsReadBase64Args) => {
+	return fs.promises.readFile(args, { encoding: 'base64' });
 });
 
 ipcMain.handle('fs:exists', async (_, args: FsExistsArgs) => {

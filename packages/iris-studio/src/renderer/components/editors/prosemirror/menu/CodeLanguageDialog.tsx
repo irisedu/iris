@@ -7,6 +7,7 @@ import {
 	ListBoxItem,
 	Dropdown
 } from 'iris-components';
+import { useMemo } from 'react';
 
 interface CodeLanguageDialogProps {
 	isOpen: boolean;
@@ -23,6 +24,27 @@ function CodeLanguageDialog({
 	setLanguage,
 	onPress
 }: CodeLanguageDialogProps) {
+	// This is slow to render, so memoize it.
+	const languageItems = useMemo(
+		() =>
+			languages.map((lang) => (
+				<ListBoxItem
+					key={lang.name}
+					id={lang.alias.length ? lang.alias[0] : lang.name}
+					textValue={lang.name}
+				>
+					{lang.name}
+					{lang.alias.length && !lang.alias[0].includes(' ') && (
+						<>
+							{' '}
+							(<span className="font-mono">{lang.alias[0]}</span>)
+						</>
+					)}
+				</ListBoxItem>
+			)),
+		[]
+	);
+
 	return (
 		<Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen}>
 			<Dialog>
@@ -33,21 +55,7 @@ function CodeLanguageDialog({
 					onSelectionChange={(key) => setLanguage(key as string)}
 				>
 					<ListBoxItem id="">Plain text</ListBoxItem>
-					{languages.map((lang) => (
-						<ListBoxItem
-							key={lang.name}
-							id={lang.alias.length ? lang.alias[0] : lang.name}
-							textValue={lang.name}
-						>
-							{lang.name}
-							{lang.alias.length && !lang.alias[0].includes(' ') && (
-								<>
-									{' '}
-									(<span className="font-mono">{lang.alias[0]}</span>)
-								</>
-							)}
-						</ListBoxItem>
-					))}
+					{languageItems}
 				</Dropdown>
 				<Button
 					className="react-aria-Button border-iris-300"

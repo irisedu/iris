@@ -29,16 +29,53 @@
 @import '@fontsource/source-code-pro/700.css';
 @import '@fontsource/source-code-pro/700-italic.css';
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
+@import 'tailwindcss';
+@import 'iris-components/styles' layer(components);
 
-@import 'iris-components/styles';
+@custom-variant dark (&:where(.dark, .dark *));
 
-@import 'tailwindcss/utilities';
+@theme {
+	--font-body: var(--font-body);
+	--font-smallcaps: var(--font-smallcaps);
+	--font-sans: var(--font-sans);
+	--font-mono: Source Code Pro;
+
+	--leading-tight: calc(var(--line-height) * 0.9);
+	--leading-snug: calc(var(--line-height) * 0.95);
+	--leading-normal: calc(var(--line-height) * 1);
+	--leading-relaxed: calc(var(--line-height) * 1.05);
+	--leading-loose: calc(var(--line-height) * 1.1);
+}
 
 :root {
-	@apply scroll-smooth font-body;
+	--t-iris-50: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 98%);
+	--t-iris-100: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 95%);
+	--t-iris-200: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 90%);
+	--t-iris-300: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 85%);
+	--t-iris-400: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 75%);
+	--t-iris-500: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 65%);
+	--t-iris-600: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 55%);
+	--t-iris-700: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 50%);
+	--t-iris-800: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 45%);
+	--t-iris-900: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 35%);
+	--t-iris-950: hsl(calc(270 + var(--hue-shift)), var(--color-sat), 25%);
+}
 
+.dark {
+	--t-iris-50: hsl(calc(270 + var(--hue-shift)), 40%, 5%);
+	--t-iris-100: hsl(calc(270 + var(--hue-shift)), 40%, 15%);
+	--t-iris-200: hsl(calc(270 + var(--hue-shift)), 40%, 25%);
+	--t-iris-300: hsl(calc(270 + var(--hue-shift)), 40%, 35%);
+	--t-iris-400: hsl(calc(270 + var(--hue-shift)), 40%, 45%);
+	--t-iris-500: hsl(calc(270 + var(--hue-shift)), 40%, 55%);
+	--t-iris-600: hsl(calc(270 + var(--hue-shift)), 40%, 65%);
+	--t-iris-700: hsl(calc(270 + var(--hue-shift)), 40%, 70%);
+	--t-iris-800: hsl(calc(270 + var(--hue-shift)), 40%, 75%);
+	--t-iris-900: hsl(calc(270 + var(--hue-shift)), 40%, 85%);
+	--t-iris-950: hsl(calc(270 + var(--hue-shift)), 40%, 95%);
+}
+
+:root {
 	--font-body: Vollkorn;
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;

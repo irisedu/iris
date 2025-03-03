@@ -60,7 +60,7 @@
 }
 
 .react-aria-ColorSwatchPickerItem {
-	@apply relative outline-none rounded-md;
+	@apply relative outline-hidden rounded-md;
 
 	&[data-focus-visible] {
 		@apply outline-offset-4;

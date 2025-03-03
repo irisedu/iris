@@ -15,7 +15,6 @@ import type { TabData } from '$state/tabsSlice';
 
 import 'prosemirror-view/style/prosemirror.css';
 import './prosemirror/styles.css';
-import 'iris-prosemirror/styles';
 import ProseMirrorEditor from './prosemirror/ProseMirrorEditor';
 
 const stateConfig = {
@@ -68,7 +67,7 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 				<ProseMirrorEditor
 					attributes={{
 						class:
-							'relative outline-none max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
+							'relative outline-hidden max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
 					}}
 					mount={mount}
 					stateRef={stateRef}

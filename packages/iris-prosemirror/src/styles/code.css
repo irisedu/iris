@@ -6,6 +6,6 @@
 	}
 
 	.cm-scroller {
-		@apply font-mono;
+		@apply font-mono!;
 	}
 }

@@ -1,5 +1,5 @@
 :root {
-	@apply hyphens-auto break-words leading-[1.375];
+	@apply font-body scroll-smooth hyphens-auto break-words leading-[1.375];
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;

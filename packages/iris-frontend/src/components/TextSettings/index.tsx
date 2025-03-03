@@ -65,7 +65,7 @@ function TextSettings() {
 				</Link>
 			</h2>
 
-			<Tabs className="outline-none">
+			<Tabs className="outline-hidden">
 				<TabList className="flex flex-wrap gap-x-4 gap-y-2 text-lg mb-3">
 					<Tab
 						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"

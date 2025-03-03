@@ -20,7 +20,7 @@
 }
 
 .react-aria-Dialog {
-	@apply outline-none;
+	@apply outline-hidden;
 }
 
 @keyframes modal-fade {

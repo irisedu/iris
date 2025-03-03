@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import Icons from 'unplugin-icons/vite';
 import svgr from 'vite-plugin-svgr';
@@ -41,6 +42,7 @@ export default defineConfig({
 		plugins: [
 			transformIndexHtmlPlugin(),
 			react(),
+			tailwindcss(),
 			Icons({
 				compiler: 'jsx',
 				jsx: 'react'

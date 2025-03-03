@@ -16,15 +16,49 @@
 @import '@fontsource/source-code-pro/700.css';
 @import '@fontsource/source-code-pro/700-italic.css';
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
+@import 'tailwindcss';
+@import 'iris-components/styles' layer(components);
+@import 'iris-prosemirror/styles' layer(components);
 
-@import 'iris-components/styles';
+@source 'safelist.txt';
+@source '../../node_modules/iris-prosemirror';
 
-@import 'tailwindcss/utilities';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--font-body: Vollkorn;
+	--font-smallcaps: Vollkorn SC;
+	--font-sans: Atkinson Hyperlegible;
+	--font-mono: Source Code Pro;
+}
 
 :root {
-	@apply scroll-smooth font-serif;
+	/* It's just zinc */
+	--t-iris-50: oklch(0.985 0 0);
+	--t-iris-100: oklch(0.967 0.001 286.375);
+	--t-iris-200: oklch(0.92 0.004 286.32);
+	--t-iris-300: oklch(0.871 0.006 286.286);
+	--t-iris-400: oklch(0.705 0.015 286.067);
+	--t-iris-500: oklch(0.552 0.016 285.938);
+	--t-iris-600: oklch(0.442 0.017 285.786);
+	--t-iris-700: oklch(0.37 0.013 285.805);
+	--t-iris-800: oklch(0.274 0.006 286.033);
+	--t-iris-900: oklch(0.21 0.006 285.885);
+	--t-iris-950: oklch(0.141 0.005 285.823);
+}
+
+.dark {
+	--t-iris-950: oklch(0.985 0 0);
+	--t-iris-900: oklch(0.985 0 0);
+	--t-iris-800: oklch(0.967 0.001 286.375);
+	--t-iris-700: oklch(0.92 0.004 286.32);
+	--t-iris-600: oklch(0.871 0.006 286.286);
+	--t-iris-500: oklch(0.705 0.015 286.067);
+	--t-iris-400: oklch(0.552 0.016 285.938);
+	--t-iris-300: oklch(0.442 0.017 285.786);
+	--t-iris-200: oklch(0.37 0.013 285.805);
+	--t-iris-100: oklch(0.274 0.006 286.033);
+	--t-iris-50: oklch(0.21 0.006 285.885);
 }
 
 body {
@@ -68,7 +102,7 @@ body {
 	}
 
 	& > * > .react-aria-TabList > .react-aria-Tab {
-		@apply relative cursor-pointer font-sans text-black outline-none border-transparent border-2 whitespace-nowrap;
+		@apply relative cursor-pointer font-sans text-black outline-hidden border-transparent border-2 whitespace-nowrap;
 
 		-webkit-app-region: no-drag;
 
@@ -148,19 +182,17 @@ body {
 	@apply hidden;
 }
 
-@layer utilities {
-	.no-scrollbar {
-		/* https://dev.to/derick1530/how-to-create-scrollable-element-in-tailwind-without-a-scrollbar-4mbd */
-		-ms-overflow-style: none;
-		scrollbar-width: none;
+@utility no-scrollbar {
+	/* https://dev.to/derick1530/how-to-create-scrollable-element-in-tailwind-without-a-scrollbar-4mbd */
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 
-		&::-webkit-scrollbar {
-			display: none;
-		}
+	&::-webkit-scrollbar {
+		display: none;
 	}
+}
 
-	.drag-region {
-		-webkit-user-select: none;
-		-webkit-app-region: drag;
-	}
+@utility drag-region {
+	-webkit-user-select: none;
+	-webkit-app-region: drag;
 }

@@ -1,5 +1,5 @@
 .react-aria-Popover {
-	@apply outline-none rounded-lg bg-iris-100 border-2 border-iris-200;
+	@apply outline-hidden rounded-lg bg-iris-100 border-2 border-iris-200;
 
 	/* Animation from react-aria docs */
 	&[data-placement='top'] {

@@ -10,7 +10,7 @@ function IrisCard({
 }) {
 	return (
 		<div
-			className={`relative h-28 rounded-xl bg-iris-100 overflow-hidden p-4 shadow hover:shadow-md transition-shadow duration-200${className ? ' ' + className : ''}`}
+			className={`relative h-28 rounded-xl bg-iris-100 overflow-hidden p-4 shadow-sm hover:shadow-md transition-shadow duration-200${className ? ' ' + className : ''}`}
 		>
 			<img
 				src={irisFlower}

@@ -39,7 +39,7 @@ function TopBar({ menuItems, children }: TopBarProps) {
 					<img
 						src={irisLogo}
 						alt="Iris logo"
-						className="w-full h-full brightness-75 dark:brightness-150"
+						className="w-full! h-full! brightness-75 dark:brightness-150"
 					/>
 				</Button>
 
@@ -59,7 +59,7 @@ function TopBar({ menuItems, children }: TopBarProps) {
 						onPress={() => win.minimize()}
 						aria-label="Minimize"
 					>
-						<div className="border-iris-400 w-1/3 h-1/3 border-b-2" />
+						<div className="border-iris-400 w-1/3! h-1/3! border-b-2" />
 					</Button>
 
 					<Button

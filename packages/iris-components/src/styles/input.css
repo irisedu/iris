@@ -46,7 +46,7 @@
 	@apply m-1 px-2 py-0.5 rounded-lg cursor-pointer;
 
 	&[data-focused] {
-		@apply bg-iris-200 outline-none;
+		@apply bg-iris-200 outline-hidden;
 	}
 }
 
@@ -139,7 +139,7 @@
 	}
 
 	&[data-focus-visible] {
-		@apply outline-none;
+		@apply outline-hidden;
 
 		.checkbox {
 			@apply outline outline-2 outline-iris-500;
@@ -175,7 +175,7 @@
 	}
 
 	&[data-focus-visible] {
-		@apply outline-none;
+		@apply outline-hidden;
 
 		.indicator {
 			@apply outline outline-2 outline-iris-500;

@@ -3,8 +3,8 @@
 
 	/* Beat other CSS by specificity */
 	p,
-	ul,
-	ol,
+	ul:not(.list-none),
+	ol:not(.list-none),
 	blockquote,
 	pre,
 	figure,

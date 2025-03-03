@@ -1,3 +1,5 @@
+@reference '../../../index.css';
+
 .ribbon-tabs {
 	.react-aria-TabList {
 		@apply flex flex-row bg-iris-100;

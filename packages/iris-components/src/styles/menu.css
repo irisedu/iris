@@ -1,11 +1,11 @@
 .react-aria-Menu {
-	@apply font-sans outline-none max-h-[30vh] overflow-auto p-0.5 min-w-44;
+	@apply font-sans outline-hidden max-h-[30vh] overflow-auto p-0.5 min-w-44;
 }
 
 .react-aria-MenuItem {
 	@apply m-1 px-2 py-1 rounded-lg cursor-pointer;
 
 	&[data-focused] {
-		@apply bg-iris-200 outline-none;
+		@apply bg-iris-200 outline-hidden;
 	}
 }

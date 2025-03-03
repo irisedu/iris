@@ -231,7 +231,7 @@ function Node({ node, style, dragHandle }: NodeRendererProps<TreeNode>) {
 							autoFocus
 						>
 							<Input
-								className="react-aria-Input bg-iris-200 outline-none border-none"
+								className="react-aria-Input bg-iris-200 outline-hidden border-none"
 								ref={renameRef}
 							/>
 						</TextField>

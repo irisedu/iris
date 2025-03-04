@@ -57,7 +57,10 @@
 }
 
 .ProseMirror-focused .ProseMirror-widget.katex-render.katex-render--focus {
-	@apply inline before:inline absolute bg-iris-200/85 dark:bg-iris-900/80 p-2 -translate-y-full pointer-events-none;
+	@apply inline before:inline absolute bg-iris-200/85 p-2 -translate-y-full pointer-events-none;
+
+	/* HACK: Fix bad sizing when the render is incorrectly positioned */
+	@apply whitespace-nowrap;
 
 	&.katex-render--display {
 		@apply min-w-[50%];

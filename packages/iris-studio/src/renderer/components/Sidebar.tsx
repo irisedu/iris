@@ -360,7 +360,7 @@ function Sidebar() {
 	}, [reloadDir]);
 
 	return (
-		<div ref={dndRoot} className="font-sans w-full h-full p-2">
+		<div ref={dndRoot} className="font-sans w-full h-full flex flex-col p-2">
 			<DeleteDialog
 				isOpen={deleteOpen}
 				setIsOpen={setDeleteOpen}
@@ -537,7 +537,7 @@ function Sidebar() {
 			<Separator className="react-aria-Separator my-2" />
 
 			<div
-				className="w-full h-full"
+				className="w-full grow"
 				ref={resizeRef}
 				onKeyDown={(e) => {
 					if (e.key === 'Delete' && tree.current?.selectedNodes.length) {

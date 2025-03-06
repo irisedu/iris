@@ -219,16 +219,17 @@ export function getTextRange(
 		text = textA + textMid + textB;
 	}
 
-	let context: string;
-
-	const contextAncestor = commonAncestorNonText ?? commonAncestor;
-	if (contextAncestor.type === 'paragraph') {
-		context = nodesToString([contextAncestor]);
-	} else {
-		context = nodesToString(
-			contextAncestor.content?.slice(addrA[i], addrB[i] + 1) ?? []
-		);
+	let contextStart = addrA[0];
+	if (contextStart > 0 && doc[contextStart - 1].type !== 'heading') {
+		contextStart--;
 	}
+
+	let contextEnd = addrB[0];
+	if (contextEnd < doc.length - 1 && doc[contextEnd + 1].type !== 'heading') {
+		contextEnd++;
+	}
+
+	const context = nodesToString(doc.slice(contextStart, contextEnd + 1));
 
 	return {
 		text: text.trimEnd(),

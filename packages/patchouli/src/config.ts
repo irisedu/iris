@@ -11,8 +11,7 @@ export const defaultUserConfig = `ignoredPaths = [
     "**/*.aux",
     "**/*.log",
     "**/*.dvi",
-    "**/.#*",
-    "**/*.schema.json"
+    "**/.#*"
 ]
 
 [nunjucks]

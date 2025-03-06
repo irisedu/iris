@@ -41,7 +41,7 @@ async function compileStep(config: UserConfig, inDir: string, outDir: string) {
 	await recurseDirectory(inDir, async (filePath) => {
 		// FIXME
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		if ((anymatch as any)(getIgnoredPaths(config), filePath)) {
+		if ((anymatch as any)(getIgnoredPaths(config), filePath, { dot: true })) {
 			return;
 		}
 

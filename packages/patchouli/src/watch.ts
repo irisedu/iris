@@ -104,7 +104,8 @@ export class WatchServer extends EventEmitter {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				(anymatch as any)(
 					getIgnoredPaths(this.#config),
-					path.relative(this.#projectPath, file)
+					path.relative(this.#projectPath, file),
+					{ dot: true }
 				),
 			ignoreInitial: true,
 			cwd: this.#projectPath

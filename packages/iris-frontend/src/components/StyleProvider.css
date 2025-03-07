@@ -13,11 +13,11 @@
 		margin-top: var(--paragraph-spacing);
 		margin-bottom: var(--paragraph-spacing);
 
-		&:first {
+		&:first-child {
 			margin-top: 0;
 		}
 
-		&:last {
+		&:last-child {
 			margin-bottom: 0;
 		}
 	}

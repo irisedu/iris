@@ -80,7 +80,7 @@ function Image(props: ImageProps) {
 						<X />
 					</Button>
 					<div className="grow shadow-lg h-full">
-						<ImageInternal {...props} className="size-full dark:bg-black" />
+						<ImageInternal {...props} className="size-full bg-[white]" />
 					</div>
 					{props.alt && <p className="text-sm text-center my-3">{props.alt}</p>}
 				</Dialog>

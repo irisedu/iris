@@ -30,6 +30,6 @@ figure {
 .dark figure {
 	img,
 	object[type='image/svg+xml'] {
-		background: white;
+		@apply bg-[white];
 	}
 }

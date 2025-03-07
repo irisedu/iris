@@ -125,7 +125,7 @@ async function getPageData(
 		const res = await fetch(`http://${devHost}${fullPath}`).catch(() => null);
 
 		if (res && res.status === 200) {
-			return await res.json();
+			return { dev: true, data: (await res.json()) as IriscFile };
 		}
 	}
 
@@ -134,7 +134,7 @@ async function getPageData(
 		throw new Response('', { status: res.status });
 	}
 
-	return await res.json();
+	return { dev: false, data: (await res.json()) as IriscFile };
 }
 
 export function loader({ params }: LoaderFunctionArgs) {
@@ -168,7 +168,9 @@ export function loader({ params }: LoaderFunctionArgs) {
 
 	return Promise.all([
 		getPageData(fullPath, devEnabled, devHost),
-		seriesPath && getPageData(seriesPath, devEnabled, devHost)
+		seriesPath !== undefined
+			? getPageData(seriesPath, devEnabled, devHost)
+			: null
 	]);
 }
 
@@ -179,10 +181,10 @@ export function Component() {
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 
 	const revalidator = useRevalidator();
-	const [articleData, seriesData] = useLoaderData() as [
-		IriscFile,
-		IriscFile | undefined
-	];
+	const [{ dev, data: articleData }, seriesResult] = useLoaderData() as Awaited<
+		ReturnType<typeof loader>
+	>;
+	const seriesData = seriesResult?.data;
 
 	const user = useAuthorization({});
 
@@ -220,7 +222,7 @@ export function Component() {
 
 	return (
 		<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
-			{user?.type === 'registered' && (
+			{user?.type === 'registered' && !dev && (
 				<SelectionMenu articleData={articleData} />
 			)}
 

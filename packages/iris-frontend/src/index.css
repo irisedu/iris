@@ -39,12 +39,6 @@
 	--font-smallcaps: var(--font-smallcaps);
 	--font-sans: var(--font-sans);
 	--font-mono: Source Code Pro;
-
-	--leading-tight: calc(var(--line-height) * 0.9);
-	--leading-snug: calc(var(--line-height) * 0.95);
-	--leading-normal: calc(var(--line-height) * 1);
-	--leading-relaxed: calc(var(--line-height) * 1.05);
-	--leading-loose: calc(var(--line-height) * 1.1);
 }
 
 :root {

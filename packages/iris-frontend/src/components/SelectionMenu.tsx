@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getTextRange, IriscFile } from '@irisedu/schemas';
+import {
+	getQuestionTextRange,
+	getTextRange,
+	IriscFile,
+	type TextRange
+} from '@irisedu/schemas';
 import { Button, Popover } from 'iris-components';
-import { useParams } from 'react-router-dom';
 import { fetchCsrf } from '../utils';
+
+import store from '$state/store';
 
 import Circle from '~icons/tabler/circle-filled';
 import X from '~icons/tabler/x';
 
 function SelectionMenu({ articleData }: { articleData: IriscFile }) {
-	const params = useParams();
-	const routePath = params['*'];
-
 	const [state, setState] = useState('default');
 	const [output, setOutput] = useState('');
 	const [outputDone, setOutputDone] = useState(false);
@@ -19,27 +22,57 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 	const triggerRef = useRef<HTMLDivElement>(null);
 
 	const [selection, setSelection] = useState(['F', 'F']);
+	const [selectionSrc, setSelectionSrc] = useState('');
 	const [selectionText, setSelectionText] = useState('');
 	const reqId = useRef(0);
 
 	useEffect(() => {
 		function getNodeAddress(node: Node) {
 			let curr: Node | null = node;
+			let indexingBoundary: string | undefined;
 			const indices: string[] = [];
 			while (curr) {
-				if (curr instanceof HTMLElement && curr.dataset.index !== undefined) {
-					indices.unshift(curr.dataset.index);
+				if (curr instanceof HTMLElement) {
+					if (curr.dataset.index !== undefined)
+						indices.unshift(curr.dataset.index);
+
+					indexingBoundary = curr.dataset.indexingBoundary;
+					if (indexingBoundary !== undefined) {
+						break;
+					}
 				}
 
 				curr = curr.parentNode;
 			}
 
-			return indices.join('.');
+			if (indexingBoundary) {
+				return { indexingBoundary, address: indices.join('.') };
+			}
+
+			return null;
 		}
 
 		function getPointAddress(node: Node, offset: number) {
-			if (node instanceof Text) return getNodeAddress(node) + '.' + offset;
-			else return getNodeAddress(node);
+			// Text should always have a span parent with index. Questions
+			// contain some extra elements not satisfying this condition that
+			// should not be considered for selection boundaries.
+			if (
+				node instanceof Text &&
+				(!node.parentElement || node.parentElement.dataset.index === undefined)
+			)
+				return null;
+
+			const addr = getNodeAddress(node);
+			if (!addr) return null;
+
+			if (node instanceof Text) {
+				return {
+					...addr,
+					address: addr.address + '.' + offset
+				};
+			}
+
+			return addr;
 		}
 
 		function onSelectionChange() {
@@ -52,15 +85,46 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 					range.startOffset
 				);
 				const endAddr = getPointAddress(range.endContainer, range.endOffset);
-				const textRange = getTextRange(articleData.data, startAddr, endAddr);
-
-				if (textRange?.commonAncestor.type !== 'paragraph') {
-					setSelectionMenuOpen(false);
+				if (
+					!startAddr ||
+					!endAddr ||
+					startAddr.indexingBoundary !== endAddr.indexingBoundary
+				)
 					return;
+
+				// Reset
+				setSelectionMenuOpen(false);
+
+				const src = startAddr.indexingBoundary;
+
+				let textRange: TextRange | null = null;
+
+				if (src.endsWith('.iq.json')) {
+					const questionData = store.getState().data.questions[src];
+					if (!questionData) return;
+
+					textRange = getQuestionTextRange(
+						questionData.data.data,
+						startAddr.address,
+						endAddr.address
+					);
+				} else if (src.endsWith('.irisc')) {
+					textRange = getTextRange(
+						articleData.data,
+						startAddr.address,
+						endAddr.address
+					);
+
+					if (textRange?.commonAncestor.type !== 'paragraph') {
+						return;
+					}
 				}
+
+				if (!textRange) return;
 
 				setState('default');
 				setSelectionMenuOpen(true);
+				setSelectionSrc(src);
 				setSelectionText(textRange.text);
 
 				const selectionBox = range.getBoundingClientRect();
@@ -76,7 +140,7 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 						'px';
 					trigger.style.bottom = triggerBox.bottom - selectionBox.top + 'px';
 
-					setSelection([startAddr, endAddr]);
+					setSelection([startAddr.address, endAddr.address]);
 				}
 			} else {
 				if (state === 'default') setSelectionMenuOpen(false);
@@ -99,7 +163,7 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 			setOutputDone(false);
 
 			fetchCsrf(
-				`/api/llm/page/${routePath}/${endpoint}?start=${start}&end=${end}`
+				`/api/llm${selectionSrc}/${endpoint}?start=${start}&end=${end}`
 			).then(async (res) => {
 				if (res.status !== 200) {
 					setOutput('Error getting LLM output.');
@@ -126,7 +190,7 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 				setOutputDone(true);
 			});
 		},
-		[selection, routePath]
+		[selection, selectionSrc]
 	);
 
 	return (

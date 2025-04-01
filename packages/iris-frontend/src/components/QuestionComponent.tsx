@@ -32,7 +32,8 @@ import { useHighlight } from '$hooks/useHighlight';
 import { fetchCsrf } from '../utils';
 
 import { useSelector } from 'react-redux';
-import { type RootState } from '$state/store';
+import { useAppDispatch, type RootState } from '$state/store';
+import { fetchQuestion } from '$state/dataSlice';
 
 import Correct from '~icons/tabler/check';
 import Incorrect from '~icons/tabler/x';
@@ -96,7 +97,11 @@ function MCQNodeComponent({
 				}
 			>
 				{node.options.map((opt, i) => (
-					<div className="flex gap-2 items-start my-2" key={opt.id}>
+					<div
+						className="flex gap-2 items-start my-2"
+						key={opt.id}
+						data-index={i}
+					>
 						<Checkbox value={opt.id} aria-label={`Option ${i + 1}`}></Checkbox>
 						<div>
 							<IriscBlockContent nodes={opt.label} />
@@ -125,8 +130,12 @@ function MCQNodeComponent({
 			}
 			isRequired
 		>
-			{node.options.map((opt) => (
-				<div className="flex gap-2 items-start my-2" key={opt.id}>
+			{node.options.map((opt, i) => (
+				<div
+					className="flex gap-2 items-start my-2"
+					key={opt.id}
+					data-index={i}
+				>
 					<Radio value={opt.id} aria-label={nodesToString(opt.label)}></Radio>
 					<div className="-mt-1">
 						<IriscBlockContent nodes={opt.label} />
@@ -273,7 +282,11 @@ function QuestionNodes({
 }: QuestionNodesProps) {
 	let partNumber = 0;
 
-	return nodes.map((n) => {
+	return nodes.map((n, i) => {
+		const props = {
+			'data-index': i
+		};
+
 		if (n.type === QuestionNodeType.Question) {
 			partNumber++;
 			const numberText = baseNumber
@@ -281,7 +294,7 @@ function QuestionNodes({
 				: `Part ${partNumber}`;
 
 			return (
-				<div className="my-2" key={n.id}>
+				<div {...props} key={n.id} className="my-2">
 					<div className="font-bold my-1">{numberText}</div>
 					<QuestionNodes
 						baseNumber={numberText + '.'}
@@ -297,7 +310,7 @@ function QuestionNodes({
 		const pts = ensurePoints(n);
 
 		return (
-			<div key={n.id} className="my-2">
+			<div {...props} key={n.id} className="my-2">
 				{pts && (
 					<div className="text-sm text-zinc-700">
 						{outcome[n.id] &&
@@ -354,34 +367,26 @@ export interface NetQuestionComponentProps {
 }
 
 export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
+	const dispatch = useAppDispatch();
+
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 	const devHost = useSelector((state: RootState) => state.dev.host);
 	const refresh = useSelector((state: RootState) => state.dev.refresh);
 
-	const [isDev, setIsDev] = useState(false);
-	const [question, setQuestion] = useState<Question | null>(null);
+	const questionData = useSelector(
+		(state: RootState) => state.data.questions[src]
+	);
+
 	const [unsaved, setUnsaved] = useState(false);
 	const [submission, setSubmission] = useState<QuestionSubmission>({});
 	const [outcome, setOutcome] = useState<QuestionOutcome>({});
 
 	useEffect(() => {
-		fetch(devEnabled ? `http://${devHost}${src}` : src)
-			.then((res) => {
-				if (devEnabled && res.status !== 200) {
-					setIsDev(false);
-					return fetch(src);
-				}
-
-				setIsDev(devEnabled);
-				return res;
-			})
-			.then((res) => res.json())
-			.then(setQuestion)
-			.catch(console.error);
-	}, [devEnabled, devHost, src, refresh]);
+		dispatch(fetchQuestion(src));
+	}, [dispatch, devEnabled, devHost, src, refresh]);
 
 	useEffect(() => {
-		if (isDev) return setSubmission({});
+		if (questionData?.isDev) return setSubmission({});
 
 		fetch(`/api/judge${src}/submissions`)
 			.then((res) => res.json())
@@ -390,7 +395,7 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 				setOutcome(sub.outcome ?? {});
 			})
 			.catch(console.error);
-	}, [src, isDev]);
+	}, [src, questionData]);
 
 	useEffect(() => {
 		if (!unsaved) return;
@@ -408,7 +413,7 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 		0
 	);
 
-	const totalPointsPossible = question && getTotalPoints(question);
+	const totalPointsPossible = questionData && getTotalPoints(questionData.data);
 
 	let status;
 
@@ -439,21 +444,23 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 						});
 				}}
 			>
-				{question ? (
-					<QuestionComponent
-						question={question}
-						submission={submission}
-						setSubmission={(newVal) => {
-							setUnsaved(true);
-							setSubmission(newVal);
-						}}
-						outcome={isDev ? {} : outcome}
-					/>
+				{questionData ? (
+					<div data-indexing-boundary={src}>
+						<QuestionComponent
+							question={questionData.data}
+							submission={submission}
+							setSubmission={(newVal) => {
+								setUnsaved(true);
+								setSubmission(newVal);
+							}}
+							outcome={questionData.isDev ? {} : outcome}
+						/>
+					</div>
 				) : (
 					<p>Loading question…</p>
 				)}
 
-				{!isDev && (
+				{!questionData?.isDev && (
 					<div className="flex gap-2">
 						<Button type="submit">Submit</Button>
 						<Button

@@ -3,7 +3,12 @@
  */
 
 import { z } from 'zod';
-import { IriscNode } from './irisc.js';
+import {
+	type TextRange,
+	getTextRange,
+	IriscNode,
+	parseAddress
+} from './irisc.js';
 
 //////////
 // Base //
@@ -433,4 +438,73 @@ export function gradeQuestion(
 
 	gradeQuestionNodes(q.data);
 	return JSON.parse(JSON.stringify(outcome)); // strip undefined
+}
+
+export function getQuestionTextRange(
+	q: QuestionNode[],
+	a: string,
+	b: string
+): TextRange | null {
+	if (!a.length || !b.length) return null;
+
+	const addrA = parseAddress(a);
+	const addrB = parseAddress(b);
+
+	// Find question node to find Iris contents inside
+	let i = 0;
+	let questionAncestor: QuestionNode | undefined;
+
+	while (
+		i < addrA.length &&
+		i < addrB.length &&
+		addrA[i] === addrB[i] &&
+		(!questionAncestor || questionAncestor.type === QuestionNodeType.Question)
+	) {
+		if (questionAncestor) {
+			if (addrA[i] >= questionAncestor.contents.length) return null;
+			questionAncestor = questionAncestor.contents[addrA[i]];
+		} else {
+			if (addrA[i] >= q.length) return null;
+			questionAncestor = q[addrA[i]];
+		}
+
+		i++;
+	}
+
+	if (!questionAncestor) return null;
+
+	switch (questionAncestor.type) {
+		case QuestionNodeType.Question:
+			return null;
+
+		case QuestionNodeType.Iris:
+			return getTextRange(
+				questionAncestor.data,
+				addrA.slice(i).join('.'),
+				addrB.slice(i).join('.')
+			);
+
+		case QuestionNodeType.MCQ: {
+			if (addrA[i] !== addrB[i] || addrA[i] >= questionAncestor.options.length)
+				return null;
+
+			const opt = questionAncestor.options[addrA[i]];
+
+			return getTextRange(
+				opt.label,
+				addrA.slice(i + 1).join('.'),
+				addrB.slice(i + 1).join('.')
+			);
+		}
+
+		case QuestionNodeType.FillInTheBlank:
+			return getTextRange(
+				questionAncestor.prompt,
+				addrA.slice(i).join('.'),
+				addrB.slice(i).join('.')
+			);
+
+		case QuestionNodeType.FreeResponse:
+			return null;
+	}
 }

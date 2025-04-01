@@ -188,6 +188,9 @@ export function Component() {
 
 	const user = useAuthorization({});
 
+	const params = useParams();
+	const routePath = params['*'];
+
 	useEffect(() => {
 		if (window.location.hash) {
 			setTimeout(() => {
@@ -230,7 +233,10 @@ export function Component() {
 				<Sidebar articleData={articleData} seriesData={seriesData} />
 			)}
 
-			<div className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72">
+			<div
+				className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72"
+				data-indexing-boundary={'/page/' + routePath + '.irisc'}
+			>
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent
 						nodes={articleData.meta.title ?? []}

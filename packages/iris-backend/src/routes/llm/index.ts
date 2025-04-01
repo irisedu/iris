@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
 import { Ollama, type Message } from 'ollama';
-import { getTextRange, IriscFile } from '@irisedu/schemas';
+import {
+	getQuestionTextRange,
+	getTextRange,
+	IriscFile,
+	Question,
+	type TextRange
+} from '@irisedu/schemas';
 import { requireAuth } from '../auth/index.js';
 
 import explainPrompts from './explainPrompts.js';
@@ -55,7 +61,8 @@ export const llmRouter = Router();
 
 llmRouter.post('/page/*/:method', requireAuth({}), (req, res, next) => {
 	const wildcards = req.params as unknown as string[]; // TODO
-	const docPath = wildcards[0] + '.irisc';
+	const docPath = wildcards[0];
+
 	const { method } = req.params;
 
 	if (!['explain', 'simplify', 'hint'].includes(method)) {
@@ -86,11 +93,21 @@ llmRouter.post('/page/*/:method', requireAuth({}), (req, res, next) => {
 		.then(async (doc) => {
 			if (!doc) return res.sendStatus(404);
 
-			const textRange = getTextRange(
-				(doc.data as IriscFile).data,
-				start as string,
-				end as string
-			);
+			let textRange: TextRange | null = null;
+
+			if (docPath.endsWith('.iq.json')) {
+				textRange = getQuestionTextRange(
+					(doc.data as Question).data,
+					start as string,
+					end as string
+				);
+			} else if (docPath.endsWith('.irisc')) {
+				textRange = getTextRange(
+					(doc.data as IriscFile).data,
+					start as string,
+					end as string
+				);
+			}
 
 			if (!textRange) return res.sendStatus(400);
 

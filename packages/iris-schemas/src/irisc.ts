@@ -95,6 +95,8 @@ export function nodesToString(nodes: IriscNode[]): string {
 				return n.text ?? '';
 			} else if (n.type === 'nbsp') {
 				return ' ';
+			} else if (n.type === 'fill_in_blank') {
+				return '________';
 			} else if (n.type === 'math_inline') {
 				return n.html?.raw ? `$${n.html.raw}$` : '';
 			} else if (n.content) {
@@ -106,7 +108,7 @@ export function nodesToString(nodes: IriscNode[]): string {
 		.join('');
 }
 
-function parseAddress(addr: string): number[] {
+export function parseAddress(addr: string): number[] {
 	return addr.split('.').map((n) => parseInt(n));
 }
 

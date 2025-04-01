@@ -10,16 +10,22 @@ import devSlice from './devSlice';
 import prefsSlice from './prefsSlice';
 import userSlice from './userSlice';
 
+import dataSlice from './dataSlice';
+
 const slices = {
 	dev: devSlice,
 	prefs: prefsSlice,
-	user: userSlice
+	user: userSlice,
+
+	data: dataSlice
 };
 
 const reducers = {
 	dev: devSlice.reducer,
 	prefs: prefsSlice.reducer,
-	user: userSlice.reducer
+	user: userSlice.reducer,
+
+	data: dataSlice.reducer
 };
 
 const rootReducer = rememberReducer(reducers);

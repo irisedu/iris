@@ -31,7 +31,7 @@ function StyleProvider({
 	className
 }: {
 	children: ReactNode;
-	className: string;
+	className?: string;
 }) {
 	const textSettings = useSelector((state: RootState) => state.prefs.text);
 	const theme = useSelector((state: RootState) => state.prefs.theme);

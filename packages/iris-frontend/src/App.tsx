@@ -15,31 +15,34 @@ import { fetchUser } from '$state/userSlice';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
-		<Route
-			path="/"
-			element={<Layout />}
-			errorElement={
-				<Layout>
-					<ErrorElement />
-				</Layout>
-			}
-		>
-			<Route index lazy={() => import('./routes/Landing')} />
-
-			<Route path="/login" lazy={() => import('./routes/Login')} />
+		<>
 			<Route
-				path="/login/pending-federation"
-				lazy={() => import('./routes/PendingFederation')}
-			/>
+				path="/"
+				element={<Layout />}
+				errorElement={
+					<Layout>
+						<ErrorElement />
+					</Layout>
+				}
+			>
+				<Route index lazy={() => import('./routes/Landing')} />
 
-			<Route path="/catalog" lazy={() => import('./routes/Catalog')} />
-			<Route path="/page/*" lazy={() => import('./routes/Article')} />
+				<Route path="/login" lazy={() => import('./routes/Login')} />
+				<Route
+					path="/login/pending-federation"
+					lazy={() => import('./routes/PendingFederation')}
+				/>
 
-			<Route
-				path="/author-dashboard"
-				lazy={() => import('./routes/AuthorDashboard')}
-			/>
-		</Route>
+				<Route path="/catalog" lazy={() => import('./routes/Catalog')} />
+				<Route path="/page/*" lazy={() => import('./routes/Article')} />
+
+				<Route
+					path="/author-dashboard"
+					lazy={() => import('./routes/AuthorDashboard')}
+				/>
+			</Route>
+			<Route path="/poster" lazy={() => import('./routes/Poster')} />
+		</>
 	)
 );
 

@@ -1,0 +1,73 @@
+@reference "../index.css";
+
+body {
+	@apply bg-iris-50 hyphens-none;
+}
+
+main {
+	@apply flex flex-col md:flex-row gap-4 max-md:items-center md:justify-center mb-4;
+}
+
+.column {
+	@apply w-[35ch] max-w-full;
+}
+
+.section {
+	@apply my-[calc(var(--paragraph-spacing)*1.1)] first:mt-0 last:mb-0 text-[0.85rem];
+}
+
+.section > h2,
+.section > div > h2 {
+	@apply font-body mt-0 mb-(--paragraph-spacing) text-[1rem] text-center;
+}
+
+.text-settings h2 {
+	@apply mt-0 mb-1;
+}
+
+.text-settings > div > div {
+	@apply border-2 border-iris-300 px-3 pt-1 pb-2 shadow-md;
+}
+
+h2 a {
+	/* Hack to remove info link */
+	@apply hidden;
+}
+
+figure {
+	@apply border-2 border-iris-300 shadow-md;
+}
+
+figcaption {
+	@apply text-[0.6rem];
+}
+
+.label-figure {
+	@apply relative max-w-[70ch] ml-3;
+}
+
+.label-figure__label {
+	@apply absolute text-[0.7rem] left-0 -bottom-[2px] -rotate-90 origin-bottom-left bg-iris-300 px-2;
+}
+
+.bad {
+	@apply leading-[0.9] text-[#ff0000] dark:text-[#6f6f6f] uppercase font-[Times_New_Roman];
+	font-feature-settings:
+		'kern' off,
+		'liga' off,
+		'calt' off,
+		'dlig' off,
+		'hlig' off,
+		'swsh' off,
+		'salt' off;
+}
+
+@media print {
+	:root {
+		font-size: 300% !important;
+	}
+
+	body {
+		@apply w-[24in] h-[36in];
+	}
+}

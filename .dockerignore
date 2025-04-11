@@ -9,3 +9,6 @@ Dockerfile
 /packages/iris-backend/spa
 
 /packages/iris-frontend/dist
+
+/packages/iris-schemas/out
+/packages/iris-studio/out

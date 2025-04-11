@@ -115,44 +115,26 @@ export function Component() {
 	return (
 		<StyleProvider className="p-[12mm] print:pb-0">
 			{/* Header */}
-			<header className="mb-3 max-w-[72ch] mx-auto">
-				<div className="flex flex-col md:flex-row items-center gap-3 -mt-2 text-center md:text-left">
+			<header className="mb-(--paragraph-spacing) print:mb-1 max-w-[72ch] mx-auto">
+				<div className="flex flex-col md:flex-row items-center gap-3 -mt-2 mb-1 text-center md:text-left">
 					<IrisWord className="iris-rotate max-h-[4rem] -ml-3" />
-					<div>
-						<h1 className="text-[1.33rem] leading-tight m-0 md:mt-2 md:whitespace-nowrap">
-							An AI-Enhanced Content Management System <br />
-							for Accessibility
-						</h1>
-						<div className="text-iris-900 text-[0.65rem] mt-1 max-w-full">
-							Wong Zhao, Tianle Yu, Maryam Majedi • Computer Science Education &
-							Embedded Ethics (CS3E) Lab
-						</div>
-					</div>
+					<h1 className="text-[1.33rem] leading-tight m-0 md:mt-2 md:whitespace-nowrap">
+						An AI-Enhanced Content Management System{' '}
+						<br className="hidden md:inline" />
+						for Accessibility
+					</h1>
 					<div className="grow" />
 					<img
 						src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-						className="hidden print:inline-block h-20 bg-yellow-400"
+						className="hidden print:inline-block h-16 bg-yellow-400"
 					/>
 				</div>
-				{/* <div className="flex flex-col md:flex-row items-center gap-3 -mt-2 text-center md:text-left">
-					<IrisWord className="iris-rotate h-[3.5rem] -ml-3" />
-					<h1 className="text-[1.2rem] leading-tight m-0 mt-2">
-						An AI-Enhanced Content <br /> Management System for <br />{' '}
-						Accessibility
-					</h1>
-					<div className="grow" />
-					<mark>QR CODE</mark>
-					<div className="grow" />
-					<div className="text-iris-900 text-[0.65rem] whitespace-nowrap">
-						Wong Zhao
-						<br />
-						Tianle Yu
-						<br />
-						Maryam Majedi
-						<hr className="my-0.5" />
-						Computer Science Education & <br /> Embedded Ethics (CS3E) Lab
-					</div>
-				</div> */}
+				<div className="text-iris-900 text-center text-[0.65rem] max-w-full leading-tight">
+					Wong Zhao, Tianle Yu, Maryam Majedi • Computer Science Education &
+					Embedded Ethics (CS3E) Lab
+					<br />
+					{'{'}wongzhao, tianleyu, majedi{'}'}@ucsb.edu
+				</div>
 			</header>
 
 			{/* Body */}
@@ -160,13 +142,11 @@ export function Component() {
 				<div className="column">
 					<div className="section">
 						<h2 className="section__title">Introduction</h2>
-						<ul>
-							<li>
-								Iris is a web-based content management system that focuses on
-								presentation (typography) and interactivity, addressing issues
-								with accessibility
-							</li>
-						</ul>
+						<p>
+							Iris is a web-based content management system that focuses on
+							presentation (typography) and interactivity, addressing issues
+							with accessibility.
+						</p>
 					</div>
 
 					<div className="section">
@@ -193,8 +173,8 @@ export function Component() {
 							</li>
 							<li>
 								Existing accessibility systems (e.g., SensusAccess, integrated
-								with UCSB Canvas) do not provide a first-class experience to
-								those with accessibility needs
+								with Canvas) do not provide a first-class experience to those
+								with accessibility needs
 							</li>
 						</ul>
 
@@ -255,11 +235,9 @@ export function Component() {
 					</div>
 
 					<div className="section">
-						<h2 className="section__title">
-							Customizable Yet Strict Document Format
-						</h2>
+						<h2 className="section__title">Iris Document Format</h2>
 						<ul>
-							<li>Custom document format and editor</li>
+							<li>Strict document format and editor</li>
 							<li>
 								Many major typographical mistakes, such as incorrect spacing and
 								poor font/color choice, are impossible
@@ -268,19 +246,21 @@ export function Component() {
 						</ul>
 					</div>
 
-					<div className="section text-settings px-2">
-						<TextSettings />
-					</div>
+					<figure className="p-1">
+						<Diagram className="w-[95%] mx-auto" />
+						<figcaption>Block diagram of Iris</figcaption>
+					</figure>
 				</div>
 
 				<div className="column">
+					<div className="section text-settings px-2">
+						<TextSettings />
+					</div>
+
 					<div className="section">
 						<h2 className="section__title">LLM-Based Accommodations</h2>
 						<ul>
 							<li>Allow students to query AI models from Iris</li>
-							{/* <li>Explain: Define a word in context</li>
-							<li>Simplify: Make a passage easier to understand</li>
-							<li>Hint: Help to solve a problem</li> */}
 							<li>Record queries and provide feedback to authors</li>
 						</ul>
 						<figure className="label-figure px-2 py-1">
@@ -442,26 +422,22 @@ export function Component() {
 									</li>
 								</ul>
 							</li>
+							<li>
+								Second phase:
+								<ul>
+									<li>
+										Experiment plan: Evaluating Iris’s accessibility features
+									</li>
+									<li>Tailor AI responses using students’ mastery level</li>
+									<li>Include target users in development process</li>
+								</ul>
+							</li>
 						</ul>
 					</div>
-
-					<div className="section">
-						<h2 className="section__title">Future Work</h2>
-						<ul>
-							<li>Tailor AI responses using students’ mastery level</li>
-							<li>Formal study on accessibility features</li>
-							<li>Including target users in development process</li>
-							<li>Improved LLM models and prompts</li>
-						</ul>
-					</div>
-
-					<figure className="p-1">
-						<Diagram className="w-full" />
-					</figure>
 				</div>
 			</main>
 
-			<footer className="max-w-[72ch] mx-auto print:-mt-5">
+			<footer className="max-w-[72ch] mx-auto print:-mt-3">
 				<div className="text-[0.7rem]">References</div>
 				<div className="text-[0.6rem] md:columns-2 md:gap-8">
 					<div className="break-inside-avoid">

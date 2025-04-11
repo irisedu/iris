@@ -21,6 +21,11 @@ main {
 	@apply font-body mt-0 mb-(--paragraph-spacing) text-[1rem] text-center;
 }
 
+ul,
+.section > p {
+	@apply pl-4;
+}
+
 .text-settings h2 {
 	@apply mt-0 mb-1;
 }

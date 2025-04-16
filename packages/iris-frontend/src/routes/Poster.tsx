@@ -23,7 +23,7 @@ import './Poster.css';
 export function Component() {
 	useEffect(() => {
 		document.title =
-			'Iris: An AI-Enhanced Content Management System for Accessibility';
+			'Iris: An AI-Enhanced Content Management System Supporting Accessibility';
 
 		// Dyslexia approximation
 		// https://raw.githubusercontent.com/geon/geon.github.com/refs/heads/master/_posts/2016-03-03-dsxyliea.md
@@ -121,7 +121,7 @@ export function Component() {
 					<h1 className="text-[1.33rem] leading-tight m-0 md:mt-2 md:whitespace-nowrap">
 						An AI-Enhanced Content Management System{' '}
 						<br className="hidden md:inline" />
-						for Accessibility
+						Supporting Accessibility
 					</h1>
 					<div className="grow" />
 					<img
@@ -143,9 +143,9 @@ export function Component() {
 					<div className="section">
 						<h2 className="section__title">Introduction</h2>
 						<p>
-							Iris is a web-based content management system that focuses on
-							presentation (typography) and interactivity, addressing issues
-							with accessibility.
+							Our project, Iris, is a web-based content management system that
+							focuses on presentation (typography) and interactivity, supporting
+							accessibility.
 						</p>
 					</div>
 
@@ -347,13 +347,13 @@ export function Component() {
 									<div className="text-[0.7rem] border-l-[0.2rem] border-iris-600 rounded-md px-2 py-1 text-iris-900 mt-1">
 										<div className="font-bold mb-1">Hint</div>
 										<div className="flex gap-1 items-center">
-											<Button className="react-aria-Button text-[0.65rem] px-1 py-0.5">
+											<Button className="react-aria-Button text-[0.65rem] px-1 py-0.5 text-black">
 												Task?
 											</Button>
-											<Button className="react-aria-Button text-[0.65rem] px-1 py-0.5">
+											<Button className="react-aria-Button text-[0.65rem] px-1 py-0.5 text-black">
 												Purpose?
 											</Button>
-											<Button className="relative react-aria-Button text-[0.65rem] px-1 py-0.5">
+											<Button className="relative react-aria-Button text-[0.65rem] px-1 py-0.5 text-black">
 												Breakdown?
 												<Pointer className="absolute text-black stroke-white stroke-3 w-4 h-4 -bottom-1 right-3" />
 											</Button>
@@ -386,7 +386,7 @@ export function Component() {
 								Ethics: Supplement, not replace, interactions between students
 								and course staff
 								<ul>
-									<li>One-click interface preserves human interaction</li>
+									<li>Simple one-click interface acts as a guardrail</li>
 								</ul>
 							</li>
 							<li>
@@ -417,7 +417,7 @@ export function Component() {
 										well-received
 									</li>
 									<li>
-										W25 (CS 16): Used successfully for 8 assignments across
+										W25 (CS 16): Used successfully for eight assignments across
 										entire quarter
 									</li>
 								</ul>

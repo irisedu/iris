@@ -44,7 +44,7 @@ FROM base AS backend-prod-deps
 
 WORKDIR /iris/packages/iris-backend
 
-# FIXME: ignore scripts bypasses schema prepare step to avoid running tsc
+# NOTE: tsc for @irisedu/schemas is skipped at this step; copy build output from the backend build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter iris-backend... install --prod --frozen-lockfile --ignore-scripts
 
 # Output: /iris/node_modules
@@ -58,6 +58,9 @@ FROM base AS backend
 WORKDIR /iris/packages/iris-backend
 
 COPY --from=backend-prod-deps /iris/node_modules /iris/node_modules
+
+# HACK
+COPY --from=backend-build /iris/packages/iris-backend/node_modules/@irisedu/schemas/out /iris/packages/iris-backend/node_modules/@irisedu/schemas
 
 COPY --from=backend-build /iris/packages/iris-backend/out ./out
 COPY --from=frontend-build /iris/packages/iris-frontend/dist ./spa

@@ -5,7 +5,7 @@ import { promises as fs, createWriteStream, createReadStream } from 'fs';
 import lockfile from 'proper-lockfile';
 import { db } from './db/index.js';
 import { repoRoot, assetsRoot } from './constants.js';
-import { SeriesInfo } from 'patchouli';
+import type { SeriesInfo } from 'patchouli';
 import crypto from 'crypto';
 import stream from 'stream/promises';
 

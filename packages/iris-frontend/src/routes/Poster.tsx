@@ -5,6 +5,7 @@ import TextSettings from '$components/TextSettings';
 
 import IrisWord from '$assets/iris-word.svg?react';
 import Diagram from '$assets/poster/diagram.svg?react';
+import QR from '$assets/poster/qr.svg?react';
 
 import ArrowRight from '~icons/tabler/arrow-right';
 import Pointer from '~icons/tabler/pointer-filled';
@@ -124,10 +125,7 @@ export function Component() {
 						Supporting Accessibility
 					</h1>
 					<div className="grow" />
-					<img
-						src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-						className="hidden print:inline-block h-16 bg-yellow-400"
-					/>
+					<QR className="hidden print:inline-block h-16" />
 				</div>
 				<div className="text-iris-900 text-center text-[0.65rem] max-w-full leading-tight">
 					Wong Zhao, Tianle Yu, Maryam Majedi • Computer Science Education &
@@ -479,8 +477,9 @@ export function Component() {
 						Santa Barbara, CA.
 					</div>
 				</div>
-				<div className="font-bold text-[0.6em] print:-mt-3">
-					This poster was rendered using Iris.
+				<div className="text-[0.6em] print:-mt-3">
+					<strong>This poster was rendered using Iris.</strong> —{' '}
+					<span className="text-iris-900">iris.3e.cs.ucsb.edu/poster</span>
 				</div>
 			</footer>
 		</StyleProvider>

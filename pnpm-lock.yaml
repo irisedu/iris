@@ -74,6 +74,9 @@ importers:
       googleapis:
         specifier: ^146.0.0
         version: 146.0.0(encoding@0.1.13)
+      ioredis:
+        specifier: ^5.6.1
+        version: 5.6.1
       kysely:
         specifier: ^0.27.4
         version: 0.27.5
@@ -123,9 +126,6 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
-      ioredis:
-        specifier: ^5.4.1
-        version: 5.5.0
       kysely-codegen:
         specifier: ^0.18.0
         version: 0.18.0(kysely@0.27.5)(pg@8.13.3)(typescript@5.8.2)
@@ -4366,8 +4366,8 @@ packages:
   intl-messageformat@10.7.15:
     resolution: {integrity: sha512-LRyExsEsefQSBjU2p47oAheoKz+EOJxSLDdjOaEjdriajfHsMXOmV/EhMvYSg9bAgCUHasuAC+mcUBe/95PfIg==}
 
-  ioredis@5.5.0:
-    resolution: {integrity: sha512-7CutT89g23FfSa8MDoIFs2GYYa0PaNiW/OrT+nRyjRXHDZd17HmIgy+reOQ/yhh72NznNjGuS8kbCAcA4Ro4mw==}
+  ioredis@5.6.1:
+    resolution: {integrity: sha512-UxC0Yv1Y4WRJiGQxQkP0hfdL0/5/6YvdfOOClRgJ0qppSarkhneSa6UvkMkms0AkdGimSH3Ikqm+6mkMmX7vGA==}
     engines: {node: '>=12.22.0'}
 
   ip-address@9.0.5:
@@ -11794,7 +11794,7 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.11.1
       tslib: 2.8.1
 
-  ioredis@5.5.0:
+  ioredis@5.6.1:
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2

@@ -5,6 +5,8 @@ Business logic for Iris.
 ## Environment variables
 
 - `NODE_ENV`: `development` or `production`
+- `PROXY_IP`: The IP address of the reverse proxy, to ensure that cookies
+  function (optional).
 - `DATABASE_URL`: The database connection string. PostgreSQL is expected.
 - `REDIS_URL`: The Redis connection string.
 - `COOKIE_SECRET`: The secret for signing cookies.

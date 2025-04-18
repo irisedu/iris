@@ -32,8 +32,8 @@ declare module 'express-session' {
 
 export function authSetup(app: Express) {
 	// This + X-Forwarded-Proto is necessary for cookies to work
-	if (process.env.PROXY_IP) {
-		app.set('trust proxy', process.env.PROXY_IP);
+	if (process.env.TRUST_PROXY) {
+		app.set('trust proxy', true);
 	}
 
 	app.use(

@@ -21,7 +21,7 @@
 @import 'iris-prosemirror/styles' layer(components);
 
 @source 'safelist.txt';
-@source '../../node_modules/iris-prosemirror';
+@source '../../../iris-prosemirror/src/';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

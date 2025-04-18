@@ -32,6 +32,8 @@
 @import 'tailwindcss';
 @import 'iris-components/styles' layer(components);
 
+@source '../../iris-components/src/';
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

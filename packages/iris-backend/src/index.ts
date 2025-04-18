@@ -21,6 +21,7 @@ app.use(doubleCsrfProtection);
 app.use(express.json());
 
 app.use((req, res, next) => {
+	console.log(req.headers)
 	if (req.method === 'GET') generateToken(req, res, false, false);
 	next();
 });

@@ -10,7 +10,7 @@
 
       systemd libdrm mesa libGL vulkan-loader stdenv.cc.cc alsa-lib at-spi2-atk
       cairo cups dbus expat gdk-pixbuf glib gtk3 nspr nss pango libxkbcommon
-      libnotify zlib
+      libnotify zlib libgbm
     ]
   ) ++ (with pkgs.xorg;
     [

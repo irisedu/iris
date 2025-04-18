@@ -128,8 +128,8 @@ export function Component() {
 					<QR className="hidden print:inline-block h-16" />
 				</div>
 				<div className="text-iris-900 text-center text-[0.65rem] max-w-full leading-tight">
-					Wong Zhao, Tianle Yu, Maryam Majedi • Computer Science Education &
-					Embedded Ethics (CS3E) Lab
+					Wong Zhao, Tianle Yu • Supervisor: Dr. Maryam Majedi • Computer
+					Science Education & Embedded Ethics (CS3E) Lab
 					<br />
 					{'{'}wongzhao, tianleyu, majedi{'}'}@ucsb.edu
 				</div>

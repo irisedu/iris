@@ -12,6 +12,7 @@ import { goToAnchor } from '../../utils';
 import Image from './Image';
 import parse from 'html-react-parser';
 import { NetQuestionComponent } from '$components/QuestionComponent';
+import HintPrompt from '$components/HintPrompt';
 
 import Info from '~icons/tabler/info-circle';
 import Warning from '~icons/tabler/alert-triangle';
@@ -543,6 +544,13 @@ export function IriscNode({
 			if (!src) return null;
 
 			return <NetQuestionComponent src={src} />;
+		}
+
+		case 'hint_prompt': {
+			const id = node.attrs?.id as string | undefined;
+			if (!id) return null;
+
+			return <HintPrompt id={id} />;
 		}
 	}
 }

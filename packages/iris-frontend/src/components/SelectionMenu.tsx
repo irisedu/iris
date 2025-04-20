@@ -6,17 +6,14 @@ import {
 	type TextRange
 } from '@irisedu/schemas';
 import { Button, Popover } from 'iris-components';
-import { fetchCsrf } from '../utils';
 
 import store from '$state/store';
 
-import Circle from '~icons/tabler/circle-filled';
 import X from '~icons/tabler/x';
+import useLLM from '$hooks/useLLM';
 
 function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 	const [state, setState] = useState('default');
-	const [output, setOutput] = useState('');
-	const [outputDone, setOutputDone] = useState(false);
 
 	const [selectionMenuOpen, setSelectionMenuOpen] = useState(false);
 	const triggerRef = useRef<HTMLDivElement>(null);
@@ -24,7 +21,8 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 	const [selection, setSelection] = useState(['F', 'F']);
 	const [selectionSrc, setSelectionSrc] = useState('');
 	const [selectionText, setSelectionText] = useState('');
-	const reqId = useRef(0);
+
+	const { llmOutput, makeRequest } = useLLM();
 
 	useEffect(() => {
 		function getNodeAddress(node: Node) {
@@ -152,45 +150,16 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 			document.removeEventListener('selectionchange', onSelectionChange);
 	}, [articleData.data, state]);
 
-	const makeReq = useCallback(
+	const makeSelReq = useCallback(
 		(endpoint: string) => {
 			const [start, end] = selection;
 
-			const id = ++reqId.current;
-
 			setState(endpoint);
-			setOutput('');
-			setOutputDone(false);
-
-			fetchCsrf(
-				`/api/llm${selectionSrc}/${endpoint}?start=${start}&end=${end}`
-			).then(async (res) => {
-				if (res.status !== 200) {
-					setOutput('Error getting LLM output.');
-					setOutputDone(true);
-					return;
-				}
-
-				const reader = res.body?.getReader();
-				if (!reader) return;
-
-				const decoder = new TextDecoder();
-				while (true) {
-					const { value, done } = await reader.read();
-
-					if (value) {
-						// New request started
-						if (reqId.current !== id) return;
-						setOutput((curr) => curr + decoder.decode(value));
-					}
-
-					if (done) break;
-				}
-
-				setOutputDone(true);
-			});
+			makeRequest(
+				`/api/llm/selection${selectionSrc}/${endpoint}?start=${start}&end=${end}`
+			);
 		},
-		[selection, selectionSrc]
+		[selection, selectionSrc, makeRequest]
 	);
 
 	return (
@@ -210,25 +179,18 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 						{selectionText.split(' ').length < 6 ? (
 							<Button
 								className="px-1 rounded-md data-[hovered]:bg-iris-200 data-[pressed]:bg-iris-300"
-								onPress={() => makeReq('explain')}
+								onPress={() => makeSelReq('explain')}
 							>
 								Explain
 							</Button>
 						) : (
 							<Button
 								className="px-1 rounded-md data-[hovered]:bg-iris-200 data-[pressed]:bg-iris-300"
-								onPress={() => makeReq('simplify')}
+								onPress={() => makeSelReq('simplify')}
 							>
 								Simplify
 							</Button>
 						)}
-
-						<Button
-							className="px-1 rounded-md data-[hovered]:bg-iris-200 data-[pressed]:bg-iris-300"
-							onPress={() => makeReq('hint')}
-						>
-							Hint
-						</Button>
 					</>
 				) : (
 					<div className="flex flex-col w-[45ch] text-sm max-w-full p-1">
@@ -246,23 +208,11 @@ function SelectionMenu({ articleData }: { articleData: IriscFile }) {
 									</>
 								)}
 								{state === 'simplify' && 'Simplify'}
-								{state === 'hint' && 'Hint'}
 							</div>
 						</div>
 
 						<div className="mb-2 overflow-y-auto max-h-36 shrink">
-							{output.length > 0 ? (
-								<>
-									{output}
-									{outputDone ? (
-										''
-									) : (
-										<Circle className="inline-block h-3 w-3 m-1" />
-									)}
-								</>
-							) : (
-								<span>Loading…</span>
-							)}
+							{llmOutput}
 						</div>
 
 						<div className="text-iris-900 text-xs">

@@ -1,0 +1,7 @@
+@reference '../index.css';
+
+.llm-output.llm-output--in-progress {
+	> *:last-child::after {
+		@apply content-['⬤'] ml-2;
+	}
+}

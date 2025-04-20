@@ -46,6 +46,7 @@ import {
 	frontmatterComponent,
 	linkComponent,
 	listsComponent,
+	llmComponent,
 	mathComponent,
 	noteComponent,
 	smartypantsComponent,
@@ -100,7 +101,8 @@ export const baseSchemaDef = {
 		...tableComponent.nodes,
 		...mathComponent.nodes,
 		...codeComponent.nodes,
-		...figureComponent.nodes
+		...figureComponent.nodes,
+		...llmComponent.nodes
 	},
 	marks: {
 		// Keep as first to render as parent of all other marks

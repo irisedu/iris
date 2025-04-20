@@ -235,7 +235,11 @@ export function Component() {
 
 			<div
 				className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72"
-				data-indexing-boundary={'/page/' + routePath + '.irisc'}
+				data-indexing-boundary={
+					seriesData
+						? `/page/${routePath}.irisc`
+						: `/page/${routePath}/SUMMARY.irisc`
+				}
 			>
 				<h1 className="mt-0 mb-4">
 					<IriscInlineContent

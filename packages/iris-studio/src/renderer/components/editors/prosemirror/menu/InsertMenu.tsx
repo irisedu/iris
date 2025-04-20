@@ -22,6 +22,7 @@ import Table from '~icons/tabler/table-plus';
 import Image from '~icons/tabler/photo';
 import Info from '~icons/tabler/info-circle';
 import Question from '~icons/tabler/question-mark';
+import LLM from '~icons/tabler/sparkles';
 
 function NoteMenu({ index }: { index: number }) {
 	const [visible, setVisible] = useVisibility(index);
@@ -122,6 +123,14 @@ function InsertMenu({
 					Icon={Question}
 					command={insertNode(docSchema.nodes.question)}
 					tooltip="Interactive Question"
+				/>
+				<CommandButton
+					index={mainIdx++}
+					Icon={LLM}
+					command={insertNode(docSchema.nodes.hint_prompt, undefined, () => ({
+						id: crypto.randomUUID()
+					}))}
+					tooltip="Hint Prompt"
 				/>
 			</VisibilityGroup>
 		</VisibilityContext.Provider>

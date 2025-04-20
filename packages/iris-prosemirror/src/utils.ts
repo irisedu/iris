@@ -74,12 +74,13 @@ export function markExtend(
 export function insertNode(
 	nodeType: NodeType,
 	content?: () => Fragment | Node | readonly Node[],
-	attrs?: Attrs
+	attrs?: Attrs | (() => Attrs)
 ): Command {
 	return (state, dispatch) => {
+		const realAttrs = typeof attrs === 'function' ? attrs() : attrs;
 		const node = content
-			? nodeType.create(attrs, content())
-			: nodeType.createAndFill();
+			? nodeType.create(realAttrs, content())
+			: nodeType.createAndFill(realAttrs);
 
 		if (!node) return false;
 

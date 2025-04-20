@@ -48,7 +48,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 			.select('document.data')
 			.executeTakeFirst()
 			.then((doc) => {
-				if (!doc) return res.sendStatus(404);
+				if (!doc) return next();
 				res.json(redactInfo(docPath, doc.data));
 			})
 			.catch(next);
@@ -61,7 +61,7 @@ documentsRouter.get('/page/*', (req, res, next) => {
 			.select('asset.id')
 			.executeTakeFirst()
 			.then((asset) => {
-				if (!asset) return res.sendStatus(404);
+				if (!asset) return next();
 				res.contentType(path.basename(docPath));
 				res.sendFile(
 					path.join(

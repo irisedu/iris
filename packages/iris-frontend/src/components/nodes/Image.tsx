@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 import { Button, Dialog, DialogTrigger, Modal } from 'iris-components';
+import { DevContext } from '../../routes/Article';
 
 import X from '~icons/tabler/x';
+import { useContext } from 'react';
 
 export interface ImageProps {
 	src: string;
@@ -11,55 +13,29 @@ export interface ImageProps {
 }
 
 function ImageInternal({ src, alt, className }: ImageProps) {
-	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
+	const { dev } = useContext(DevContext);
 	const devHost = useSelector((state: RootState) => state.dev.host);
 
 	const devSrc = `http://${devHost}${src}?hash=${Date.now()}`;
+	const actualSrc = dev && src.startsWith('/') ? devSrc : src;
 
 	const isSvg = src.endsWith('.svg');
 
-	if (devEnabled && src.startsWith('/')) {
-		if (isSvg) {
-			return (
-				<object
-					type="image/svg+xml"
-					data={devSrc}
-					aria-label={alt}
-					className={'pointer-events-none' + (className ? ' ' + className : '')}
-				>
-					<object
-						type="image/svg+xml"
-						data={src}
-						aria-label={alt}
-						className={className}
-					>
-						{alt}
-					</object>
-				</object>
-			);
-		} else {
-			return (
-				<picture>
-					<source srcSet={devSrc} />
-					<img src={src} alt={alt} className={className} />
-				</picture>
-			);
-		}
+	if (isSvg) {
+		return (
+			<object
+				type="image/svg+xml"
+				data={actualSrc}
+				aria-label={alt}
+				className={'pointer-events-none' + (className ? ' ' + className : '')}
+			>
+				{alt}
+			</object>
+		);
 	} else {
-		if (isSvg) {
-			return (
-				<object
-					type="image/svg+xml"
-					data={src}
-					aria-label={alt}
-					className={'pointer-events-none' + (className ? ' ' + className : '')}
-				>
-					{alt}
-				</object>
-			);
-		} else {
-			return <img src={src} alt={alt} loading="lazy" className={className} />;
-		}
+		return (
+			<img src={actualSrc} alt={alt} loading="lazy" className={className} />
+		);
 	}
 }
 

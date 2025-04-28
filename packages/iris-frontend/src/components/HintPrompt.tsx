@@ -1,11 +1,15 @@
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { Button } from 'iris-components';
 import useLLM from '$hooks/useLLM';
+import useAuthorization from '$hooks/useAuthorization';
+import { DevContext } from '../routes/Article';
 
 import Sparkles from '~icons/tabler/sparkles';
 
 function HintPrompt({ id }: { id: string }) {
 	const ref = useRef<HTMLDivElement>(null);
+	const user = useAuthorization({});
+	const { dev } = useContext(DevContext);
 
 	const { showOutput, llmOutput, makeRequest } = useLLM();
 
@@ -38,11 +42,23 @@ function HintPrompt({ id }: { id: string }) {
 				Hint
 			</div>
 
-			<div className="flex gap-2 flex-wrap text-sm">
-				<Button onPress={() => makeHintReq('task')}>Task?</Button>
-				<Button onPress={() => makeHintReq('purpose')}>Purpose?</Button>
-				<Button onPress={() => makeHintReq('breakdown')}>Breakdown?</Button>
-			</div>
+			{user?.type === 'registered' && !dev && (
+				<div className="flex gap-2 flex-wrap text-sm">
+					<Button onPress={() => makeHintReq('task')}>Task?</Button>
+					<Button onPress={() => makeHintReq('purpose')}>Purpose?</Button>
+					<Button onPress={() => makeHintReq('breakdown')}>Breakdown?</Button>
+				</div>
+			)}
+
+			{user?.type !== 'registered' && (
+				<p className="m-0!">You must be logged in to use hints.</p>
+			)}
+
+			{dev && (
+				<p className="m-0!">
+					Hints are unavailable when viewing local content.
+				</p>
+			)}
 
 			{showOutput && (
 				<div className="text-sm my-2">

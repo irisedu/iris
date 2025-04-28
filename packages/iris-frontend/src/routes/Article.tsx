@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, createContext } from 'react';
 import {
 	useRevalidator,
 	useLoaderData,
@@ -30,6 +30,8 @@ import store, { type RootState } from '$state/store';
 import './Article.css';
 import 'katex/dist/katex.css';
 import useAuthorization from '$hooks/useAuthorization';
+
+export const DevContext = createContext({ dev: false });
 
 function parsePath(slug: string): [string, string[]] {
 	const routePath = slug.replace(/\/+$/g, '');
@@ -224,72 +226,77 @@ export function Component() {
 	if (!articleData) return;
 
 	return (
-		<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
-			{user?.type === 'registered' && !dev && (
-				<SelectionMenu articleData={articleData} />
-			)}
+		<DevContext.Provider value={{ dev }}>
+			<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
+				{user?.type === 'registered' && !dev && (
+					<SelectionMenu articleData={articleData} />
+				)}
 
-			{seriesData && (
-				<Sidebar articleData={articleData} seriesData={seriesData} />
-			)}
+				{seriesData && (
+					<Sidebar articleData={articleData} seriesData={seriesData} />
+				)}
 
-			<div
-				className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72"
-				data-indexing-boundary={
-					seriesData
-						? `/page/${routePath}.irisc`
-						: `/page/${routePath}/SUMMARY.irisc`
-				}
-			>
-				<h1 className="mt-0 mb-4">
-					<IriscInlineContent
-						nodes={articleData.meta.title ?? []}
-						ctx={articleData}
-					/>
-				</h1>
+				<div
+					className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72"
+					data-indexing-boundary={
+						seriesData
+							? `/page/${routePath}.irisc`
+							: `/page/${routePath}/SUMMARY.irisc`
+					}
+				>
+					<h1 className="mt-0 mb-4">
+						<IriscInlineContent
+							nodes={articleData.meta.title ?? []}
+							ctx={articleData}
+						/>
+					</h1>
 
-				<IriscBlockContent nodes={articleData.data} ctx={articleData} />
+					<IriscBlockContent nodes={articleData.data} ctx={articleData} />
 
-				<div className="text-sm mt-5">
-					{articleData.meta.unlinkedPages &&
-						articleData.meta.unlinkedPages.length === 1 && (
-							<>
-								<AriaLink onPress={() => setUnlinkedVisible((vis) => !vis)}>
-									Show {articleData.meta.unlinkedPages[0].children?.length}{' '}
-									unlinked page(s)
-								</AriaLink>
+					<div className="text-sm mt-5">
+						{articleData.meta.unlinkedPages &&
+							articleData.meta.unlinkedPages.length === 1 && (
+								<>
+									<AriaLink onPress={() => setUnlinkedVisible((vis) => !vis)}>
+										Show {articleData.meta.unlinkedPages[0].children?.length}{' '}
+										unlinked page(s)
+									</AriaLink>
 
-								{unlinkedVisible && (
-									<Summary
-										summary={articleData.meta.unlinkedPages}
-										ctx={articleData}
-									/>
-								)}
-							</>
+									{unlinkedVisible && (
+										<Summary
+											summary={articleData.meta.unlinkedPages}
+											ctx={articleData}
+										/>
+									)}
+								</>
+							)}
+					</div>
+
+					<hr className="my-3 last:mb-0" />
+
+					{articleData.meta.docAttrs?.authors &&
+						articleData.meta.docAttrs.authors.length > 0 && (
+							<p className="text-sm mb-0">
+								By {articleData.meta.docAttrs.authors.join(', ')}
+							</p>
+						)}
+
+					{articleData.meta.docAttrs?.tags &&
+						articleData.meta.docAttrs.tags.length > 0 && (
+							<TagGroup
+								selectionMode="none"
+								className="react-aria-TagGroup my-2"
+							>
+								<Label>Tags:</Label>
+								<TagList>
+									{articleData.meta.docAttrs.tags.map((t, i) => (
+										<Tag key={i}>{t}</Tag>
+									))}
+								</TagList>
+							</TagGroup>
 						)}
 				</div>
-
-				<hr className="my-3 last:mb-0" />
-
-				{articleData.meta.docAttrs?.authors &&
-					articleData.meta.docAttrs.authors.length > 0 && (
-						<p className="text-sm mb-0">
-							By {articleData.meta.docAttrs.authors.join(', ')}
-						</p>
-					)}
-
-				{articleData.meta.docAttrs?.tags &&
-					articleData.meta.docAttrs.tags.length > 0 && (
-						<TagGroup selectionMode="none" className="react-aria-TagGroup my-2">
-							<Label>Tags:</Label>
-							<TagList>
-								{articleData.meta.docAttrs.tags.map((t, i) => (
-									<Tag key={i}>{t}</Tag>
-								))}
-							</TagList>
-						</TagGroup>
-					)}
-			</div>
-		</article>
+			</article>
+		</DevContext.Provider>
 	);
 }

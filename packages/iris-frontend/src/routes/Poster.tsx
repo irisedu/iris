@@ -21,11 +21,8 @@ import './Poster.css';
    Everything else default
 */
 
-export function Component() {
+export function useWidellSimulation() {
 	useEffect(() => {
-		document.title =
-			'Iris: An AI-Enhanced Content Management System Supporting Accessibility';
-
 		// Dyslexia approximation
 		// https://raw.githubusercontent.com/geon/geon.github.com/refs/heads/master/_posts/2016-03-03-dsxyliea.md
 		const textNodes = document.querySelector('#dyslexia')!.childNodes!;
@@ -112,6 +109,15 @@ export function Component() {
 		const int = setInterval(messUpWords, 50);
 		return () => clearInterval(int);
 	}, []);
+}
+
+export function Component() {
+	useEffect(() => {
+		document.title =
+			'Iris: An AI-Enhanced Content Management System Supporting Accessibility';
+	}, []);
+
+	useWidellSimulation();
 
 	return (
 		<StyleProvider className="p-[12mm] print:pb-0">

@@ -13,7 +13,7 @@ export function Component() {
 	useWidellSimulation(simulate);
 
 	return (
-		<StyleProvider className="flex flex-col w-[4in] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
+		<StyleProvider className="flex flex-col w-[calc(4in-4mm)] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
 			<Switch
 				className="react-aria-Switch"
 				isSelected={simulate}

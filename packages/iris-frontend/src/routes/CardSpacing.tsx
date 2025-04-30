@@ -27,7 +27,7 @@ export function Component() {
 	}, []);
 
 	return (
-		<StyleProvider className="flex flex-col w-[4in] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
+		<StyleProvider className="flex flex-col w-[calc(4in-4mm)] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
 			<div className="flex flex-row flex-wrap gap-2 mb-2">
 				<Button
 					onPress={() => setPreset('compact')}
@@ -95,7 +95,7 @@ export function Component() {
 			<div className="grow" />
 
 			<div className="font-bold text-center text-[0.9rem]">
-				“Compact, Open, and Relaxed” spacing
+				“COR” spacing presets
 			</div>
 			<div className="text-center text-iris-900 text-xs">
 				iris.3e.cs.ucsb.edu/poster/card-spacing

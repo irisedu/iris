@@ -21,8 +21,10 @@ import './Poster.css';
    Everything else default
 */
 
-export function useWidellSimulation() {
+export function useWidellSimulation(simulate?: boolean) {
 	useEffect(() => {
+		if (simulate === false) return;
+
 		// Dyslexia approximation
 		// https://raw.githubusercontent.com/geon/geon.github.com/refs/heads/master/_posts/2016-03-03-dsxyliea.md
 		const textNodes = document.querySelector('#dyslexia')!.childNodes!;
@@ -108,7 +110,7 @@ export function useWidellSimulation() {
 
 		const int = setInterval(messUpWords, 50);
 		return () => clearInterval(int);
-	}, []);
+	}, [simulate]);
 }
 
 export function Component() {

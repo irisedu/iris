@@ -44,8 +44,12 @@ const router = createBrowserRouter(
 
 			<Route path="/poster" lazy={() => import('./routes/Poster')} />
 			<Route
-				path="/card-dyslexia"
+				path="/poster/card-dyslexia"
 				lazy={() => import('./routes/CardDyslexia')}
+			/>
+			<Route
+				path="/poster/card-spacing"
+				lazy={() => import('./routes/CardSpacing')}
 			/>
 		</>
 	)

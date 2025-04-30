@@ -1,17 +1,32 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import StyleProvider from '$components/StyleProvider';
 import { useWidellSimulation } from './Poster';
+import { Switch } from 'iris-components';
 
 export function Component() {
+	const [simulate, setSimulate] = useState(true);
+
 	useEffect(() => {
 		document.title = 'Dyslexia Simulation Card • Iris Poster';
 	}, []);
 
-	useWidellSimulation();
+	useWidellSimulation(simulate);
 
 	return (
 		<StyleProvider className="flex flex-col w-[4in] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
-			<p id="dyslexia" className="text-left text-[1.2rem]">
+			<Switch
+				className="react-aria-Switch"
+				isSelected={simulate}
+				onChange={(val) => setSimulate(val)}
+			>
+				Enable simulation
+			</Switch>
+
+			<p
+				id="dyslexia"
+				className="text-left text-[1.2rem] shrink overflow-y-auto"
+				key={simulate.toString()}
+			>
 				“But typography can enhance your writing. Typography can create a better
 				first impression. Typography can reinforce your key points. Typography
 				can extend reader attention. When you ignore typography, you’re ignoring
@@ -30,7 +45,7 @@ export function Component() {
 				Text by Matthew Butterick [2010].
 			</div>
 			<div className="text-center text-iris-900 text-xs">
-				iris.3e.cs.ucsb.edu/card-dyslexia
+				iris.3e.cs.ucsb.edu/poster/card-dyslexia
 			</div>
 		</StyleProvider>
 	);

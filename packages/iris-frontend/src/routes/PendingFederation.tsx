@@ -5,22 +5,17 @@ import useAuthorization from '$hooks/useAuthorization';
 import iris from '$assets/iris.svg';
 
 import Google from '~icons/tabler/brand-google-filled';
-import Ticket from '~icons/tabler/alpha';
+import CAS from '~icons/tabler/user-circle';
 import Right from '~icons/tabler/arrow-right';
 
 function ProviderIcon({ provider }: { provider: string }) {
 	switch (provider) {
 		case 'google':
 			return <Google className="w-8 h-8 text-iris-700" />;
-		case 'ticket':
-			return <Ticket className="w-8 h-8 text-iris-700" />;
+		case 'cas:ucsb':
+			return <CAS className="w-8 h-8 text-iris-700" />;
 	}
 }
-
-const providers: Record<string, string> = {
-	google: 'Google',
-	ticket: 'Innostruction (Artemis)'
-};
 
 export function Component() {
 	const user = useAuthorization({ required: true });
@@ -48,14 +43,14 @@ export function Component() {
 
 				{user.data.existingAccount ? (
 					<p>
-						You are linking your {providers[user.provider]} account with your
-						existing Iris account with email <strong>{user.data.email}</strong>.
-						Do you want to continue?
+						You are linking your {user.providerName} account with your existing
+						Iris account with email <strong>{user.data.email}</strong>. Do you
+						want to continue?
 					</p>
 				) : (
 					<p>
 						You are about to create a new Iris account using your{' '}
-						{providers[user.provider]} account with email{' '}
+						{user.providerName} account with email{' '}
 						<strong>{user.data.email}</strong>. Do you want to continue?
 					</p>
 				)}

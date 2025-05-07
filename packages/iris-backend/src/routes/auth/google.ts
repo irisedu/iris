@@ -8,7 +8,7 @@ export const googleRouter = Router();
 const clientOpts = {
 	clientId: process.env.AUTH_GOOGLE_CLIENT_ID,
 	clientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET,
-	redirectUri: process.env.AUTH_GOOGLE_REDIRECT_URL
+	redirectUri: process.env.BASE_URL! + '/auth/google/callback'
 };
 
 const scopes = [
@@ -69,6 +69,7 @@ googleRouter.get('/callback', doubleCsrfProtection, (req, res, next) => {
 				req.session.user = {
 					type: 'pendingFederation',
 					provider: 'google',
+					providerName: 'Google',
 					data: {
 						existingAccount: existingUser?.id,
 						id: userInfo.data.id,

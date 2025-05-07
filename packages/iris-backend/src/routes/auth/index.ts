@@ -6,7 +6,7 @@ import { db } from '../../db/index.js';
 import { InferResult } from 'kysely';
 
 import { googleRouter } from './google.js';
-import { ticketRouter } from './ticket.js';
+import { casRouter } from './cas.js';
 
 export interface RegisteredSessionData {
 	type: 'registered';
@@ -15,7 +15,8 @@ export interface RegisteredSessionData {
 
 export interface PendingFederationSessionData {
 	type: 'pendingFederation';
-	provider: 'google' | 'ticket';
+	provider: string;
+	providerName: string;
 	data: {
 		existingAccount?: string;
 		id: string;
@@ -158,7 +159,7 @@ authRouter.post('/confirm-federation', (req, res, next) => {
 });
 
 authRouter.use('/google', googleRouter);
-authRouter.use('/ticket', ticketRouter);
+authRouter.use('/cas', casRouter);
 
 export function requireAuth({ group }: { group?: string }): RequestHandler {
 	return (req, res, next) => {

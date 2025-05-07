@@ -6,6 +6,7 @@ Business logic for Iris.
 
 - `NODE_ENV`: `development` or `production`
 - `TRUST_PROXY`: Set to `1` if the server is behind a reverse proxy.
+- `BASE_URL`: The base URL that Iris is hosted at. Used for SSO redirect URLs.
 - `DATABASE_URL`: The database connection string. PostgreSQL is expected.
 - `REDIS_URL`: The Redis connection string.
 - `COOKIE_SECRET`: The secret for signing cookies.
@@ -13,11 +14,6 @@ Business logic for Iris.
 - `AUTH_SESSION_PREFIX`: The prefix to use for the Redis session store.
 - `AUTH_GOOGLE_CLIENT_ID`: The client ID for Google SSO.
 - `AUTH_GOOGLE_CLIENT_SECRET`: The secret for Google SSO.
-- `AUTH_GOOGLE_REDIRECT_URL`: The redirect URL for Google SSO.
-- `AUTH_TICKET_AUTH_URL`: URL to redirect to for ticket SSO.
-- `AUTH_TICKET_SERVICE_ID`: Service ID for ticket SSO.
-- `AUTH_TICKET_REDIRECT_URL`: The callback URL for ticket SSO.
-- `AUTH_TICKET_VALIDATE_URL`: The validation URL for ticket SSO.
 - `OLLAMA_HOST`: Ollama API URL.
 - `OLLAMA_MODEL`: Ollama model.
 

@@ -7,7 +7,7 @@ export function Component() {
 	useEffect(() => {
 		document.title = 'Login • Iris';
 		if (user && user.type === 'loggedOut')
-			window.location.replace('/auth/ticket/login');
+			window.location.replace('/auth/cas/ucsb/login');
 	}, [user]);
 
 	return <h1 className="mt-0 text-center">Redirecting...</h1>;

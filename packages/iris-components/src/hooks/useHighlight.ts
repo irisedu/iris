@@ -3,8 +3,6 @@ import hljs from 'highlight.js';
 // @ts-expect-error External code without types
 import mergeHTMLPlugin from './highlightMergeHTMLPlugin';
 
-import './useHighlight.css';
-
 hljs.configure({
 	ignoreUnescapedHTML: true,
 	languages: []
@@ -12,6 +10,7 @@ hljs.configure({
 
 hljs.addPlugin(mergeHTMLPlugin);
 
+// This does not provide any theme.
 export function useHighlight() {
 	useEffect(() => {
 		document.querySelectorAll('pre code').forEach((elem) => {

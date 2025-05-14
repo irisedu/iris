@@ -18,6 +18,7 @@ import {
 } from '@irisedu/schemas';
 import { IriscBlockContent } from './nodes/IriscNode';
 import {
+	useHighlight,
 	Button,
 	Checkbox,
 	CheckboxGroup,
@@ -28,7 +29,6 @@ import {
 	TextArea,
 	TextField
 } from 'iris-components';
-import { useHighlight } from '$hooks/useHighlight';
 import { fetchCsrf } from '../utils';
 
 import { useSelector } from 'react-redux';

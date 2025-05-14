@@ -7,6 +7,9 @@ import { type RootState } from '$state/store';
 
 import './StyleProvider.css';
 
+import hljsLight from 'highlight.js/styles/github.css?url';
+import hljsDark from 'highlight.js/styles/github-dark.css?url';
+
 interface FontSettings {
 	smallcaps?: string;
 	sans?: string;
@@ -38,6 +41,7 @@ function StyleProvider({
 	const hueShift = useSelector((state: RootState) => state.prefs.hueShift);
 
 	const prefersDark = useMediaQuery({ query: '(prefers-color-scheme: dark)' });
+	const dark = theme === 'auto' ? prefersDark : theme === 'dark';
 
 	const {
 		font,
@@ -62,11 +66,9 @@ function StyleProvider({
 	}, [textSettings]);
 
 	useEffect(() => {
-		const dark = theme === 'auto' ? prefersDark : theme === 'dark';
-
 		if (dark) document.documentElement.classList.add('dark');
 		else document.documentElement.classList.remove('dark');
-	}, [theme, prefersDark]);
+	}, [dark]);
 
 	useEffect(() => {
 		const style = document.documentElement.style;
@@ -87,6 +89,8 @@ function StyleProvider({
 		>
 			<ReadingRuler />
 			{children}
+
+			<link rel="stylesheet" href={dark ? hljsDark : hljsLight} />
 		</div>
 	);
 }

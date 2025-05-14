@@ -8,6 +8,7 @@ import {
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import {
+	useHighlight,
 	goToAnchor,
 	Link as AriaLink,
 	TagGroup,
@@ -21,7 +22,6 @@ import {
 	IriscInlineContent,
 	Summary
 } from '$components/nodes/IriscNode';
-import { useHighlight } from '$hooks/useHighlight';
 import SelectionMenu from '$components/SelectionMenu';
 
 import { useSelector } from 'react-redux';

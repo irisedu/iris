@@ -7,7 +7,7 @@ import {
 	useNodeViews
 } from '@nytimes/react-prosemirror';
 import { type NodeViewConstructor } from 'prosemirror-view';
-import FloatingMenu from './FloatingMenu';
+import ClickEditors from './ClickEditors';
 import { handlePaste } from 'iris-prosemirror';
 
 export interface ProseMirrorEditorProps extends ProseMirrorProps {
@@ -45,7 +45,7 @@ function ProseMirrorEditor({
 			}}
 			handlePaste={handlePaste}
 		>
-			<FloatingMenu />
+			<ClickEditors />
 			{children}
 			{renderNodeViews()}
 		</ProseMirror>

@@ -15,11 +15,6 @@ import {
 	deleteTable
 } from 'prosemirror-tables';
 import { CommandButton } from './components';
-import {
-	useVisibilityParent,
-	VisibilityContext,
-	VisibilityGroup
-} from 'iris-components';
 
 import ColumnBefore from '~icons/tabler/column-insert-left';
 import ColumnAfter from '~icons/tabler/column-insert-right';
@@ -41,130 +36,101 @@ function justifyVisible(view: EditorView) {
 	return setCellAttr('justify', '???')(view.state, undefined, view);
 }
 
-function TableMenu({ index }: { index: number }) {
-	const { childVisibility, setChildVisibility } = useVisibilityParent(index);
-
-	let groupIdx = 0;
-	let colIdx = 0;
-	let rowIdx = 0;
-	let cellIdx = 0;
-	let headerIdx = 0;
-	let justifyIdx = 0;
-	let lastIdx = 0;
-
+function TableMenu() {
 	return (
-		<VisibilityContext.Provider value={{ childVisibility, setChildVisibility }}>
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+		<>
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={colIdx++}
 					Icon={ColumnBefore}
 					command={addColumnBefore}
 					tooltip="Add Column Before"
 				/>
 				<CommandButton
-					index={colIdx++}
 					Icon={ColumnAfter}
 					command={addColumnAfter}
 					tooltip="Add Column After"
 				/>
 				<CommandButton
-					index={colIdx++}
 					Icon={DeleteColumn}
 					command={deleteColumn}
 					tooltip="Delete Column"
 				/>
-			</VisibilityGroup>
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={rowIdx++}
 					Icon={RowBefore}
 					command={addRowBefore}
 					tooltip="Add Row Before"
 				/>
 				<CommandButton
-					index={rowIdx++}
 					Icon={RowAfter}
 					command={addRowAfter}
 					tooltip="Add Row After"
 				/>
 				<CommandButton
-					index={rowIdx++}
 					Icon={DeleteRow}
 					command={deleteRow}
 					tooltip="Delete Row"
 				/>
-			</VisibilityGroup>
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={cellIdx++}
 					Icon={Merge}
 					command={mergeCells}
 					tooltip="Merge Cells"
 				/>
-				<CommandButton
-					index={cellIdx++}
-					Icon={Split}
-					command={splitCell}
-					tooltip="Split Cell"
-				/>
-			</VisibilityGroup>
+				<CommandButton Icon={Split} command={splitCell} tooltip="Split Cell" />
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={headerIdx++}
 					Icon={HeaderRow}
 					command={toggleHeaderRow}
 					tooltip="Toggle Header Row"
 				/>
 				<CommandButton
-					index={headerIdx++}
 					Icon={HeaderColumn}
 					command={toggleHeaderColumn}
 					tooltip="Toggle Header Column"
 				/>
 				<CommandButton
-					index={headerIdx++}
 					Icon={HeaderCell}
 					command={toggleHeaderCell}
 					tooltip="Toggle Header Cell"
 				/>
-			</VisibilityGroup>
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={justifyIdx++}
 					Icon={AlignLeft}
 					command={setCellAttr('justify', 'left')}
 					tooltip="Justify Left"
-					isVisible={justifyVisible}
+					isEnabled={justifyVisible}
 				/>
 				<CommandButton
-					index={justifyIdx++}
 					Icon={AlignCenter}
 					command={setCellAttr('justify', 'center')}
 					tooltip="Justify Center"
-					isVisible={justifyVisible}
+					isEnabled={justifyVisible}
 				/>
 				<CommandButton
-					index={justifyIdx++}
 					Icon={AlignRight}
 					command={setCellAttr('justify', 'right')}
 					tooltip="Justify Right"
-					isVisible={justifyVisible}
+					isEnabled={justifyVisible}
 				/>
-			</VisibilityGroup>
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={lastIdx++}
 					Icon={DeleteTable}
 					command={deleteTable}
 					tooltip="Delete"
 				/>
-			</VisibilityGroup>
-		</VisibilityContext.Provider>
+			</div>
+		</>
 	);
 }
 

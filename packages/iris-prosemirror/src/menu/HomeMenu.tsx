@@ -4,10 +4,6 @@ import {
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
 import {
-	useVisibility,
-	useVisibilityParent,
-	VisibilityContext,
-	VisibilityGroup,
 	ToggleButton,
 	MenuTrigger,
 	Popover,
@@ -55,8 +51,8 @@ const {
 
 const { getAside, insertAside } = asideComponent.commands;
 
-function TextStyleMenu({ index }: { index: number }) {
-	const [visible, setVisible] = useVisibility(index);
+function TextStyleMenu() {
+	const [disabled, setDisabled] = useState(false);
 	const [normalVisible, setNormalVisible] = useState(false);
 	const [headingsVisible, setHeadingsVisible] = useState(false);
 	const [codeVisible, setCodeVisible] = useState(false);
@@ -111,7 +107,7 @@ function TextStyleMenu({ index }: { index: number }) {
 			language: '???'
 		})(view.state, undefined, view);
 
-		if (setVisible) setVisible(normal || headings || codeBlock);
+		setDisabled(!(normal || headings || codeBlock));
 		setNormalVisible(normal);
 		setHeadingsVisible(headings);
 		setCodeVisible(codeBlock);
@@ -135,11 +131,12 @@ function TextStyleMenu({ index }: { index: number }) {
 			<MenuTrigger>
 				<MenuBarTooltip tooltip="Text Style">
 					<ToggleButton
-						className={`round-button${visible ? '' : ' hidden'}`}
+						className="round-button"
 						aria-label="Text Style"
 						isSelected={active}
+						isDisabled={disabled}
 					>
-						<TextStyle className="text-iris-500" />
+						<TextStyle />
 					</ToggleButton>
 				</MenuBarTooltip>
 				<Popover>
@@ -211,46 +208,35 @@ function MathPreviewToggle() {
 				onChange={onChange}
 				aria-label="Math Preview"
 			>
-				<MathPreview className="text-iris-500" />
+				<MathPreview />
 			</ToggleButton>
 		</MenuBarTooltip>
 	);
 }
 
-function HomeMenu({ index }: { index: number }) {
-	const { childVisibility, setChildVisibility } = useVisibilityParent(index);
-
-	let groupIdx = 0;
-	let formatIdx = 0;
-	let listIdx = 0;
-	let asideIdx = 0;
-
+function HomeMenu() {
 	return (
-		<VisibilityContext.Provider value={{ childVisibility, setChildVisibility }}>
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+		<>
+			<div className="flex flex-row gap-2">
 				<ToggleMarkButton
-					index={formatIdx++}
 					Icon={Bold}
 					markType={docSchema.marks.bold}
 					tooltip="Bold"
 					keys={['Mod', 'B']}
 				/>
 				<ToggleMarkButton
-					index={formatIdx++}
 					Icon={Italic}
 					markType={docSchema.marks.italic}
 					tooltip="Italic"
 					keys={['Mod', 'I']}
 				/>
 				<ToggleMarkButton
-					index={formatIdx++}
 					Icon={Underline}
 					markType={docSchema.marks.underline}
 					tooltip="Underline"
 					keys={['Mod', 'U']}
 				/>
 				<ToggleMarkButton
-					index={formatIdx++}
 					Icon={Link}
 					markType={docSchema.marks.link}
 					command={linkComponent.commands.toggleLink}
@@ -258,30 +244,27 @@ function HomeMenu({ index }: { index: number }) {
 					keys={['Mod', 'K']}
 				/>
 				<ToggleMarkButton
-					index={formatIdx++}
 					Icon={Code}
 					markType={docSchema.marks.code}
 					tooltip="Inline Code"
 					keys={['Mod', '`']}
 				/>
 
-				<TextStyleMenu index={formatIdx++} />
+				<TextStyleMenu />
 
 				<CommandButton
-					index={formatIdx++}
 					Icon={ClearFormatting}
 					command={clearFormatting}
 					tooltip="Clear Formatting"
 				/>
-			</VisibilityGroup>
+			</div>
 
-			{/* Does not need VisibilityGroup since preview toggle is always visible */}
 			<div className="flex flex-row gap-2">
 				<ToggleMarkButton
 					Icon={() => (
 						<>
-							<Math className="text-iris-500 inline w-4 h-4" />
-							<sup className="text-iris-500 font-bold" aria-hidden>
+							<Math className="inline w-4 h-4" />
+							<sup className="font-bold" aria-hidden>
 								i
 							</sup>
 						</>
@@ -295,8 +278,8 @@ function HomeMenu({ index }: { index: number }) {
 				<CommandButton
 					Icon={() => (
 						<>
-							<Math className="text-iris-500 inline w-4 h-4" />
-							<sup className="text-iris-500 font-bold" aria-hidden>
+							<Math className="inline w-4 h-4" />
+							<sup className="font-bold" aria-hidden>
 								d
 							</sup>
 						</>
@@ -309,36 +292,28 @@ function HomeMenu({ index }: { index: number }) {
 				<MathPreviewToggle />
 			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
+			<div className="flex flex-row gap-2">
 				<CommandButton
-					index={listIdx++}
 					Icon={OrderedList}
 					command={wrapInList(docSchema.nodes.ordered_list)}
 					tooltip="Number List"
 				/>
 				<CommandButton
-					index={listIdx++}
 					Icon={BulletList}
 					command={wrapInList(docSchema.nodes.bullet_list)}
 					tooltip="Bullet List"
 				/>
 				<CommandButton
-					index={listIdx++}
 					Icon={Outdent}
 					command={liftListItem(docSchema.nodes.list_item)}
 					tooltip="List Outdent"
 				/>
-			</VisibilityGroup>
+			</div>
 
-			<VisibilityGroup index={groupIdx++} className="flex flex-row gap-2">
-				<CommandButton
-					index={asideIdx++}
-					Icon={Aside}
-					command={insertAside}
-					tooltip="Aside"
-				/>
-			</VisibilityGroup>
-		</VisibilityContext.Provider>
+			<div className="flex flex-row gap-2">
+				<CommandButton Icon={Aside} command={insertAside} tooltip="Aside" />
+			</div>
+		</>
 	);
 }
 

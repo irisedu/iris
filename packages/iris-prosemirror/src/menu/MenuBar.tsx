@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	cmdOrCtrl,
-	useVisibilityParent,
-	VisibilityContext,
 	Tabs,
 	TabsContext,
 	TabList,
@@ -25,29 +23,26 @@ import Redo from '~icons/tabler/arrow-forward-up';
 interface TabData {
 	id: string;
 	name: string;
-	autoVis?: boolean;
 }
 
 const tabs: TabData[] = [
 	{ id: 'home', name: 'Home' },
 	{ id: 'format', name: 'Format' },
 	{ id: 'insert', name: 'Insert' },
-	{ id: 'table', name: 'Table', autoVis: true },
-	{ id: 'figure', name: 'Figure', autoVis: true }
+	{ id: 'table', name: 'Table' },
+	{ id: 'figure', name: 'Figure' }
 ];
 
 const digits: Record<string, number> = {
 	Digit1: 0,
 	Digit2: 1,
 	Digit3: 2,
-	Digit4: 3
+	Digit4: 3,
+	Digit5: 4
 };
 
 export function MenuBar() {
-	const { childVisibility, setChildVisibility } = useVisibilityParent();
 	const [currentTab, setCurrentTab] = useState<Key | undefined>();
-
-	const prevChildVisibility = useRef<typeof childVisibility>([]);
 
 	useEffect(() => {
 		function onKeyDown(e: KeyboardEvent) {
@@ -56,37 +51,14 @@ export function MenuBar() {
 			const digit = digits[e.code];
 			if (digit === undefined) return;
 
-			let openTabs = childVisibility.reduce(
-				(acc: TabData[], curr: boolean, i: number) => {
-					return curr ? [...acc, tabs[i]] : acc;
-				},
-				[]
-			);
-
-			openTabs = [...openTabs, ...tabs.slice(childVisibility.length)];
-
-			const tab = openTabs[digit];
+			const tab = tabs[digit];
 			if (tab) setCurrentTab(tab.id);
 		}
 
 		document.addEventListener('keydown', onKeyDown);
 
-		// Auto open tabs
-		for (let i = 0; i < tabs.length; i++) {
-			const tab = tabs[i];
-			if (!tab.autoVis) continue;
-
-			const prevVis = prevChildVisibility.current[i];
-			const vis = childVisibility[i];
-
-			if (!prevVis && vis) {
-				setCurrentTab(tab.id);
-				break;
-			}
-		}
-
 		return () => document.removeEventListener('keydown', onKeyDown);
-	}, [childVisibility]);
+	}, []);
 
 	return (
 		<TabsContext.Provider
@@ -100,71 +72,64 @@ export function MenuBar() {
 							command={undo}
 							tooltip="Undo"
 							keys={['Mod', 'Z']}
-							alwaysVisible
+							alwaysEnabled
 						/>
 						<CommandButton
 							Icon={Redo}
 							command={redo}
 							tooltip="Redo"
 							keys={['Mod', 'Y']}
-							alwaysVisible
+							alwaysEnabled
 						/>
 					</div>
 
-					<VisibilityContext.Provider
-						value={{ childVisibility, setChildVisibility }}
+					<TabPanel
+						id="home"
+						className="react-aria-TabPanel flex flex-row gap-6"
+						shouldForceMount
 					>
-						<TabPanel
-							id="home"
-							className="react-aria-TabPanel flex flex-row gap-6"
-							shouldForceMount
-						>
-							<HomeMenu index={0} />
-						</TabPanel>
+						<HomeMenu />
+					</TabPanel>
 
-						<TabPanel
-							id="format"
-							className="react-aria-TabPanel flex flex-row gap-6"
-							shouldForceMount
-						>
-							<FormatMenu index={1} />
-						</TabPanel>
+					<TabPanel
+						id="format"
+						className="react-aria-TabPanel flex flex-row gap-6"
+						shouldForceMount
+					>
+						<FormatMenu />
+					</TabPanel>
 
-						<TabPanel
-							id="insert"
-							className="react-aria-TabPanel flex flex-row gap-6"
-							shouldForceMount
-						>
-							<InsertMenu index={2} setCurrentTab={setCurrentTab} />
-						</TabPanel>
+					<TabPanel
+						id="insert"
+						className="react-aria-TabPanel flex flex-row gap-6"
+						shouldForceMount
+					>
+						<InsertMenu setCurrentTab={setCurrentTab} />
+					</TabPanel>
 
-						<TabPanel
-							id="table"
-							className="react-aria-TabPanel flex flex-row gap-6"
-							shouldForceMount
-						>
-							<TableMenu index={3} />
-						</TabPanel>
+					<TabPanel
+						id="table"
+						className="react-aria-TabPanel flex flex-row gap-6"
+						shouldForceMount
+					>
+						<TableMenu />
+					</TabPanel>
 
-						<TabPanel
-							id="figure"
-							className="react-aria-TabPanel flex flex-row gap-6"
-							shouldForceMount
-						>
-							<FigureMenu index={4} />
-						</TabPanel>
-					</VisibilityContext.Provider>
+					<TabPanel
+						id="figure"
+						className="react-aria-TabPanel flex flex-row gap-6"
+						shouldForceMount
+					>
+						<FigureMenu />
+					</TabPanel>
 				</div>
 
 				<TabList>
-					{tabs.map(
-						(tab, i) =>
-							childVisibility[i] !== false && (
-								<Tab id={tab.id} key={tab.id}>
-									{tab.name}
-								</Tab>
-							)
-					)}
+					{tabs.map((tab) => (
+						<Tab id={tab.id} key={tab.id}>
+							{tab.name}
+						</Tab>
+					))}
 				</TabList>
 			</Tabs>
 		</TabsContext.Provider>

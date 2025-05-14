@@ -1,5 +1,5 @@
 .round-button {
-	@apply w-8 h-8 rounded-full text-iris-400;
+	@apply w-8 h-8 rounded-full text-iris-500;
 
 	-webkit-app-region: no-drag;
 

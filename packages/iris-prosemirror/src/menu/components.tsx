@@ -4,7 +4,6 @@ import {
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
 import {
-	useVisibility,
 	Button,
 	ToggleButton,
 	TooltipTrigger,
@@ -70,57 +69,55 @@ export function MenuBarTooltip({
 }
 
 interface CommandButtonProps extends ButtonProps {
-	index?: number;
-	Icon: FC<{ className: string }>;
+	Icon: FC<{ className?: string }>;
 	command: Command;
 	tooltip: string;
 	keys?: string[];
-	alwaysVisible?: boolean;
-	isVisible?: (view: EditorView) => boolean;
+	alwaysEnabled?: boolean;
+	isEnabled?: (view: EditorView) => boolean;
 }
 
 export function CommandButton({
-	index,
 	Icon,
 	command,
 	tooltip,
 	keys,
-	alwaysVisible,
-	isVisible,
+	alwaysEnabled,
+	isEnabled,
 	...props
 }: CommandButtonProps) {
-	const [visible, setVisible] = useVisibility(index);
+	const [disabled, setDisabled] = useState(false);
 	const onPress = useEditorEventCallback((view) => {
 		command(view.state, view.dispatch, view);
-
 		view.focus();
 	});
 
 	useEditorEffect((view) => {
-		if (setVisible)
-			setVisible(
-				alwaysVisible ||
-					(isVisible ? isVisible(view) : command(view.state, undefined, view))
-			);
+		setDisabled(
+			!(
+				alwaysEnabled ||
+				(isEnabled ? isEnabled(view) : command(view.state, undefined, view))
+			)
+		);
 	});
 
 	return (
 		<MenuBarTooltip tooltip={tooltip} keys={keys}>
 			<Button
-				className={`round-button${visible ? '' : ' hidden'}`}
+				className="round-button"
+				isDisabled={disabled}
 				onPress={onPress}
 				aria-label={tooltip}
 				{...props}
 			>
-				<Icon className="text-iris-500" />
+				<Icon />
 			</Button>
 		</MenuBarTooltip>
 	);
 }
 
 interface ToggleMarkButtonProps extends ToggleButtonProps {
-	index?: number;
-	Icon: FC<{ className: string }>;
+	Icon: FC<{ className?: string }>;
 	markType: MarkType;
 	command?: Command;
 	tooltip: string;
@@ -129,7 +126,6 @@ interface ToggleMarkButtonProps extends ToggleButtonProps {
 }
 
 export function ToggleMarkButton({
-	index,
 	Icon,
 	markType,
 	command,
@@ -137,7 +133,7 @@ export function ToggleMarkButton({
 	keys,
 	...props
 }: ToggleMarkButtonProps) {
-	const [visible, setVisible] = useVisibility(index);
+	const [disabled, setDisabled] = useState(false);
 	const [active, setActive] = useState(false);
 	const onChange = useEditorEventCallback((view, value) => {
 		(command || toggleMark(markType))(view.state, view.dispatch, view);
@@ -147,11 +143,9 @@ export function ToggleMarkButton({
 	});
 
 	useEditorEffect((view) => {
-		if (setVisible) {
-			setVisible(
-				(command || toggleMark(markType))(view.state, undefined, view)
-			);
-		}
+		setDisabled(
+			!(command || toggleMark(markType))(view.state, undefined, view)
+		);
 
 		setActive(markActive(view.state, markType));
 	});
@@ -159,13 +153,14 @@ export function ToggleMarkButton({
 	return (
 		<MenuBarTooltip tooltip={tooltip} keys={keys}>
 			<ToggleButton
-				className={`round-button${visible ? '' : ' hidden'}`}
+				className="round-button"
 				isSelected={active}
+				isDisabled={disabled}
 				onChange={onChange}
 				aria-label={tooltip}
 				{...props}
 			>
-				<Icon className="text-iris-500" />
+				<Icon />
 			</ToggleButton>
 		</MenuBarTooltip>
 	);

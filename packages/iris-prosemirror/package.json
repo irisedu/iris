@@ -4,8 +4,7 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
-		"./styles": "./src/styles/index.css",
-		"./styles/*.css": "./src/styles/*.css"
+		"./styles": "./src/styles/index.css"
 	},
 	"scripts": {
 		"tsc": "tsc --noEmit"

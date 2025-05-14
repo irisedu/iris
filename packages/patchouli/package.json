@@ -14,14 +14,14 @@
 	},
 	"dependencies": {
 		"@iarna/toml": "^2.2.5",
+		"@irisedu/schemas": "workspace:^",
 		"anymatch": "^3.1.3",
 		"bufferutil": "^4.0.8",
 		"chokidar": "^4.0.1",
-		"express": "^4.21.1",
+		"express": "^5.1.0",
 		"fs-extra": "^11.2.0",
 		"github-slugger": "^2.0.0",
-		"@irisedu/schemas": "workspace:^",
-		"katex": "^0.16.11",
+		"katex": "^0.16.22",
 		"nunjucks": "^3.2.4",
 		"rehype-minify-attribute-whitespace": "^4.0.1",
 		"rehype-minify-css-style": "^4.0.1",
@@ -35,14 +35,14 @@
 		"svgo": "^3.3.2",
 		"unified": "^11.0.5",
 		"utf-8-validate": "^6.0.5",
-		"ws": "^8.17.1",
-		"zod": "^3.23.8"
+		"ws": "^8.18.2",
+		"zod": "^3.24.4"
 	},
 	"devDependencies": {
-		"@types/express": "^5.0.0",
+		"@types/express": "^5.0.1",
 		"@types/fs-extra": "^11.0.4",
 		"@types/katex": "^0.16.7",
 		"@types/nunjucks": "^3.2.6",
-		"@types/ws": "^8.5.13"
+		"@types/ws": "^8.18.1"
 	}
 }

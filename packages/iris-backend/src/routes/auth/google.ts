@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { google } from 'googleapis';
-import { generateToken, doubleCsrfProtection } from '../../csrf.js';
+import { generateCsrfToken, doubleCsrfProtection } from '../../csrf.js';
 import { db } from '../../db/index.js';
 
 export const googleRouter = Router();
@@ -22,7 +22,7 @@ googleRouter.get('/login', (req, res) => {
 		oauthClient.generateAuthUrl({
 			scope: scopes,
 			access_type: 'offline',
-			state: generateToken(req, res, false, false)
+			state: generateCsrfToken(req, res)
 		})
 	);
 });

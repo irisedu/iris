@@ -35,9 +35,9 @@ function redactInfo(docPath: string, doc: JsonValue): JsonValue {
 	return doc;
 }
 
-documentsRouter.get('/page/*', (req, res, next) => {
-	const wildcards = req.params as unknown as string[]; // TODO
-	const docPath = wildcards[0];
+documentsRouter.get('/page/*splat', (req, res, next) => {
+	const { splat } = req.params as Record<string, string[]>; // TODO
+	const docPath = splat.join('/');
 
 	if (docPath.endsWith('.irisc') || docPath.endsWith('.iq.json')) {
 		// Document

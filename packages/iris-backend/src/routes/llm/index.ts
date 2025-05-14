@@ -272,34 +272,38 @@ async function handleHintPrompt(
 	}
 }
 
-llmRouter.post('/:method/page/*/:prompt', requireAuth({}), (req, res, next) => {
-	const wildcards = req.params as unknown as string[]; // TODO
-	const docPath = wildcards[0];
+llmRouter.post(
+	'/:method/page/*splat/:prompt',
+	requireAuth({}),
+	(req, res, next) => {
+		const { splat } = req.params as unknown as Record<string, string[]>; // TODO
+		const docPath = splat.join('/');
 
-	const { method, prompt } = req.params;
+		const { method, prompt } = req.params;
 
-	const user = req.session.user;
-	if (user?.type !== 'registered') {
-		// Impossible
-		res.sendStatus(401);
-		return;
+		const user = req.session.user;
+		if (user?.type !== 'registered') {
+			// Impossible
+			res.sendStatus(401);
+			return;
+		}
+
+		db.selectFrom('document_ptr')
+			.where('document_ptr.path', '=', docPath)
+			.where('document_ptr.rev', '=', 'latest')
+			.innerJoin('document', 'document.id', 'document_ptr.doc_id')
+			.select('document.data')
+			.select('document.id')
+			.executeTakeFirst()
+			.then(async (doc) => {
+				if (!doc) return res.sendStatus(404);
+
+				if (method === 'selection') {
+					await handleSelectionPrompt(docPath, doc.data, prompt, req, res);
+				} else if (method === 'hint') {
+					await handleHintPrompt(docPath, doc.data, prompt, req, res);
+				}
+			})
+			.catch(next);
 	}
-
-	db.selectFrom('document_ptr')
-		.where('document_ptr.path', '=', docPath)
-		.where('document_ptr.rev', '=', 'latest')
-		.innerJoin('document', 'document.id', 'document_ptr.doc_id')
-		.select('document.data')
-		.select('document.id')
-		.executeTakeFirst()
-		.then(async (doc) => {
-			if (!doc) return res.sendStatus(404);
-
-			if (method === 'selection') {
-				await handleSelectionPrompt(docPath, doc.data, prompt, req, res);
-			} else if (method === 'hint') {
-				await handleHintPrompt(docPath, doc.data, prompt, req, res);
-			}
-		})
-		.catch(next);
-});
+);

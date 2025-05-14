@@ -1,2 +1,9 @@
 packages:
-  - 'packages/*'
+  - packages/*
+onlyBuiltDependencies:
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - electron
+  - esbuild
+  - utf-8-validate

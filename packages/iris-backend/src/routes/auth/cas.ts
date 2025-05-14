@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { generateToken } from '../../csrf.js';
+import { generateCsrfToken } from '../../csrf.js';
 
 export const casRouter = Router();
 
@@ -63,7 +63,7 @@ casRouter.get('/:provider/login', (req, res) => {
 	}
 
 	// Generate CSRF for development
-	generateToken(req, res, false, false);
+	generateCsrfToken(req, res);
 
 	res.redirect(`${providerData.url}/login?service=${getService(provider)}`);
 });

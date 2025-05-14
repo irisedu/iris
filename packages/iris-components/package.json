@@ -10,9 +10,9 @@
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@react-aria/collections": "3.0.0-alpha.7",
-		"react": "^19.0.0",
-		"react-aria-components": "^1.4.1"
+		"@react-aria/collections": "3.0.0-rc.0",
+		"react": "^19.1.0",
+		"react-aria-components": "^1.8.0"
 	},
 	"devDependencies": {
 		"unplugin-icons": "^22.1.0"

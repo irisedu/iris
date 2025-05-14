@@ -8,9 +8,9 @@ import {
 
 export const judgeRouter = Router();
 
-judgeRouter.get('/page/*/submissions', async (req, res, next) => {
-	const wildcards = req.params as unknown as string[]; // TODO
-	const docPath = wildcards[0];
+judgeRouter.get('/page/*splat/submissions', async (req, res, next) => {
+	const { splat } = req.params as Record<string, string[]>; // TODO
+	const docPath = splat.join('/');
 
 	if (req.session.user?.type !== 'registered') {
 		res.json({});
@@ -31,7 +31,7 @@ judgeRouter.get('/page/*/submissions', async (req, res, next) => {
 				.selectFrom('question_submission')
 				.where('user_id', '=', userId)
 				.where('question_id', '=', ptr.doc_id)
-				.orderBy('created desc')
+				.orderBy('created', (ob) => ob.desc())
 				.selectAll()
 				.executeTakeFirst();
 
@@ -45,9 +45,9 @@ judgeRouter.get('/page/*/submissions', async (req, res, next) => {
 		.catch(next);
 });
 
-judgeRouter.post('/page/*/submissions', async (req, res, next) => {
-	const wildcards = req.params as unknown as string[]; // TODO
-	const docPath = wildcards[0];
+judgeRouter.post('/page/*splat/submissions', async (req, res, next) => {
+	const { splat } = req.params as Record<string, string[]>; // TODO
+	const docPath = splat.join('/');
 
 	const submissionRes = QuestionSubmission.safeParse(req.body);
 	if (!submissionRes.success) {

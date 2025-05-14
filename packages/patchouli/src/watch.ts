@@ -11,8 +11,6 @@ import type { UserConfig } from './config.js';
 import distConfig from './distConfig.json' with { type: 'json' };
 import type FileInfo from './FileInfo.js';
 
-express.static.mime.define({ 'application/json': ['irisc'] });
-
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export declare interface WatchServer {
 	on(event: 'build', listener: (fileInfo: FileInfo[]) => void): this;

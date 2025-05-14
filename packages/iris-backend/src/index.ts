@@ -10,20 +10,13 @@ import { authorRouter } from './routes/author/index.js';
 import { documentsRouter } from './routes/documents.js';
 import { judgeRouter } from './routes/judge/index.js';
 import { llmRouter } from './routes/llm/index.js';
-import { doubleCsrfProtection, generateToken } from './csrf.js';
 
 expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
 
 const app = express();
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(doubleCsrfProtection);
 app.use(express.json());
-
-app.use((req, res, next) => {
-	if (req.method === 'GET') generateToken(req, res, false, false);
-	next();
-});
 
 authSetup(app);
 
@@ -35,7 +28,7 @@ app.use('/api/llm', llmRouter);
 
 app.use(express.static(spaRoot));
 
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
 	res.sendFile(path.join(spaRoot, 'index.html'));
 });
 

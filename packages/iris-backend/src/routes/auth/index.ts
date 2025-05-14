@@ -4,6 +4,7 @@ import { RedisStore } from 'connect-redis';
 import { Redis } from 'ioredis';
 import { db } from '../../db/index.js';
 import { InferResult } from 'kysely';
+import { doubleCsrfProtection, generateCsrfToken } from '../../csrf.js';
 
 import { googleRouter } from './google.js';
 import { casRouter } from './cas.js';
@@ -55,6 +56,14 @@ export function authSetup(app: Express) {
 			}
 		})
 	);
+
+	// Must come after session (relies on SID)
+	app.use((req, res, next) => {
+		if (req.method === 'GET') generateCsrfToken(req, res);
+		next();
+	});
+
+	app.use(doubleCsrfProtection);
 }
 
 export const authRouter = Router();

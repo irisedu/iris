@@ -1,0 +1,31 @@
+.ribbon-tabs {
+	.react-aria-TabList {
+		@apply flex flex-row bg-iris-100;
+	}
+
+	.react-aria-Tab {
+		@apply relative cursor-pointer font-sans text-black text-sm whitespace-nowrap px-2 py-1 outline-offset-[0.4rem] border-2 border-transparent;
+
+		&[data-selected] {
+			@apply bg-iris-50 border-iris-200;
+		}
+
+		&[data-hovered]:not([data-selected]) {
+			@apply bg-iris-50;
+		}
+	}
+
+	.react-aria-TabPanel[data-inert] {
+		display: none !important;
+	}
+}
+
+.ribbon-tabs--bottom {
+	.react-aria-Tab {
+		@apply border-t-0 first:border-l-0;
+
+		&[data-selected]::after {
+			@apply absolute content-[''] bg-iris-50 left-0 right-0 h-2 -top-1;
+		}
+	}
+}

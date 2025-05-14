@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import {
+	cmdOrCtrl,
+	useVisibilityParent,
+	VisibilityContext,
 	Tabs,
 	TabsContext,
 	TabList,
@@ -9,11 +12,6 @@ import {
 } from 'iris-components';
 import { undo, redo } from 'prosemirror-history';
 import { CommandButton } from './components';
-import {
-	useVisibilityParent,
-	VisibilityContext
-} from '$components/VisibilityContext';
-import { cmdOrCtrl } from '../../../../utils';
 
 import HomeMenu from './HomeMenu';
 import FormatMenu from './FormatMenu';
@@ -45,7 +43,7 @@ const digits: Record<string, number> = {
 	Digit4: 3
 };
 
-function MenuBar() {
+export function MenuBar() {
 	const { childVisibility, setChildVisibility } = useVisibilityParent();
 	const [currentTab, setCurrentTab] = useState<Key | undefined>();
 
@@ -94,7 +92,7 @@ function MenuBar() {
 		<TabsContext.Provider
 			value={{ selectedKey: currentTab, onSelectionChange: setCurrentTab }}
 		>
-			<Tabs className="ribbon-tabs flex flex-col">
+			<Tabs className="ribbon-tabs ribbon-tabs--bottom flex flex-col">
 				<div className="flex flex-row items-center gap-6 p-2 overflow-auto no-scrollbar border-b-2 border-iris-200">
 					<div className="flex flex-row gap-2">
 						<CommandButton
@@ -172,5 +170,3 @@ function MenuBar() {
 		</TabsContext.Provider>
 	);
 }
-
-export default MenuBar;

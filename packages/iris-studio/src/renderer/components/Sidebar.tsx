@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import {
+	cmdOrCtrl,
 	Button,
 	MenuTrigger,
 	Popover,
@@ -13,7 +14,6 @@ import {
 } from 'iris-components';
 import { Tree, type TreeApi, type NodeRendererProps } from 'react-arborist';
 import useResizeObserver from 'use-resize-observer';
-import { cmdOrCtrl } from '../utils';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState, type AppDispatch } from '$state/store';

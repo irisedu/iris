@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { IrisNode } from '@irisedu/schemas';
-import ProseMirrorEditor from '../prosemirror/ProseMirrorEditor';
 import {
+	ProseMirrorEditor,
 	baseNodeViews,
 	basePlugins,
 	baseReactNodeViews,

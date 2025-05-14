@@ -6,6 +6,7 @@ import { data as diagnosticsTabData } from '$components/tabs/DiagnosticsTab';
 import CloseDialog from '$components/CloseDialog';
 import WatchServerWidget from '$components/WatchServerWidget';
 import {
+	cmdOrCtrl,
 	Button,
 	Tabs,
 	TabList,
@@ -17,7 +18,6 @@ import {
 	Collection
 } from 'iris-components';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
-import { cmdOrCtrl } from './utils';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';

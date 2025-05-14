@@ -2,7 +2,17 @@ import {
 	useEditorEffect,
 	useEditorEventCallback
 } from '@nytimes/react-prosemirror';
-import { MenuTrigger, Button, Popover, Menu, MenuItem } from 'iris-components';
+import {
+	useVisibility,
+	useVisibilityParent,
+	VisibilityContext,
+	VisibilityGroup,
+	MenuTrigger,
+	Button,
+	Popover,
+	Menu,
+	MenuItem
+} from 'iris-components';
 import {
 	docSchema,
 	insertNode,
@@ -10,12 +20,6 @@ import {
 	noteComponent
 } from 'iris-prosemirror';
 import { CommandButton, MenuBarTooltip } from './components';
-import {
-	useVisibility,
-	useVisibilityParent,
-	VisibilityContext,
-	VisibilityGroup
-} from '$components/VisibilityContext';
 
 import Space from '~icons/tabler/space';
 import Table from '~icons/tabler/table-plus';

@@ -10,6 +10,8 @@ import { type NodeViewConstructor } from 'prosemirror-view';
 import ClickEditors from './ClickEditors';
 import { handlePaste } from 'iris-prosemirror';
 
+import 'prosemirror-view/style/prosemirror.css';
+
 export interface ProseMirrorEditorProps extends ProseMirrorProps {
 	mount: HTMLElement | null;
 	stateRef: RefObject<EditorState>;
@@ -17,7 +19,7 @@ export interface ProseMirrorEditorProps extends ProseMirrorProps {
 	reactNodeViews?: Record<string, ReactNodeViewConstructor>;
 }
 
-function ProseMirrorEditor({
+export function ProseMirrorEditor({
 	children,
 	mount,
 	stateRef,
@@ -51,5 +53,3 @@ function ProseMirrorEditor({
 		</ProseMirror>
 	);
 }
-
-export default ProseMirrorEditor;

@@ -6,9 +6,8 @@ import type {
 	IriscMetadata
 } from '@irisedu/schemas';
 import deepEqual from 'deep-equal';
-import { Link as AriaLink, Input } from 'iris-components';
+import { goToAnchor, Link as AriaLink, Input } from 'iris-components';
 import { Link } from 'react-router-dom';
-import { goToAnchor } from '../../utils';
 import Image from './Image';
 import parse from 'html-react-parser';
 import { NetQuestionComponent } from '$components/QuestionComponent';

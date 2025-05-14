@@ -20,7 +20,6 @@ const processGlobal = {
 };
 
 const osGlobal = {
-	platform: os.platform(),
 	release: os.release(),
 	homedir: os.homedir(),
 	sep: path.sep

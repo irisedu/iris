@@ -2,6 +2,8 @@ import { useState, useRef } from 'react';
 import { EditorState } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
 import {
+	MenuBar,
+	ProseMirrorEditor,
 	docSchema,
 	docPlugins,
 	docNodeViews,
@@ -9,13 +11,8 @@ import {
 	saveFile
 } from 'iris-prosemirror';
 import { useFileEditor } from './editorUtils';
-import MenuBar from './prosemirror/menu/MenuBar';
 
 import type { TabData } from '$state/tabsSlice';
-
-import 'prosemirror-view/style/prosemirror.css';
-import './prosemirror/styles.css';
-import ProseMirrorEditor from './prosemirror/ProseMirrorEditor';
 
 const stateConfig = {
 	plugins: docPlugins

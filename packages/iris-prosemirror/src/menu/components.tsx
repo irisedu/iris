@@ -4,19 +4,20 @@ import {
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
 import {
+	useVisibility,
 	Button,
 	ToggleButton,
 	TooltipTrigger,
 	Tooltip,
 	type ButtonProps,
-	type ToggleButtonProps
+	type ToggleButtonProps,
+	isMacLike
 } from 'iris-components';
 import type { EditorState, Command } from 'prosemirror-state';
 import type { NodeType, MarkType } from 'prosemirror-model';
 import type { EditorView } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
 import { markActive } from 'iris-prosemirror';
-import { useVisibility } from '$components/VisibilityContext';
 
 export function isNode(state: EditorState, nodeType: NodeType) {
 	return state.selection.$from.parent.type === nodeType;
@@ -24,11 +25,11 @@ export function isNode(state: EditorState, nodeType: NodeType) {
 
 function displayKey(key: string) {
 	if (key === 'Mod') {
-		return os.platform === 'darwin' ? 'Cmd' : 'Ctrl';
+		return isMacLike ? 'Cmd' : 'Ctrl';
 	}
 
 	if (key === 'Alt') {
-		return os.platform === 'darwin' ? 'Option' : 'Alt';
+		return isMacLike ? 'Option' : 'Alt';
 	}
 
 	return key;

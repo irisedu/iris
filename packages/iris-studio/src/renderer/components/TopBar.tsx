@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Button, MenuTrigger, Popover, Menu } from 'iris-components';
+import { Button, MenuTrigger, Popover, Menu, isMacLike } from 'iris-components';
 import irisLogo from '$assets/iris-mono.svg';
 
 import { useSelector } from 'react-redux';
@@ -52,7 +52,7 @@ function TopBar({ menuItems, children }: TopBarProps) {
 
 			<DarkToggle />
 
-			{os.platform !== 'darwin' && (
+			{!isMacLike && (
 				<div className="flex flex-row gap-1">
 					<Button
 						className="round-button"

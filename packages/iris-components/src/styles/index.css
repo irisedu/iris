@@ -17,4 +17,7 @@
 @import './text.css';
 @import './tooltip.css';
 
+@import './ribbon-tabs.css';
+@import './round-button.css';
+
 @import './misc.css';

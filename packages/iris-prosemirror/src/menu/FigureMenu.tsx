@@ -3,7 +3,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from '$components/VisibilityContext';
+} from 'iris-components';
 import { docSchema, setParentAttr } from 'iris-prosemirror';
 
 import FloatLeft from '~icons/tabler/float-left';

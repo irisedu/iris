@@ -19,7 +19,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from '$components/VisibilityContext';
+} from 'iris-components';
 
 import ColumnBefore from '~icons/tabler/column-insert-left';
 import ColumnAfter from '~icons/tabler/column-insert-right';

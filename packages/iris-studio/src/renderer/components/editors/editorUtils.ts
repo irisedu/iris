@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { cmdOrCtrl } from '../../utils';
+import { cmdOrCtrl } from 'iris-components';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';

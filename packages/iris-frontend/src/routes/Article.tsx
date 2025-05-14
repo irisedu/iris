@@ -8,6 +8,7 @@ import {
 import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import {
+	goToAnchor,
 	Link as AriaLink,
 	TagGroup,
 	TagList,
@@ -15,7 +16,6 @@ import {
 	Label
 } from 'iris-components';
 import { type IriscFile, type TocNode } from '@irisedu/schemas';
-import { goToAnchor } from '../utils';
 import {
 	IriscBlockContent,
 	IriscInlineContent,

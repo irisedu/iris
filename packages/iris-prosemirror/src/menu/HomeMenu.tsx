@@ -4,6 +4,10 @@ import {
 	useEditorEffect
 } from '@nytimes/react-prosemirror';
 import {
+	useVisibility,
+	useVisibilityParent,
+	VisibilityContext,
+	VisibilityGroup,
 	ToggleButton,
 	MenuTrigger,
 	Popover,
@@ -26,12 +30,6 @@ import {
 	clearFormatting,
 	docSchema
 } from 'iris-prosemirror';
-import {
-	useVisibility,
-	useVisibilityParent,
-	VisibilityContext,
-	VisibilityGroup
-} from '$components/VisibilityContext';
 import CodeLanguageDialog from './CodeLanguageDialog';
 
 import Bold from '~icons/tabler/bold';

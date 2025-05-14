@@ -3,7 +3,7 @@ import {
 	useVisibilityParent,
 	VisibilityContext,
 	VisibilityGroup
-} from '$components/VisibilityContext';
+} from 'iris-components';
 import { docSchema } from 'iris-prosemirror';
 
 import Strikethrough from '~icons/tabler/strikethrough';

@@ -65,29 +65,6 @@ body {
 	@apply text-black;
 }
 
-.round-button {
-	@apply w-8 h-8 rounded-full text-iris-400;
-
-	-webkit-app-region: no-drag;
-
-	&[data-hovered],
-	&[data-selected] {
-		@apply bg-iris-200;
-	}
-
-	&[data-pressed] {
-		@apply bg-iris-300;
-	}
-
-	&[data-disabled] {
-		@apply text-iris-300;
-	}
-
-	& > * {
-		@apply w-3/5 h-3/5 m-auto;
-	}
-}
-
 .flex-no-shrink {
 	* {
 		@apply shrink-0;

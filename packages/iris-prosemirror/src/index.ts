@@ -20,3 +20,5 @@ export * from './configs';
 export * from './utils';
 export * from './components';
 export * from './templates';
+export * from './ProseMirrorEditor';
+export * from './menu/MenuBar';

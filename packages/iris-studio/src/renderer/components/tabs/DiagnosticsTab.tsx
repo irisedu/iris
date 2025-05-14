@@ -48,9 +48,7 @@ function DiagnosticsTab() {
 				<dd>{process.arch}</dd>
 
 				<dt>Platform</dt>
-				<dd>
-					{os.platform} {os.release}
-				</dd>
+				<dd>{navigator.userAgent}</dd>
 			</dl>
 		</div>
 	);

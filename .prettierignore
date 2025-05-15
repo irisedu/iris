@@ -5,7 +5,7 @@ dist/
 
 pnpm-lock.yaml
 
-packages/iris-frontend/src/hooks/highlightMergeHTMLPlugin.js
+packages/iris-components/src/hooks/highlightMergeHTMLPlugin.js
 
 packages/iris-backend/.pg/
 packages/iris-backend/src/db/db.d.ts

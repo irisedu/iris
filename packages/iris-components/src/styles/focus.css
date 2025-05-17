@@ -2,12 +2,12 @@
 	@apply outline-hidden;
 
 	&[data-focus-visible] {
-		@apply outline outline-2 outline-iris-500;
+		@apply outline-solid outline-2 outline-iris-500;
 	}
 }
 
 /* Non-react-aria only */
 .focus-outline,
 *:not([data-rac]):not(.react-aria-Dialog):not(.no-focus-outline) {
-	@apply outline-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-iris-500;
+	@apply focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-iris-500;
 }

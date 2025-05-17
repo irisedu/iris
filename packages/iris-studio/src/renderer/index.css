@@ -84,7 +84,7 @@ body {
 		-webkit-app-region: no-drag;
 
 		&[data-focus-visible] span {
-			@apply outline outline-2 outline-iris-500 -outline-offset-[0.25rem];
+			@apply outline-solid outline-2 outline-iris-500 -outline-offset-[0.25rem];
 		}
 
 		&[data-selected] {

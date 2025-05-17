@@ -67,6 +67,6 @@
 	}
 
 	&[data-selected]::after {
-		@apply absolute content-[''] outline outline-white border-4 border-black rounded-md inset-0;
+		@apply absolute content-[''] outline-solid outline-white border-4 border-black rounded-md inset-0;
 	}
 }

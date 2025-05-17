@@ -25,7 +25,7 @@ import Git from '~icons/tabler/brand-git';
 import React from '~icons/tabler/brand-react';
 import Braces from '~icons/tabler/braces';
 import Heart from '~icons/tabler/heart-filled';
-import TextSize from '~icons/tabler/text-size';
+import Settings from '~icons/tabler/settings';
 import Accessible from '~icons/tabler/accessible';
 import ChevronDown from '~icons/tabler/chevron-down';
 
@@ -75,11 +75,11 @@ function Layout({ children }: { children?: ReactNode }) {
 				<TooltipTrigger delay={200}>
 					<ToggleButton
 						aria-label="Text & Accessibility Settings"
-						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full data-[hovered]:bg-iris-100 data-[pressed]:bg-iris-300 data-[selected]:bg-iris-200"
+						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full bg-iris-100 data-[hovered]:bg-iris-200 data-[selected]:bg-iris-200 data-[pressed]:bg-iris-300! border-2 border-iris-200"
 						isSelected={textSettingsVisible}
 						onChange={setTextSettingsVisible}
 					>
-						<TextSize className="w-4 h-4 m-auto text-iris-900" />
+						<Settings className="w-4 h-4 m-auto text-iris-900" />
 						<Accessible className="w-4 h-4 m-auto text-iris-900" />
 					</ToggleButton>
 					<Tooltip placement="bottom">Text & Accessibility Settings</Tooltip>

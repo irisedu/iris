@@ -14,6 +14,7 @@ import {
 import DevAlert from '$components/DevAlert';
 import TextSettings from '$components/TextSettings';
 import StyleProvider from '$components/StyleProvider';
+import CookieConsent from '$components/CookieConsent';
 import { useLogOut } from '$hooks/user';
 
 import { useSelector } from 'react-redux';
@@ -51,6 +52,8 @@ function Layout({ children }: { children?: ReactNode }) {
 			>
 				Skip to main content
 			</AriaLink>
+
+			<CookieConsent />
 
 			<nav
 				className="flex flex-col items-center md:flex-row md:pr-6 gap-1 border-t-[0.25rem] border-iris-600"

@@ -26,6 +26,7 @@ interface PrefsState {
 		topShadeColor: string;
 		bottomShadeColor: string;
 	};
+	cookies: 'consent' | 'essential' | 'all';
 }
 
 const prefsSlice = createSlice({
@@ -41,7 +42,8 @@ const prefsSlice = createSlice({
 		ruler: {
 			enabled: false,
 			...lightbox
-		}
+		},
+		cookies: 'consent'
 	} as PrefsState,
 	reducers: {
 		setFont(state, action) {
@@ -83,6 +85,9 @@ const prefsSlice = createSlice({
 				...action.payload,
 				enabled: state.ruler.enabled
 			};
+		},
+		setCookies(state, action) {
+			state.cookies = action.payload;
 		}
 	}
 });
@@ -98,7 +103,8 @@ export const {
 	setTheme,
 	setHueShift,
 	setRulerEnabled,
-	setRulerSettings
+	setRulerSettings,
+	setCookies
 } = prefsSlice.actions;
 
 export default prefsSlice;

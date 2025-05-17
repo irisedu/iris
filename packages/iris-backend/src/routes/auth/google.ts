@@ -22,7 +22,7 @@ googleRouter.get('/login', (req, res) => {
 		oauthClient.generateAuthUrl({
 			scope: scopes,
 			access_type: 'offline',
-			state: generateCsrfToken(req, res)
+			state: generateCsrfToken(req, res, { overwrite: true })
 		})
 	);
 });

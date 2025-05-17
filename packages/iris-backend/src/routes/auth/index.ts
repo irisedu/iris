@@ -59,7 +59,7 @@ export function authSetup(app: Express) {
 
 	// Must come after session (relies on SID)
 	app.use((req, res, next) => {
-		if (req.method === 'GET') generateCsrfToken(req, res);
+		if (req.method === 'GET') generateCsrfToken(req, res, { overwrite: true });
 		next();
 	});
 

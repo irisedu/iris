@@ -7,8 +7,7 @@ export const {
 	doubleCsrfProtection
 } = doubleCsrf({
 	getSecret: () => process.env.CSRF_SECRET!,
-	getSessionIdentifier: (req) =>
-		req.session?.id ?? console.log('YOURE IN TROUBLE'),
+	getSessionIdentifier: (req) => req.session?.id,
 	cookieName:
 		process.env.NODE_ENV !== 'development'
 			? '__Host-iris.x-csrf-token'

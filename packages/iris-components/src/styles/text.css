@@ -16,20 +16,27 @@
 	font-size: 125%;
 }
 
+h1,
+h2,
+h3,
+h4 {
+	@apply hyphens-none;
+}
+
 h1 {
-	@apply text-2xl font-bold my-3;
+	@apply text-2xl font-bold mb-3 mt-7;
 }
 
 h2 {
-	@apply text-xl font-bold my-3;
+	@apply text-xl font-bold mb-3 mt-7;
 }
 
 h3 {
-	@apply text-lg font-bold my-2.5;
+	@apply text-lg font-bold mb-2.5 mt-6;
 }
 
 h4 {
-	@apply font-bold my-2.5;
+	@apply font-bold mb-2.5 mt-6;
 }
 
 h5,

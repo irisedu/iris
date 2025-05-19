@@ -22,10 +22,15 @@
 		}
 	}
 
+	li {
+		margin-top: calc(var(--paragraph-spacing) * 0.7) !important;
+		margin-bottom: calc(var(--paragraph-spacing) * 0.7) !important;
+	}
+
 	li > ul,
 	li > ol {
-		margin-top: var(--paragraph-spacing) !important;
-		margin-bottom: var(--paragraph-spacing) !important;
+		margin-top: calc(var(--paragraph-spacing) * 0.6) !important;
+		margin-bottom: calc(var(--paragraph-spacing) * 0.6) !important;
 	}
 
 	* {

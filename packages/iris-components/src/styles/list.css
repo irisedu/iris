@@ -1,5 +1,5 @@
 ul {
-	@apply list-disc list-outside pl-5 my-2;
+	@apply list-disc list-outside pl-5 my-3;
 
 	ul {
 		@apply list-circle;
@@ -11,7 +11,7 @@ ul {
 }
 
 ol {
-	@apply list-decimal list-outside pl-5 my-2;
+	@apply list-decimal list-outside pl-5 my-3;
 
 	ol {
 		@apply list-lower-alpha;
@@ -26,11 +26,8 @@ ol {
 	}
 }
 
-ul ul,
-ol ol,
-ol ul,
-ul ol {
-	@apply my-0;
+li {
+	@apply my-2;
 }
 
 dl {

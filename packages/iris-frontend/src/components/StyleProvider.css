@@ -22,6 +22,12 @@
 		}
 	}
 
+	li > ul,
+	li > ol {
+		margin-top: var(--paragraph-spacing) !important;
+		margin-bottom: var(--paragraph-spacing) !important;
+	}
+
 	* {
 		--leading-tight: calc(var(--line-height) * 0.9);
 		--leading-snug: calc(var(--line-height) * 0.95);

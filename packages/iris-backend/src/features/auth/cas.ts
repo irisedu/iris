@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { generateCsrfToken } from '../../csrf.js';
+import { generateCsrfToken } from './csrf.js';
 
 export const casRouter = Router();
 

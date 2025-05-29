@@ -1,3 +1,4 @@
+import { type BackendFeature } from '../../feature.js';
 import { type Request, type Response, Router } from 'express';
 import { db, type JsonValue } from '../../db/index.js';
 import { Ollama, type Message } from 'ollama';
@@ -12,7 +13,7 @@ import {
 	type QuestionNode,
 	QuestionNodeType
 } from '@irisedu/schemas';
-import { requireAuth } from '../auth/index.js';
+import { requireAuth } from '../../features/auth/index.js';
 
 const ollama = new Ollama({ host: process.env.OLLAMA_HOST });
 
@@ -56,8 +57,6 @@ async function chat(
 
 	return messages;
 }
-
-export const llmRouter = Router();
 
 async function handleSelectionPrompt(
 	docPath: string,
@@ -272,7 +271,9 @@ async function handleHintPrompt(
 	}
 }
 
-llmRouter.post(
+export const router = Router();
+
+router.post(
 	'/:method/page/*splat/:prompt',
 	requireAuth({}),
 	(req, res, next) => {
@@ -307,3 +308,13 @@ llmRouter.post(
 			.catch(next);
 	}
 );
+
+export const llmFeature = {
+	name: 'llm',
+	routers: [
+		{
+			path: '/api/llm',
+			router
+		}
+	]
+} satisfies BackendFeature;

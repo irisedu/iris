@@ -1,3 +1,4 @@
+import { type BackendFeature } from '../../feature.js';
 import { Router } from 'express';
 import { db } from '../../db/index.js';
 import {
@@ -6,9 +7,9 @@ import {
 	QuestionSubmission
 } from '@irisedu/schemas';
 
-export const judgeRouter = Router();
+const router = Router();
 
-judgeRouter.get('/page/*splat/submissions', async (req, res, next) => {
+router.get('/page/*splat/submissions', async (req, res, next) => {
 	const { splat } = req.params as Record<string, string[]>; // TODO
 	const docPath = splat.join('/');
 
@@ -45,7 +46,7 @@ judgeRouter.get('/page/*splat/submissions', async (req, res, next) => {
 		.catch(next);
 });
 
-judgeRouter.post('/page/*splat/submissions', async (req, res, next) => {
+router.post('/page/*splat/submissions', async (req, res, next) => {
 	const { splat } = req.params as Record<string, string[]>; // TODO
 	const docPath = splat.join('/');
 
@@ -86,3 +87,13 @@ judgeRouter.post('/page/*splat/submissions', async (req, res, next) => {
 		})
 		.catch(next);
 });
+
+export const judgeFeature = {
+	name: 'judge',
+	routers: [
+		{
+			path: '/api/judge',
+			router
+		}
+	]
+} satisfies BackendFeature;

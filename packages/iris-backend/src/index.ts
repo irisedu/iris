@@ -1,39 +1,54 @@
-import express from 'express';
-import path from 'path';
+import express, { type Express } from 'express';
+import { type BackendFeature } from './feature.js';
 import { expressLogger, dbLogger } from './logger.js';
 import { migrateToLatest } from './db/migrator.js';
-import cookieParser from 'cookie-parser';
-import { spaRoot } from './constants.js';
 
-import { authSetup, authRouter } from './routes/auth/index.js';
-import { authorRouter } from './routes/author/index.js';
-import { documentsRouter } from './routes/documents.js';
-import { judgeRouter } from './routes/judge/index.js';
-import { llmRouter } from './routes/llm/index.js';
+import { authFeature } from './features/auth/index.js';
+import { serveFeature } from './features/serve/index.js';
+import { spaFeature } from './features/spa/index.js';
+import { judgeFeature } from './features/judge/index.js';
+import { llmFeature } from './features/llm/index.js';
 
 expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
 
 const app = express();
+const envFeatures = process.env.FEATURES!.split(',').map((s) => s.trim());
+const features: string[] = [];
 
-app.use(cookieParser(process.env.COOKIE_SECRET));
+// Core functionality
 app.use(express.json());
 
-authSetup(app);
-
-app.use('/', documentsRouter);
-app.use('/auth', authRouter);
-app.use('/api/author', authorRouter);
-app.use('/api/judge', judgeRouter);
-app.use('/api/llm', llmRouter);
-
-app.use(express.static(spaRoot));
-
-app.get('/{*splat}', (req, res) => {
-	res.sendFile(path.join(spaRoot, 'index.html'));
+app.get('/api/features', (_, res) => {
+	res.json(features);
 });
 
-const port = process.env.PORT || 58063;
+function featureEnabled(name: string) {
+	return envFeatures.includes(name);
+}
 
+function registerFeature(app: Express, feature: BackendFeature) {
+	features.push(feature.name);
+
+	if (feature.setup) feature.setup(app);
+	if (feature.routers) {
+		for (const router of feature.routers) {
+			app.use(router.path, router.router);
+		}
+	}
+}
+
+// Register features
+registerFeature(app, authFeature);
+if (featureEnabled('serve')) registerFeature(app, serveFeature);
+if (featureEnabled('judge')) registerFeature(app, judgeFeature);
+if (featureEnabled('llm')) registerFeature(app, llmFeature);
+
+registerFeature(app, spaFeature);
+
+expressLogger.info({ features }, `Features: ${features}`);
+
+// Start
+const port = process.env.PORT || 58063;
 migrateToLatest().then(() => {
 	dbLogger.info('Running migrations...');
 
@@ -42,4 +57,5 @@ migrateToLatest().then(() => {
 	});
 });
 
-export type * from './routes/auth/index.js';
+// Expose some types to the frontend
+export type * from './features/auth/index.js';

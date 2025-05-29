@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import { db, JsonValue } from '../db/index.js';
+import { db, JsonValue } from '../../db/index.js';
 import path from 'path';
-import { assetsRoot } from '../constants.js';
-
-export const documentsRouter = Router();
+import { assetsRoot } from '../../constants.js';
 
 const questionToRedact = [
 	'comment',
@@ -34,6 +32,8 @@ function redactInfo(docPath: string, doc: JsonValue): JsonValue {
 
 	return doc;
 }
+
+export const documentsRouter = Router();
 
 documentsRouter.get('/page/*splat', (req, res, next) => {
 	const { splat } = req.params as Record<string, string[]>; // TODO

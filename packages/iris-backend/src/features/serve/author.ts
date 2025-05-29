@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { requireAuth } from '../auth/index.js';
+import { requireAuth } from '../../features/auth/index.js';
 import formidable from 'formidable';
 import { promises as fs } from 'fs';
-import { repoDelete, repoUpdate } from '../../repo.js';
+import { repoDelete, repoUpdate } from './repo.js';
 import { db } from '../../db/index.js';
 
 export const authorRouter = Router();

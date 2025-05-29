@@ -1,10 +1,12 @@
-import { type Express, type RequestHandler, Router } from 'express';
+import { type BackendFeature } from '../../feature.js';
+import { type RequestHandler, Router } from 'express';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { Redis } from 'ioredis';
 import { db } from '../../db/index.js';
 import { InferResult } from 'kysely';
-import { doubleCsrfProtection, generateCsrfToken } from '../../csrf.js';
+import { doubleCsrfProtection, generateCsrfToken } from './csrf.js';
 
 import { googleRouter } from './google.js';
 import { casRouter } from './cas.js';
@@ -32,42 +34,6 @@ declare module 'express-session' {
 	}
 }
 
-export function authSetup(app: Express) {
-	// This + X-Forwarded-Proto is necessary for cookies to work
-	if (process.env.TRUST_PROXY) {
-		app.set('trust proxy', true);
-	}
-
-	app.use(
-		session({
-			secret: process.env.COOKIE_SECRET!,
-			resave: false,
-			rolling: true,
-			saveUninitialized: true, // used for csrf
-			store: new RedisStore({
-				client: new Redis(process.env.REDIS_URL!),
-				prefix: process.env.AUTH_SESSION_PREFIX
-			}),
-			name: 'iris.sid',
-			cookie: {
-				sameSite: 'lax',
-				secure: process.env.NODE_ENV !== 'development',
-				maxAge: 30 * 24 * 60 * 60 * 1000
-			}
-		})
-	);
-
-	// Must come after session (relies on SID)
-	app.use((req, res, next) => {
-		if (req.method === 'GET') generateCsrfToken(req, res, { overwrite: true });
-		next();
-	});
-
-	app.use(doubleCsrfProtection);
-}
-
-export const authRouter = Router();
-
 const _userQuery = db.selectFrom('user_account').selectAll();
 
 export type UserInfoResult =
@@ -81,7 +47,9 @@ export type UserInfoResult =
 	  }
 	| PendingFederationSessionData;
 
-authRouter.get('/info', (req, res, next) => {
+const router = Router();
+
+router.get('/info', (req, res, next) => {
 	const user = req.session.user;
 	if (!user) {
 		res.json({ type: 'loggedOut' });
@@ -117,14 +85,14 @@ authRouter.get('/info', (req, res, next) => {
 	}
 });
 
-authRouter.post('/logout', (req, res, next) => {
+router.post('/logout', (req, res, next) => {
 	req.session.destroy((err) => {
 		if (err) return next(err);
 		res.sendStatus(200);
 	});
 });
 
-authRouter.post('/confirm-federation', (req, res, next) => {
+router.post('/confirm-federation', (req, res, next) => {
 	const user = req.session.user;
 	if (!user || user.type !== 'pendingFederation') {
 		res.status(400).send('Account is not pending');
@@ -167,8 +135,8 @@ authRouter.post('/confirm-federation', (req, res, next) => {
 	}
 });
 
-authRouter.use('/google', googleRouter);
-authRouter.use('/cas', casRouter);
+router.use('/google', googleRouter);
+router.use('/cas', casRouter);
 
 export function requireAuth({ group }: { group?: string }): RequestHandler {
 	return (req, res, next) => {
@@ -197,3 +165,49 @@ export function requireAuth({ group }: { group?: string }): RequestHandler {
 		}
 	};
 }
+
+export const authFeature = {
+	name: 'auth',
+	setup(app) {
+		// This + X-Forwarded-Proto is necessary for cookies to work
+		if (process.env.TRUST_PROXY) {
+			app.set('trust proxy', true);
+		}
+
+		app.use(cookieParser(process.env.COOKIE_SECRET));
+
+		app.use(
+			session({
+				secret: process.env.COOKIE_SECRET!,
+				resave: false,
+				rolling: true,
+				saveUninitialized: true, // used for csrf
+				store: new RedisStore({
+					client: new Redis(process.env.REDIS_URL!),
+					prefix: process.env.AUTH_SESSION_PREFIX
+				}),
+				name: 'iris.sid',
+				cookie: {
+					sameSite: 'lax',
+					secure: process.env.NODE_ENV !== 'development',
+					maxAge: 30 * 24 * 60 * 60 * 1000
+				}
+			})
+		);
+
+		// Must come after session (relies on SID)
+		app.use((req, res, next) => {
+			if (req.method === 'GET')
+				generateCsrfToken(req, res, { overwrite: true });
+			next();
+		});
+
+		app.use(doubleCsrfProtection);
+	},
+	routers: [
+		{
+			path: '/auth',
+			router
+		}
+	]
+} satisfies BackendFeature;

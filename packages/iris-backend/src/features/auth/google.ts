@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { google } from 'googleapis';
-import { generateCsrfToken, doubleCsrfProtection } from '../../csrf.js';
+import { generateCsrfToken, doubleCsrfProtection } from './csrf.js';
 import { db } from '../../db/index.js';
 
 export const googleRouter = Router();

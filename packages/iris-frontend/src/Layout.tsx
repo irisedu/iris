@@ -34,6 +34,7 @@ import irisFlower from '$assets/iris.svg';
 
 function Layout({ children }: { children?: ReactNode }) {
 	const dispatch = useAppDispatch();
+	const features = useSelector((state: RootState) => state.features.features);
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 	const user = useSelector((state: RootState) => state.user.user);
 
@@ -67,7 +68,7 @@ function Layout({ children }: { children?: ReactNode }) {
 				</Link>
 
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
-					<Link to="/catalog">Catalog</Link>
+					{features.includes('serve') && <Link to="/catalog">Catalog</Link>}
 				</div>
 
 				<div className="grow" />
@@ -94,11 +95,12 @@ function Layout({ children }: { children?: ReactNode }) {
 
 						<Popover>
 							<Menu>
-								{user.groups.includes('authors') && (
-									<MenuItem onAction={() => navigate('/author-dashboard')}>
-										Author Dashboard
-									</MenuItem>
-								)}
+								{features.includes('serve') &&
+									user.groups.includes('authors') && (
+										<MenuItem onAction={() => navigate('/author-dashboard')}>
+											Author Dashboard
+										</MenuItem>
+									)}
 								<MenuItem onAction={logOut}>Log out</MenuItem>
 							</Menu>
 						</Popover>

@@ -6,6 +6,7 @@ import {
 	type UnserializeFunction
 } from 'redux-remember';
 
+import featuresSlice from './featuresSlice';
 import devSlice from './devSlice';
 import prefsSlice from './prefsSlice';
 import userSlice from './userSlice';
@@ -13,6 +14,7 @@ import userSlice from './userSlice';
 import dataSlice from './dataSlice';
 
 const slices = {
+	features: featuresSlice,
 	dev: devSlice,
 	prefs: prefsSlice,
 	user: userSlice,
@@ -21,6 +23,7 @@ const slices = {
 };
 
 const reducers = {
+	features: featuresSlice.reducer,
 	dev: devSlice.reducer,
 	prefs: prefsSlice.reducer,
 	user: userSlice.reducer,

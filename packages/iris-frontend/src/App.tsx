@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
 import { setDevState, devRefresh } from '$state/devSlice';
 import { fetchUser } from '$state/userSlice';
+import { fetchFeatures } from '$state/featuresSlice';
 
 const router = createBrowserRouter(
 	createRoutesFromElements(
@@ -110,6 +111,7 @@ function App() {
 	}, [dispatch, devHost, devEnabled, devRetry]);
 
 	useEffect(() => {
+		dispatch(fetchFeatures());
 		dispatch(fetchUser());
 	}, [dispatch]);
 

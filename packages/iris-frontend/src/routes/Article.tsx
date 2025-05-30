@@ -177,6 +177,7 @@ export function loader({ params }: LoaderFunctionArgs) {
 }
 
 export function Component() {
+	const features = useSelector((state: RootState) => state.features.features);
 	const devEnabled = useSelector((state: RootState) => state.dev.enabled);
 	const devHost = useSelector((state: RootState) => state.dev.host);
 	const devState = useSelector((state: RootState) => state.dev.state);
@@ -228,7 +229,7 @@ export function Component() {
 	return (
 		<DevContext.Provider value={{ dev }}>
 			<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
-				{user?.type === 'registered' && !dev && (
+				{features.includes('llm') && user?.type === 'registered' && !dev && (
 					<SelectionMenu articleData={articleData} />
 				)}
 

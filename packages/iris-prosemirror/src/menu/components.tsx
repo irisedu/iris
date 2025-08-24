@@ -1,8 +1,9 @@
 import { Fragment, useState, type ReactNode, type FC } from 'react';
 import {
 	useEditorEventCallback,
-	useEditorEffect
-} from '@nytimes/react-prosemirror';
+	useEditorEffect,
+	useEditorState
+} from '@handlewithcare/react-prosemirror';
 import {
 	Button,
 	ToggleButton,
@@ -87,19 +88,23 @@ export function CommandButton({
 	...props
 }: CommandButtonProps) {
 	const [disabled, setDisabled] = useState(false);
+	const state = useEditorState();
 	const onPress = useEditorEventCallback((view) => {
 		command(view.state, view.dispatch, view);
 		view.focus();
 	});
 
-	useEditorEffect((view) => {
-		setDisabled(
-			!(
-				alwaysEnabled ||
-				(isEnabled ? isEnabled(view) : command(view.state, undefined, view))
-			)
-		);
-	});
+	useEditorEffect(
+		(view) => {
+			setDisabled(
+				!(
+					alwaysEnabled ||
+					(isEnabled ? isEnabled(view) : command(view.state, undefined, view))
+				)
+			);
+		},
+		[state]
+	);
 
 	return (
 		<MenuBarTooltip tooltip={tooltip} keys={keys}>
@@ -135,20 +140,24 @@ export function ToggleMarkButton({
 }: ToggleMarkButtonProps) {
 	const [disabled, setDisabled] = useState(false);
 	const [active, setActive] = useState(false);
-	const onChange = useEditorEventCallback((view, value) => {
+	const state = useEditorState();
+	const onChange = useEditorEventCallback((view, value: boolean) => {
 		(command || toggleMark(markType))(view.state, view.dispatch, view);
-		setActive(!value);
+		setActive(value);
 
 		view.focus();
 	});
 
-	useEditorEffect((view) => {
-		setDisabled(
-			!(command || toggleMark(markType))(view.state, undefined, view)
-		);
+	useEditorEffect(
+		(view) => {
+			setDisabled(
+				!(command || toggleMark(markType))(view.state, undefined, view)
+			);
 
-		setActive(markActive(view.state, markType));
-	});
+			setActive(markActive(view.state, markType));
+		},
+		[state]
+	);
 
 	return (
 		<MenuBarTooltip tooltip={tooltip} keys={keys}>

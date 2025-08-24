@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import {
 	useEditorEventCallback,
-	useEditorEffect
-} from '@nytimes/react-prosemirror';
+	useEditorEffect,
+	useEditorState
+} from '@handlewithcare/react-prosemirror';
 import {
 	ToggleButton,
 	MenuTrigger,
@@ -61,6 +62,8 @@ function TextStyleMenu() {
 
 	const [codeDialogOpen, setCodeDialogOpen] = useState(false);
 	const [language, setLanguage] = useState('');
+
+	const state = useEditorState();
 	const setCode = useEditorEventCallback((view, language) => {
 		const { $head } = view.state.selection;
 
@@ -91,32 +94,35 @@ function TextStyleMenu() {
 		}
 	);
 
-	useEditorEffect((view) => {
-		const normal = setBlockType(docSchema.nodes.paragraph)(
-			view.state,
-			undefined,
-			view
-		);
-		const headings =
-			setBlockType(docSchema.nodes.heading, { level: 0 })(
+	useEditorEffect(
+		(view) => {
+			const normal = setBlockType(docSchema.nodes.paragraph)(
 				view.state,
 				undefined,
 				view
-			) && !getAside(view.state);
-		const codeBlock = setBlockType(docSchema.nodes.code_block, {
-			language: '???'
-		})(view.state, undefined, view);
+			);
+			const headings =
+				setBlockType(docSchema.nodes.heading, { level: 0 })(
+					view.state,
+					undefined,
+					view
+				) && !getAside(view.state);
+			const codeBlock = setBlockType(docSchema.nodes.code_block, {
+				language: '???'
+			})(view.state, undefined, view);
 
-		setDisabled(!(normal || headings || codeBlock));
-		setNormalVisible(normal);
-		setHeadingsVisible(headings);
-		setCodeVisible(codeBlock);
+			setDisabled(!(normal || headings || codeBlock));
+			setNormalVisible(normal);
+			setHeadingsVisible(headings);
+			setCodeVisible(codeBlock);
 
-		setActive(
-			isNode(view.state, docSchema.nodes.heading) ||
-				isNode(view.state, docSchema.nodes.code_block)
-		);
-	});
+			setActive(
+				isNode(view.state, docSchema.nodes.heading) ||
+					isNode(view.state, docSchema.nodes.code_block)
+			);
+		},
+		[state]
+	);
 
 	return (
 		<>
@@ -189,6 +195,8 @@ function TextStyleMenu() {
 
 function MathPreviewToggle() {
 	const [active, setActive] = useState(false);
+
+	const state = useEditorState();
 	const onChange = useEditorEventCallback((view, value: boolean) => {
 		setMathPreviewEnabled(value)(view.state, view.dispatch);
 		setActive(value);
@@ -196,9 +204,12 @@ function MathPreviewToggle() {
 		view.focus();
 	});
 
-	useEditorEffect((view) => {
-		setActive(getMathPreviewEnabled(view.state));
-	});
+	useEditorEffect(
+		(view) => {
+			setActive(getMathPreviewEnabled(view.state));
+		},
+		[state]
+	);
 
 	return (
 		<MenuBarTooltip tooltip="Math Preview">

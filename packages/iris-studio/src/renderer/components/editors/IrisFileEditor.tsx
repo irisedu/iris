@@ -11,6 +11,7 @@ import {
 	saveFile
 } from 'iris-prosemirror';
 import { useFileEditor } from './editorUtils';
+import { ProseMirrorDoc } from '@handlewithcare/react-prosemirror';
 
 import type { TabData } from '$state/tabsSlice';
 
@@ -24,7 +25,6 @@ const defaultState = EditorState.create({
 });
 
 function IrisFileEditor({ tabData }: { tabData: TabData }) {
-	const [mount, setMount] = useState<HTMLElement | null>(null);
 	const stateRef = useRef(defaultState);
 
 	const [defaultEditorState, setDefaultEditorState] =
@@ -66,10 +66,9 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 						class:
 							'relative outline-hidden max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
 					}}
-					mount={mount}
 					stateRef={stateRef}
-					nodeViews={docNodeViews}
-					reactNodeViews={docReactNodeViews}
+					customNodeViews={docNodeViews}
+					nodeViews={docReactNodeViews}
 					dispatchTransaction={function (tr) {
 						if (tr.docChanged) onEditorChange();
 					}}
@@ -81,7 +80,7 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 					<MenuBar />
 
 					<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
-						<div ref={setMount} />
+						<ProseMirrorDoc />
 					</div>
 				</ProseMirrorEditor>
 			</div>

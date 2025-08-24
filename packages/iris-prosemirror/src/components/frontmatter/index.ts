@@ -19,13 +19,14 @@ export const frontmatterComponent = {
 		} as NodeSpec,
 		frontmatter_attributes: {
 			attrs: { data: { default: null } },
-			selectable: false
+			selectable: false,
+			// Should not be necessary. Added due to transition from @nytimes to @handlewithcare/react-prosemirror
+			toDOM() {
+				return ['div'];
+			}
 		} as NodeSpec
 	},
 	reactNodeViews: {
-		frontmatter_attributes: (node, view, getPos) => ({
-			component: (props) => <FrontmatterView {...props} getPos={getPos} />,
-			dom: document.createElement('div')
-		})
+		frontmatter_attributes: FrontmatterView
 	}
 } satisfies ProseMirrorComponent;

@@ -1,35 +1,28 @@
-import type { RefObject } from 'react';
-import type { EditorState } from 'prosemirror-state';
-import {
-	ProseMirror,
-	type ReactNodeViewConstructor,
-	type ProseMirrorProps,
-	useNodeViews
-} from '@nytimes/react-prosemirror';
-import { type NodeViewConstructor } from 'prosemirror-view';
+import { useCallback, type RefObject } from 'react';
+import type { EditorState, Transaction } from 'prosemirror-state';
+import { ProseMirror } from '@handlewithcare/react-prosemirror';
+import type { EditorView } from 'prosemirror-view';
 import ClickEditors from './ClickEditors';
 import { handlePaste } from 'iris-prosemirror';
 
 import 'prosemirror-view/style/prosemirror.css';
 
-export interface ProseMirrorEditorProps extends ProseMirrorProps {
-	mount: HTMLElement | null;
+export type ProseMirrorEditorProps = Parameters<typeof ProseMirror>[0] & {
 	stateRef: RefObject<EditorState>;
-	nodeViews?: Record<string, NodeViewConstructor>;
-	reactNodeViews?: Record<string, ReactNodeViewConstructor>;
-}
+};
 
 export function ProseMirrorEditor({
 	children,
-	mount,
 	stateRef,
-	nodeViews,
-	reactNodeViews,
 	dispatchTransaction: dt,
 	...props
 }: ProseMirrorEditorProps) {
-	const { nodeViews: rNodeViews, renderNodeViews } = useNodeViews(
-		reactNodeViews ?? {}
+	const dispatchTransaction = useCallback(
+		function (this: EditorView, tr: Transaction) {
+			stateRef.current = this.state.apply(tr);
+			if (dt) dt.bind(this)(tr);
+		},
+		[dt, stateRef]
 	);
 
 	return (
@@ -39,17 +32,11 @@ export function ProseMirrorEditor({
 				spellcheck: 'false',
 				...props.attributes
 			}}
-			mount={mount}
-			nodeViews={{ ...nodeViews, ...rNodeViews }}
-			dispatchTransaction={function (tr) {
-				stateRef.current = this.state.apply(tr);
-				if (dt) dt.bind(this)(tr);
-			}}
+			dispatchTransaction={dispatchTransaction}
 			handlePaste={handlePaste}
 		>
 			<ClickEditors />
 			{children}
-			{renderNodeViews()}
 		</ProseMirror>
 	);
 }

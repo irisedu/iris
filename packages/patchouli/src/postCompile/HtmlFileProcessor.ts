@@ -51,7 +51,7 @@ export default class HtmlFileProcessor extends FileProcessor {
 		const inPath = path.join(inDir, filePath);
 		const outPath = path.join(outDir, filePath);
 
-		const contents = await fs.readFile(inPath);
+		const contents = await fs.readFile(inPath, 'utf-8');
 		const minified = await unified()
 			.use(rehypeParse)
 			.use(rehypeMinifyNoJs)

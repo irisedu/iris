@@ -2,24 +2,23 @@ import { useEffect, useRef, useState } from 'react';
 import type { IrisNode } from '@irisedu/schemas';
 import {
 	ProseMirrorEditor,
+	type ProseMirrorEditorProps,
 	baseNodeViews,
 	basePlugins,
 	baseReactNodeViews,
-	baseSchema
+	baseSchema,
+	type ReactNodeViewMap
 } from 'iris-prosemirror';
 import { EditorState, type Plugin } from 'prosemirror-state';
 import { Node, type Schema } from 'prosemirror-model';
 import { type NodeViewConstructor } from 'prosemirror-view';
-import {
-	type ProseMirrorProps,
-	type ReactNodeViewConstructor
-} from '@nytimes/react-prosemirror';
+import { ProseMirrorDoc } from '@handlewithcare/react-prosemirror';
 
 export interface ProseMirrorPreset {
 	schema: Schema;
 	plugins: Plugin[];
 	nodeViews: Record<string, NodeViewConstructor>;
-	reactNodeViews: Record<string, ReactNodeViewConstructor>;
+	reactNodeViews: ReactNodeViewMap;
 	defaultState: EditorState;
 }
 
@@ -34,11 +33,11 @@ export const baseBlockPreset: ProseMirrorPreset = {
 	})
 };
 
-export interface ProseMirrorFieldProps extends Omit<ProseMirrorProps, 'mount'> {
+export type ProseMirrorFieldProps = Omit<ProseMirrorEditorProps, 'stateRef'> & {
 	preset?: ProseMirrorPreset;
 	value: IrisNode[];
 	onValueChanged: (newVal: IrisNode[]) => void;
-}
+};
 
 export function ProseMirrorField({
 	preset,
@@ -48,7 +47,6 @@ export function ProseMirrorField({
 }: ProseMirrorFieldProps) {
 	preset ??= baseBlockPreset;
 
-	const [mount, setMount] = useState<HTMLElement | null>(null);
 	const [state, setState] = useState(preset.defaultState);
 	const stateRef = useRef(state);
 
@@ -69,10 +67,9 @@ export function ProseMirrorField({
 	return (
 		<ProseMirrorEditor
 			{...props}
-			mount={mount}
 			stateRef={stateRef}
-			nodeViews={preset.nodeViews}
-			reactNodeViews={preset.reactNodeViews}
+			customNodeViews={preset.nodeViews}
+			nodeViews={preset.reactNodeViews}
 			state={state}
 			dispatchTransaction={function (tr) {
 				setState(stateRef.current);
@@ -80,7 +77,7 @@ export function ProseMirrorField({
 					onValueChanged(stateRef.current.doc.toJSON().content);
 			}}
 		>
-			<div ref={setMount} />
+			<ProseMirrorDoc />
 		</ProseMirrorEditor>
 	);
 }

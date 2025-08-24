@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, forwardRef } from 'react';
 import {
 	Button,
 	DialogTrigger,
@@ -14,103 +14,99 @@ import {
 	TextField,
 	TextArea
 } from 'iris-components';
-import type { Node } from 'prosemirror-model';
-import { useEditorEventCallback } from '@nytimes/react-prosemirror';
+import {
+	type NodeViewComponentProps,
+	useEditorEventCallback
+} from '@handlewithcare/react-prosemirror';
 
 import Edit from '~icons/tabler/edit-circle';
 
-interface FrontmatterViewProps {
-	node: Node;
-	getPos: () => number | undefined;
-}
+export default forwardRef<HTMLDivElement, NodeViewComponentProps>(
+	function FrontmatterView({ nodeProps: { node, getPos }, ...props }, ref) {
+		const [isOpen, setIsOpenInternal] = useState(false);
+		const authorsRef = useRef<HTMLTextAreaElement | null>(null);
+		const tagsRef = useRef<HTMLTextAreaElement | null>(null);
 
-export default function FrontmatterView({
-	node,
-	getPos
-}: FrontmatterViewProps) {
-	const [isOpen, setIsOpenInternal] = useState(false);
-	const authorsRef = useRef<HTMLTextAreaElement | null>(null);
-	const tagsRef = useRef<HTMLTextAreaElement | null>(null);
+		const { authors, tags }: { authors?: string[]; tags?: string[] } =
+			node.attrs.data || {};
 
-	const { authors, tags }: { authors?: string[]; tags?: string[] } =
-		node.attrs.data || {};
+		const setIsOpen = useEditorEventCallback((view, open: boolean) => {
+			setIsOpenInternal(open);
+			if (open) return;
 
-	const setIsOpen = useEditorEventCallback((view, open: boolean) => {
-		setIsOpenInternal(open);
-		if (open) return;
+			const pos = getPos();
+			if (!pos) return;
 
-		const pos = getPos();
-		if (!pos) return;
+			if (!authorsRef.current || !tagsRef.current) return;
 
-		if (!authorsRef.current || !tagsRef.current) return;
+			view.dispatch(
+				view.state.tr.setNodeAttribute(pos, 'data', {
+					authors: authorsRef.current.value.split('\n').filter((a) => a.length),
+					tags: tagsRef.current.value.split('\n').filter((t) => t.length)
+				})
+			);
+		});
 
-		view.dispatch(
-			view.state.tr.setNodeAttribute(pos, 'data', {
-				authors: authorsRef.current.value.split('\n').filter((a) => a.length),
-				tags: tagsRef.current.value.split('\n').filter((t) => t.length)
-			})
-		);
-	});
+		return (
+			<div {...props} ref={ref} className="mb-3 select-none">
+				<DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
+					<TooltipTrigger delay={300}>
+						<Button className="round-button float-right">
+							<Edit />
+						</Button>
+						<Tooltip placement="bottom">Edit Attributes</Tooltip>
+					</TooltipTrigger>
 
-	return (
-		<div className="mb-3 select-none">
-			<DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
-				<TooltipTrigger delay={300}>
-					<Button className="round-button float-right">
-						<Edit />
-					</Button>
-					<Tooltip placement="bottom">Edit Attributes</Tooltip>
-				</TooltipTrigger>
+					<Modal isDismissable>
+						<Dialog>
+							<Heading slot="title">Edit document attributes</Heading>
 
-				<Modal isDismissable>
-					<Dialog>
-						<Heading slot="title">Edit document attributes</Heading>
+							<TextField defaultValue={(authors || []).join('\n')}>
+								<Label>
+									Authors, separated by <kbd>Enter</kbd>
+								</Label>
+								<TextArea ref={authorsRef} />
+							</TextField>
 
-						<TextField defaultValue={(authors || []).join('\n')}>
-							<Label>
-								Authors, separated by <kbd>Enter</kbd>
-							</Label>
-							<TextArea ref={authorsRef} />
-						</TextField>
+							<TextField defaultValue={(tags || []).join('\n')}>
+								<Label>
+									Tags, separated by <kbd>Enter</kbd>
+								</Label>
+								<TextArea ref={tagsRef} />
+							</TextField>
+						</Dialog>
 
-						<TextField defaultValue={(tags || []).join('\n')}>
-							<Label>
-								Tags, separated by <kbd>Enter</kbd>
-							</Label>
-							<TextArea ref={tagsRef} />
-						</TextField>
-					</Dialog>
+						<Button
+							className="react-aria-Button border-iris-300"
+							onPress={() => setIsOpen(false)}
+						>
+							Close
+						</Button>
+					</Modal>
+				</DialogTrigger>
 
-					<Button
-						className="react-aria-Button border-iris-300"
-						onPress={() => setIsOpen(false)}
-					>
-						Close
-					</Button>
-				</Modal>
-			</DialogTrigger>
+				<div className="flex flex-col text-sm">
+					{authors && authors.length > 0 ? (
+						<span className="italic">By {authors.join(', ')}</span>
+					) : (
+						<span className="italic">No authors</span>
+					)}
 
-			<div className="flex flex-col text-sm">
-				{authors && authors.length > 0 ? (
-					<span className="italic">By {authors.join(', ')}</span>
-				) : (
-					<span className="italic">No authors</span>
-				)}
-
-				{tags && tags.length > 0 && (
-					<TagGroup
-						selectionMode="none"
-						className="react-aria-TagGroup flex flex-row"
-					>
-						<Label>Tags:</Label>
-						<TagList>
-							{tags.map((t, i) => (
-								<Tag key={i}>{t}</Tag>
-							))}
-						</TagList>
-					</TagGroup>
-				)}
+					{tags && tags.length > 0 && (
+						<TagGroup
+							selectionMode="none"
+							className="react-aria-TagGroup flex flex-row"
+						>
+							<Label>Tags:</Label>
+							<TagList>
+								{tags.map((t, i) => (
+									<Tag key={i}>{t}</Tag>
+								))}
+							</TagList>
+						</TagGroup>
+					)}
+				</div>
 			</div>
-		</div>
-	);
-}
+		);
+	}
+);

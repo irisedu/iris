@@ -25,7 +25,6 @@ Base dependencies:
 Required features:
 
 - Authentication (`auth`): User management, cookies, CSRF, SSO, etc.
-
   - Dependencies: Redis
   - Configuration:
     - `REDIS_URL`: The Redis connection string.
@@ -44,7 +43,6 @@ Optional features:
 
 - Content serving (`serve`): The ability to upload and serve documents and their
   assets
-
   - Dependencies: feature `judge` (if needed), `git`
   - Configuration:
     - `BUILD_ROOT`: Directory for git repositories of all projects. Defaults to

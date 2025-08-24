@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
 	useEditorEffect,
-	useEditorEventCallback
-} from '@nytimes/react-prosemirror';
+	useEditorEventCallback,
+	useEditorState
+} from '@handlewithcare/react-prosemirror';
 import { docSchema, findParent, markExtend } from 'iris-prosemirror';
 import {
 	Button,
@@ -29,6 +30,8 @@ function FigureDialog({ isOpen, setIsOpen }: DialogProps) {
 	const [imgSrc, setImgSrc] = useState('');
 	const [imgAlt, setImgAlt] = useState('');
 
+	const state = useEditorState();
+
 	const updateFigure = useEditorEventCallback((view) => {
 		if (!figure) return;
 		const tr = view.state.tr;
@@ -46,36 +49,39 @@ function FigureDialog({ isOpen, setIsOpen }: DialogProps) {
 		view.dispatch(tr);
 	});
 
-	useEditorEffect((view) => {
-		const newFigure = findParent(view.state, [docSchema.nodes.figure]);
-		if (!newFigure) {
-			setFigure(null);
-			setImage(null);
-			return;
-		}
+	useEditorEffect(
+		(view) => {
+			const newFigure = findParent(view.state, [docSchema.nodes.figure]);
+			if (!newFigure) {
+				setFigure(null);
+				setImage(null);
+				return;
+			}
 
-		const node = view.state.doc.nodeAt(newFigure.before);
-		if (!node) return;
+			const node = view.state.doc.nodeAt(newFigure.before);
+			if (!node) return;
 
-		if (newFigure.before !== figure) {
-			setFigure(newFigure.before);
+			if (newFigure.before !== figure) {
+				setFigure(newFigure.before);
 
-			setWidth(node.attrs.width ?? '');
+				setWidth(node.attrs.width ?? '');
 
-			// Reset
-			setImage(null);
+				// Reset
+				setImage(null);
 
-			node.forEach((child, offset) => {
-				if (child.type === view.state.schema.nodes.image) {
-					setImage(newFigure.before + 1 + offset);
-					setImgSrc(child.attrs.src ?? '');
-					setImgAlt(child.attrs.alt ?? '');
-				}
+				node.forEach((child, offset) => {
+					if (child.type === view.state.schema.nodes.image) {
+						setImage(newFigure.before + 1 + offset);
+						setImgSrc(child.attrs.src ?? '');
+						setImgAlt(child.attrs.alt ?? '');
+					}
 
-				return false;
-			});
-		}
-	});
+					return false;
+				});
+			}
+		},
+		[state]
+	);
 
 	return (
 		<Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen}>
@@ -121,6 +127,8 @@ function LinkDialog({ isOpen, setIsOpen }: DialogProps) {
 
 	const [target, setTarget] = useState('');
 
+	const state = useEditorState();
+
 	const updateLinkMark = useEditorEventCallback((view) => {
 		if (!link || !linkEnd) return;
 
@@ -137,26 +145,29 @@ function LinkDialog({ isOpen, setIsOpen }: DialogProps) {
 		);
 	});
 
-	useEditorEffect((view) => {
-		const state = view.state;
-		const schema = state.schema;
-		const { $from, $to } = state.selection;
+	useEditorEffect(
+		(view) => {
+			const state = view.state;
+			const schema = state.schema;
+			const { $from, $to } = state.selection;
 
-		setLink(null);
+			setLink(null);
 
-		const res = markExtend($from, $to, schema.marks.link);
+			const res = markExtend($from, $to, schema.marks.link);
 
-		if (res) {
-			const { from, to, mark } = res;
+			if (res) {
+				const { from, to, mark } = res;
 
-			if (from !== link) {
-				setTarget(mark.attrs.href);
+				if (from !== link) {
+					setTarget(mark.attrs.href);
+				}
+
+				setLink(from);
+				setLinkEnd(to);
 			}
-
-			setLink(from);
-			setLinkEnd(to);
-		}
-	});
+		},
+		[state]
+	);
 
 	return (
 		<Modal isDismissable isOpen={isOpen} onOpenChange={setIsOpen}>

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import {
 	useEditorEffect,
-	useEditorEventCallback
-} from '@nytimes/react-prosemirror';
+	useEditorEventCallback,
+	useEditorState
+} from '@handlewithcare/react-prosemirror';
 import { MenuTrigger, Button, Popover, Menu, MenuItem } from 'iris-components';
 import {
 	docSchema,
@@ -21,6 +22,7 @@ import LLM from '~icons/tabler/sparkles';
 
 function NoteMenu() {
 	const [disabled, setDisabled] = useState(false);
+	const state = useEditorState();
 
 	const insertNote = useEditorEventCallback((view, noteType: string) => {
 		noteComponent.commands.insertNote(noteType)(
@@ -31,11 +33,14 @@ function NoteMenu() {
 		view.focus();
 	});
 
-	useEditorEffect((view) => {
-		setDisabled(
-			!noteComponent.commands.insertNote('info')(view.state, undefined, view)
-		);
-	});
+	useEditorEffect(
+		(view) => {
+			setDisabled(
+				!noteComponent.commands.insertNote('info')(view.state, undefined, view)
+			);
+		},
+		[state]
+	);
 
 	return (
 		<MenuTrigger>

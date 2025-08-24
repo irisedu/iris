@@ -33,10 +33,7 @@ import { keymap } from 'prosemirror-keymap';
 import { gapCursor } from 'prosemirror-gapcursor';
 import { dropCursor } from 'prosemirror-dropcursor';
 import type { EditorProps, NodeViewConstructor } from 'prosemirror-view';
-import {
-	react,
-	type ReactNodeViewConstructor
-} from '@nytimes/react-prosemirror';
+import { reactKeys } from '@handlewithcare/react-prosemirror';
 import { insertNode, clearFormatting, exitNode, deleteBlock } from './utils';
 import {
 	asideComponent,
@@ -56,6 +53,7 @@ import {
 } from './components';
 import { type Command } from 'prosemirror-state';
 import { questionComponent } from './components/question';
+import { type ReactNodeViewMap } from './';
 
 const { toggleInlineMath, insertDisplayMath } = mathComponent.commands;
 
@@ -370,7 +368,7 @@ export const docKeymap = {
 /////////////
 
 export const commonPlugins = [
-	react(),
+	reactKeys(),
 	history(),
 	dropCursor({
 		class: 'ProseMirror-dropcursor',
@@ -410,15 +408,12 @@ export const docNodeViews = {
 	...baseNodeViews
 } as Record<string, NodeViewConstructor>;
 
-export const baseReactNodeViews = {} as Record<
-	string,
-	ReactNodeViewConstructor
->;
+export const baseReactNodeViews = {} as ReactNodeViewMap;
 
 export const docReactNodeViews = {
 	...baseReactNodeViews,
 	...frontmatterComponent.reactNodeViews
-} as Record<string, ReactNodeViewConstructor>;
+} as ReactNodeViewMap;
 
 //////////
 // MISC //

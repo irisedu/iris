@@ -12,12 +12,12 @@
 	"dependencies": {
 		"@codemirror/autocomplete": "^6.18.3",
 		"@codemirror/commands": "^6.8.1",
-		"@codemirror/language": "^6.11.0",
+		"@codemirror/language": "^6.11.3",
 		"@codemirror/language-data": "^6.5.1",
 		"@codemirror/state": "^6.4.1",
-		"@codemirror/view": "^6.36.8",
+		"@codemirror/view": "^6.38.1",
 		"@nytimes/react-prosemirror": "^1.0.3",
-		"@uiw/codemirror-theme-github": "^4.23.12",
+		"@uiw/codemirror-theme-github": "^4.25.1",
 		"iris-components": "workspace:^",
 		"katex": "^0.16.22",
 		"prosemirror-commands": "^1.7.1",
@@ -26,13 +26,13 @@
 		"prosemirror-history": "^1.4.1",
 		"prosemirror-inputrules": "^1.5.0",
 		"prosemirror-keymap": "^1.2.3",
-		"prosemirror-model": "^1.25.1",
+		"prosemirror-model": "^1.25.3",
 		"prosemirror-schema-list": "^1.5.1",
 		"prosemirror-state": "^1.4.3",
 		"prosemirror-tables": "^1.7.1",
 		"prosemirror-transform": "^1.10.4",
-		"prosemirror-view": "^1.39.2",
-		"react": "^19.1.0",
-		"react-aria-components": "^1.8.0"
+		"prosemirror-view": "^1.40.1",
+		"react": "^19.1.1",
+		"react-aria-components": "^1.11.0"
 	}
 }

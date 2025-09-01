@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import { db, JsonValue } from '../../db/index.js';
-import path from 'path';
-import { assetsRoot } from '../../constants.js';
 
 const questionToRedact = [
 	'comment',
@@ -57,19 +55,12 @@ documentsRouter.get('/page/*splat', (req, res, next) => {
 		db.selectFrom('asset_ptr')
 			.where('asset_ptr.path', '=', docPath)
 			.where('asset_ptr.rev', '=', 'latest')
-			.innerJoin('asset', 'asset.id', 'asset_ptr.asset_id')
-			.select('asset.id')
+			.select('asset_ptr.hash')
 			.executeTakeFirst()
 			.then((asset) => {
 				if (!asset) return next();
-				res.contentType(path.basename(docPath));
-				res.sendFile(
-					path.join(
-						assetsRoot,
-						asset.id.substring(0, 2),
-						asset.id.substring(0, 4),
-						asset.id
-					)
+				res.redirect(
+					`${process.env.AWS_ENDPOINT_URL!}/${process.env.S3_CONTENT_BUCKET!}/${asset.hash}`
 				);
 			})
 			.catch(next);
@@ -79,6 +70,7 @@ documentsRouter.get('/page/*splat', (req, res, next) => {
 documentsRouter.get('/series', (req, res, next) => {
 	// TODO: access control
 	db.selectFrom('series')
+		.where('rev', '=', 'latest')
 		.selectAll()
 		.execute()
 		.then((series) => {

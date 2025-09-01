@@ -1,266 +1,185 @@
-import { simpleGit as sg } from 'simple-git';
+import { s3Client } from '../obj/index.js';
+import { Upload } from '@aws-sdk/lib-storage';
+import {
+	DeleteObjectsCommand,
+	waitUntilObjectNotExists,
+	HeadObjectCommand,
+	NotFound
+} from '@aws-sdk/client-s3';
 import unzipper from 'unzipper';
 import path from 'path';
-import { promises as fs, createWriteStream, createReadStream } from 'fs';
-import lockfile from 'proper-lockfile';
-import { db } from '../../db/index.js';
-import { repoRoot, assetsRoot } from '../../constants.js';
+import { type DB, db } from '../../db/index.js';
 import type { SeriesInfo } from 'patchouli';
 import crypto from 'crypto';
 import stream from 'stream/promises';
+import { type Transaction } from 'kysely';
+import { createReadStream } from 'fs';
+import mime from 'mime-types';
 
-function simpleGit(baseDir: string) {
-	return sg({
-		baseDir,
-		timeout: {
-			block: 5000
-		}
-	});
-}
+const ignoredFiles = new Set(['build.json', 'backlinks.json', 'network.json']);
 
-const ignoredFiles = new Set([
-	'content/build/build.json',
-	'content/build/backlinks.json',
-	'content/build/network.json'
-]);
-
-function getFileType(file: string) {
-	if (file.endsWith('.irisc') || file.endsWith('.iq.json')) return 'doc';
-
-	return 'asset';
-}
-
-export async function indexFile(
+async function indexSeries(
+	trx: Transaction<DB>,
 	project: string,
-	repo: string,
-	file: string,
-	rev: string
+	rev: string,
+	buffer: Buffer
 ) {
-	const relPath = path.relative('content/build', file);
-	const filePath = path.join(repo, file);
+	const contents: SeriesInfo[] = JSON.parse(buffer.toString('utf-8'));
 
-	let deleted = false;
+	await trx
+		.insertInto('series')
+		.values(
+			contents.map((s) => ({
+				project_name: project,
+				path: s.href,
+				rev,
+				data: JSON.stringify(s)
+			}))
+		)
+		.execute();
 
-	try {
-		await fs.access(filePath);
-	} catch {
-		deleted = true;
-	}
+	await trx
+		.insertInto('series')
+		.values(
+			contents.map((s) => ({
+				project_name: project,
+				path: s.href,
+				rev: 'latest',
+				data: JSON.stringify(s)
+			}))
+		)
+		.onConflict((c) =>
+			c
+				.columns(['project_name', 'path', 'rev'])
+				.doUpdateSet({ data: (eb) => eb.ref('excluded.data') })
+		)
+		.execute();
 
-	if (file === 'content/build/series.json') {
-		const contents: SeriesInfo[] = JSON.parse(
-			await fs.readFile(filePath, 'utf-8')
-		);
+	return contents.map((s) => s.href);
+}
 
-		await db.deleteFrom('series').where('project_name', '=', project).execute();
+async function indexDocument(
+	trx: Transaction<DB>,
+	project: string,
+	filePath: string,
+	rev: string,
+	buffer: Buffer
+) {
+	const hash = crypto.createHash('sha256').update(buffer).digest('hex');
+	const data = buffer.toString('utf-8');
 
+	let docId = (
 		await db
-			.insertInto('series')
-			.values(
-				contents.map((s) => ({
-					href: s.href,
-					project_name: project,
-					data: JSON.stringify(s)
-				}))
-			)
-			.execute();
+			.selectFrom('document')
+			.where('project_name', '=', project)
+			.where('hash', '=', hash)
+			.select('id')
+			.executeTakeFirst()
+	)?.id;
 
-		return;
+	if (!docId) {
+		docId = (await trx
+			.insertInto('document')
+			.values({
+				project_name: project,
+				hash,
+				data
+			})
+			.returning('id')
+			.executeTakeFirst())!.id;
 	}
 
-	const fileType = getFileType(file);
-
-	if (fileType === 'doc') {
-		// Document
-		let docId: string | undefined;
-
-		if (!deleted) {
-			docId = (await db
-				.insertInto('document')
-				.values({
-					rev,
-					data: await fs.readFile(filePath, 'utf-8'),
-					project_name: project
-				})
-				.onConflict((c) => c.doNothing())
-				.returning('id')
-				.executeTakeFirst())!.id;
-		}
-
-		return { type: 'doc', path: relPath, docId };
-	} else if (fileType === 'asset') {
-		// Asset
-		let assetId: string | undefined;
-
-		if (!deleted) {
-			// https://stackoverflow.com/a/75949050
-			const fstream = createReadStream(filePath);
-			const hash = crypto.createHash('sha256');
-			await stream.pipeline(fstream, hash);
-			const assetHash = hash.digest('hex');
-
-			const assetDir = path.join(
-				assetsRoot,
-				assetHash.substring(0, 2),
-				assetHash.substring(0, 4)
-			);
-			await fs.mkdir(assetDir, { recursive: true });
-			await fs.cp(filePath, path.join(assetDir, assetHash));
-
-			await db
-				.insertInto('asset')
-				.values({
-					id: assetHash,
-					rev
-				})
-				.onConflict((c) => c.doNothing())
-				.execute();
-
-			assetId = assetHash;
-		}
-
-		return { type: 'asset', path: relPath, assetId };
-	}
-}
-
-export async function indexRevs(
-	project: string,
-	repo: string,
-	from: string,
-	to: string
-) {
-	const git = simpleGit(repo);
-	const diff = await git.diffSummary([from, to, '--', 'content/build/']);
-
-	for (const file of diff.files) {
-		if (ignoredFiles.has(file.file)) continue;
-		const res = await indexFile(project, repo, file.file, to);
-		if (!res) continue;
-
-		if (res.type === 'doc') {
-			if (res.docId) {
-				await db
-					.insertInto('document_ptr')
-					.values({
-						path: res.path,
-						doc_id: res.docId,
-						rev: 'latest',
-						project_name: project
-					})
-					.onConflict((c) =>
-						c.columns(['path', 'rev']).doUpdateSet({ doc_id: res.docId })
-					)
-					.execute();
-
-				await db
-					.insertInto('document_ptr')
-					.values({
-						path: res.path,
-						doc_id: res.docId,
-						rev: to,
-						project_name: project
-					})
-					.execute();
-			} else {
-				await db
-					.deleteFrom('document_ptr')
-					.where('path', '=', res.path)
-					.execute();
-			}
-		} else if (res.type === 'asset') {
-			if (res.assetId) {
-				await db
-					.insertInto('asset_ptr')
-					.values({
-						path: res.path,
-						asset_id: res.assetId,
-						rev: 'latest',
-						project_name: project
-					})
-					.onConflict((c) =>
-						c.columns(['path', 'rev']).doUpdateSet({ asset_id: res.assetId })
-					)
-					.execute();
-
-				await db
-					.insertInto('asset_ptr')
-					.values({
-						path: res.path,
-						asset_id: res.assetId,
-						rev: to,
-						project_name: project
-					})
-					.execute();
-			} else {
-				await db.deleteFrom('asset_ptr').where('path', '=', res.path).execute();
-			}
-		}
-	}
-
-	const ls = (await git.raw(['ls-files']))
-		.split(/\r?\n/)
-		.filter((file) => file.length);
-
-	// Update rest of files (excluding modified)
-	for (const file of ls) {
-		if (ignoredFiles.has(file)) continue;
-
-		const relPath = path.relative('content/build', file);
-		const fileType = getFileType(relPath);
-
-		if (fileType === 'doc') {
-			const latest = await db
-				.selectFrom('document_ptr')
-				.where('path', '=', relPath)
-				.where('rev', '=', 'latest')
-				.selectAll()
-				.executeTakeFirst();
-
-			if (!latest) continue;
-
-			await db
-				.insertInto('document_ptr')
-				.values({
-					path: relPath,
-					doc_id: latest.doc_id,
-					rev: to,
-					project_name: project
-				})
-				.onConflict((c) => c.doNothing())
-				.execute();
-		} else if (fileType === 'asset') {
-			const latest = await db
-				.selectFrom('asset_ptr')
-				.where('path', '=', relPath)
-				.where('rev', '=', 'latest')
-				.selectAll()
-				.executeTakeFirst();
-
-			if (!latest) continue;
-
-			await db
-				.insertInto('asset_ptr')
-				.values({
-					path: relPath,
-					asset_id: latest.asset_id,
-					rev: to,
-					project_name: project
-				})
-				.onConflict((c) => c.doNothing())
-				.execute();
-		}
-	}
-
-	await db
-		.updateTable('project')
-		.where('name', '=', project)
-		.set({
-			rev: to
+	await trx
+		.insertInto('document_ptr')
+		.values({
+			project_name: project,
+			path: filePath,
+			rev,
+			doc_id: docId
 		})
+		.execute();
+
+	await trx
+		.insertInto('document_ptr')
+		.values({
+			project_name: project,
+			path: filePath,
+			rev: 'latest',
+			doc_id: docId
+		})
+		.onConflict((c) =>
+			c
+				.columns(['path', 'rev'])
+				.doUpdateSet({ doc_id: (eb) => eb.ref('excluded.doc_id') })
+		)
 		.execute();
 }
 
-export async function repoUpdate(zipFile: string, userId: string) {
+async function indexAsset(
+	trx: Transaction<DB>,
+	project: string,
+	filePath: string,
+	rev: string,
+	file: unzipper.File
+) {
+	const hash = crypto.createHash('sha256');
+	await stream.pipeline(file.stream(), hash);
+	const assetHash = hash.digest('hex');
+
+	try {
+		await s3Client.send(
+			new HeadObjectCommand({
+				Bucket: process.env.S3_CONTENT_BUCKET!,
+				Key: assetHash
+			})
+		);
+	} catch (e: unknown) {
+		if (e instanceof NotFound) {
+			const upload = new Upload({
+				client: s3Client,
+				params: {
+					Bucket: process.env.S3_CONTENT_BUCKET!,
+					Key: assetHash,
+					Body: file.stream(),
+					ContentType: mime.lookup(filePath) || 'application/octet-stream'
+				}
+			});
+
+			await upload.done();
+		}
+	}
+
+	await trx
+		.insertInto('asset_ptr')
+		.values({
+			project_name: project,
+			path: filePath,
+			rev,
+			hash: assetHash
+		})
+		.execute();
+
+	await trx
+		.insertInto('asset_ptr')
+		.values({
+			project_name: project,
+			path: filePath,
+			rev: 'latest',
+			hash: assetHash
+		})
+		.onConflict((c) =>
+			c
+				.columns(['project_name', 'path', 'rev'])
+				.doUpdateSet({ hash: (eb) => eb.ref('excluded.hash') })
+		)
+		.execute();
+}
+
+async function repoUpdateInternal(
+	trx: Transaction<DB>,
+	zipFile: string,
+	userId: string
+) {
 	const zipDir = await unzipper.Open.file(zipFile);
 	let roots = zipDir.files.map((f) => f.path.split('/')[0]);
 	roots = [...new Set(roots)];
@@ -271,7 +190,7 @@ export async function repoUpdate(zipFile: string, userId: string) {
 	const zipRoot = roots[0];
 	const projectName = zipRoot.toLowerCase();
 
-	// Step 1: Create project and assign user group
+	// 1. Create project and assign user group
 	// TODO: authorization: check user role, send appropriate status code in response
 	const existingProject = await db
 		.selectFrom('project')
@@ -279,8 +198,31 @@ export async function repoUpdate(zipFile: string, userId: string) {
 		.selectAll()
 		.executeTakeFirst();
 
-	if (!existingProject) {
-		await db
+	let existingSeries: { path: string }[] = [];
+	let existingDocuments: { path: string }[] = [];
+	let existingAssets: { id: string; path: string }[] = [];
+
+	if (existingProject) {
+		existingSeries = await db
+			.selectFrom('series')
+			.where('project_name', '=', projectName)
+			.where('rev', '=', 'latest')
+			.select(['path'])
+			.execute();
+		existingDocuments = await db
+			.selectFrom('document_ptr')
+			.where('project_name', '=', projectName)
+			.where('rev', '=', 'latest')
+			.select(['path'])
+			.execute();
+		existingAssets = await db
+			.selectFrom('asset_ptr')
+			.where('project_name', '=', projectName)
+			.where('rev', '=', 'latest')
+			.select(['id', 'path'])
+			.execute();
+	} else {
+		await trx
 			.insertInto('project')
 			.values({
 				name: projectName
@@ -288,7 +230,7 @@ export async function repoUpdate(zipFile: string, userId: string) {
 			.onConflict((c) => c.doNothing())
 			.execute();
 
-		await db
+		await trx
 			.insertInto('project_group')
 			.values({
 				project_name: projectName,
@@ -298,113 +240,199 @@ export async function repoUpdate(zipFile: string, userId: string) {
 			.execute();
 	}
 
-	// Step 2: Ensure git repo exists
-	const repoDir = path.join(repoRoot, projectName);
-	await fs.mkdir(repoDir, { recursive: true });
+	// 2. Index build data from ZIP
+	const rev = new Date().getTime().toString();
 
-	const releaseLock = await lockfile.lock(repoDir);
-
-	const git = simpleGit(repoDir);
-	await git.init();
-
-	// Step 3: Overwrite contents and create a new commit
-	const contentDir = path.join(repoDir, 'content');
-	await fs.rm(contentDir, { recursive: true, force: true });
-	await fs.mkdir(contentDir);
+	const indexedSeries = new Set();
+	const indexedDocuments = new Set();
+	const indexedAssets = new Set();
 
 	const filesToExtract = zipDir.files.filter(
 		(f) => f.type === 'File' && f.path.startsWith(zipRoot + '/')
 	);
 
-	const promises = [];
-
 	for (const file of filesToExtract) {
-		const outPath = path.join(contentDir, path.relative(zipRoot, file.path));
-		const parentDir = path.dirname(outPath);
+		const projRelPath = path.relative(zipRoot, file.path);
+		const buildPfx = 'build/';
+		if (!projRelPath.startsWith(buildPfx)) continue;
+		const buildRelPath = projRelPath.slice(buildPfx.length);
+		if (ignoredFiles.has(buildRelPath)) continue;
 
-		promises.push(
-			fs.mkdir(parentDir, { recursive: true }).then(
-				() =>
-					new Promise<void>((resolve, reject) => {
-						file
-							.stream()
-							.pipe(createWriteStream(outPath))
-							.on('error', reject)
-							.on('finish', resolve);
-					})
-			)
+		if (buildRelPath === 'series.json') {
+			(await indexSeries(trx, projectName, rev, await file.buffer())).forEach(
+				(href) => indexedSeries.add(href)
+			);
+		} else if (
+			buildRelPath.endsWith('.irisc') ||
+			buildRelPath.endsWith('.iq.json')
+		) {
+			// Document
+			await indexDocument(
+				trx,
+				projectName,
+				buildRelPath,
+				rev,
+				await file.buffer()
+			);
+
+			indexedDocuments.add(buildRelPath);
+		} else {
+			// Asset
+			await indexAsset(trx, projectName, buildRelPath, rev, file);
+
+			indexedAssets.add(buildRelPath);
+		}
+	}
+
+	// 3. Remove 'latest' entry for deleted files
+	for (const series of existingSeries) {
+		if (indexedSeries.has(series.path)) continue;
+		await trx
+			.deleteFrom('series')
+			.where('path', '=', series.path)
+			.where('rev', '=', 'latest')
+			.execute();
+	}
+
+	for (const doc of existingDocuments) {
+		if (indexedDocuments.has(doc.path)) continue;
+		await trx
+			.deleteFrom('document_ptr')
+			.where('path', '=', doc.path)
+			.where('rev', '=', 'latest')
+			.execute();
+	}
+
+	for (const asset of existingAssets) {
+		if (indexedAssets.has(asset.path)) continue;
+		await trx.deleteFrom('asset_ptr').where('id', '=', asset.id).execute();
+	}
+
+	// 4. Upload archive to S3, create rev entry
+	const hash = crypto.createHash('sha256');
+	await stream.pipeline(createReadStream(zipFile), hash);
+	const archiveHash = hash.digest('hex');
+
+	try {
+		await s3Client.send(
+			new HeadObjectCommand({
+				Bucket: process.env.S3_REPO_BUCKET!,
+				Key: archiveHash
+			})
 		);
+	} catch (e: unknown) {
+		if (e instanceof NotFound) {
+			const upload = new Upload({
+				client: s3Client,
+				params: {
+					Bucket: process.env.S3_REPO_BUCKET!,
+					Key: archiveHash,
+					Body: createReadStream(zipFile),
+					ContentType: 'application/zip'
+				}
+			});
+
+			await upload.done();
+		}
 	}
 
-	await Promise.all(promises);
+	await trx
+		.insertInto('project_rev')
+		.values({
+			project_name: projectName,
+			rev,
+			hash: archiveHash
+		})
+		.execute();
 
-	const user = await db
-		.selectFrom('user_account')
-		.where('id', '=', userId)
-		.selectAll()
-		.executeTakeFirst();
+	await trx
+		.updateTable('project')
+		.set({
+			rev
+		})
+		.where('name', '=', projectName)
+		.execute();
+}
 
-	if (!user) throw new Error('User vanished!');
+export function repoUpdate(zipFile: string, userId: string) {
+	return db
+		.transaction()
+		.execute(async (trx) => await repoUpdateInternal(trx, zipFile, userId));
+}
 
-	const displayName = user.name ?? '<no name>';
+async function repoDeleteInternal(trx: Transaction<DB>, projectName: string) {
+	// 1. Keep track of S3 objects that will be orphaned
+	const revs = await db
+		.selectFrom('project_rev')
+		.where('project_name', '=', projectName)
+		.select('hash')
+		.execute();
+	const assets = await db
+		.selectFrom('asset_ptr')
+		.where('project_name', '=', projectName)
+		.select('hash')
+		.execute();
+	const sharedAssets = await db
+		.selectFrom('asset_ptr')
+		.where('asset_ptr.project_name', '=', projectName)
+		.innerJoin('asset_ptr as asset_ptr2', 'asset_ptr.hash', 'asset_ptr2.hash')
+		.where('asset_ptr2.project_name', '<>', projectName)
+		.select('asset_ptr2.hash')
+		.execute();
 
-	const commit = await git
-		.addConfig('user.email', user.email)
-		.addConfig('user.name', displayName)
-		.add('.')
-		.commit(`User file upload`);
+	// 2. Delete project
+	// -> Delete project_rev, project_group, series, document, asset (ON CASCADE)
+	// -> Delete question_submission (ON CASCADE)
+	await trx.deleteFrom('project').where('name', '=', projectName).execute();
 
-	// Step 4: Index new commit
-	if (commit.commit.length) {
-		// Non-empty commit
-		const beginRev =
-			existingProject?.rev ??
-			(await git.raw('hash-object', '-t', 'tree', '/dev/null')).trim(); // https://stackoverflow.com/a/40884093
+	// 3. Delete revs on S3
+	const MAX_WAIT = 10;
 
-		await indexRevs(projectName, repoDir, beginRev, commit.commit);
+	if (revs.length > 0) {
+		await s3Client.send(
+			new DeleteObjectsCommand({
+				Bucket: process.env.S3_REPO_BUCKET!,
+				Delete: {
+					Objects: revs.map((r) => ({ Key: r.hash }))
+				}
+			})
+		);
+
+		for (const r of revs) {
+			await waitUntilObjectNotExists(
+				{ client: s3Client, maxWaitTime: MAX_WAIT },
+				{ Bucket: process.env.S3_REPO_BUCKET!, Key: r.hash }
+			);
+		}
 	}
 
-	releaseLock();
+	// 4. Delete orphaned assets on S3
+	const sharedAssetsSet = new Set(sharedAssets.map((a) => a.hash));
+	const assetsToDelete = assets
+		.map((a) => a.hash)
+		.filter((h) => !sharedAssetsSet.has(h));
+
+	if (assetsToDelete.length > 0) {
+		await s3Client.send(
+			new DeleteObjectsCommand({
+				Bucket: process.env.S3_CONTENT_BUCKET!,
+				Delete: {
+					Objects: assetsToDelete.map((h) => ({ Key: h }))
+				}
+			})
+		);
+
+		for (const h of assetsToDelete) {
+			await waitUntilObjectNotExists(
+				{ client: s3Client, maxWaitTime: MAX_WAIT },
+				{ Bucket: process.env.S3_CONTENT_BUCKET!, Key: h }
+			);
+		}
+	}
 }
 
 export async function repoDelete(projectName: string) {
-	const repoDir = path.join(repoRoot, projectName);
-	const releaseLock = await lockfile.lock(repoDir);
-
-	// 1. Delete project
-	// -> Delete project_group, series, document, document_ptr, asset_ptr (ON CASCADE)
-	// -> Delete question_submission (ON CASCADE)
-	await db.deleteFrom('project').where('name', '=', projectName).execute();
-
-	// 2. Delete repo directory
-	await fs.rm(repoDir, { recursive: true, force: true });
-
-	// 3. Delete orphaned assets
-	const deletedAssets = await db
-		.deleteFrom('asset')
-		.where(({ not, exists, selectFrom }) =>
-			not(
-				exists(
-					selectFrom('asset_ptr')
-						.select('asset_ptr.asset_id')
-						.whereRef('asset.id', '=', 'asset_ptr.asset_id')
-				)
-			)
-		)
-		.returning('id')
-		.execute();
-
-	const tasks = deletedAssets.map(({ id }) => {
-		const assetPath = path.join(
-			assetsRoot,
-			id.substring(0, 2),
-			id.substring(0, 4),
-			id
-		);
-
-		return fs.rm(assetPath, { force: true });
-	});
-
-	await Promise.all(tasks);
-	releaseLock();
+	return db
+		.transaction()
+		.execute(async (trx) => await repoDeleteInternal(trx, projectName));
 }

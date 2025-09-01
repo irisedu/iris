@@ -33,8 +33,7 @@ export default [
 			'**/dist/',
 			'**/out/',
 			'**/.eslintrc.cjs',
-			'packages/iris-backend/repo/',
-			'packages/iris-backend/assets/',
+			'packages/iris-backend/obj/',
 			'packages/iris-backend/spa/',
 			'packages/iris-backend/src/db/migrations/'
 		]

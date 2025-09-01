@@ -1,9 +1,10 @@
 import express, { type Express } from 'express';
 import { type BackendFeature } from './feature.js';
-import { expressLogger, dbLogger } from './logger.js';
+import { expressLogger } from './logger.js';
 import { migrateToLatest } from './db/migrator.js';
 
 import { authFeature } from './features/auth/index.js';
+import { objFeature } from './features/obj/index.js';
 import { serveFeature } from './features/serve/index.js';
 import { spaFeature } from './features/spa/index.js';
 import { judgeFeature } from './features/judge/index.js';
@@ -26,10 +27,10 @@ function featureEnabled(name: string) {
 	return envFeatures.includes(name);
 }
 
-function registerFeature(app: Express, feature: BackendFeature) {
+async function registerFeature(app: Express, feature: BackendFeature) {
 	features.push(feature.name);
 
-	if (feature.setup) feature.setup(app);
+	if (feature.setup) await feature.setup(app);
 	if (feature.routers) {
 		for (const router of feature.routers) {
 			app.use(router.path, router.router);
@@ -38,23 +39,23 @@ function registerFeature(app: Express, feature: BackendFeature) {
 }
 
 // Register features
-registerFeature(app, authFeature);
-if (featureEnabled('serve')) registerFeature(app, serveFeature);
-if (featureEnabled('judge')) registerFeature(app, judgeFeature);
-if (featureEnabled('llm')) registerFeature(app, llmFeature);
+await registerFeature(app, authFeature);
+if (featureEnabled('obj')) await registerFeature(app, objFeature);
+if (featureEnabled('serve')) await registerFeature(app, serveFeature);
+if (featureEnabled('judge')) await registerFeature(app, judgeFeature);
+if (featureEnabled('llm')) await registerFeature(app, llmFeature);
 
-registerFeature(app, spaFeature);
+await registerFeature(app, spaFeature);
 
 expressLogger.info({ features }, `Features: ${features}`);
 
 // Start
 const port = process.env.PORT || 58063;
-migrateToLatest().then(() => {
-	dbLogger.info('Running migrations...');
 
-	app.listen(port, () => {
-		expressLogger.info({ port }, `Listening on port ${port}`);
-	});
+await migrateToLatest();
+
+app.listen(port, () => {
+	expressLogger.info({ port }, `Listening on port ${port}`);
 });
 
 // Expose some types to the frontend

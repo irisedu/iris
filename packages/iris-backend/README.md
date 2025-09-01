@@ -11,7 +11,9 @@ Base configuration:
 
 - `NODE_ENV`: `development` or `production`
 - `FEATURES`: A comma-separated list of optional features to enable.
-- `BASE_URL`: The base URL that Iris is hosted at.
+- `BASE_URL`: The base URL that Iris is hosted at. Used for:
+  - Generating request URIs
+  - Setting S3 CORS rules
 - `TRUST_PROXY`: Set to `1` if the server is behind a reverse proxy.
 
 Base dependencies:
@@ -41,14 +43,20 @@ Required features:
 
 Optional features:
 
+- Object storage (`obj`): S3-compatible file storage.
+  - Configuration: [see AWS
+    documentation](https://docs.aws.amazon.com/sdkref/latest/guide/feature-static-credentials.html).
+    - `AWS_ENDPOINT_URL`: S3-like storage base URL.
+    - `AWS_ACCESS_KEY`: S3-like storage access key ID.
+    - `AWS_SECRET_ACCESS_KEY`: S3-like storage access key.
+    - `AWS_REGION`: S3-like storage region.
+
 - Content serving (`serve`): The ability to upload and serve documents and their
   assets
-  - Dependencies: feature `judge` (if needed), `git`
+  - Dependencies: feature `obj`, feature `judge` (if needed)
   - Configuration:
-    - `BUILD_ROOT`: Directory for git repositories of all projects. Defaults to
-      a directory called `repo` in the current working directory.
-    - `ASSETS_ROOT`: Directory for storing assets. Defaults to a directory
-      called `assets` in the current working directory.
+    - `S3_REPO_BUCKET`: S3-like bucket to use for unbuilt storing project files.
+    - `S3_CONTENT_BUCKET`: S3-like bucket to use for storing published contents.
 
 - Judge (`judge`): Judging students' question responses. Required for questions
   in documents to function.

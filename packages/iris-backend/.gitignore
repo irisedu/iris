@@ -1,6 +1,5 @@
-/repo/
-/assets/
 /spa/
+/obj/
 
 /.env
 /.shell-lock

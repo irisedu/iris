@@ -23,16 +23,12 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Asset {
-  id: string;
-  rev: string;
-}
-
 export interface AssetPtr {
-  asset_id: string;
+  hash: string;
+  id: Generated<string>;
   path: string;
-  project_name: string | null;
-  rev: Generated<string>;
+  project_name: string;
+  rev: string;
 }
 
 export interface Assignment {
@@ -52,16 +48,16 @@ export interface AssignmentSubmission {
 
 export interface Document {
   data: Json;
+  hash: string;
   id: Generated<string>;
-  project_name: string | null;
-  rev: string;
+  project_name: string;
 }
 
 export interface DocumentPtr {
   doc_id: string;
   path: string;
-  project_name: string | null;
-  rev: Generated<string>;
+  project_name: string;
+  rev: string;
 }
 
 export interface Project {
@@ -75,6 +71,12 @@ export interface ProjectGroup {
   user_id: string;
 }
 
+export interface ProjectRev {
+  hash: string;
+  project_name: string;
+  rev: string;
+}
+
 export interface QuestionSubmission {
   created: Generated<Timestamp>;
   id: Generated<string>;
@@ -86,8 +88,9 @@ export interface QuestionSubmission {
 
 export interface Series {
   data: Json;
-  href: string;
-  project_name: string | null;
+  path: string;
+  project_name: string;
+  rev: string;
 }
 
 export interface UserAccount {
@@ -111,7 +114,6 @@ export interface UserGroup {
 }
 
 export interface DB {
-  asset: Asset;
   asset_ptr: AssetPtr;
   assignment: Assignment;
   assignment_submission: AssignmentSubmission;
@@ -119,6 +121,7 @@ export interface DB {
   document_ptr: DocumentPtr;
   project: Project;
   project_group: ProjectGroup;
+  project_rev: ProjectRev;
   question_submission: QuestionSubmission;
   series: Series;
   user_account: UserAccount;

@@ -4,8 +4,7 @@ Dockerfile
 **/node_modules/
 
 /packages/iris-backend/out
-/packages/iris-backend/repo
-/packages/iris-backend/assets
+/packages/iris-backend/obj
 /packages/iris-backend/spa
 
 /packages/iris-frontend/dist

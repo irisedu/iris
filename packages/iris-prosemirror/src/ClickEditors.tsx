@@ -107,7 +107,6 @@ function FigureDialog({ isOpen, setIsOpen }: DialogProps) {
 				)}
 
 				<Button
-					className="react-aria-Button border-iris-300"
 					autoFocus
 					onPress={() => {
 						updateFigure();

@@ -35,13 +35,13 @@ function OverwriteDialog({
 
 				<div className="flex flex-row gap-2">
 					<Button
-						className="react-aria-Button border-iris-300"
+						className="react-aria-Button button-alt"
 						onPress={() => setIsOpen(false)}
 					>
 						Cancel
 					</Button>
 					<Button
-						className="react-aria-Button border-iris-300"
+						className="react-aria-Button button-alert"
 						autoFocus
 						onPress={() => {
 							if (callbackRef.current) callbackRef.current();

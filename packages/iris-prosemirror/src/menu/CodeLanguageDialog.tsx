@@ -58,7 +58,6 @@ function CodeLanguageDialog({
 					{languageItems}
 				</Dropdown>
 				<Button
-					className="react-aria-Button border-iris-300"
 					autoFocus
 					onPress={() => {
 						onPress();

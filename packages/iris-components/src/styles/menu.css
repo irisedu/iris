@@ -8,4 +8,8 @@
 	&[data-focused] {
 		@apply bg-iris-200 outline-hidden;
 	}
+
+	&[data-pressed] {
+		@apply bg-iris-300;
+	}
 }

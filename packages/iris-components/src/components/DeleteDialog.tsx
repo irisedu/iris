@@ -29,7 +29,7 @@ export function DeleteDialog({
 						Cancel
 					</Button>
 					<Button
-						className="react-aria-Button border-red-500 bg-red-600 text-white dark:border-red-400 dark:bg-red-200 dark:text-black"
+						className="react-aria-Button button-alert"
 						autoFocus
 						onPress={() => {
 							if (callbackRef.current) callbackRef.current();

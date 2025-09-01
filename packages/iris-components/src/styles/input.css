@@ -25,8 +25,28 @@
 .react-aria-Button {
 	@apply rounded-md px-2 py-1 border-2 bg-iris-200 border-iris-400;
 
+	&[data-pressed] {
+		@apply bg-iris-300;
+	}
+
 	&[data-disabled] {
 		@apply text-gray-500;
+	}
+}
+
+.button-alt {
+	@apply border-zinc-300 bg-zinc-100;
+
+	&[data-pressed] {
+		@apply bg-zinc-200;
+	}
+}
+
+.button-alert {
+	@apply bg-red-600 border-red-500 text-white dark:border-red-400 dark:bg-red-200 dark:text-black;
+
+	&[data-pressed] {
+		@apply bg-red-700 dark:bg-red-300;
 	}
 }
 

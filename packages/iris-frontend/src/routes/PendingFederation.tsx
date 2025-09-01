@@ -57,13 +57,13 @@ export function Component() {
 
 				<div className="flex flex-row gap-2">
 					<Button
-						className="react-aria-Button grow border-zinc-300 bg-zinc-100"
+						className="react-aria-Button grow button-alt"
 						onPress={logOut}
 					>
 						Cancel
 					</Button>
 					<Button
-						className="react-aria-Button grow border-iris-400 bg-iris-200"
+						className="react-aria-Button grow"
 						onPress={confirmFederation}
 						autoFocus
 					>

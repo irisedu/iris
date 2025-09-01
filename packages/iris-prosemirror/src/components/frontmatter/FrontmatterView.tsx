@@ -76,12 +76,7 @@ export default forwardRef<HTMLDivElement, NodeViewComponentProps>(
 							</TextField>
 						</Dialog>
 
-						<Button
-							className="react-aria-Button border-iris-300"
-							onPress={() => setIsOpen(false)}
-						>
-							Close
-						</Button>
+						<Button onPress={() => setIsOpen(false)}>Close</Button>
 					</Modal>
 				</DialogTrigger>
 

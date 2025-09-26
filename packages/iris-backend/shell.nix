@@ -33,7 +33,6 @@ in pkgs.mkShell {
         echo "Starting PostgreSQL..."
         pg_ctl -o "-p 5555 -k $PGDATA" start
 
-
         echo "Starting Valkey..."
         valkey-server --port 6666 --daemonize yes
 

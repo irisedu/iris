@@ -10,7 +10,9 @@ import {
 	S3ServiceException
 } from '@aws-sdk/client-s3';
 
-export const s3Client = new S3Client({});
+export const s3Client = new S3Client({
+	forcePathStyle: process.env.AWS_FORCE_PATH_STYLE === '1'
+});
 
 export async function ensureBucket(
 	name: string,

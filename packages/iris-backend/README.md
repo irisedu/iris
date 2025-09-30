@@ -51,7 +51,7 @@ Optional features:
     - `AWS_SECRET_ACCESS_KEY`: S3-like storage access key.
     - `AWS_REGION`: S3-like storage region.
     - `AWS_FORCE_PATH_STYLE`: If set to `1`, forces path-style rather than
-       subdomain-style access.
+      subdomain-style access.
 
 - Content serving (`serve`): The ability to upload and serve documents and their
   assets

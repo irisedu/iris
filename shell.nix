@@ -5,10 +5,8 @@ pkgs.mkShell {
     nodejs_22
     pnpm
 
-    # patchouli
-    (pkgs.texlive.combine {
-      inherit (pkgs.texlive) scheme-basic
-        standalone dvisvgm pgfplots mathtools;
-    })
+    # patchouli / latexer
+    texliveFull
+    poppler-utils
   ];
 }

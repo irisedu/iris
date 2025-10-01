@@ -28,7 +28,8 @@ async function chat(
 	const stream = await ollama.chat({
 		model: process.env.OLLAMA_MODEL!,
 		messages,
-		stream: true
+		stream: true,
+		keep_alive: -1
 	});
 
 	let assistantMsg: string = '';

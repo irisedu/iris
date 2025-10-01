@@ -63,7 +63,7 @@ casRouter.get('/:provider/login', (req, res) => {
 	}
 
 	// Generate CSRF for development
-	generateCsrfToken(req, res, { overwrite: true });
+	generateCsrfToken(req, res);
 
 	res.redirect(`${providerData.url}/login?service=${getService(provider)}`);
 });

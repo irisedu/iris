@@ -204,7 +204,7 @@ export const authFeature = {
 				req.headers['x-csrf-token']
 			);
 			if (req.method === 'GET') {
-				generateCsrfToken(req, res, { overwrite: true });
+				generateCsrfToken(req, res);
 				console.log('NEW TOKEN ISSUED');
 			}
 			next();

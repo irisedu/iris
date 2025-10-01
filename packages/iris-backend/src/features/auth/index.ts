@@ -197,8 +197,16 @@ export const authFeature = {
 
 		// Must come after session (relies on SID)
 		app.use((req, res, next) => {
-			if (req.method === 'GET')
+			console.log(
+				`${req.method}: SID: `,
+				req.session?.id,
+				'CSRF HDR: ',
+				req.headers['x-csrf-token']
+			);
+			if (req.method === 'GET') {
 				generateCsrfToken(req, res, { overwrite: true });
+				console.log('NEW TOKEN ISSUED');
+			}
 			next();
 		});
 

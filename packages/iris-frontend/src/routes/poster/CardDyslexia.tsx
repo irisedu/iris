@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import StyleProvider from '$components/StyleProvider';
-import { useWidellSimulation } from './Poster';
+import { useWidellSimulation } from './Index';
 import { Switch } from 'iris-components';
 
 export function Component() {

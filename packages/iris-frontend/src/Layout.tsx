@@ -67,8 +67,14 @@ function Layout({ children }: { children?: ReactNode }) {
 					/>
 				</Link>
 
-				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-4 items-center mx-4 mt-2 grow">
+				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-8 items-center mx-4 mt-2 grow">
 					{features.includes('serve') && <Link to="/catalog">Catalog</Link>}
+					{user &&
+						user.type === 'registered' &&
+						features.includes('repo') &&
+						user.groups.includes('repo:users') && (
+							<Link to="/repo">Question Repo</Link>
+						)}
 				</div>
 
 				<div className="grow" />
@@ -96,7 +102,7 @@ function Layout({ children }: { children?: ReactNode }) {
 						<Popover>
 							<Menu>
 								{features.includes('serve') &&
-									user.groups.includes('authors') && (
+									user.groups.includes('cms:authors') && (
 										<MenuItem onAction={() => navigate('/author-dashboard')}>
 											Author Dashboard
 										</MenuItem>

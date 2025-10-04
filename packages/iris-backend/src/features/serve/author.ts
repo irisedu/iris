@@ -9,13 +9,10 @@ export const authorRouter = Router();
 
 authorRouter.get(
 	'/projects',
-	requireAuth({ group: 'authors' }),
+	requireAuth({ group: 'cms:authors' }),
 	(req, res, next) => {
-		if (req.session.user?.type !== 'registered') {
-			// Impossible
-			res.sendStatus(401);
-			return;
-		}
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
 
 		const userId = req.session.user.id;
 
@@ -34,7 +31,7 @@ authorRouter.get(
 
 authorRouter.delete(
 	'/projects/:project',
-	requireAuth({ group: 'authors' }),
+	requireAuth({ group: 'cms:authors' }),
 	(req, res, next) => {
 		const { project } = req.params;
 		repoDelete(project)
@@ -45,7 +42,7 @@ authorRouter.delete(
 
 authorRouter.post(
 	'/projects/upload',
-	requireAuth({ group: 'authors' }),
+	requireAuth({ group: 'cms:authors' }),
 	(req, res, next) => {
 		const form = formidable({ maxFiles: 1, maxFileSize: 2048 * 1024 * 1024 });
 
@@ -55,7 +52,8 @@ authorRouter.post(
 
 			const { filepath } = files.file[0];
 
-			if (req.session.user?.type !== 'registered') return res.sendStatus(401); // Impossible
+			// Impossible
+			if (req.session.user?.type !== 'registered') return;
 
 			repoUpdate(filepath, req.session.user.id)
 				.then(() => res.sendStatus(200))

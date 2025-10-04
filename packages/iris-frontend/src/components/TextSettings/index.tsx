@@ -65,32 +65,12 @@ function TextSettings() {
 				</Link>
 			</h2>
 
-			<Tabs className="outline-hidden">
-				<TabList className="flex flex-wrap gap-x-4 gap-y-2 text-lg mb-2">
-					<Tab
-						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
-						id="font"
-					>
-						Font
-					</Tab>
-					<Tab
-						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
-						id="spacing"
-					>
-						Spacing
-					</Tab>
-					<Tab
-						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
-						id="ruler"
-					>
-						Reading Ruler
-					</Tab>
-					<Tab
-						className="react-aria-Link data-[selected]:font-bold data-[selected]:underline"
-						id="color"
-					>
-						Color
-					</Tab>
+			<Tabs className="link-tabs">
+				<TabList>
+					<Tab id="font">Font</Tab>
+					<Tab id="spacing">Spacing</Tab>
+					<Tab id="ruler">Reading Ruler</Tab>
+					<Tab id="color">Color</Tab>
 				</TabList>
 
 				<TabPanel id="font" className="react-aria-TabPanel max-w-72">

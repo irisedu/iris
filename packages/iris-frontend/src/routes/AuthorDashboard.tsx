@@ -9,7 +9,7 @@ export function loader() {
 }
 
 export function Component() {
-	useAuthorization({ required: true, group: 'authors' });
+	useAuthorization({ required: true, group: 'cms:authors' });
 
 	useEffect(() => {
 		document.title = 'Author Dashboard • Iris';

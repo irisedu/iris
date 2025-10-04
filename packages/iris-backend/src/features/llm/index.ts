@@ -284,11 +284,8 @@ router.post(
 		const { method, prompt } = req.params;
 
 		const user = req.session.user;
-		if (user?.type !== 'registered') {
-			// Impossible
-			res.sendStatus(401);
-			return;
-		}
+		// Impossible
+		if (user?.type !== 'registered') return;
 
 		db.selectFrom('document_ptr')
 			.where('document_ptr.path', '=', docPath)

@@ -9,6 +9,7 @@ import { serveFeature } from './features/serve/index.js';
 import { spaFeature } from './features/spa/index.js';
 import { judgeFeature } from './features/judge/index.js';
 import { llmFeature } from './features/llm/index.js';
+import { repoFeature } from './features/repo/index.js';
 
 expressLogger.info(`Running with NODE_ENV=${process.env.NODE_ENV}...`);
 
@@ -44,6 +45,7 @@ if (featureEnabled('obj')) await registerFeature(app, objFeature);
 if (featureEnabled('serve')) await registerFeature(app, serveFeature);
 if (featureEnabled('judge')) await registerFeature(app, judgeFeature);
 if (featureEnabled('llm')) await registerFeature(app, llmFeature);
+if (featureEnabled('repo')) await registerFeature(app, repoFeature);
 
 await registerFeature(app, spaFeature);
 

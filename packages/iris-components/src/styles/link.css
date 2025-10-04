@@ -1,5 +1,6 @@
 a,
-.react-aria-Link {
+.react-aria-Link,
+.link-tabs .react-aria-Tab {
 	@apply text-iris-900 hover:text-iris-800 hover:underline focus-visible:underline decoration-2 underline-offset-2 cursor-pointer hyphens-none;
 
 	&.external {

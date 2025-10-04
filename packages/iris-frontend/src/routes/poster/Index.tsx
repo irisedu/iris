@@ -10,7 +10,7 @@ import QR from '$assets/poster/qr.svg?react';
 import ArrowRight from '~icons/tabler/arrow-right';
 import Pointer from '~icons/tabler/pointer-filled';
 
-import './Poster.css';
+import './Index.css';
 
 /*
    Print settings:

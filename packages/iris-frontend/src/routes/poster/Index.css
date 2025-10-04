@@ -1,4 +1,4 @@
-@reference "../index.css";
+@reference "../../index.css";
 
 body {
 	@apply bg-iris-50 hyphens-none;

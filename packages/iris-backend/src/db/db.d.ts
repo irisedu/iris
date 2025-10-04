@@ -9,6 +9,8 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
+
 export type Json = JsonValue;
 
 export type JsonArray = JsonValue[];
@@ -86,6 +88,70 @@ export interface QuestionSubmission {
   user_id: string;
 }
 
+export interface RepoQuestion {
+  comment: string | null;
+  created: Generated<Timestamp>;
+  creator: string;
+  id: Generated<string>;
+  num: Generated<Int8>;
+  type: string;
+  workspace_id: string;
+}
+
+export interface RepoQuestionRev {
+  created: Generated<Timestamp>;
+  creator: string;
+  data: Json | null;
+  derived_from: string | null;
+  id: Generated<string>;
+  question_id: string;
+}
+
+export interface RepoQuestionTag {
+  question_id: string;
+  tag_id: string;
+}
+
+export interface RepoTag {
+  id: Generated<string>;
+  name: string;
+  workspace_id: string;
+}
+
+export interface RepoTemplate {
+  hash: string;
+  id: Generated<string>;
+  name: string;
+}
+
+export interface RepoWorksheet {
+  created: Generated<Timestamp>;
+  creator: string;
+  id: Generated<string>;
+  name: string;
+  workspace_id: string;
+}
+
+export interface RepoWorksheetRev {
+  created: Generated<Timestamp>;
+  creator: string;
+  data: Json | null;
+  id: Generated<string>;
+  template_id: string | null;
+  worksheet_id: string;
+}
+
+export interface RepoWorkspace {
+  id: Generated<string>;
+  name: string;
+}
+
+export interface RepoWorkspaceGroup {
+  group_name: string;
+  user_id: string;
+  workspace_id: string;
+}
+
 export interface Series {
   data: Json;
   path: string;
@@ -123,6 +189,15 @@ export interface DB {
   project_group: ProjectGroup;
   project_rev: ProjectRev;
   question_submission: QuestionSubmission;
+  repo_question: RepoQuestion;
+  repo_question_rev: RepoQuestionRev;
+  repo_question_tag: RepoQuestionTag;
+  repo_tag: RepoTag;
+  repo_template: RepoTemplate;
+  repo_worksheet: RepoWorksheet;
+  repo_worksheet_rev: RepoWorksheetRev;
+  repo_workspace: RepoWorkspace;
+  repo_workspace_group: RepoWorkspaceGroup;
   series: Series;
   user_account: UserAccount;
   user_federated_identity: UserFederatedIdentity;

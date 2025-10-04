@@ -69,3 +69,47 @@ Optional features:
   - Configuration:
     - `OLLAMA_HOST`: Ollama API URL.
     - `OLLAMA_MODEL`: Ollama model.
+
+- Question repository (`repo`): LaTeX and interactive question storage and
+  templating
+  - Dependencies: feature `obj`, Latexer (in this project)
+  - Configuration:
+    - `LATEXER_URL`: Latexer endpoint.
+    - `S3_QUESTION_REPO_BUCKET`: S3-like bucket to use for repo files.
+
+## User groups
+
+Groups that can be assigned under the table `user_group`:
+
+| Group              | Applicable features | Grants                                                |
+| ------------------ | ------------------- | ----------------------------------------------------- |
+| `cms:authors`      | `serve`, `cms`      | Edit and publish documents                            |
+| `repo:users`       | `repo`              | Access question repository                            |
+| `repo:instructors` | `repo`              | Create workspaces and manage (subject to permissions) |
+
+Note: There is no hierarchical relationship of groups. You must assign all
+applicable groups (i.e., not just the most powerful one) to have the correct
+permissions.
+
+## Project groups
+
+Groups that can be assigned under `project_group`:
+
+| Group   | Grants                                                                    |
+| ------- | ------------------------------------------------------------------------- |
+| `owner` | Ability to delete the project. Automatically assigned to project creator. |
+
+Note: Only one group can be assigned to a user.
+
+## Repo workspace groups
+
+Groups that can be assigned under `repo_workspace_group`:
+
+| Group    | Grants                                                                  | Privilege level |
+| -------- | ----------------------------------------------------------------------- | --------------- |
+| `owner`  | Ability to manage members. Automatically assigned to workspace creator. | `255`           |
+| `member` | Ability to edit questions.                                              | `0`             |
+
+Privilege levels govern access to privileged worksheets and questions.
+
+Note: Only one group can be assigned to a user.

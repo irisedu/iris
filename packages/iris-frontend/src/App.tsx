@@ -41,16 +41,18 @@ const router = createBrowserRouter(
 					path="/author-dashboard"
 					lazy={() => import('./routes/AuthorDashboard')}
 				/>
+
+				<Route path="/repo" lazy={() => import('./routes/repo/Index')} />
 			</Route>
 
-			<Route path="/poster" lazy={() => import('./routes/Poster')} />
+			<Route path="/poster" lazy={() => import('./routes/poster/Index')} />
 			<Route
 				path="/poster/card-dyslexia"
-				lazy={() => import('./routes/CardDyslexia')}
+				lazy={() => import('./routes/poster/CardDyslexia')}
 			/>
 			<Route
 				path="/poster/card-spacing"
-				lazy={() => import('./routes/CardSpacing')}
+				lazy={() => import('./routes/poster/CardSpacing')}
 			/>
 		</>
 	)

@@ -55,13 +55,40 @@ router.get('/', requireAuth({ group: 'repo:users' }), (req, res, next) => {
 					.select(['id', 'name', 'repo_workspace_group.group_name as group'])
 					.execute();
 
+				const tagData = await db
+					.selectFrom('repo_tag')
+					.where('workspace_id', '=', w.id)
+					.select(['id', 'name'])
+					.execute();
+
+				const tags: {
+					id: string;
+					name: string;
+					numQuestions: number;
+				}[] = [];
+
+				for (const data of tagData) {
+					const { numQuestions } = await db
+						.selectFrom('repo_question_tag')
+						.where('tag_id', '=', data.id)
+						.select(db.fn.countAll().as('numQuestions'))
+						.executeTakeFirstOrThrow();
+
+					tags.push({
+						id: data.id,
+						name: data.name,
+						numQuestions: parseInt(numQuestions.toString())
+					});
+				}
+
 				out.push({
 					id: w.id,
 					name: w.name,
 					userGroup: w.group_name,
 					numQuestions: parseInt(numQuestions.toString()),
 					numWorksheets: parseInt(numWorksheets.toString()),
-					members
+					members,
+					tags
 				});
 			}
 
@@ -218,6 +245,72 @@ router.post(
 					.where('workspace_id', '=', id)
 					.where('user_id', '=', uid)
 					.execute();
+
+				res.sendStatus(200);
+			})
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:id/tags/new',
+	requireAuth({ group: 'repo:users' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { id } = req.params;
+		const { name } = req.query;
+
+		if (typeof name !== 'string') {
+			res.sendStatus(400);
+			return;
+		}
+
+		getUserWorkspaceGroup(req.session.user.id, id)
+			.then(async (group) => {
+				if (!group || !['owner', 'member'].includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				const tagId = await db
+					.insertInto('repo_tag')
+					.values({
+						workspace_id: id,
+						name
+					})
+					.returning('id')
+					.executeTakeFirst();
+
+				if (!tagId) {
+					res.sendStatus(500);
+					return;
+				}
+
+				res.json({ id: tagId.id });
+			})
+			.catch(next);
+	}
+);
+
+router.delete(
+	'/:id/tags/:tid',
+	requireAuth({ group: 'repo:users' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { id, tid } = req.params;
+
+		getUserWorkspaceGroup(req.session.user.id, id)
+			.then(async (group) => {
+				if (!group || !['owner', 'member'].includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				await db.deleteFrom('repo_tag').where('id', '=', tid).execute();
 
 				res.sendStatus(200);
 			})

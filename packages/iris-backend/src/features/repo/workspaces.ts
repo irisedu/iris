@@ -1,19 +1,9 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
+import { getUserWorkspaceGroup } from './utils.js';
 
-const router = Router();
-
-async function getUserWorkspaceGroup(uid: string, wid: string) {
-	return (
-		await db
-			.selectFrom('repo_workspace_group')
-			.where('workspace_id', '=', wid)
-			.where('user_id', '=', uid)
-			.select('group_name')
-			.executeTakeFirst()
-	)?.group_name;
-}
+export const router = Router();
 
 router.get('/', requireAuth({ group: 'repo:users' }), (req, res, next) => {
 	// Impossible
@@ -106,7 +96,12 @@ router.post(
 
 		const user = req.session.user;
 
-		const { name } = req.query;
+		if (!req.body) {
+			res.sendStatus(400);
+			return;
+		}
+
+		const { name } = req.body;
 		if (typeof name !== 'string') {
 			res.sendStatus(400);
 			return;
@@ -135,54 +130,6 @@ router.post(
 			})
 			// Wait for trx to complete
 			.then(res.json)
-			.catch(next);
-	}
-);
-
-router.post(
-	'/:id/members/invite',
-	requireAuth({ group: 'repo:instructors' }),
-	(req, res, next) => {
-		// Impossible
-		if (req.session.user?.type !== 'registered') return;
-
-		const { id } = req.params;
-		const { email } = req.query;
-
-		if (typeof email !== 'string') {
-			res.sendStatus(400);
-			return;
-		}
-
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (group !== 'owner') {
-					res.sendStatus(403);
-					return;
-				}
-
-				const user = await db
-					.selectFrom('user_account')
-					.where('email', '=', email)
-					.select('id')
-					.executeTakeFirst();
-
-				if (!user) {
-					res.sendStatus(404);
-					return;
-				}
-
-				await db
-					.insertInto('repo_workspace_group')
-					.values({
-						workspace_id: id,
-						user_id: user.id,
-						group_name: 'member'
-					})
-					.execute();
-
-				res.sendStatus(200);
-			})
 			.catch(next);
 	}
 );
@@ -222,8 +169,13 @@ router.post(
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
+		if (!req.body) {
+			res.sendStatus(400);
+			return;
+		}
+
 		const { id, uid } = req.params;
-		const { group: newGroup } = req.query;
+		const { group: newGroup } = req.body;
 
 		if (typeof newGroup !== 'string') {
 			res.sendStatus(400);
@@ -259,8 +211,13 @@ router.post(
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
+		if (!req.body) {
+			res.sendStatus(400);
+			return;
+		}
+
 		const { id } = req.params;
-		const { name } = req.query;
+		const { name } = req.body;
 
 		if (typeof name !== 'string') {
 			res.sendStatus(400);

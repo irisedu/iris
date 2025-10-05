@@ -11,6 +11,7 @@ td {
 	@apply px-4 py-1;
 }
 
+thead tr,
 tbody tr {
 	@apply border-t-[1px] border-iris-200;
 }

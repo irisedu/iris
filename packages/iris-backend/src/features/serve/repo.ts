@@ -78,15 +78,17 @@ async function indexDocument(
 	)?.id;
 
 	if (!docId) {
-		docId = (await trx
-			.insertInto('document')
-			.values({
-				project_name: project,
-				hash,
-				data
-			})
-			.returning('id')
-			.executeTakeFirst())!.id;
+		docId = (
+			await trx
+				.insertInto('document')
+				.values({
+					project_name: project,
+					hash,
+					data
+				})
+				.returning('id')
+				.executeTakeFirstOrThrow()
+		).id;
 	}
 
 	await trx

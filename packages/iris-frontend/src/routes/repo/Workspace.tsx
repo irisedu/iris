@@ -18,7 +18,12 @@ export default function Workspace({
 	const addMember = useCallback(
 		(email: string) => {
 			if (!email.length) return;
-			fetchCsrf(`/api/repo/workspaces/${data.id}/members/invite?email=${email}`)
+			fetchCsrf(`/api/repo/workspaces/${data.id}/members/invite`, {
+				body: JSON.stringify({ email }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 				.then(() => {
 					onRevalidate();
 					setAddMemberEmail('');
@@ -48,9 +53,12 @@ export default function Workspace({
 
 	const setMemberGroup = useCallback(
 		(id: string, group: string) => {
-			fetchCsrf(
-				`/api/repo/workspaces/${data.id}/members/${id}/group?group=${group}`
-			)
+			fetchCsrf(`/api/repo/workspaces/${data.id}/members/${id}/group`, {
+				body: JSON.stringify({ group }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 				.then(() => {
 					onRevalidate();
 				})
@@ -65,7 +73,12 @@ export default function Workspace({
 		(name: string) => {
 			if (!name.length) return;
 
-			fetchCsrf(`/api/repo/workspaces/${data.id}/tags/new?name=${name}`)
+			fetchCsrf(`/api/repo/workspaces/${data.id}/tags/new`, {
+				body: JSON.stringify({ name }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 				.then(() => {
 					setAddTagName('');
 					onRevalidate();

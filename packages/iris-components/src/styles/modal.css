@@ -12,7 +12,7 @@
 }
 
 .react-aria-Modal {
-	@apply font-sans p-4 shadow-xl rounded-md bg-iris-100 border-2 border-iris-300 max-w-xl max-h-[90vh];
+	@apply font-sans p-4 shadow-xl rounded-md bg-iris-100 border-2 border-iris-300 max-w-xl max-h-[90vh] overflow-auto;
 
 	.react-aria-Heading {
 		@apply text-2xl font-normal mt-0 mb-3;

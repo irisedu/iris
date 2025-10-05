@@ -14,6 +14,7 @@ import {
 import store from '$state/store';
 import { fetchCsrf } from '../../utils';
 
+import QuestionList from './QuestionList';
 import Workspace from './Workspace';
 
 export async function loader() {
@@ -55,7 +56,12 @@ export function Component() {
 	const newWorkspace = useCallback(
 		(name: string) => {
 			if (!name.length) return;
-			fetchCsrf(`/api/repo/workspaces/new?name=${name}`).then(() => {
+			fetchCsrf(`/api/repo/workspaces/new?name=${name}`, {
+				body: JSON.stringify({ name }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(() => {
 				revalidator.revalidate();
 				setNewWorkspaceName('');
 			});
@@ -76,7 +82,9 @@ export function Component() {
 					<Tab id="workspaces">Workspaces</Tab>
 				</TabList>
 
-				<TabPanel id="questions">Questions</TabPanel>
+				<TabPanel id="questions">
+					<QuestionList workspaces={workspaces} />
+				</TabPanel>
 
 				<TabPanel id="worksheets">Worksheets</TabPanel>
 

@@ -96,12 +96,7 @@ router.post(
 
 		const user = req.session.user;
 
-		if (!req.body) {
-			res.sendStatus(400);
-			return;
-		}
-
-		const { name } = req.body;
+		const { name } = req.body ?? {};
 		if (typeof name !== 'string') {
 			res.sendStatus(400);
 			return;
@@ -130,6 +125,54 @@ router.post(
 			})
 			// Wait for trx to complete
 			.then(res.json)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:id/members/invite',
+	requireAuth({ group: 'repo:instructors' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { id } = req.params;
+		const { email } = req.body ?? {};
+
+		if (typeof email !== 'string') {
+			res.sendStatus(400);
+			return;
+		}
+
+		getUserWorkspaceGroup(req.session.user.id, id)
+			.then(async (group) => {
+				if (group !== 'owner') {
+					res.sendStatus(403);
+					return;
+				}
+
+				const user = await db
+					.selectFrom('user_account')
+					.where('email', '=', email)
+					.select('id')
+					.executeTakeFirst();
+
+				if (!user) {
+					res.sendStatus(404);
+					return;
+				}
+
+				await db
+					.insertInto('repo_workspace_group')
+					.values({
+						workspace_id: id,
+						user_id: user.id,
+						group_name: 'member'
+					})
+					.execute();
+
+				res.sendStatus(200);
+			})
 			.catch(next);
 	}
 );
@@ -169,13 +212,8 @@ router.post(
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		if (!req.body) {
-			res.sendStatus(400);
-			return;
-		}
-
 		const { id, uid } = req.params;
-		const { group: newGroup } = req.body;
+		const { group: newGroup } = req.body ?? {};
 
 		if (typeof newGroup !== 'string') {
 			res.sendStatus(400);
@@ -211,13 +249,8 @@ router.post(
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		if (!req.body) {
-			res.sendStatus(400);
-			return;
-		}
-
 		const { id } = req.params;
-		const { name } = req.body;
+		const { name } = req.body ?? {};
 
 		if (typeof name !== 'string') {
 			res.sendStatus(400);

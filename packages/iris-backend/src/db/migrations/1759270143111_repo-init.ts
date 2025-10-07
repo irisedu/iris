@@ -60,6 +60,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('type', 'text', (col) => col.notNull())
 		.addColumn('comment', 'text')
 		.addColumn('privilege', 'int2', (col) => col.notNull().defaultTo(0))
+		.addColumn('deleted', 'boolean', (col) => col.notNull().defaultTo(false))
 		.execute();
 
 	await db.schema

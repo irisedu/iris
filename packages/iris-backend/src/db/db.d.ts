@@ -92,8 +92,10 @@ export interface RepoQuestion {
   comment: string | null;
   created: Generated<Timestamp>;
   creator: string;
+  deleted: Generated<boolean>;
   id: Generated<string>;
   num: Generated<Int8>;
+  privilege: Generated<number>;
   type: string;
   workspace_id: string;
 }
@@ -129,6 +131,8 @@ export interface RepoWorksheet {
   creator: string;
   id: Generated<string>;
   name: string;
+  privilege: Generated<number>;
+  template_id: string | null;
   workspace_id: string;
 }
 
@@ -137,7 +141,6 @@ export interface RepoWorksheetRev {
   creator: string;
   data: Json | null;
   id: Generated<string>;
-  template_id: string | null;
   worksheet_id: string;
 }
 
@@ -147,7 +150,7 @@ export interface RepoWorkspace {
 }
 
 export interface RepoWorkspaceGroup {
-  group_name: string;
+  group_name: string | null;
   user_id: string;
   workspace_id: string;
 }

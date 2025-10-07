@@ -42,6 +42,7 @@ router.get(
 								'repo_question.id'
 							)
 							.where('repo_question.workspace_id', '=', wid)
+							.where('repo_question.deleted', '=', false)
 							.where('tag_id', 'in', tags)
 							.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
 							.having((eb) => eb.fn.countAll(), '=', tags.length)
@@ -50,6 +51,7 @@ router.get(
 					: await db
 							.selectFrom('repo_question')
 							.where('workspace_id', '=', wid)
+							.where('deleted', '=', false)
 							.selectAll()
 							.execute();
 

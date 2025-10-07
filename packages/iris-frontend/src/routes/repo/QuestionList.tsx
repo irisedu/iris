@@ -16,6 +16,7 @@ import {
 	TextField
 } from 'iris-components';
 import { fetchCsrf } from '../../utils';
+import { Link } from 'react-router-dom';
 
 export interface QuestionListParams {
 	workspaces: {
@@ -227,7 +228,12 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 										<Button className="react-aria-Button p-0 px-1">
 											Preview
 										</Button>
-										<Button className="react-aria-Button p-0 px-1">Edit</Button>
+										<Link
+											className="react-aria-Button p-0 px-1"
+											to={`/repo/workspaces/${workspace}/questions/${q.id}`}
+										>
+											Edit
+										</Link>
 										<Button className="react-aria-Button p-0 px-1">
 											Download
 										</Button>

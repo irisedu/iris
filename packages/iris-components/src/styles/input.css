@@ -25,7 +25,8 @@
 .react-aria-Button {
 	@apply rounded-md px-2 py-1 border-2 bg-iris-200 border-iris-400;
 
-	&[data-pressed] {
+	&[data-pressed],
+	&:active {
 		@apply bg-iris-300;
 	}
 

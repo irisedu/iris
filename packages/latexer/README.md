@@ -11,6 +11,8 @@ Environment variables:
 - `BUILD_DIR`: Working directory for builds. Does not need to be shared between
   deployments. Default is `%TEMP%/latexer`. This directory is managed solely by
   the service and should not be modified externally.
+- `ARTIFACT_DIR`: Directory to place finished artifacts, when applicable.
+  Default is `%TEMP%/latexer-artifacts`.
 
 Runtime dependencies:
 

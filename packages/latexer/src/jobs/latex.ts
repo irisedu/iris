@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import { buildDir } from '../constants.js';
+import { buildDir, artifactDir } from '../constants.js';
 import { extractStream, execFile } from '../utils.js';
 import path from 'path';
 import crypto from 'crypto';
 import { promises as fs, createReadStream } from 'fs';
 
-const latexDir = path.join(buildDir, 'latex');
-const workingDir = path.join(latexDir, 'build');
-const resultDir = path.join(latexDir, 'result');
+const workingDir = path.join(buildDir, 'latex');
+const resultDir = path.join(artifactDir, 'latex');
 
 const router = Router();
 
@@ -24,7 +23,9 @@ async function build(engine: string, buildDir: string) {
 		const { stdout: mainStdout, stderr: mainStderr } = await execFile(
 			engine,
 			['-halt-on-error', '-interaction', 'nonstopmode', mainFile],
-			{ cwd: buildDir }
+			{
+				cwd: buildDir
+			}
 		);
 
 		stdout += mainStdout;
@@ -94,7 +95,19 @@ router.post('/:id/submit', (req, res, next) => {
 
 			const { result, stdout, stderr } = await build(engine, submitDir);
 
+			if (result != 'success') {
+				res.status(500);
+				res.json({
+					type: result,
+					error: 'Build failed. Check logs for details.',
+					stdout,
+					stderr
+				});
+				return;
+			}
+
 			try {
+				await fs.mkdir(resultDir, { recursive: true });
 				await fs.cp(
 					path.join(submitDir, 'main.pdf'),
 					path.join(resultDir, `${id}.pdf`)
@@ -110,17 +123,6 @@ router.post('/:id/submit', (req, res, next) => {
 					error: 'Failed to copy build results.'
 				});
 
-				return;
-			}
-
-			if (result != 'success') {
-				res.status(500);
-				res.json({
-					type: result,
-					error: 'Build failed. Check logs for details.',
-					stdout,
-					stderr
-				});
 				return;
 			}
 

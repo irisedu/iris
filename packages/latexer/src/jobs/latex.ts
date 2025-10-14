@@ -3,6 +3,7 @@ import { buildDir, artifactDir } from '../constants.js';
 import { extractStream, execFile } from '../utils.js';
 import path from 'path';
 import crypto from 'crypto';
+import os from 'os';
 import { promises as fs, createReadStream } from 'fs';
 
 const workingDir = path.join(buildDir, 'latex');
@@ -151,6 +152,7 @@ router.get('/:id/result/:format', (req, res, next) => {
 	const filePath = path.join(resultDir, `${id}.${format}`);
 	fs.access(filePath)
 		.then(() => {
+			res.contentType(format);
 			createReadStream(filePath).on('error', next).pipe(res);
 		})
 		.catch(() => {
@@ -163,3 +165,13 @@ router.get('/:id/result/:format', (req, res, next) => {
 });
 
 export default router;
+
+export async function installTexmf() {
+	const homeDir = os.homedir();
+	const texmfDir = path.join(homeDir, 'texmf/tex/latex/');
+	const texmfSrcDir = path.join(import.meta.dirname, '../../texmf');
+	const texmfDestDir = path.join(texmfDir, 'latexer');
+
+	await fs.mkdir(texmfDir, { recursive: true });
+	await fs.cp(texmfSrcDir, texmfDestDir, { recursive: true });
+}

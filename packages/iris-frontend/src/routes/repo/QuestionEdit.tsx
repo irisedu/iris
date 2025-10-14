@@ -185,15 +185,18 @@ export function Component() {
 				<dd>{questionData.type}</dd>
 
 				<dt>Question creator</dt>
-				<dd>{questionData.creator.name}</dd>
+				<dd>
+					{questionData.creator.name} on{' '}
+					{new Date(questionData.created + 'Z').toLocaleString()}
+				</dd>
 
-				<dt>Question created</dt>
-				<dd>{new Date(questionData.created + 'Z').toLocaleString()}</dd>
-
-				{questionData.updated && (
+				{questionData.rev_creator && questionData.updated && (
 					<>
-						<dt>Question contents updated</dt>
-						<dd>{new Date(questionData.updated + 'Z').toLocaleString()}</dd>
+						<dt>Contents updated by</dt>
+						<dd>
+							{questionData.rev_creator.name} on{' '}
+							{new Date(questionData.updated + 'Z').toLocaleString()}
+						</dd>
 					</>
 				)}
 

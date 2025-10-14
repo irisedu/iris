@@ -141,6 +141,14 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('id', 'uuid', (col) =>
 			col.primaryKey().defaultTo(sql`gen_random_uuid()`)
 		)
+		.addColumn('workspace_id', 'uuid', (col) => col.notNull())
+		.addForeignKeyConstraint(
+			'repo_workspace_foreign',
+			['workspace_id'],
+			'repo_workspace',
+			['id'],
+			(fk) => fk.onDelete('cascade')
+		)
 		.addColumn('name', 'text', (col) => col.notNull().unique())
 		.addColumn('hash', 'text', (col) => col.notNull())
 		.execute();

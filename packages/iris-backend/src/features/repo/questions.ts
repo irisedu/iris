@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { getUserWorkspaceGroup } from './utils.js';
+import { getUserWorkspaceGroup, getQuestionArchive } from './utils.js';
 
 const router = Router();
 
@@ -267,6 +267,60 @@ router.post(
 	}
 );
 
+async function getQuestionRev(wid: string, qid: string, rev: string) {
+	return rev === 'latest'
+		? await db
+				.selectFrom('repo_question')
+				.innerJoin(
+					'repo_question_rev',
+					'repo_question.id',
+					'repo_question_rev.question_id'
+				)
+				.where('repo_question.workspace_id', '=', wid)
+				.where('repo_question.id', '=', qid)
+				.select([
+					'repo_question_rev.id as rev_id',
+					'repo_question.num',
+					'repo_question.creator',
+					'repo_question.created',
+					'repo_question.type',
+					'repo_question.comment',
+					'repo_question.privilege',
+					'repo_question.deleted',
+					'repo_question_rev.creator as rev_creator',
+					'repo_question_rev.created as updated',
+					'repo_question_rev.derived_from',
+					'repo_question_rev.data'
+				])
+				.orderBy('created', 'desc')
+				.executeTakeFirst()
+		: await db
+				.selectFrom('repo_question_rev')
+				.innerJoin(
+					'repo_question',
+					'repo_question_rev.question_id',
+					'repo_question.id'
+				)
+				.where('repo_question_rev.id', '=', rev)
+				.where('repo_question.workspace_id', '=', wid)
+				.where('repo_question.id', '=', qid)
+				.select([
+					'repo_question_rev.id as rev_id',
+					'repo_question.num',
+					'repo_question.creator',
+					'repo_question.created',
+					'repo_question.type',
+					'repo_question.comment',
+					'repo_question.privilege',
+					'repo_question.deleted',
+					'repo_question_rev.creator as rev_creator',
+					'repo_question_rev.created as updated',
+					'repo_question_rev.derived_from',
+					'repo_question_rev.data'
+				])
+				.executeTakeFirst();
+}
+
 router.get(
 	'/:wid/questions/:qid/revs/:rev',
 	requireAuth({ group: 'repo:users' }),
@@ -283,58 +337,7 @@ router.get(
 					return;
 				}
 
-				const result =
-					rev === 'latest'
-						? await db
-								.selectFrom('repo_question')
-								.innerJoin(
-									'repo_question_rev',
-									'repo_question.id',
-									'repo_question_rev.question_id'
-								)
-								.where('repo_question.workspace_id', '=', wid)
-								.where('repo_question.id', '=', qid)
-								.select([
-									'repo_question_rev.id as rev_id',
-									'repo_question.num',
-									'repo_question.creator',
-									'repo_question.created',
-									'repo_question.type',
-									'repo_question.comment',
-									'repo_question.privilege',
-									'repo_question.deleted',
-									'repo_question_rev.creator as rev_creator',
-									'repo_question_rev.created as updated',
-									'repo_question_rev.derived_from',
-									'repo_question_rev.data'
-								])
-								.orderBy('created', 'desc')
-								.executeTakeFirst()
-						: await db
-								.selectFrom('repo_question_rev')
-								.innerJoin(
-									'repo_question',
-									'repo_question_rev.question_id',
-									'repo_question.id'
-								)
-								.where('repo_question_rev.id', '=', rev)
-								.where('repo_question.workspace_id', '=', wid)
-								.where('repo_question.id', '=', qid)
-								.select([
-									'repo_question_rev.id as rev_id',
-									'repo_question.num',
-									'repo_question.creator',
-									'repo_question.created',
-									'repo_question.type',
-									'repo_question.comment',
-									'repo_question.privilege',
-									'repo_question.deleted',
-									'repo_question_rev.creator as rev_creator',
-									'repo_question_rev.created as updated',
-									'repo_question_rev.derived_from',
-									'repo_question_rev.data'
-								])
-								.executeTakeFirst();
+				const result = await getQuestionRev(wid, qid, rev);
 
 				const tags = await db
 					.selectFrom('repo_question_tag')
@@ -398,6 +401,90 @@ router.get(
 					rev_creator: revCreator,
 					tags
 				});
+			})
+			.catch(next);
+	}
+);
+
+router.get(
+	'/:wid/questions/:qid/revs/:rev/preview/:type',
+	requireAuth({ group: 'repo:users' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, qid, rev, type } = req.params;
+
+		if (!['pdf', 'svg'].includes(type)) {
+			res.sendStatus(400);
+			return;
+		}
+
+		getUserWorkspaceGroup(req.session.user.id, wid)
+			.then(async (group) => {
+				if (!group || !['owner', 'member'].includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				const result = await getQuestionRev(wid, qid, rev);
+
+				if (!result) {
+					res.sendStatus(404);
+					return;
+				}
+
+				if (result.type === 'latex') {
+					const jobId = `question-${result.rev_id}`;
+					const jobRes1 = await fetch(
+						`${process.env.LATEXER_URL!}/job/latex/${jobId}/result/${type}`
+					);
+
+					if (jobRes1.status === 404) {
+						const archiveData = await getQuestionArchive(
+							result.type,
+							result.data,
+							'builtin'
+						);
+						const fetchRes = await fetch(
+							`${process.env.LATEXER_URL!}/job/latex/${jobId}/submit?engine=lualatex`,
+							{
+								method: 'POST',
+								body: new Blob([archiveData as BlobPart]),
+								headers: {
+									'Content-Type': 'application/zip'
+								}
+							}
+						);
+
+						if (fetchRes.status !== 200) {
+							res.status(fetchRes.status).json(await fetchRes.json());
+							return;
+						}
+
+						const jobRes2 = await fetch(
+							`${process.env.LATEXER_URL!}/job/latex/${jobId}/result/${type}`
+						);
+
+						if (jobRes2.status === 404) {
+							res.sendStatus(500);
+							return;
+						}
+
+						res.contentType(
+							jobRes2.headers.get('Content-Type') ?? 'application/octet-stream'
+						);
+						res.send(Buffer.from(await jobRes2.arrayBuffer()));
+					} else {
+						res.contentType(
+							jobRes1.headers.get('Content-Type') ?? 'application/octet-stream'
+						);
+						res.send(Buffer.from(await jobRes1.arrayBuffer()));
+					}
+				} else {
+					res.sendStatus(500);
+					return;
+				}
 			})
 			.catch(next);
 	}

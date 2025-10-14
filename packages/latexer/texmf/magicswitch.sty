@@ -1,0 +1,39 @@
+\usepackage{ifthen}
+\usepackage{environ}
+\usepackage{draftwatermark}
+\SetWatermarkText{\textbf{}}
+\SetWatermarkScale{2}
+
+\newboolean{solution}
+
+\DeclareOption{true}{
+  \setboolean{solution}{true}
+}
+\DeclareOption{false}{
+  \setboolean{solution}{false}
+}
+% Set default option
+\ExecuteOptions{false}
+
+% Process options
+\ProcessOptions\relax
+
+\newcommand{\solution}[2][]{%
+  \ifthenelse{\boolean{solution}}
+  {{\color{red}#2}} % Show solution
+  {#1} % Optional supplimentary content to show if solution is disabled
+}
+
+\newenvironment{Solution}{\color{red}}{}
+\newenvironment{Question}{}{}
+
+\ifsolution
+  \SetWatermarkText{\textbf{SOLUTION}}
+  \NewEnviron{hide}{}
+  \let\Question\hide
+  \let\endQuestion\endhide
+\else
+  \NewEnviron{hide}{}
+  \let\Solution\hide
+  \let\endSolution\endhide
+\fi

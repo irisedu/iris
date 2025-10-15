@@ -46,8 +46,8 @@ function Image(props: ImageProps) {
 				<ImageInternal {...props} />
 			</Button>
 			{/* Sizing nightmare: Try to maximize image size based on height */}
-			<Modal isDismissable className="h-full">
-				<Dialog className="react-aria-Dialog h-full flex flex-col items-center">
+			<Modal isDismissable className="size-full">
+				<Dialog className="react-aria-Dialog h-full flex flex-col items-center bg-[white]">
 					<Button
 						className="fixed top-5 right-5 rounded-full text-black bg-iris-100 data-[hovered]:bg-iris-200 data-[pressed]:bg-iris-300 p-1 cursor-pointer"
 						aria-label="Close image popup"
@@ -55,13 +55,14 @@ function Image(props: ImageProps) {
 					>
 						<X />
 					</Button>
-					<div className="grow shadow-lg h-full">
-						<ImageInternal
-							{...props}
-							className="size-full object-contain bg-[white]"
-						/>
+					<div className="grow">
+						<ImageInternal {...props} className="max-h-[90vh] object-contain" />
 					</div>
-					{props.alt && <p className="text-sm text-center my-3">{props.alt}</p>}
+					{props.alt && (
+						<p className="text-sm text-center my-3 overflow-y-auto">
+							{props.alt}
+						</p>
+					)}
 				</Dialog>
 			</Modal>
 		</DialogTrigger>

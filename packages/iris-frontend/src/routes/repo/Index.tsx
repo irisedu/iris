@@ -15,6 +15,7 @@ import store from '$state/store';
 import { fetchCsrf } from '../../utils';
 
 import QuestionList from './QuestionList';
+import TemplateList from './TemplateList';
 import Workspace from './Workspace';
 
 export async function loader() {
@@ -22,11 +23,16 @@ export async function loader() {
 
 	const out: {
 		workspaces?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+		templates?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 	} = {};
 
 	if (user?.type !== 'registered') return out;
 
 	out.workspaces = await fetch('/api/repo/workspaces', {
+		cache: 'no-store'
+	}).then((res) => res.json());
+
+	out.templates = await fetch('/api/repo/workspaces/all/templates', {
 		cache: 'no-store'
 	}).then((res) => res.json());
 
@@ -38,7 +44,7 @@ export function Component() {
 	const isInstructor =
 		user?.type === 'registered' && user.groups.includes('repo:instructors');
 
-	const { workspaces } = useLoaderData();
+	const { workspaces, templates } = useLoaderData();
 	const revalidator = useRevalidator();
 
 	const [newWorkspaceName, setNewWorkspaceName] = useState('');
@@ -88,7 +94,13 @@ export function Component() {
 
 				<TabPanel id="worksheets">Worksheets</TabPanel>
 
-				<TabPanel id="templates">Templates</TabPanel>
+				<TabPanel id="templates">
+					<TemplateList
+						workspaces={workspaces}
+						templates={templates}
+						onRevalidate={() => revalidator.revalidate()}
+					/>
+				</TabPanel>
 
 				<TabPanel id="recycle">Recycle</TabPanel>
 
@@ -118,6 +130,7 @@ export function Component() {
 								<Workspace
 									key={w.id}
 									data={w}
+									templates={templates}
 									onRevalidate={() => revalidator.revalidate()}
 								/>
 							)

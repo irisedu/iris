@@ -3,6 +3,7 @@ import { ensureBucket } from '../obj/index.js';
 
 import workspacesRouter from './workspaces.js';
 import questionsRouter from './questions.js';
+import templatesRouter from './templates.js';
 
 export const repoFeature = {
 	name: 'repo',
@@ -17,6 +18,10 @@ export const repoFeature = {
 		{
 			path: '/api/repo/workspaces',
 			router: questionsRouter
+		},
+		{
+			path: '/api/repo/workspaces',
+			router: templatesRouter
 		}
 	]
 } satisfies BackendFeature;

@@ -1,19 +1,59 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useAuthorization from '$hooks/useAuthorization';
 import { fetchCsrf } from '../../utils';
-import { Button, DeleteDialog, Input, TextField } from 'iris-components';
+import {
+	Button,
+	DeleteDialog,
+	Dropdown,
+	Input,
+	ListBoxItem,
+	TextField
+} from 'iris-components';
 
 export default function Workspace({
 	data,
+	templates,
 	onRevalidate
 }: {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data: any;
+	templates: { id: string; name: string; hash: string }[];
 	onRevalidate: () => void;
 }) {
 	const user = useAuthorization({});
 	const [addMemberEmail, setAddMemberEmail] = useState('');
 	const [addTagName, setAddTagName] = useState('');
+
+	const [newPreviewTemplate, setNewPreviewTemplateInternal] = useState('');
+
+	useEffect(() => {
+		setNewPreviewTemplateInternal(data.previewTemplate ?? '');
+	}, [data]);
+
+	const setNewPreviewTemplate = useCallback(
+		(id: string | null) => {
+			console.log(id);
+			if ((id !== null && !id.length) || data.previewTemplate === id) {
+				setNewPreviewTemplateInternal(id ?? '');
+				return;
+			}
+
+			fetchCsrf(`/api/repo/workspaces/${data.id}/preview-template`, {
+				body: JSON.stringify({ id }),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(() => {
+					onRevalidate();
+					setNewPreviewTemplateInternal(id ?? '');
+				})
+				.catch(() => {
+					onRevalidate();
+				});
+		},
+		[onRevalidate, data.id, data.previewTemplate]
+	);
 
 	const addMember = useCallback(
 		(email: string) => {
@@ -142,6 +182,23 @@ export default function Workspace({
 				<p className="text-sm m-0!">
 					Questions: {data.numQuestions}, Worksheets: {data.numWorksheets}
 				</p>
+
+				<Dropdown
+					label="Preview Template"
+					selectedKey={newPreviewTemplate}
+					onSelectionChange={(key) =>
+						setNewPreviewTemplate(key === 'null' ? null : (key as string))
+					}
+				>
+					<ListBoxItem id="null">(unset)</ListBoxItem>
+					{templates
+						.filter((t) => t.hash)
+						.map((t) => (
+							<ListBoxItem key={t.id} id={t.id}>
+								{t.name}
+							</ListBoxItem>
+						))}
+				</Dropdown>
 
 				<h3 className="m-0 mt-2">Members</h3>
 

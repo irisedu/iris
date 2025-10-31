@@ -136,6 +136,8 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 						<Button
 							autoFocus
 							onPress={() => {
+								if (!createWorkspace.length) return;
+
 								createQuestion(
 									createWorkspace,
 									createTags,

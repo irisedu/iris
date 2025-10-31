@@ -7,6 +7,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			col.primaryKey().defaultTo(sql`gen_random_uuid()`)
 		)
 		.addColumn('name', 'text', (col) => col.notNull().unique())
+		.addColumn('preview_template_id', 'uuid')
 		.execute();
 
 	await db.schema
@@ -150,7 +151,17 @@ export async function up(db: Kysely<any>): Promise<void> {
 			(fk) => fk.onDelete('cascade')
 		)
 		.addColumn('name', 'text', (col) => col.notNull().unique())
-		.addColumn('hash', 'text', (col) => col.notNull())
+		.addColumn('hash', 'text')
+		.execute();
+
+	await db.schema
+		.alterTable('repo_workspace')
+		.addForeignKeyConstraint(
+			'repo_template_foreign',
+			['preview_template_id'],
+			'repo_template',
+			['id']
+		)
 		.execute();
 
 	await db.schema
@@ -226,6 +237,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
 	await db.schema.dropTable('repo_worksheet_rev').execute();
 	await db.schema.dropTable('repo_worksheet').execute();
+	await db.schema
+		.alterTable('repo_workspace')
+		.dropConstraint('repo_template_foreign')
+		.execute();
 	await db.schema.dropTable('repo_template').execute();
 	await db.schema.dropTable('repo_question_tag').execute();
 	await db.schema.dropTable('repo_tag').execute();

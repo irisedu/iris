@@ -3,7 +3,7 @@ import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
 import { getUserWorkspaceGroup } from './utils.js';
 
-export const router = Router();
+const router = Router();
 
 router.get('/', requireAuth({ group: 'repo:users' }), (req, res, next) => {
 	// Impossible
@@ -74,6 +74,7 @@ router.get('/', requireAuth({ group: 'repo:users' }), (req, res, next) => {
 				out.push({
 					id: w.id,
 					name: w.name,
+					previewTemplate: w.preview_template_id,
 					userGroup: w.group_name,
 					numQuestions: parseInt(numQuestions.toString()),
 					numWorksheets: parseInt(numWorksheets.toString()),
@@ -125,6 +126,51 @@ router.post(
 			})
 			// Wait for trx to complete
 			.then(res.json)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:id/preview-template',
+	requireAuth({ group: 'repo:users' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { id } = req.params;
+		const { id: template } = req.body ?? {};
+
+		getUserWorkspaceGroup(req.session.user.id, id)
+			.then(async (group) => {
+				if (!group || !['owner', 'member'].includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				if (typeof template === 'string') {
+					const templateData = await db
+						.selectFrom('repo_template')
+						.where('workspace_id', '=', id)
+						.where('id', '=', template)
+						.select('id')
+						.executeTakeFirst();
+
+					if (!templateData) {
+						res.sendStatus(400);
+						return;
+					}
+				}
+
+				await db
+					.updateTable('repo_workspace')
+					.set({
+						preview_template_id: typeof template === 'string' ? template : null
+					})
+					.where('id', '=', id)
+					.execute();
+
+				res.sendStatus(200);
+			})
 			.catch(next);
 	}
 );

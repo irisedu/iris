@@ -121,9 +121,10 @@ export interface RepoTag {
 }
 
 export interface RepoTemplate {
-  hash: string;
+  hash: string | null;
   id: Generated<string>;
   name: string;
+  workspace_id: string;
 }
 
 export interface RepoWorksheet {
@@ -147,6 +148,7 @@ export interface RepoWorksheetRev {
 export interface RepoWorkspace {
   id: Generated<string>;
   name: string;
+  preview_template_id: string | null;
 }
 
 export interface RepoWorkspaceGroup {

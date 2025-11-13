@@ -14,11 +14,7 @@ export function Component() {
 
 	return (
 		<StyleProvider className="flex flex-col w-[calc(4in-4mm)] h-[6in] bg-iris-100 p-[0.5cm] hyphens-none">
-			<Switch
-				className="react-aria-Switch"
-				isSelected={simulate}
-				onChange={(val) => setSimulate(val)}
-			>
+			<Switch isSelected={simulate} onChange={(val) => setSimulate(val)}>
 				Enable simulation
 			</Switch>
 

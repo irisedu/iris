@@ -20,9 +20,10 @@ import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 
 import CodeMirror from '@uiw/react-codemirror';
-import type { EditorView } from '@codemirror/view';
+import { EditorView } from '@codemirror/view';
 import { latex } from 'codemirror-lang-latex';
 import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
+import { QuestionPreview } from './QuestionPreview';
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { wid, qid } = params;
@@ -49,8 +50,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export function Component() {
 	useAuthorization({ required: true, group: 'repo:users' });
 
-	const sessionId = useRef(crypto.randomUUID());
-
 	const { wid, qid } = useParams();
 	const { workspaces, questionData } = useLoaderData();
 	const revalidator = useRevalidator();
@@ -66,11 +65,16 @@ export function Component() {
 	const [newComment, setNewComment] = useState('');
 	const [newTags, setNewTags] = useState<string[]>([]);
 
+	const previewTimeout = useRef<number>(null);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const [previewContents, setPreviewContents] = useState<any>({});
+
 	useEffect(() => {
 		document.title = `Question #${questionData.num} • Iris`;
 
 		setNewComment(questionData.comment);
 		setNewTags(questionData.tags.map((t: { id: string }) => t.id));
+		setPreviewContents(questionData.data);
 	}, [questionData]);
 
 	const saveContentsLatex = useCallback(
@@ -121,8 +125,7 @@ export function Component() {
 		<>
 			<h1 className="mt-0">Question #{questionData.num}</h1>
 
-			<div className="flex gap-2 flex-wrap">
-				<Button>Preview</Button>
+			<div className="my-4 flex gap-2 flex-wrap">
 				<Button
 					onPress={() =>
 						saveContentsLatex(editor.current?.state.doc.toString() ?? '')
@@ -132,23 +135,43 @@ export function Component() {
 				</Button>
 			</div>
 
-			{questionData.type === 'latex' && (
-				<CodeMirror
-					className="my-4"
-					theme={dark ? githubDark : githubLight}
-					value={questionData.data?.code ?? ''}
-					extensions={[
-						latex({
-							autoCloseBrackets: false
-						})
-					]}
-					basicSetup={{ closeBrackets: false }}
-					onCreateEditor={(view) => {
-						editor.current = view;
-						view.focus();
-					}}
-				/>
-			)}
+			<div className="flex flex-wrap gap-2 items-start">
+				{questionData.type === 'latex' && (
+					<CodeMirror
+						className="basis-[40%] grow min-w-[60ch]"
+						theme={dark ? githubDark : githubLight}
+						value={questionData.data?.code ?? ''}
+						extensions={[
+							EditorView.lineWrapping,
+							latex({
+								autoCloseBrackets: false,
+								enableLinting: false
+							})
+						]}
+						basicSetup={{ closeBrackets: false }}
+						onCreateEditor={(view) => {
+							editor.current = view;
+							view.focus();
+						}}
+						onChange={() => {
+							if (previewTimeout.current !== null)
+								clearTimeout(previewTimeout.current);
+							previewTimeout.current = window.setTimeout(() => {
+								setPreviewContents({
+									code: editor.current?.state.doc.toString() ?? ''
+								});
+							}, 1000);
+						}}
+					/>
+				)}
+				<div className="flex flex-col grow basis-[50%] h-172">
+					<QuestionPreview
+						wid={wid!}
+						question={{ id: qid!, num: questionData.num }}
+						editorContents={previewContents}
+					/>
+				</div>
+			</div>
 
 			<h2>Metadata</h2>
 

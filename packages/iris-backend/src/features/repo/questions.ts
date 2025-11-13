@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { getUserWorkspaceGroup, getQuestionArchive } from './utils.js';
+import { getUserWorkspaceGroup, getQuestionPreviewArchive } from './utils.js';
 
 const router = Router();
 
@@ -227,7 +227,9 @@ router.post(
 
 		if (
 			typeof data !== 'object' ||
-			(derived_from !== undefined && typeof derived_from !== 'string')
+			(derived_from !== undefined &&
+				derived_from !== null &&
+				typeof derived_from !== 'string')
 		) {
 			res.sendStatus(400);
 			return;
@@ -292,7 +294,7 @@ async function getQuestionRev(wid: string, qid: string, rev: string) {
 					'repo_question_rev.derived_from',
 					'repo_question_rev.data'
 				])
-				.orderBy('created', 'desc')
+				.orderBy('updated', 'desc')
 				.executeTakeFirst()
 		: await db
 				.selectFrom('repo_question_rev')
@@ -414,6 +416,7 @@ router.get(
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid, qid, rev, type } = req.params;
+		const showAnswer = req.query.showAnswer === '1';
 
 		if (!['pdf', 'svg'].includes(type)) {
 			res.sendStatus(400);
@@ -428,24 +431,57 @@ router.get(
 				}
 
 				const result = await getQuestionRev(wid, qid, rev);
-
 				if (!result) {
 					res.sendStatus(404);
 					return;
 				}
 
 				if (result.type === 'latex') {
-					const jobId = `question-${result.rev_id}`;
+					const workspace = await db
+						.selectFrom('repo_workspace')
+						.where('id', '=', wid)
+						.select('preview_template_id')
+						.executeTakeFirst();
+
+					if (!workspace || !workspace.preview_template_id) {
+						res.sendStatus(400);
+						return;
+					}
+
+					const template = await db
+						.selectFrom('repo_template')
+						.where('id', '=', workspace.preview_template_id)
+						.select('hash')
+						.executeTakeFirst();
+
+					if (!template || !template.hash) {
+						res.sendStatus(400);
+						return;
+					}
+
+					let jobId = `question-${result.rev_id}-${template.hash}`;
+					if (showAnswer) jobId += '-ans';
+
 					const jobRes1 = await fetch(
 						`${process.env.LATEXER_URL!}/job/latex/${jobId}/result/${type}`
 					);
 
 					if (jobRes1.status === 404) {
-						const archiveData = await getQuestionArchive(
+						const archiveData = await getQuestionPreviewArchive(
 							result.type,
 							result.data,
-							'builtin'
+							template.hash,
+							{
+								'${[SHOW_ANSWER]}': !!showAnswer
+							}
 						);
+
+						if (!archiveData) {
+							// TODO: better error handling
+							res.sendStatus(500);
+							return;
+						}
+
 						const fetchRes = await fetch(
 							`${process.env.LATEXER_URL!}/job/latex/${jobId}/submit?engine=lualatex`,
 							{
@@ -490,4 +526,111 @@ router.get(
 	}
 );
 
+router.post(
+	'/:wid/questions/:qid/editorPreview',
+	requireAuth({ group: 'repo:users' }),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const user = req.session.user;
+
+		const { wid, qid } = req.params;
+		const showAnswer = req.query.showAnswer === '1';
+
+		getUserWorkspaceGroup(user.id, wid)
+			.then(async (group) => {
+				if (!group || !['owner', 'member'].includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				const result = await db
+					.selectFrom('repo_question')
+					.where('workspace_id', '=', wid)
+					.where('id', '=', qid)
+					.selectAll()
+					.executeTakeFirst();
+				if (!result) {
+					res.sendStatus(404);
+					return;
+				}
+
+				if (result.type === 'latex') {
+					const workspace = await db
+						.selectFrom('repo_workspace')
+						.where('id', '=', wid)
+						.select('preview_template_id')
+						.executeTakeFirst();
+
+					if (!workspace || !workspace.preview_template_id) {
+						res.sendStatus(400);
+						return;
+					}
+
+					const template = await db
+						.selectFrom('repo_template')
+						.where('id', '=', workspace.preview_template_id)
+						.select('hash')
+						.executeTakeFirst();
+
+					if (!template || !template.hash) {
+						res.sendStatus(400);
+						return;
+					}
+
+					const jobId = `question-editor-${user.id}-${template.hash}`;
+
+					const archiveData = await getQuestionPreviewArchive(
+						result.type,
+						req.body,
+						template.hash,
+						{
+							'${[SHOW_ANSWER]}': !!showAnswer
+						}
+					);
+
+					if (!archiveData) {
+						// TODO: better error handling
+						res.sendStatus(500);
+						return;
+					}
+
+					const fetchRes = await fetch(
+						`${process.env.LATEXER_URL!}/job/latex/${jobId}/submit?engine=lualatex`,
+						{
+							method: 'POST',
+							body: new Blob([archiveData as BlobPart]),
+							headers: {
+								'Content-Type': 'application/zip'
+							}
+						}
+					);
+
+					if (fetchRes.status !== 200) {
+						res.status(fetchRes.status).json(await fetchRes.json());
+						return;
+					}
+
+					const jobRes = await fetch(
+						`${process.env.LATEXER_URL!}/job/latex/${jobId}/result/pdf`
+					);
+
+					if (jobRes.status === 404) {
+						res.sendStatus(500);
+						return;
+					}
+
+					res.contentType(
+						jobRes.headers.get('Content-Type') ?? 'application/octet-stream'
+					);
+					res.send(Buffer.from(await jobRes.arrayBuffer()));
+				} else {
+					res.sendStatus(500);
+					return;
+				}
+			})
+			.catch(next);
+	}
+);
 export default router;

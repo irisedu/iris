@@ -1,10 +1,11 @@
 import { db } from '../../db/index.js';
 import archiver from 'archiver';
+import unzipper from 'unzipper';
 import os from 'os';
 import path from 'path';
 import { promises as fs, createReadStream, type ReadStream } from 'fs';
 import { s3Client } from '../obj/index.js';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand, NoSuchKey } from '@aws-sdk/client-s3';
 
 const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
 
@@ -30,26 +31,35 @@ export async function getTemplateFileStream(
 		await fs.access(cachePath);
 		return createReadStream(cachePath);
 	} catch {
-		const res = await s3Client.send(
-			new GetObjectCommand({
-				Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
-				Key: hash
-			})
-		);
+		try {
+			const res = await s3Client.send(
+				new GetObjectCommand({
+					Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
+					Key: hash
+				})
+			);
 
-		const body = await res.Body?.transformToByteArray();
-		if (!body) return null;
+			const body = await res.Body?.transformToByteArray();
+			if (!body) return null;
 
-		await fs.writeFile(cachePath, body);
-		return createReadStream(cachePath);
+			await fs.writeFile(cachePath, body);
+			return createReadStream(cachePath);
+		} catch (e: unknown) {
+			if (e instanceof NoSuchKey) {
+				return null;
+			}
+
+			throw e;
+		}
 	}
 }
 
-export async function getQuestionArchive(
+export async function getQuestionPreviewArchive(
 	type: string,
 	data: unknown,
-	template: string
-): Promise<Buffer> {
+	template: string,
+	templateReplacements: Record<string, unknown>
+): Promise<Buffer | null> {
 	const buffers: Buffer[] = [];
 
 	if (type === 'latex') {
@@ -62,19 +72,36 @@ export async function getQuestionArchive(
 			archive.on('end', res);
 			archive.on('error', rej);
 
-			let code = (data as { code: string }).code;
+			const code = (data as { code: string }).code;
 
-			if (template === 'builtin') {
-				code = `\\documentclass{article}
+			getTemplateFileStream(template)
+				.then((st) => st?.pipe(unzipper.Parse({ forceStream: true })))
+				.then(async (zip) => {
+					if (!zip) {
+						rej();
+						return;
+					}
 
-\\begin{document}
-${code}
-\\end{document}
-`;
-			}
+					for await (const entry of zip) {
+						if (entry.path === 'main.tex') {
+							const template = (await entry.buffer()).toString('utf-8');
+							let populatedTemplate = template.replace(
+								'${[INCLUDE_CONTENT]}',
+								code
+							);
 
-			archive.append(code, { name: 'main.tex' });
-			archive.finalize();
+							for (const [k, v] of Object.entries(templateReplacements)) {
+								populatedTemplate = populatedTemplate.replace(k, String(v));
+							}
+
+							archive.append(populatedTemplate, { name: 'main.tex' });
+						} else {
+							archive.append(await entry.buffer(), { name: entry.path });
+						}
+					}
+
+					archive.finalize();
+				});
 		});
 	}
 

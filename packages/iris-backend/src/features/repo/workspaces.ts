@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { getUserWorkspaceGroup } from './utils.js';
+import { requireWorkspaceGroup } from './utils.js';
 
 const router = Router();
 
@@ -133,6 +133,7 @@ router.post(
 router.post(
 	'/:id/preview-template',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -140,44 +141,38 @@ router.post(
 		const { id } = req.params;
 		const { id: template } = req.body ?? {};
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
+		(async function () {
+			if (typeof template === 'string') {
+				const templateData = await db
+					.selectFrom('repo_template')
+					.where('workspace_id', '=', id)
+					.where('id', '=', template)
+					.select('id')
+					.executeTakeFirst();
+
+				if (!templateData) {
+					res.sendStatus(400);
 					return;
 				}
+			}
 
-				if (typeof template === 'string') {
-					const templateData = await db
-						.selectFrom('repo_template')
-						.where('workspace_id', '=', id)
-						.where('id', '=', template)
-						.select('id')
-						.executeTakeFirst();
+			await db
+				.updateTable('repo_workspace')
+				.set({
+					preview_template_id: typeof template === 'string' ? template : null
+				})
+				.where('id', '=', id)
+				.execute();
 
-					if (!templateData) {
-						res.sendStatus(400);
-						return;
-					}
-				}
-
-				await db
-					.updateTable('repo_workspace')
-					.set({
-						preview_template_id: typeof template === 'string' ? template : null
-					})
-					.where('id', '=', id)
-					.execute();
-
-				res.sendStatus(200);
-			})
-			.catch(next);
+			res.sendStatus(200);
+		})().catch(next);
 	}
 );
 
 router.post(
 	'/:id/members/invite',
 	requireAuth({ group: 'repo:instructors' }),
+	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -190,19 +185,11 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (group !== 'owner') {
-					res.sendStatus(403);
-					return;
-				}
-
-				const user = await db
-					.selectFrom('user_account')
-					.where('email', '=', email)
-					.select('id')
-					.executeTakeFirst();
-
+		db.selectFrom('user_account')
+			.where('email', '=', email)
+			.select('id')
+			.executeTakeFirst()
+			.then(async (user) => {
 				if (!user) {
 					res.sendStatus(404);
 					return;
@@ -226,27 +213,18 @@ router.post(
 router.delete(
 	'/:id/members/:uid',
 	requireAuth({ group: 'repo:instructors' }),
+	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
 		const { id, uid } = req.params;
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (group !== 'owner') {
-					res.sendStatus(403);
-					return;
-				}
-
-				await db
-					.deleteFrom('repo_workspace_group')
-					.where('workspace_id', '=', id)
-					.where('user_id', '=', uid)
-					.execute();
-
-				res.sendStatus(200);
-			})
+		db.deleteFrom('repo_workspace_group')
+			.where('workspace_id', '=', id)
+			.where('user_id', '=', uid)
+			.execute()
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );
@@ -254,6 +232,7 @@ router.delete(
 router.post(
 	'/:id/members/:uid/group',
 	requireAuth({ group: 'repo:instructors' }),
+	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -266,36 +245,27 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (group !== 'owner') {
-					res.sendStatus(403);
-					return;
-				}
-
-				await db
-					.updateTable('repo_workspace_group')
-					.set({
-						group_name: newGroup
-					})
-					.where('workspace_id', '=', id)
-					.where('user_id', '=', uid)
-					.execute();
-
-				res.sendStatus(200);
+		db.updateTable('repo_workspace_group')
+			.set({
+				group_name: newGroup
 			})
+			.where('workspace_id', '=', id)
+			.where('user_id', '=', uid)
+			.execute()
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );
 
 router.post(
-	'/:id/tags/new',
+	'/:wid/tags/new',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id } = req.params;
+		const { wid } = req.params;
 		const { name } = req.body ?? {};
 
 		if (typeof name !== 'string') {
@@ -303,53 +273,40 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const tagId = await db
-					.insertInto('repo_tag')
-					.values({
-						workspace_id: id,
-						name
-					})
-					.returning('id')
-					.executeTakeFirst();
-
-				if (!tagId) {
+		db.insertInto('repo_tag')
+			.values({
+				workspace_id: wid,
+				name
+			})
+			.returning('id')
+			.executeTakeFirst()
+			.then((tag) => {
+				if (!tag) {
 					res.sendStatus(500);
 					return;
 				}
 
-				res.json({ id: tagId.id });
+				res.json({ id: tag.id });
 			})
 			.catch(next);
 	}
 );
 
 router.delete(
-	'/:id/tags/:tid',
+	'/:wid/tags/:tid',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id, tid } = req.params;
+		const { wid, tid } = req.params;
 
-		getUserWorkspaceGroup(req.session.user.id, id)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				await db.deleteFrom('repo_tag').where('id', '=', tid).execute();
-
-				res.sendStatus(200);
-			})
+		db.deleteFrom('repo_tag')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', tid)
+			.execute()
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );

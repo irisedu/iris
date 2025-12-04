@@ -1,6 +1,7 @@
 import { db } from '../../db/index.js';
 import archiver from 'archiver';
 import unzipper from 'unzipper';
+import { type RequestHandler } from 'express';
 import os from 'os';
 import path from 'path';
 import { promises as fs, createReadStream, type ReadStream } from 'fs';
@@ -9,7 +10,7 @@ import { GetObjectCommand, NoSuchKey } from '@aws-sdk/client-s3';
 
 const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
 
-export async function getUserWorkspaceGroup(uid: string, wid: string) {
+async function getUserWorkspaceGroup(uid: string, wid: string) {
 	return (
 		await db
 			.selectFrom('repo_workspace_group')
@@ -18,6 +19,33 @@ export async function getUserWorkspaceGroup(uid: string, wid: string) {
 			.select('group_name')
 			.executeTakeFirst()
 	)?.group_name;
+}
+
+export function requireWorkspaceGroup(allowedGroups: string[]): RequestHandler {
+	return (req, res, next) => {
+		if (req.session.user?.type !== 'registered') {
+			res.sendStatus(401);
+			return;
+		}
+
+		// Required when using this middleware
+		const wid = req.params.wid;
+		if (!wid) {
+			res.sendStatus(500);
+			return;
+		}
+
+		getUserWorkspaceGroup(req.session.user.id, wid)
+			.then(async (group) => {
+				if (!group || !allowedGroups.includes(group)) {
+					res.sendStatus(403);
+					return;
+				}
+
+				next();
+			})
+			.catch(next);
+	};
 }
 
 export async function getTemplateFileStream(

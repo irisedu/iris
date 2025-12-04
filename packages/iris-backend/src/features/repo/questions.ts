@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { getUserWorkspaceGroup, getQuestionPreviewArchive } from './utils.js';
+import { requireWorkspaceGroup, getQuestionPreviewArchive } from './utils.js';
 
 const router = Router();
 
 router.get(
 	'/:wid/questions',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -26,37 +27,32 @@ router.get(
 			tags = tagData;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
+		const getQuestionData = tags.length
+			? db
+					.selectFrom('repo_question_tag')
+					.innerJoin(
+						'repo_question',
+						'repo_question_tag.question_id',
+						'repo_question.id'
+					)
+					.where('repo_question.workspace_id', '=', wid)
+					.where('repo_question.deleted', '=', false)
+					.where('tag_id', 'in', tags)
+					.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
+					.having((eb) => eb.fn.countAll(), '=', tags.length)
+					.orderBy('num', 'asc')
+					.selectAll('repo_question')
+					.execute()
+			: db
+					.selectFrom('repo_question')
+					.where('workspace_id', '=', wid)
+					.where('deleted', '=', false)
+					.orderBy('num', 'asc')
+					.selectAll()
+					.execute();
 
-				const questionData = tags.length
-					? await db
-							.selectFrom('repo_question_tag')
-							.innerJoin(
-								'repo_question',
-								'repo_question_tag.question_id',
-								'repo_question.id'
-							)
-							.where('repo_question.workspace_id', '=', wid)
-							.where('repo_question.deleted', '=', false)
-							.where('tag_id', 'in', tags)
-							.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
-							.having((eb) => eb.fn.countAll(), '=', tags.length)
-							.orderBy('num', 'asc')
-							.selectAll('repo_question')
-							.execute()
-					: await db
-							.selectFrom('repo_question')
-							.where('workspace_id', '=', wid)
-							.where('deleted', '=', false)
-							.orderBy('num', 'asc')
-							.selectAll()
-							.execute();
-
+		getQuestionData
+			.then(async (questionData) => {
 				const tasks = [];
 
 				for (const question of questionData) {
@@ -98,6 +94,7 @@ router.get(
 router.post(
 	'/:wid/questions/new',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -112,43 +109,37 @@ router.post(
 		const { wid } = req.params;
 		const { tags, comment, type } = req.body;
 
-		getUserWorkspaceGroup(user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
+		db.transaction()
+			.execute(async (trx) => {
+				const question = await trx
+					.insertInto('repo_question')
+					.values({
+						workspace_id: wid,
+						creator: user.id,
+						type: type ?? 'latex',
+						comment
+					})
+					.returning('id')
+					.executeTakeFirst();
+
+				if (!question) {
+					res.sendStatus(500);
+					return undefined;
 				}
 
-				const data = await db.transaction().execute(async (trx) => {
-					const question = await trx
-						.insertInto('repo_question')
+				for (const tag of tags ?? []) {
+					await trx
+						.insertInto('repo_question_tag')
 						.values({
-							workspace_id: wid,
-							creator: user.id,
-							type: type ?? 'latex',
-							comment
+							question_id: question.id,
+							tag_id: tag
 						})
-						.returning('id')
-						.executeTakeFirst();
+						.execute();
+				}
 
-					if (!question) {
-						res.sendStatus(500);
-						return undefined;
-					}
-
-					for (const tag of tags ?? []) {
-						await trx
-							.insertInto('repo_question_tag')
-							.values({
-								question_id: question.id,
-								tag_id: tag
-							})
-							.execute();
-					}
-
-					return { id: question.id };
-				});
-
+				return { id: question.id };
+			})
+			.then((data) => {
 				if (data) res.json(data);
 			})
 			.catch(next);
@@ -158,6 +149,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -174,41 +166,33 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
+		db.transaction()
+			.execute(async (trx) => {
+				await trx
+					.updateTable('repo_question')
+					.set({
+						comment
+					})
+					.where('workspace_id', '=', wid)
+					.where('id', '=', qid)
+					.execute();
 
-				await db.transaction().execute(async (trx) => {
+				await trx
+					.deleteFrom('repo_question_tag')
+					.where('question_id', '=', qid)
+					.execute();
+
+				for (const tag of tags) {
 					await trx
-						.updateTable('repo_question')
-						.set({
-							comment
+						.insertInto('repo_question_tag')
+						.values({
+							question_id: qid,
+							tag_id: tag
 						})
-						.where('workspace_id', '=', wid)
-						.where('id', '=', qid)
 						.execute();
-
-					await trx
-						.deleteFrom('repo_question_tag')
-						.where('question_id', '=', qid)
-						.execute();
-
-					for (const tag of tags) {
-						await trx
-							.insertInto('repo_question_tag')
-							.values({
-								question_id: qid,
-								tag_id: tag
-							})
-							.execute();
-					}
-				});
-
-				res.sendStatus(200);
+				}
 			})
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );
@@ -216,6 +200,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid/revs/new',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -235,19 +220,11 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const question = await db
-					.selectFrom('repo_question')
-					.where('workspace_id', '=', wid)
-					.where('id', '=', qid)
-					.executeTakeFirst();
-
+		db.selectFrom('repo_question')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', qid)
+			.executeTakeFirst()
+			.then(async (question) => {
 				if (!question) {
 					res.sendStatus(404);
 					return;
@@ -326,21 +303,15 @@ async function getQuestionRev(wid: string, qid: string, rev: string) {
 router.get(
 	'/:wid/questions/:qid/revs/:rev',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid, qid, rev } = req.params;
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const result = await getQuestionRev(wid, qid, rev);
-
+		getQuestionRev(wid, qid, rev)
+			.then(async (result) => {
 				const tags = await db
 					.selectFrom('repo_question_tag')
 					.innerJoin('repo_tag', 'repo_question_tag.tag_id', 'repo_tag.id')
@@ -411,6 +382,7 @@ router.get(
 router.get(
 	'/:wid/questions/:qid/revs/:rev/preview/:type',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -423,14 +395,8 @@ router.get(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const result = await getQuestionRev(wid, qid, rev);
+		getQuestionRev(wid, qid, rev)
+			.then(async (result) => {
 				if (!result) {
 					res.sendStatus(404);
 					return;
@@ -529,6 +495,7 @@ router.get(
 router.post(
 	'/:wid/questions/:qid/editorPreview',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -538,19 +505,12 @@ router.post(
 		const { wid, qid } = req.params;
 		const showAnswer = req.query.showAnswer === '1';
 
-		getUserWorkspaceGroup(user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const result = await db
-					.selectFrom('repo_question')
-					.where('workspace_id', '=', wid)
-					.where('id', '=', qid)
-					.selectAll()
-					.executeTakeFirst();
+		db.selectFrom('repo_question')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', qid)
+			.selectAll()
+			.executeTakeFirst()
+			.then(async (result) => {
 				if (!result) {
 					res.sendStatus(404);
 					return;

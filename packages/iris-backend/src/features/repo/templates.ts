@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
-import { getUserWorkspaceGroup, getTemplateFileStream } from './utils.js';
+import { requireWorkspaceGroup, getTemplateFileStream } from './utils.js';
 import { Upload } from '@aws-sdk/lib-storage';
 import crypto from 'crypto';
 import stream from 'stream/promises';
@@ -45,6 +45,7 @@ router.get(
 router.post(
 	'/:wid/templates/new',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -62,23 +63,13 @@ router.post(
 			return;
 		}
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				await db
-					.insertInto('repo_template')
-					.values({
-						workspace_id: wid,
-						name
-					})
-					.execute();
-
-				res.sendStatus(200);
+		db.insertInto('repo_template')
+			.values({
+				workspace_id: wid,
+				name
 			})
+			.execute()
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );
@@ -86,25 +77,21 @@ router.post(
 router.post(
 	'/:wid/templates/:tid/upload',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid, tid } = req.params;
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
+		const form = formidable({
+			maxFiles: 1,
+			maxFileSize: 2048 * 1024 * 1024
+		});
 
-				const form = formidable({
-					maxFiles: 1,
-					maxFileSize: 2048 * 1024 * 1024
-				});
-				const [_fields, files] = await form.parse(req);
-
+		form
+			.parse(req)
+			.then(async ([_fields, files]) => {
 				if (!files.file || !files.file.length) return res.sendStatus(400);
 
 				const { filepath, mimetype } = files.file[0];
@@ -158,26 +145,19 @@ router.post(
 router.get(
 	'/:wid/templates/:tid/download',
 	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid, tid } = req.params;
 
-		getUserWorkspaceGroup(req.session.user.id, wid)
-			.then(async (group) => {
-				if (!group || !['owner', 'member'].includes(group)) {
-					res.sendStatus(403);
-					return;
-				}
-
-				const template = await db
-					.selectFrom('repo_template')
-					.where('workspace_id', '=', wid)
-					.where('id', '=', tid)
-					.selectAll()
-					.executeTakeFirst();
-
+		db.selectFrom('repo_template')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', tid)
+			.selectAll()
+			.executeTakeFirst()
+			.then(async (template) => {
 				if (!template || !template.hash) {
 					res.sendStatus(404);
 					return;

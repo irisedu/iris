@@ -26,10 +26,3 @@ figure {
 		}
 	}
 }
-
-.dark figure {
-	img,
-	object[type='image/svg+xml'] {
-		@apply bg-[white];
-	}
-}

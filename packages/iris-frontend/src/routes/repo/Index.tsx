@@ -84,7 +84,6 @@ export function Component() {
 					<Tab id="questions">Questions</Tab>
 					<Tab id="worksheets">Worksheets</Tab>
 					<Tab id="templates">Templates</Tab>
-					<Tab id="recycle">Recycle Bin</Tab>
 					<Tab id="workspaces">Workspaces</Tab>
 				</TabList>
 
@@ -101,8 +100,6 @@ export function Component() {
 						onRevalidate={() => revalidator.revalidate()}
 					/>
 				</TabPanel>
-
-				<TabPanel id="recycle">Recycle</TabPanel>
 
 				<TabPanel id="workspaces">
 					{isInstructor && (

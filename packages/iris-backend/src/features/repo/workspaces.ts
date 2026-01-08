@@ -131,21 +131,21 @@ router.post(
 );
 
 router.post(
-	'/:id/preview-template',
+	'/:wid/preview-template',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceGroup(['owner', 'member']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id } = req.params;
+		const { wid } = req.params;
 		const { id: template } = req.body ?? {};
 
 		(async function () {
 			if (typeof template === 'string') {
 				const templateData = await db
 					.selectFrom('repo_template')
-					.where('workspace_id', '=', id)
+					.where('workspace_id', '=', wid)
 					.where('id', '=', template)
 					.select('id')
 					.executeTakeFirst();
@@ -161,7 +161,7 @@ router.post(
 				.set({
 					preview_template_id: typeof template === 'string' ? template : null
 				})
-				.where('id', '=', id)
+				.where('id', '=', wid)
 				.execute();
 
 			res.sendStatus(200);

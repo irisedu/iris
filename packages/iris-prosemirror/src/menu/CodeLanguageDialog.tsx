@@ -51,8 +51,8 @@ function CodeLanguageDialog({
 				<Heading slot="title">Insert code block</Heading>
 				<Dropdown
 					label="Language"
-					selectedKey={language}
-					onSelectionChange={(key) => setLanguage(key as string)}
+					value={language}
+					onChange={(key) => setLanguage(key as string)}
 				>
 					<ListBoxItem id="">Plain text</ListBoxItem>
 					{languageItems}

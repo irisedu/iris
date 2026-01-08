@@ -9,13 +9,13 @@
 		"dev": "NODE_ENV=development nodemon src/index.ts"
 	},
 	"devDependencies": {
-		"@types/express": "^5.0.3",
+		"@types/express": "^5.0.6",
 		"@types/unzipper": "^0.10.11",
-		"nodemon": "^3.1.10",
+		"nodemon": "^3.1.11",
 		"ts-node": "^10.9.2"
 	},
 	"dependencies": {
-		"express": "^5.1.0",
+		"express": "^5.2.1",
 		"patchouli": "workspace:^",
 		"unzipper": "^0.12.3"
 	}

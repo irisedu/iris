@@ -149,8 +149,8 @@ function TextSettings() {
 				<TabPanel id="color" className="react-aria-TabPanel max-w-72">
 					<Dropdown
 						label="Theme"
-						selectedKey={theme}
-						onSelectionChange={(key) => dispatch(setTheme(key as string))}
+						value={theme}
+						onChange={(key) => dispatch(setTheme(key as string))}
 					>
 						<ListBoxItem id="auto">Auto</ListBoxItem>
 						<ListBoxItem id="light">Light</ListBoxItem>

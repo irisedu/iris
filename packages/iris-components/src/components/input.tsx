@@ -78,7 +78,7 @@ export function Switch({
 	);
 }
 
-interface ColorPickerProps extends AriaColorPickerProps {
+interface ColorPickerProps extends Omit<AriaColorPickerProps, 'children'> {
 	label: string;
 	presets?: string[];
 }

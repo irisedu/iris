@@ -17,7 +17,12 @@ import {
 	Separator,
 	Collection
 } from 'iris-components';
-import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+import {
+	Group as PanelGroup,
+	Panel,
+	Separator as PanelResizeHandle,
+	useDefaultLayout
+} from 'react-resizable-panels';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch, type RootState } from '$state/store';
@@ -145,6 +150,11 @@ function App() {
 		return () => document.removeEventListener('keydown', onKeyDown);
 	}, [dispatch, currentTab, tryCloseTab]);
 
+	const { defaultLayout, onLayoutChange } = useDefaultLayout({
+		groupId: 'main',
+		storage: localStorage
+	});
+
 	return (
 		<main
 			className={`bg-iris-50 w-screen h-screen`}
@@ -201,7 +211,11 @@ function App() {
 					</ToggleButton>
 				</TopBar>
 
-				<PanelGroup autoSaveId="main" direction="horizontal" className="grow">
+				<PanelGroup
+					defaultLayout={defaultLayout}
+					onLayoutChange={onLayoutChange}
+					className="grow"
+				>
 					<Panel defaultSize={80} minSize={50} className="relative">
 						<Collection items={tabs}>
 							{(item) => (

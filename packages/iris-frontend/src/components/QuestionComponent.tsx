@@ -385,8 +385,12 @@ export function NetQuestionComponent({ src }: NetQuestionComponentProps) {
 		dispatch(fetchQuestion(src));
 	}, [dispatch, devEnabled, devHost, src, refresh]);
 
+	if (questionData?.isDev) {
+		setSubmission({});
+	}
+
 	useEffect(() => {
-		if (questionData?.isDev) return setSubmission({});
+		if (questionData?.isDev) return;
 
 		fetch(`/api/judge${src}/submissions`)
 			.then((res) => res.json())

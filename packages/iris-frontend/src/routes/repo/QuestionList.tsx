@@ -29,7 +29,7 @@ export interface QuestionListParams {
 }
 
 export default function QuestionList({ workspaces }: QuestionListParams) {
-	const [workspace, setWorkspace] = useState('');
+	const [workspace, setWorkspaceInternal] = useState('');
 	const [tagFilter, setTagFilter] = useState<string[]>([]);
 	const tags = workspace.length
 		? (workspaces.find((w) => w.id === workspace)?.tags ?? [])
@@ -42,6 +42,26 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 		: [];
 	const [createTags, setCreateTags] = useState<string[]>([]);
 	const [createComment, setCreateComment] = useState('');
+
+	const [questionsInvalidate, setQuestionsInvalidate] = useState(0);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const [questions, setQuestions] = useState<any[]>([]);
+
+	if (!workspace.length && questions.length) {
+		setQuestions([]);
+	}
+
+	useEffect(() => {
+		if (!workspace.length) {
+			return;
+		}
+
+		const params = new URLSearchParams();
+		tagFilter.forEach((t) => params.append('tags', t));
+		fetch(`/api/repo/workspaces/${workspace}/questions?${params}`)
+			.then((res) => res.json())
+			.then(setQuestions);
+	}, [questionsInvalidate, workspace, tagFilter]);
 
 	const createQuestion = useCallback(
 		(workspace: string, tags: string[], comment: string, type: string) => {
@@ -57,31 +77,15 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 		[]
 	);
 
-	const [questionsInvalidate, setQuestionsInvalidate] = useState(0);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [questions, setQuestions] = useState<any[]>([]);
-
-	useEffect(() => {
-		if (!workspace.length) {
-			setQuestions([]);
-			return;
-		}
-
-		const params = new URLSearchParams();
-		tagFilter.forEach((t) => params.append('tags', t));
-		fetch(`/api/repo/workspaces/${workspace}/questions?${params}`)
-			.then((res) => res.json())
-			.then(setQuestions);
-	}, [questionsInvalidate, workspace, tagFilter]);
-
-	useEffect(() => {
+	const setWorkspace = useCallback((newWorkspace: string) => {
+		setWorkspaceInternal(newWorkspace);
 		setTagFilter([]);
-	}, [workspace]);
+	}, []);
 
-	function clearCreate() {
+	const clearCreate = useCallback(() => {
 		setCreateTags([]);
 		setCreateComment('');
-	}
+	}, [setCreateTags, setCreateComment]); // FIXME: why is this necessary?
 
 	const [showPreview, setShowPreview] = useState(false);
 	const previewHover = useRef<HTMLDivElement>(null);
@@ -132,8 +136,8 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 
 					<Dropdown
 						label="Workspace"
-						selectedKey={createWorkspace}
-						onSelectionChange={(key) => setCreateWorkspace(key as string)}
+						value={createWorkspace}
+						onChange={(key) => setCreateWorkspace(key as string)}
 					>
 						{workspaces?.map((w) => (
 							<ListBoxItem key={w.id} id={w.id}>
@@ -208,8 +212,8 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 
 					<Dropdown
 						label="Workspace"
-						selectedKey={workspace}
-						onSelectionChange={(key) => setWorkspace(key as string)}
+						value={workspace}
+						onChange={(key) => setWorkspace(key as string)}
 					>
 						{workspaces?.map((w) => (
 							<ListBoxItem key={w.id} id={w.id}>

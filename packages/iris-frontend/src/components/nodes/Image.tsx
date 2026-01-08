@@ -16,6 +16,7 @@ function ImageInternal({ src, alt, className }: ImageProps) {
 	const { dev } = useContext(DevContext);
 	const devHost = useSelector((state: RootState) => state.dev.host);
 
+	// eslint-disable-next-line react-hooks/purity
 	const devSrc = `http://${devHost}${src}?hash=${Date.now()}`;
 	const actualSrc = dev && src.startsWith('/') ? devSrc : src;
 

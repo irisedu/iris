@@ -12,8 +12,7 @@ export interface ProseMirrorComponent {
 	plugins?: Plugin[];
 	nodes?: Record<string, NodeSpec>;
 	marks?: Record<string, MarkSpec>;
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	commands?: Record<string, Function>;
+	commands?: Record<string, (...args: never) => unknown>;
 	nodeViews?: Record<string, NodeViewConstructor>;
 	reactNodeViews?: ReactNodeViewMap;
 

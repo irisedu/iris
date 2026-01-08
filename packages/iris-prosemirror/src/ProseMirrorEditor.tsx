@@ -18,6 +18,7 @@ export function ProseMirrorEditor({
 	...props
 }: ProseMirrorEditorProps) {
 	const dispatchTransaction = useCallback(
+		// eslint-disable-next-line react-hooks/unsupported-syntax
 		function (this: EditorView, tr: Transaction) {
 			stateRef.current = this.state.apply(tr);
 			if (dt) dt.bind(this)(tr);

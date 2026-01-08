@@ -126,8 +126,8 @@ export default function TemplateList({
 
 			<Dropdown
 				label="Workspace"
-				selectedKey={createWorkspace}
-				onSelectionChange={(key) => setCreateWorkspace(key as string)}
+				value={createWorkspace}
+				onChange={(key) => setCreateWorkspace(key as string)}
 			>
 				{workspaces.map((w) => (
 					<ListBoxItem key={w.id} id={w.id}>

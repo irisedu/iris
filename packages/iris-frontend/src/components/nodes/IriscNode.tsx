@@ -385,6 +385,7 @@ export function IriscNode({
 			if (typeof language !== 'string') return null;
 
 			return (
+				// eslint-disable-next-line react-hooks/purity
 				<pre {...props} key={Math.random() * 10000}>
 					<code
 						className={

@@ -62,20 +62,20 @@ export function Component() {
 	const prefersDark = useMediaQuery({ query: '(prefers-color-scheme: dark)' });
 	const dark = theme === 'auto' ? prefersDark : theme === 'dark';
 
-	const [newComment, setNewComment] = useState('');
-	const [newTags, setNewTags] = useState<string[]>([]);
+	const [newComment, setNewComment] = useState(questionData.comment);
+	const [newTags, setNewTags] = useState<string[]>(
+		questionData.tags.map((t: { id: string }) => t.id)
+	);
 
 	const previewTimeout = useRef<number>(null);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [previewContents, setPreviewContents] = useState<any>({});
+	const [previewContents, setPreviewContents] = useState<any>(
+		questionData.data
+	);
 
 	useEffect(() => {
 		document.title = `Question #${questionData.num} • Iris`;
-
-		setNewComment(questionData.comment);
-		setNewTags(questionData.tags.map((t: { id: string }) => t.id));
-		setPreviewContents(questionData.data);
-	}, [questionData]);
+	}, [questionData.num]);
 
 	const saveContentsLatex = useCallback(
 		(contents: string) => {

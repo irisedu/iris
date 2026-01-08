@@ -10,12 +10,12 @@
 		"tsc": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@react-aria/collections": "3.0.0-rc.4",
+		"@react-aria/collections": "3.0.1",
 		"highlight.js": "^11.11.1",
-		"react": "^19.1.1",
-		"react-aria-components": "^1.11.0"
+		"react": "^19.2.3",
+		"react-aria-components": "^1.14.0"
 	},
 	"devDependencies": {
-		"unplugin-icons": "^22.2.0"
+		"unplugin-icons": "^22.5.0"
 	}
 }

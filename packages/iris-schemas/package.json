@@ -17,6 +17,6 @@
 		"prepare": "tsc"
 	},
 	"dependencies": {
-		"zod": "^4.1.0"
+		"zod": "^4.3.5"
 	}
 }

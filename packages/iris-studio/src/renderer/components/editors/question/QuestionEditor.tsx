@@ -203,8 +203,8 @@ function QuestionEditor({
 			<div className="flex flex-row gap-2 items-center justify-end mb-4 px-2 bg-iris-50 border-2 border-iris-200">
 				<Dropdown
 					aria-label="Type to Add"
-					selectedKey={addType}
-					onSelectionChange={(key) => setAddType(key as QuestionNodeType)}
+					value={addType}
+					onChange={(key) => setAddType(key as QuestionNodeType)}
 				>
 					{typeStrings.map((str, i) => (
 						<ListBoxItem id={i} key={i}>

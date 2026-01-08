@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import useAuthorization from '$hooks/useAuthorization';
 import { fetchCsrf } from '../../utils';
 import {
@@ -24,17 +24,9 @@ export default function Workspace({
 	const [addMemberEmail, setAddMemberEmail] = useState('');
 	const [addTagName, setAddTagName] = useState('');
 
-	const [newPreviewTemplate, setNewPreviewTemplateInternal] = useState('');
-
-	useEffect(() => {
-		setNewPreviewTemplateInternal(data.previewTemplate ?? '');
-	}, [data]);
-
 	const setNewPreviewTemplate = useCallback(
 		(id: string | null) => {
-			console.log(id);
 			if ((id !== null && !id.length) || data.previewTemplate === id) {
-				setNewPreviewTemplateInternal(id ?? '');
 				return;
 			}
 
@@ -46,7 +38,6 @@ export default function Workspace({
 			})
 				.then(() => {
 					onRevalidate();
-					setNewPreviewTemplateInternal(id ?? '');
 				})
 				.catch(() => {
 					onRevalidate();
@@ -185,8 +176,8 @@ export default function Workspace({
 
 				<Dropdown
 					label="Preview Template"
-					selectedKey={newPreviewTemplate}
-					onSelectionChange={(key) =>
+					value={data.previewTemplate ?? ''}
+					onChange={(key) =>
 						setNewPreviewTemplate(key === 'null' ? null : (key as string))
 					}
 				>

@@ -225,6 +225,29 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.execute();
 
 	await db.schema
+		.createTable('repo_worksheet_question')
+		.addColumn('worksheet_id', 'uuid', (col) => col.notNull())
+		.addForeignKeyConstraint(
+			'repo_worksheet_foreign',
+			['worksheet_id'],
+			'repo_worksheet',
+			['id'],
+			(fk) => fk.onDelete('cascade')
+		)
+		.addColumn('question_id', 'uuid', (col) => col.notNull())
+		.addForeignKeyConstraint(
+			'repo_question_foreign',
+			['question_id'],
+			'repo_question',
+			['id']
+		)
+		.addPrimaryKeyConstraint('repo_worksheet_question_pkey', [
+			'worksheet_id',
+			'question_id'
+		])
+		.execute();
+
+	await db.schema
 		.alterTable('project_group')
 		.dropConstraint('project_group_pkey')
 		.execute();
@@ -235,6 +258,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
+	await db.schema.dropTable('repo_worksheet_question').execute();
 	await db.schema.dropTable('repo_worksheet_rev').execute();
 	await db.schema.dropTable('repo_worksheet').execute();
 	await db.schema

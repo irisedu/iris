@@ -15,6 +15,7 @@ router.get(
 
 		const { wid } = req.params;
 		const { tags: tagData } = req.query;
+		const recycle = req.query.recycle === '1';
 
 		let tags: string[] = [];
 
@@ -36,7 +37,7 @@ router.get(
 						'repo_question.id'
 					)
 					.where('repo_question.workspace_id', '=', wid)
-					.where('repo_question.deleted', '=', false)
+					.where('repo_question.deleted', '=', recycle)
 					.where('tag_id', 'in', tags)
 					.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
 					.having((eb) => eb.fn.countAll(), '=', tags.length)
@@ -46,7 +47,7 @@ router.get(
 			: db
 					.selectFrom('repo_question')
 					.where('workspace_id', '=', wid)
-					.where('deleted', '=', false)
+					.where('deleted', '=', recycle)
 					.orderBy('num', 'asc')
 					.selectAll()
 					.execute();
@@ -142,6 +143,29 @@ router.post(
 			.then((data) => {
 				if (data) res.json(data);
 			})
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:wid/questions/:qid/recycle',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, qid } = req.params;
+		const recycle = req.query.recycle === '1';
+
+		db.updateTable('repo_question')
+			.set({
+				deleted: recycle
+			})
+			.where('workspace_id', '=', wid)
+			.where('id', '=', qid)
+			.execute()
+			.then(() => res.sendStatus(200))
 			.catch(next);
 	}
 );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	Button,
 	Checkbox,
@@ -10,6 +10,7 @@ import {
 	Label,
 	ListBoxItem,
 	Modal,
+	Switch,
 	Tag,
 	TagGroup,
 	TagList,
@@ -30,6 +31,7 @@ export interface QuestionListParams {
 
 export default function QuestionList({ workspaces }: QuestionListParams) {
 	const [workspace, setWorkspaceInternal] = useState('');
+	const [recycleFilter, setRecycleFilter] = useState(false);
 	const [tagFilter, setTagFilter] = useState<string[]>([]);
 	const tags = workspace.length
 		? (workspaces.find((w) => w.id === workspace)?.tags ?? [])
@@ -57,35 +59,49 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 		}
 
 		const params = new URLSearchParams();
+		if (recycleFilter) {
+			params.set('recycle', '1');
+		}
 		tagFilter.forEach((t) => params.append('tags', t));
 		fetch(`/api/repo/workspaces/${workspace}/questions?${params}`)
 			.then((res) => res.json())
 			.then(setQuestions);
-	}, [questionsInvalidate, workspace, tagFilter]);
+	}, [questionsInvalidate, workspace, recycleFilter, tagFilter]);
 
-	const createQuestion = useCallback(
-		(workspace: string, tags: string[], comment: string, type: string) => {
-			fetchCsrf(`/api/repo/workspaces/${workspace}/questions/new`, {
-				body: JSON.stringify({ tags, comment, type }),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}).then(() => {
-				setQuestionsInvalidate((n) => n + 1);
-			});
-		},
-		[]
-	);
+	function createQuestion(
+		workspace: string,
+		tags: string[],
+		comment: string,
+		type: string
+	) {
+		fetchCsrf(`/api/repo/workspaces/${workspace}/questions/new`, {
+			body: JSON.stringify({ tags, comment, type }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}).then(() => {
+			setQuestionsInvalidate((n) => n + 1);
+		});
+	}
 
-	const setWorkspace = useCallback((newWorkspace: string) => {
+	function recycleQuestion(workspace: string, qid: string, recycle: boolean) {
+		let route = `/api/repo/workspaces/${workspace}/questions/${qid}/recycle`;
+		if (recycle) route += '?recycle=1';
+
+		fetchCsrf(route).then(() => {
+			setQuestionsInvalidate((n) => n + 1);
+		});
+	}
+
+	function setWorkspace(newWorkspace: string) {
 		setWorkspaceInternal(newWorkspace);
 		setTagFilter([]);
-	}, []);
+	}
 
-	const clearCreate = useCallback(() => {
+	function clearCreate() {
 		setCreateTags([]);
 		setCreateComment('');
-	}, [setCreateTags, setCreateComment]); // FIXME: why is this necessary?
+	}
 
 	const [showPreview, setShowPreview] = useState(false);
 	const previewHover = useRef<HTMLDivElement>(null);
@@ -222,6 +238,10 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 						))}
 					</Dropdown>
 
+					<Switch isSelected={recycleFilter} onChange={setRecycleFilter}>
+						View recycle bin
+					</Switch>
+
 					<CheckboxGroup value={tagFilter} onChange={setTagFilter}>
 						<Label>Tags</Label>
 						<div className="flex flex-wrap gap-x-4 text-sm">
@@ -297,8 +317,13 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 										<Button className="react-aria-Button p-0 px-1">
 											Download
 										</Button>
-										<Button className="react-aria-Button p-0 px-1">
-											Delete
+										<Button
+											className="react-aria-Button p-0 px-1"
+											onPress={() =>
+												recycleQuestion(workspace, q.id, !recycleFilter)
+											}
+										>
+											{recycleFilter ? 'Restore' : 'Delete'}
 										</Button>
 									</td>
 								</tr>

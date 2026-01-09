@@ -170,14 +170,14 @@ router.post(
 );
 
 router.post(
-	'/:id/members/invite',
+	'/:wid/members/invite',
 	requireAuth({ group: 'repo:instructors' }),
 	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id } = req.params;
+		const { wid } = req.params;
 		const { email } = req.body ?? {};
 
 		if (typeof email !== 'string') {
@@ -198,7 +198,7 @@ router.post(
 				await db
 					.insertInto('repo_workspace_group')
 					.values({
-						workspace_id: id,
+						workspace_id: wid,
 						user_id: user.id,
 						group_name: 'member'
 					})
@@ -211,17 +211,17 @@ router.post(
 );
 
 router.delete(
-	'/:id/members/:uid',
+	'/:wid/members/:uid',
 	requireAuth({ group: 'repo:instructors' }),
 	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id, uid } = req.params;
+		const { wid, uid } = req.params;
 
 		db.deleteFrom('repo_workspace_group')
-			.where('workspace_id', '=', id)
+			.where('workspace_id', '=', wid)
 			.where('user_id', '=', uid)
 			.execute()
 			.then(() => res.sendStatus(200))
@@ -230,14 +230,14 @@ router.delete(
 );
 
 router.post(
-	'/:id/members/:uid/group',
+	'/:wid/members/:uid/group',
 	requireAuth({ group: 'repo:instructors' }),
 	requireWorkspaceGroup(['owner']),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
 
-		const { id, uid } = req.params;
+		const { wid, uid } = req.params;
 		const { group: newGroup } = req.body ?? {};
 
 		if (typeof newGroup !== 'string') {
@@ -249,7 +249,7 @@ router.post(
 			.set({
 				group_name: newGroup
 			})
-			.where('workspace_id', '=', id)
+			.where('workspace_id', '=', wid)
 			.where('user_id', '=', uid)
 			.execute()
 			.then(() => res.sendStatus(200))

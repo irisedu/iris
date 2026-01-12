@@ -17,7 +17,7 @@ export default function Workspace({
 }: {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data: any;
-	templates: { id: string; name: string; hash: string }[];
+	templates: { id: string; workspace_id: string; name: string; hash: string }[];
 	onRevalidate: () => void;
 }) {
 	const user = useAuthorization({});
@@ -183,7 +183,7 @@ export default function Workspace({
 				>
 					<ListBoxItem id="null">(unset)</ListBoxItem>
 					{templates
-						.filter((t) => t.hash)
+						.filter((t) => t.workspace_id === data.id && t.hash)
 						.map((t) => (
 							<ListBoxItem key={t.id} id={t.id}>
 								{t.name}

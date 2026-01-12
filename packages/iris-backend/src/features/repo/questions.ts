@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { requireWorkspaceGroup, getQuestionPreviewArchive } from './utils.js';
+import {
+	requireWorkspaceGroup,
+	getQuestionPreviewArchive,
+	uploadMediaFileFromForm,
+	getMediaFileStream,
+	type QuestionData
+} from './utils.js';
 
 const router = Router();
 
@@ -99,7 +105,6 @@ router.post(
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
-
 		const user = req.session.user;
 
 		if (!req.body) {
@@ -228,7 +233,6 @@ router.post(
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
-
 		const user = req.session.user;
 
 		const { wid, qid } = req.params;
@@ -459,7 +463,7 @@ router.get(
 					if (jobRes1.status === 404) {
 						const archiveData = await getQuestionPreviewArchive(
 							result.type,
-							result.data,
+							result.data as QuestionData,
 							template.hash,
 							{
 								'${[SHOW_ANSWER]}': !!showAnswer
@@ -523,7 +527,6 @@ router.post(
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
-
 		const user = req.session.user;
 
 		const { wid, qid } = req.params;
@@ -617,4 +620,144 @@ router.post(
 			.catch(next);
 	}
 );
+
+router.post(
+	'/:wid/questions/:qid/media',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+		const user = req.session.user;
+
+		const { wid, qid } = req.params;
+
+		getQuestionRev(wid, qid, 'latest')
+			.then(async (result) => {
+				if (!result) {
+					const result2 = await db
+						.selectFrom('repo_question')
+						.where('workspace_id', '=', wid)
+						.where('id', '=', qid)
+						.select('id')
+						.executeTakeFirst();
+
+					if (!result2) return res.sendStatus(404);
+				}
+
+				const data = result?.data as QuestionData | undefined;
+				const fileRes = await uploadMediaFileFromForm(req);
+				if (!fileRes) return res.sendStatus(400);
+
+				const newData = {
+					...data,
+					media: {
+						...data?.media
+					}
+				};
+
+				newData.media[fileRes.name] = fileRes.hash;
+
+				await db
+					.insertInto('repo_question_rev')
+					.values({
+						question_id: qid,
+						creator: user.id,
+						derived_from: result?.derived_from,
+						data: newData
+					})
+					.execute();
+
+				res.sendStatus(200);
+			})
+			.catch(next);
+	}
+);
+
+router.get(
+	'/:wid/questions/:qid/media/:filename',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, qid, filename } = req.params;
+
+		getQuestionRev(wid, qid, 'latest')
+			.then(async (result) => {
+				if (!result) return res.sendStatus(404);
+
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const media = (result.data as any).media;
+				if (!media) return res.sendStatus(404);
+
+				const hash = media[filename];
+				if (!hash) return res.sendStatus(404);
+
+				const strm = await getMediaFileStream(hash);
+				if (!strm) {
+					res.sendStatus(500);
+					return;
+				}
+
+				res.setHeader(
+					'Content-Disposition',
+					`attachment; filename=${filename}`
+				);
+				res.contentType(filename);
+				strm.pipe(res);
+			})
+			.catch(next);
+	}
+);
+
+router.delete(
+	'/:wid/questions/:qid/media/:filename',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+		const user = req.session.user;
+
+		const { wid, qid, filename } = req.params;
+
+		getQuestionRev(wid, qid, 'latest')
+			.then(async (result) => {
+				if (!result) return res.sendStatus(404);
+
+				const data = result.data as QuestionData;
+				if (!data.media) return res.sendStatus(404);
+
+				const hash = data.media[filename];
+				if (!hash) return res.sendStatus(404);
+
+				const newData = {
+					...data,
+					media: {
+						...data.media
+					}
+				};
+
+				// TODO: currently no collection of unused media files
+				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+				delete newData.media[filename];
+
+				await db
+					.insertInto('repo_question_rev')
+					.values({
+						question_id: qid,
+						creator: user.id,
+						derived_from: result?.derived_from,
+						data: newData
+					})
+					.execute();
+
+				res.sendStatus(200);
+			})
+			.catch(next);
+	}
+);
+
 export default router;

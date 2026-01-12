@@ -4,11 +4,26 @@ import unzipper from 'unzipper';
 import { type RequestHandler } from 'express';
 import os from 'os';
 import path from 'path';
+import formidable from 'formidable';
+import crypto from 'crypto';
+import stream from 'stream/promises';
 import { promises as fs, createReadStream, type ReadStream } from 'fs';
 import { s3Client } from '../obj/index.js';
-import { GetObjectCommand, NoSuchKey } from '@aws-sdk/client-s3';
+import {
+	HeadObjectCommand,
+	NotFound,
+	GetObjectCommand,
+	NoSuchKey
+} from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
+import type { IncomingMessage } from 'http';
 
 const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
+
+export interface QuestionData {
+	code?: string;
+	media?: Record<string, string>;
+}
 
 async function getUserWorkspaceGroup(uid: string, wid: string) {
 	return (
@@ -48,7 +63,57 @@ export function requireWorkspaceGroup(allowedGroups: string[]): RequestHandler {
 	};
 }
 
-export async function getTemplateFileStream(
+export async function uploadMediaFileFromForm(
+	req: IncomingMessage,
+	validateMime?: (mime: string | null) => boolean
+): Promise<{ hash: string; name: string } | null> {
+	const form = formidable({
+		maxFiles: 1,
+		maxFileSize: 2048 * 1024 * 1024
+	});
+
+	const [_fields, files] = await form.parse(req);
+	if (!files.file || !files.file.length) return null;
+
+	const { filepath, mimetype, originalFilename } = files.file[0];
+	if ((validateMime && !validateMime(mimetype)) || !originalFilename) {
+		return null;
+	}
+
+	const hash = crypto.createHash('sha256');
+	await stream.pipeline(createReadStream(filepath), hash);
+	const fileHash = hash.digest('hex');
+
+	try {
+		await s3Client.send(
+			new HeadObjectCommand({
+				Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
+				Key: fileHash
+			})
+		);
+	} catch (e: unknown) {
+		if (e instanceof NotFound) {
+			const upload = new Upload({
+				client: s3Client,
+				params: {
+					Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
+					Key: fileHash,
+					Body: createReadStream(filepath),
+					ContentType: 'application/zip'
+				}
+			});
+
+			await upload.done();
+		}
+	}
+
+	return {
+		hash: fileHash,
+		name: originalFilename
+	};
+}
+
+export async function getMediaFileStream(
 	hash: string
 ): Promise<ReadStream | null> {
 	await fs.mkdir(cacheDir, { recursive: true });
@@ -82,9 +147,21 @@ export async function getTemplateFileStream(
 	}
 }
 
+async function streamToBuffer(stream: ReadStream): Promise<Buffer> {
+	const buffers: Buffer[] = [];
+
+	return new Promise((res, rej) => {
+		stream.on('data', (data) => {
+			buffers.push(Buffer.from(data));
+		});
+		stream.on('end', () => res(Buffer.concat(buffers)));
+		stream.on('error', rej);
+	});
+}
+
 export async function getQuestionPreviewArchive(
 	type: string,
-	data: unknown,
+	data: QuestionData,
 	template: string,
 	templateReplacements: Record<string, unknown>
 ): Promise<Buffer | null> {
@@ -100,9 +177,7 @@ export async function getQuestionPreviewArchive(
 			archive.on('end', res);
 			archive.on('error', rej);
 
-			const code = (data as { code: string }).code;
-
-			getTemplateFileStream(template)
+			getMediaFileStream(template)
 				.then((st) => st?.pipe(unzipper.Parse({ forceStream: true })))
 				.then(async (zip) => {
 					if (!zip) {
@@ -115,7 +190,7 @@ export async function getQuestionPreviewArchive(
 							const template = (await entry.buffer()).toString('utf-8');
 							let populatedTemplate = template.replace(
 								'${[INCLUDE_CONTENT]}',
-								code
+								data.code
 							);
 
 							for (const [k, v] of Object.entries(templateReplacements)) {
@@ -125,6 +200,15 @@ export async function getQuestionPreviewArchive(
 							archive.append(populatedTemplate, { name: 'main.tex' });
 						} else {
 							archive.append(await entry.buffer(), { name: entry.path });
+						}
+					}
+
+					if (data.media) {
+						for (const [filename, hash] of Object.entries(data.media)) {
+							const strm = await getMediaFileStream(hash);
+							if (!strm) continue; // TODO
+
+							archive.append(await streamToBuffer(strm), { name: filename });
 						}
 					}
 

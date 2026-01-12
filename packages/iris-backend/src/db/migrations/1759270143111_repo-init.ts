@@ -150,7 +150,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			['id'],
 			(fk) => fk.onDelete('cascade')
 		)
-		.addColumn('name', 'text', (col) => col.notNull().unique())
+		.addColumn('name', 'text', (col) => col.notNull())
 		.addColumn('hash', 'text')
 		.execute();
 

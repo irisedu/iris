@@ -83,7 +83,7 @@ router.get('/', requireAuth({ group: 'repo:users' }), (req, res, next) => {
 				});
 			}
 
-			res.json(out);
+			res.json(out.sort((a, b) => a.name.localeCompare(b.name)));
 		})
 		.catch(next);
 });

@@ -1,13 +1,10 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
-import { requireWorkspaceGroup, getTemplateFileStream } from './utils.js';
-import { Upload } from '@aws-sdk/lib-storage';
-import crypto from 'crypto';
-import stream from 'stream/promises';
-import { s3Client } from '../obj/index.js';
-import { HeadObjectCommand, NotFound } from '@aws-sdk/client-s3';
-import formidable from 'formidable';
-import fs from 'fs';
+import {
+	requireWorkspaceGroup,
+	getMediaFileStream,
+	uploadMediaFileFromForm
+} from './utils.js';
 import { db } from '../../db/index.js';
 
 const router = Router();
@@ -84,53 +81,14 @@ router.post(
 
 		const { wid, tid } = req.params;
 
-		const form = formidable({
-			maxFiles: 1,
-			maxFileSize: 2048 * 1024 * 1024
-		});
-
-		form
-			.parse(req)
-			.then(async ([_fields, files]) => {
-				if (!files.file || !files.file.length) return res.sendStatus(400);
-
-				const { filepath, mimetype } = files.file[0];
-				if (mimetype !== 'application/zip') {
-					res.sendStatus(400);
-					return;
-				}
-
-				const hash = crypto.createHash('sha256');
-				await stream.pipeline(fs.createReadStream(filepath), hash);
-				const templateHash = hash.digest('hex');
-
-				try {
-					await s3Client.send(
-						new HeadObjectCommand({
-							Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
-							Key: templateHash
-						})
-					);
-				} catch (e: unknown) {
-					if (e instanceof NotFound) {
-						const upload = new Upload({
-							client: s3Client,
-							params: {
-								Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
-								Key: templateHash,
-								Body: fs.createReadStream(filepath),
-								ContentType: 'application/zip'
-							}
-						});
-
-						await upload.done();
-					}
-				}
+		uploadMediaFileFromForm(req, (mime) => mime === 'application/zip')
+			.then(async (fileRes) => {
+				if (!fileRes) return res.sendStatus(400);
 
 				await db
 					.updateTable('repo_template')
 					.set({
-						hash: templateHash
+						hash: fileRes.hash
 					})
 					.where('workspace_id', '=', wid)
 					.where('id', '=', tid)
@@ -163,7 +121,7 @@ router.get(
 					return;
 				}
 
-				const strm = await getTemplateFileStream(template.hash);
+				const strm = await getMediaFileStream(template.hash);
 				if (!strm) {
 					res.sendStatus(500);
 					return;

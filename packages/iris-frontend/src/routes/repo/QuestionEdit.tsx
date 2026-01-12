@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+	Form,
 	useLoaderData,
 	useParams,
 	useRevalidator,
@@ -82,6 +83,7 @@ export function Component() {
 			fetchCsrf(`/api/repo/workspaces/${wid}/questions/${qid}/revs/new`, {
 				body: JSON.stringify({
 					data: {
+						...questionData.data,
 						code: contents
 					},
 					derived_from: questionData.derived_from
@@ -121,6 +123,39 @@ export function Component() {
 		[revalidator, wid, qid]
 	);
 
+	const deleteMedia = useCallback(
+		(filename: string) => {
+			fetchCsrf(
+				`/api/repo/workspaces/${wid}/questions/${qid}/media/${filename}`,
+				{
+					method: 'DELETE'
+				}
+			)
+				.then(() => {
+					revalidator.revalidate();
+				})
+				.catch(() => {
+					revalidator.revalidate();
+				});
+		},
+		[revalidator, wid, qid]
+	);
+
+	// this is nasty
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const questionDataRef = useRef<any>(null);
+	// eslint-disable-next-line react-hooks/refs
+	questionDataRef.current = questionData;
+	function setPreviewTimeout() {
+		if (previewTimeout.current !== null) clearTimeout(previewTimeout.current);
+		previewTimeout.current = window.setTimeout(() => {
+			setPreviewContents({
+				...questionDataRef.current?.data,
+				code: editor.current?.state.doc.toString() ?? ''
+			});
+		}, 1000);
+	}
+
 	return (
 		<>
 			<h1 className="mt-0">Question #{questionData.num}</h1>
@@ -154,13 +189,7 @@ export function Component() {
 							view.focus();
 						}}
 						onChange={() => {
-							if (previewTimeout.current !== null)
-								clearTimeout(previewTimeout.current);
-							previewTimeout.current = window.setTimeout(() => {
-								setPreviewContents({
-									code: editor.current?.state.doc.toString() ?? ''
-								});
-							}, 1000);
+							setPreviewTimeout();
 						}}
 					/>
 				)}
@@ -230,6 +259,55 @@ export function Component() {
 			<Button onPress={() => saveMetadata(newComment, newTags)}>
 				Save Metadata
 			</Button>
+
+			<h2>Media</h2>
+
+			<Form
+				onSubmit={(e) => {
+					e.preventDefault();
+
+					const form = e.currentTarget;
+					const formData = new FormData(form);
+
+					fetchCsrf(`/api/repo/workspaces/${wid}/questions/${qid}/media`, {
+						body: formData
+					}).then(() => {
+						form.reset();
+						revalidator.revalidate();
+						setPreviewTimeout();
+					});
+				}}
+			>
+				<Input name="file" type="file" required />
+				<Button type="submit">Upload File</Button>
+			</Form>
+
+			{questionData.data?.media && (
+				<ul>
+					{Object.keys(questionData.data.media).map((filename) => (
+						<li key={filename}>
+							{filename}
+							<div className="flex flex-wrap gap-2">
+								<Button
+									onPress={() => {
+										window.location.href = `/api/repo/workspaces/${wid}/questions/${qid}/media/${filename}`;
+									}}
+								>
+									Download
+								</Button>
+								<Button
+									onPress={() => {
+										deleteMedia(filename);
+										setPreviewTimeout();
+									}}
+								>
+									Delete
+								</Button>
+							</div>
+						</li>
+					))}
+				</ul>
+			)}
 		</>
 	);
 }

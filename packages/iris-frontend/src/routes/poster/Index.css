@@ -5,20 +5,30 @@ body {
 }
 
 main {
-	@apply flex flex-col md:flex-row gap-4 max-md:items-center md:justify-center mb-4;
+	@apply my-4 max-w-[40ch] mx-auto lg:columns-2 lg:gap-8 lg:max-w-[90ch];
 }
 
-.column {
-	@apply w-[35ch] max-w-full;
+header,
+footer {
+	@apply max-w-[40ch] mx-auto lg:max-w-[90ch];
+}
+
+.references {
+	@apply text-[0.7rem] lg:columns-2 lg:gap-8;
+}
+
+.section,
+figure {
+	@apply break-inside-avoid-column;
 }
 
 .section {
-	@apply my-[calc(var(--paragraph-spacing)*1.1)] first:mt-0 last:mb-0 text-[0.85rem];
+	@apply my-[calc(var(--paragraph-spacing)*1.5)] first:mt-0 last:mb-0;
 }
 
 .section > h2,
 .section > div > h2 {
-	@apply font-body mt-0 mb-(--paragraph-spacing) text-[1rem] text-center;
+	@apply font-body mt-0 mb-(--paragraph-spacing) text-[1.2rem] text-center;
 }
 
 ul,
@@ -31,7 +41,7 @@ ul,
 }
 
 .text-settings > div > div {
-	@apply border-2 border-iris-300 px-3 pt-1 pb-2 shadow-md;
+	@apply border-2 border-iris-300 px-3 pt-1 pb-2 shadow-md min-h-58;
 }
 
 h2 a {
@@ -39,16 +49,12 @@ h2 a {
 	@apply hidden;
 }
 
-figure {
-	@apply border-2 border-iris-300 shadow-md;
-}
-
 figcaption {
-	@apply text-[0.6rem];
+	@apply text-sm;
 }
 
 .label-figure {
-	@apply relative max-w-[70ch] ml-3;
+	@apply relative max-w-[70ch] ml-3 border-2 border-iris-300 shadow-md;
 }
 
 .label-figure__label {
@@ -67,12 +73,87 @@ figcaption {
 		'salt' off;
 }
 
-@media print {
-	:root {
-		font-size: 300% !important;
-	}
+.print {
+	font-size: 250% !important;
 
 	body {
-		@apply w-[24in] h-[36in];
+		@apply w-[48in] h-[36in];
+	}
+
+	header,
+	footer {
+		@apply max-w-full;
+	}
+
+	.references {
+		@apply columns-4;
+	}
+
+	main {
+		@apply grid w-full max-w-full gap-0 gap-x-6;
+		grid-template-columns: 40ch 1fr 16ch 16ch 1fr 40ch;
+		grid-template-rows: repeat(57, 0.5in);
+		grid-template-areas:
+			'intro look look . . llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro .... .... selectprompt selectprompt llm'
+			'..... dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia ............ ............ llm'
+			'background dyslexia dyslexia . . llm'
+			'background dyslexia dyslexia intextprompt intextprompt ...'
+			'background ........ ........ intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'.......... jargon jargon intextprompt intextprompt eval'
+			'features jargon jargon intextprompt intextprompt eval'
+			'features jargon jargon ............ ............ eval'
+			'features ...... ...... . . eval'
+			'features . . . . eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend eval'
+			'features studio studio frontend frontend ....'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'........ studio studio frontend frontend results'
+			'settings studio studio frontend frontend results'
+			'settings studio studio frontend frontend results'
+			'settings studio studio frontend frontend .......'
+			'settings studio studio frontend frontend discussion'
+			'settings studio studio frontend frontend discussion'
+			'settings studio studio frontend frontend discussion'
+			'settings ...... ...... ........ ........ discussion'
+			'settings . . ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings diagram diagram ueqs ueqs discussion'
+			'settings ....... ....... ueqs ueqs ..........'
+			'settings . . .... .... .';
+	}
+
+	.section,
+	figure {
+		@apply my-0;
 	}
 }

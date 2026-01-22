@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import StyleProvider from '$components/StyleProvider';
-import { useWidellSimulation } from './Index';
+import useWidellSimulation from './useWidellSimulation';
 import { Switch } from 'iris-components';
 
 export function Component() {
@@ -35,7 +35,7 @@ export function Component() {
 				<a href="https://geon.github.io/programming/2016/03/03/dsxyliea">
 					Victor Widell’s
 				</a>{' '}
-				Dyslexia Simulation [3]
+				Dyslexia Simulation [5]
 			</div>
 			<div className="text-center text-xs">
 				Text by Matthew Butterick [2010].

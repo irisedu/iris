@@ -48,7 +48,6 @@ export function ProseMirrorField({
 	preset ??= baseBlockPreset;
 
 	const [state, setState] = useState(preset.defaultState);
-	const stateRef = useRef(state);
 
 	// ??????
 	useEffect(() => {
@@ -63,21 +62,22 @@ export function ProseMirrorField({
 		);
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// Must use a controlled component to avoid extremely bad rerender problems
 	return (
 		<ProseMirrorEditor
 			{...props}
-			stateRef={stateRef}
 			customNodeViews={preset.nodeViews}
 			nodeViews={preset.reactNodeViews}
 			state={state}
 			dispatchTransaction={function (tr) {
-				setState(stateRef.current);
-				if (tr.docChanged)
-					onValueChanged(stateRef.current.doc.toJSON().content);
+				setState((prev) => {
+					const newState = prev.apply(tr);
+					if (tr.docChanged)
+						queueMicrotask(() => onValueChanged(newState.doc.toJSON().content));
+					return newState;
+				});
 			}}
 		>
-			<ProseMirrorDoc />
+			<ProseMirrorDoc spellCheck={false} />
 		</ProseMirrorEditor>
 	);
 }

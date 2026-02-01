@@ -400,15 +400,15 @@ export const docPlugins = [
 // NODE VIEWS //
 ////////////////
 
-export const baseNodeViews = {
-	...codeComponent.nodeViews
-} as Record<string, NodeViewConstructor>;
+export const baseNodeViews = {} as Record<string, NodeViewConstructor>;
 
 export const docNodeViews = {
 	...baseNodeViews
 } as Record<string, NodeViewConstructor>;
 
-export const baseReactNodeViews = {} as ReactNodeViewMap;
+export const baseReactNodeViews = {
+	...codeComponent.reactNodeViews
+} as ReactNodeViewMap;
 
 export const docReactNodeViews = {
 	...baseReactNodeViews,

@@ -25,10 +25,8 @@ const defaultState = EditorState.create({
 });
 
 function IrisFileEditor({ tabData }: { tabData: TabData }) {
+	const [state, setState] = useState(defaultState);
 	const stateRef = useRef(defaultState);
-
-	const [defaultEditorState, setDefaultEditorState] =
-		useState<EditorState | null>(null);
 
 	const { onEditorChange, autosave } = useFileEditor({
 		tabData,
@@ -41,7 +39,7 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 				state
 			);
 
-			setDefaultEditorState(prevState);
+			setState(prevState);
 			stateRef.current = prevState;
 		},
 		getFile() {
@@ -53,38 +51,40 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 				doc: Node.fromJSON(docSchema, JSON.parse(contents).data)
 			});
 
-			setDefaultEditorState(newState);
+			setState(newState);
 			stateRef.current = newState;
 		}
 	});
 
 	return (
-		defaultEditorState && (
-			<div className="flex flex-col h-full">
-				<ProseMirrorEditor
-					attributes={{
-						class:
-							'relative outline-hidden max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
-					}}
-					stateRef={stateRef}
-					customNodeViews={docNodeViews}
-					nodeViews={docReactNodeViews}
-					dispatchTransaction={function (tr) {
-						if (tr.docChanged) onEditorChange();
-					}}
-					defaultState={defaultEditorState}
-					handleDOMEvents={{
-						focusout: autosave
-					}}
-				>
-					<MenuBar />
+		<div className="flex flex-col h-full">
+			<ProseMirrorEditor
+				attributes={{
+					class:
+						'relative outline-hidden max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
+				}}
+				customNodeViews={docNodeViews}
+				nodeViews={docReactNodeViews}
+				state={state}
+				dispatchTransaction={function (tr) {
+					setState((prev) => {
+						const newState = prev.apply(tr);
+						stateRef.current = newState;
+						return newState;
+					});
+					if (tr.docChanged) onEditorChange();
+				}}
+				handleDOMEvents={{
+					focusout: autosave
+				}}
+			>
+				<MenuBar />
 
-					<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
-						<ProseMirrorDoc />
-					</div>
-				</ProseMirrorEditor>
-			</div>
-		)
+				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
+					<ProseMirrorDoc spellCheck={false} />
+				</div>
+			</ProseMirrorEditor>
+		</div>
 	);
 }
 

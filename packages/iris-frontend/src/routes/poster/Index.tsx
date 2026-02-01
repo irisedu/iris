@@ -262,8 +262,7 @@ export function Component() {
 						<code className="p-0! group-[.print]:text-[0.7rem]">
 							Because line breaks in Markdown can be misleading:
 							<br />
-							![Iris versicolor flower viewed from
-							above](/iris-flower.webp)
+							![Iris versicolor flower viewed from above](/iris-flower.webp)
 						</code>
 					</pre>
 					<figcaption>

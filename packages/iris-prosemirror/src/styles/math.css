@@ -18,7 +18,7 @@
 	}
 }
 
-.ProseMirror-widget.katex-render {
+.katex-render {
 	@apply hidden before:hidden;
 
 	& > .katex {
@@ -56,7 +56,7 @@
 	}
 }
 
-.ProseMirror-focused .ProseMirror-widget.katex-render.katex-render--focus {
+.ProseMirror-focused .katex-render.katex-render--focus {
 	@apply inline before:inline absolute bg-iris-200/85 p-2 -translate-y-full pointer-events-none;
 
 	/* HACK: Fix bad sizing when the render is incorrectly positioned */

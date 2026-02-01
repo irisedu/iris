@@ -12,70 +12,77 @@ import { Decoration, DecorationSet } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
 import { insertNode } from '../utils';
 import KaTeX from 'katex';
+import { forwardRef } from 'react';
+import {
+	useEditorState,
+	widget,
+	type WidgetViewComponentProps
+} from '@handlewithcare/react-prosemirror';
+import parse from 'html-react-parser';
 
 const pluginKey = new PluginKey('katex');
 
-function getKaTeXDecorations(
-	doc: Node,
-	selection: Selection,
-	preview: boolean
-) {
+function getKaTeXDecorations(doc: Node, preview: boolean) {
 	const decos: Decoration[] = [];
 
-	function render(
-		node: Node,
-		pos: number,
-		focused: boolean,
-		displayMode: boolean
-	) {
-		const elem = document.createElement('span');
-		elem.classList.add('katex-render');
+	function render(node: Node, pos: number, displayMode: boolean) {
+		return forwardRef<HTMLSpanElement, WidgetViewComponentProps>(
+			function KaTeXRender(props, ref) {
+				const state = useEditorState();
+				const focused = displayMode
+					? state.selection.$head.parent === node
+					: node === doc.nodeAt(Math.max(0, state.selection.head - 1)); // ???
 
-		if (!preview && !focused) return elem;
+				let className = 'katex-render';
 
-		if (displayMode) elem.classList.add('katex-render--display');
-		if (preview) elem.classList.add('katex-render--preview');
-		if (focused && !preview) elem.classList.add('katex-render--focus');
+				if (!preview && !focused)
+					return <span ref={ref} className={className} />;
 
-		const $pos = doc.resolve(pos);
-		const { $head } = Selection.near($pos, 1);
-		elem.dataset.pos = $head.pos.toString();
+				if (displayMode) className += ' katex-render--display';
+				if (preview) className += ' katex-render--preview';
+				if (focused && !preview) className += ' katex-render--focus';
 
-		const content = node.textContent.trim();
-		if (!content.length) elem.classList.add('katex-render--empty');
+				const $pos = doc.resolve(pos);
+				const { $head } = Selection.near($pos, 1);
 
-		try {
-			KaTeX.render(content, elem, { displayMode });
-		} catch (err: unknown) {
-			elem.classList.add('katex-render--error');
-			elem.innerHTML = String(err);
-		}
+				const content = node.textContent.trim();
+				if (!content.length) className += ' katex-render--empty';
 
-		return elem;
+				let html = '';
+
+				try {
+					html = KaTeX.renderToString(content, { displayMode });
+				} catch (err: unknown) {
+					className += ' katex-render--error';
+					html = String(err);
+				}
+
+				return (
+					<span ref={ref} className={className} data-pos={$head.pos.toString()}>
+						{parse(html)}
+					</span>
+				);
+			}
+		);
 	}
 
 	doc.descendants((node, pos) => {
 		// Based on https://github.com/benrbray/prosemirror-math/blob/master/lib/math-nodeview.ts
 		// Copyright © 2020-2024 Benjamin R. Bray (MIT)
 
-		const key = (focused: boolean) =>
-			`${node.textContent}_${focused}_${preview}`;
+		const key = `${node.textContent}_${preview}`;
 
 		if (node.type.name === 'math_display') {
-			const focused = selection.$head.parent === node;
-
 			decos.push(
-				Decoration.widget(pos, () => render(node, pos, focused, true), {
-					key: key(focused)
+				widget(pos, render(node, pos, true), {
+					key
 				})
 			);
 		} else if (node.marks.some((m) => m.type.name === 'math_inline')) {
-			const focused = node === doc.nodeAt(Math.max(0, selection.head - 1)); // ???
-
 			decos.push(
-				Decoration.widget(pos, () => render(node, pos, focused, false), {
+				widget(pos, render(node, pos, false), {
 					side: -1,
-					key: key(focused)
+					key
 				})
 			);
 		}
@@ -86,10 +93,10 @@ function getKaTeXDecorations(
 
 const katexPlugin = new Plugin({
 	state: {
-		init(_, { doc, selection }) {
+		init(_, { doc }) {
 			return {
 				preview: false,
-				decorations: getKaTeXDecorations(doc, selection, false)
+				decorations: getKaTeXDecorations(doc, false)
 			};
 		},
 		apply(tr, old) {
@@ -100,7 +107,7 @@ const katexPlugin = new Plugin({
 
 			return {
 				preview,
-				decorations: getKaTeXDecorations(tr.doc, tr.selection, preview)
+				decorations: getKaTeXDecorations(tr.doc, preview)
 			};
 		}
 	},

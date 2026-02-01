@@ -91,6 +91,7 @@
 		"electron": "39.2.7",
 		"electron-builder": "^26.4.0",
 		"electron-vite": "^5.0.0",
+		"html-react-parser": "^5.2.11",
 		"iris-components": "workspace:^",
 		"iris-prosemirror": "workspace:^",
 		"patchouli": "workspace:^",

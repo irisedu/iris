@@ -64,7 +64,15 @@ export function MenuBar() {
 		<TabsContext.Provider
 			value={{ selectedKey: currentTab, onSelectionChange: setCurrentTab }}
 		>
-			<Tabs className="ribbon-tabs ribbon-tabs--bottom flex flex-col">
+			<Tabs className="ribbon-tabs ribbon-tabs--bottom flex flex-col-reverse">
+				<TabList>
+					{tabs.map((tab) => (
+						<Tab id={tab.id} key={tab.id}>
+							{tab.name}
+						</Tab>
+					))}
+				</TabList>
+
 				<div className="flex flex-row items-center gap-6 p-2 overflow-auto no-scrollbar border-b-2 border-iris-200">
 					<div className="flex flex-row gap-2">
 						<CommandButton
@@ -123,14 +131,6 @@ export function MenuBar() {
 						<FigureMenu />
 					</TabPanel>
 				</div>
-
-				<TabList>
-					{tabs.map((tab) => (
-						<Tab id={tab.id} key={tab.id}>
-							{tab.name}
-						</Tab>
-					))}
-				</TabList>
 			</Tabs>
 		</TabsContext.Provider>
 	);

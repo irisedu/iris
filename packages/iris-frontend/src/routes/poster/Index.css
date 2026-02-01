@@ -8,40 +8,35 @@ main {
 	@apply my-4 max-w-[40ch] mx-auto lg:columns-2 lg:gap-8 lg:max-w-[90ch];
 }
 
-header,
-footer {
+header {
 	@apply max-w-[40ch] mx-auto lg:max-w-[90ch];
 }
 
-.references {
-	@apply text-[0.7rem] lg:columns-2 lg:gap-8;
-}
-
-.section,
+section,
 figure {
 	@apply break-inside-avoid-column;
 }
 
-.section {
+section {
 	@apply my-[calc(var(--paragraph-spacing)*1.5)] first:mt-0 last:mb-0;
 }
 
-.section > h2,
-.section > div > h2 {
+section > h2,
+section > div > h2 {
 	@apply font-body mt-0 mb-(--paragraph-spacing) text-[1.2rem] text-center;
 }
 
 ul,
-.section > p {
+section > p {
 	@apply pl-4;
 }
 
 .text-settings h2 {
-	@apply mt-0 mb-1;
+	@apply mt-0 mb-(--paragraph-spacing);
 }
 
 .text-settings > div > div {
-	@apply border-2 border-iris-300 px-3 pt-1 pb-2 shadow-md min-h-58;
+	@apply border-[0.1rem] border-iris-300 px-3 pt-1 pb-2 shadow-md min-h-58;
 }
 
 h2 a {
@@ -54,11 +49,11 @@ figcaption {
 }
 
 .label-figure {
-	@apply relative max-w-[70ch] ml-3 border-2 border-iris-300 shadow-md;
+	@apply relative max-w-[70ch] ml-3 border-[0.1rem] border-iris-300 shadow-md;
 }
 
 .label-figure__label {
-	@apply absolute text-[0.7rem] left-0 -bottom-[2px] -rotate-90 origin-bottom-left bg-iris-300 px-2;
+	@apply absolute text-[0.7rem] left-0 -bottom-[0.1rem] -rotate-90 origin-bottom-left bg-iris-300 px-2;
 }
 
 .bad {
@@ -74,50 +69,89 @@ figcaption {
 }
 
 .print {
-	font-size: 250% !important;
+	font-size: 317% !important;
 
 	body {
 		@apply w-[48in] h-[36in];
 	}
 
-	header,
-	footer {
+	header {
 		@apply max-w-full;
 	}
 
-	.references {
-		@apply columns-4;
+	figcaption {
+		@apply text-[0.65rem];
 	}
 
+	.text-settings > div > div {
+		@apply min-h-0 text-[0.8rem];
+
+		.react-aria-Tab {
+			@apply text-[1rem];
+		}
+	}
+
+	/* .references { */
+	/* 	@apply columns-3; */
+	/* } */
+
 	main {
-		@apply grid w-full max-w-full gap-0 gap-x-6;
-		grid-template-columns: 40ch 1fr 16ch 16ch 1fr 40ch;
-		grid-template-rows: repeat(57, 0.5in);
+		@apply grid w-full max-w-full gap-0 gap-x-6 pl-[1ch] pr-[2ch] hyphens-auto;
+		grid-template-columns: 32ch 1fr 5ch 5ch 1fr 32ch;
+		grid-template-rows: repeat(120, 0.25in);
 		grid-template-areas:
-			'intro look look . . llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
+			'intro look look selectprompt selectprompt llm'
 			'intro look look selectprompt selectprompt llm'
 			'intro look look selectprompt selectprompt llm'
 			'intro look look selectprompt selectprompt llm'
 			'intro look look selectprompt selectprompt llm'
 			'intro .... .... selectprompt selectprompt llm'
+			'intro .... .... selectprompt selectprompt llm'
+			'intro dyslexia dyslexia selectprompt selectprompt llm'
+			'intro dyslexia dyslexia selectprompt selectprompt llm'
+			'intro dyslexia dyslexia selectprompt selectprompt llm'
+			'..... dyslexia dyslexia selectprompt selectprompt llm'
 			'..... dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
+			'background dyslexia dyslexia selectprompt selectprompt llm'
 			'background dyslexia dyslexia ............ ............ llm'
-			'background dyslexia dyslexia . . llm'
-			'background dyslexia dyslexia intextprompt intextprompt ...'
-			'background ........ ........ intextprompt intextprompt eval'
+			'background dyslexia dyslexia ............ ............ llm'
+			'background dyslexia dyslexia intextprompt intextprompt llm'
+			'background dyslexia dyslexia intextprompt intextprompt llm'
+			'background ........ ........ intextprompt intextprompt ...'
+			'background ........ ........ intextprompt intextprompt ...'
+			'background . . intextprompt intextprompt eval'
 			'background jargon jargon intextprompt intextprompt eval'
 			'background jargon jargon intextprompt intextprompt eval'
 			'background jargon jargon intextprompt intextprompt eval'
-			'.......... jargon jargon intextprompt intextprompt eval'
-			'features jargon jargon intextprompt intextprompt eval'
-			'features jargon jargon ............ ............ eval'
-			'features ...... ...... . . eval'
-			'features . . . . eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background jargon jargon intextprompt intextprompt eval'
+			'background ...... ...... ............ ............ eval'
+			'background ...... ...... ............ ............ eval'
+			'background studio studio frontend frontend eval'
+			'background studio studio frontend frontend eval'
+			'background studio studio frontend frontend eval'
+			'background studio studio frontend frontend eval'
+			'.......... studio studio frontend frontend eval'
+			'.......... studio studio frontend frontend eval'
 			'features studio studio frontend frontend eval'
 			'features studio studio frontend frontend eval'
 			'features studio studio frontend frontend eval'
@@ -126,33 +160,69 @@ figcaption {
 			'features studio studio frontend frontend eval'
 			'features studio studio frontend frontend eval'
 			'features studio studio frontend frontend ....'
+			'features studio studio frontend frontend ....'
 			'features studio studio frontend frontend results'
 			'features studio studio frontend frontend results'
 			'features studio studio frontend frontend results'
 			'features studio studio frontend frontend results'
 			'features studio studio frontend frontend results'
-			'........ studio studio frontend frontend results'
-			'settings studio studio frontend frontend results'
-			'settings studio studio frontend frontend results'
-			'settings studio studio frontend frontend .......'
-			'settings studio studio frontend frontend discussion'
-			'settings studio studio frontend frontend discussion'
-			'settings studio studio frontend frontend discussion'
-			'settings ...... ...... ........ ........ discussion'
-			'settings . . ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings diagram diagram ueqs ueqs discussion'
-			'settings ....... ....... ueqs ueqs ..........'
-			'settings . . .... .... .';
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend results'
+			'features studio studio frontend frontend .......'
+			'features studio studio frontend frontend .......'
+			'features studio studio frontend frontend discussion'
+			'features studio studio frontend frontend discussion'
+			'features studio studio frontend frontend discussion'
+			'features studio studio frontend frontend discussion'
+			'features ...... ...... ........ ........ discussion'
+			'features ...... ...... ........ ........ discussion'
+			'........ semantic ueqs ueqs ueqs discussion'
+			'........ semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs discussion'
+			'settings semantic ueqs ueqs ueqs ..........'
+			'settings semantic ueqs ueqs ueqs ..........'
+			'settings semantic ueqs ueqs ueqs .'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings semantic ueqs ueqs ueqs references'
+			'settings . ueqs ueqs ueqs references'
+			'settings . ueqs ueqs ueqs references'
+			'. . ueqs ueqs ueqs references';
 	}
 
-	.section,
+	section,
 	figure {
 		@apply my-0;
 	}

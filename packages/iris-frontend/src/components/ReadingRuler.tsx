@@ -138,6 +138,7 @@ function ReadingRuler() {
 			<canvas
 				ref={canvas}
 				className="fixed top-0 left-0 w-full h-full pointer-events-none z-[2147483647]"
+				aria-hidden="true"
 			></canvas>
 		)
 	);

@@ -43,7 +43,7 @@ function ImageInternal({ src, alt, className }: ImageProps) {
 function Image(props: ImageProps) {
 	return (
 		<DialogTrigger>
-			<Button className="cursor-pointer w-full">
+			<Button className="cursor-pointer w-full" excludeFromTabOrder>
 				<ImageInternal {...props} />
 			</Button>
 			{/* Sizing nightmare: Try to maximize image size based on height */}

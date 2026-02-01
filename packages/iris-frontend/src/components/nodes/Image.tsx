@@ -60,7 +60,7 @@ function Image(props: ImageProps) {
 						<ImageInternal {...props} className="max-h-[90vh] object-contain" />
 					</div>
 					{props.alt && (
-						<p className="text-sm text-center my-3 overflow-y-auto">
+						<p className="text-sm text-center my-3 overflow-y-auto text-[white]">
 							{props.alt}
 						</p>
 					)}

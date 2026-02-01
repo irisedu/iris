@@ -1,6 +1,6 @@
 /* https://react-spectrum.adobe.com/react-aria/Modal.html */
 .react-aria-ModalOverlay {
-	@apply fixed top-0 left-0 w-screen h-screen bg-[black]/80 flex items-center justify-center z-50;
+	@apply fixed top-0 left-0 w-screen h-screen bg-[black]/90 flex items-center justify-center z-50;
 
 	&[data-entering] {
 		animation: modal-fade 150ms;

@@ -21,7 +21,7 @@
 		"express": "^5.2.1",
 		"fs-extra": "^11.3.3",
 		"github-slugger": "^2.0.0",
-		"katex": "^0.16.27",
+		"katex": "^0.16.28",
 		"nunjucks": "^3.2.4",
 		"rehype-minify-attribute-whitespace": "^4.0.1",
 		"rehype-minify-css-style": "^4.0.1",
@@ -36,12 +36,12 @@
 		"unified": "^11.0.5",
 		"utf-8-validate": "^6.0.6",
 		"ws": "^8.19.0",
-		"zod": "^4.3.5"
+		"zod": "^4.3.6"
 	},
 	"devDependencies": {
 		"@types/express": "^5.0.6",
 		"@types/fs-extra": "^11.0.4",
-		"@types/katex": "^0.16.7",
+		"@types/katex": "^0.16.8",
 		"@types/nunjucks": "^3.2.6",
 		"@types/ws": "^8.18.1"
 	}

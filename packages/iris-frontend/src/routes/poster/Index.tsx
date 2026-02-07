@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, ToggleButton } from 'iris-components';
 import StyleProvider from '$components/StyleProvider';
 import TextSettings from '$components/TextSettings';
@@ -16,12 +16,6 @@ import ueqComparison from '$assets/poster/ueq-comparison.png';
 
 import ArrowRight from '~icons/tabler/arrow-right';
 import Pointer from '~icons/tabler/pointer-filled';
-import Edit from '~icons/tabler/pencil';
-import Braces from '~icons/tabler/braces';
-import Right from '~icons/tabler/arrow-badge-right';
-import Accessibility from '~icons/tabler/accessible';
-import Navigate from '~icons/tabler/list-search';
-import Brush from '~icons/tabler/brush';
 
 import './Index.css';
 
@@ -32,19 +26,6 @@ import './Index.css';
 
    Everything else default
 */
-
-function Action({ icon, text }: { icon: ReactElement; text: string }) {
-	return (
-		<div className="flex items-center gap-3">
-			<span className="flex items-center justify-center size-8 group-[.print]:size-5 bg-iris-100 text-iris-950 rounded-full">
-				{icon}
-			</span>
-			<span className="font-bold text-lg group-[.print]:text-[0.8rem]">
-				{text}
-			</span>
-		</div>
-	);
-}
 
 export function Component() {
 	useEffect(() => {
@@ -112,14 +93,11 @@ export function Component() {
 			{/* Body */}
 			<main>
 				<section style={{ gridArea: 'intro' }}>
-					<h2>Introduction</h2>
+					<h2>Introduction & Background</h2>
 					<p>
-						Our project, Iris, is a course content management system focusing on
-						presentation, interactivity, and accessibility improvements.
+						Iris is a course content management system focusing on presentation,
+						interactivity, and accessibility improvements.
 					</p>
-				</section>
-				<section style={{ gridArea: 'background' }}>
-					<h2>Background & Motivation</h2>
 					<ul>
 						<li>
 							Disabled students in higher education continue to report
@@ -139,200 +117,168 @@ export function Component() {
 						</li>
 					</ul>
 				</section>
-				<figure
-					className="label-figure p-2 pt-1"
-					style={{ gridArea: 'look' }}
-					aria-label="Look"
-				>
-					<span className="label-figure__label" aria-hidden="true">
-						Look
-					</span>
-					<p
-						className="bad text-left text-xs mx-auto mt-1! group-[.print]:text-[0.57rem]"
-						role="img"
-						aria-label="A paragraph set in small font; all caps; red color with poor contrast; bold, italic, and underline; and tight line spacing."
+				<section style={{ gridArea: 'problem' }}>
+					<h2>Motivation</h2>
+					<figure
+						className="label-figure p-2 pt-1 group-[.print]:my-2!"
+						aria-label="Look"
 					>
-						<em aria-hidden="true">
-							<strong>
-								<u>
-									This text contains several exaggerated typographical mistakes.
-									Is it difficult for you to read? Can you point any of these
-									mistakes out? How does the appearance of this section compare
-									to the rest of this poster? Systems like Iris can prevent
-									these mistakes through documentation, in-editor errors, and by
-									making them impossible to begin with.
-								</u>
-							</strong>
-						</em>
-					</p>
-				</figure>
-				<figure
-					className="label-figure px-2 py-1"
-					style={{ gridArea: 'dyslexia' }}
-				>
-					<span className="label-figure__label" aria-hidden="true">
-						Dyslexia
-					</span>
-					<p
-						className="text-left text-sm mt-1! group-[.print]:text-[0.7rem]"
-						role="img"
-						aria-label="A paragraph displaying a simulation of dyslexia, with letters shifting around rapidly."
-					>
-						<span id="dyslexia" aria-hidden="true">
-							“But typography can enhance your writing. Typography can create a
-							better first impression. Typography can reinforce your key points.
-							Typography can extend reader attention. When you ignore
-							typography, you’re ignoring an opportunity to improve the
-							effectiveness of your writing.”
+						<span className="label-figure__label" aria-hidden="true">
+							Look
 						</span>
-					</p>
-					<figcaption>
-						An <em>approximation</em> of dyslexia by Victor Widell [2016]. Text
-						by Matthew Butterick [2010]. View animation in interactive poster.
-					</figcaption>
-				</figure>
-				<figure
-					className="label-figure px-2 py-1"
-					style={{ gridArea: 'jargon' }}
-					aria-label="Jargon"
-				>
-					<span className="label-figure__label" aria-hidden="true">
-						Jargon
-					</span>
-					<p className="text-left text-sm mt-1! group-[.print]:text-[0.62rem]">
-						“Each node’s value is calculated by the{' '}
-						<mark className="bg-iris-200 text-black px-0.5">weighted sum</mark>{' '}
-						of the values of the previous layer nodes plus a{' '}
-						<mark className="bg-iris-200 text-black px-0.5">
-							bias followed by an activation
-						</mark>
-						.”
-					</p>
-					<figcaption>
-						Would you understand this if you were new to the topic or a
-						non-native English speaker? Text from a CS2 assignment&nbsp;[5].
-					</figcaption>
-				</figure>
+						<p
+							className="bad text-left text-xs mx-auto mt-1! group-[.print]:text-[0.57rem]"
+							role="img"
+							aria-label="A paragraph set in small font; all caps; red color with poor contrast; bold, italic, and underline; and tight line spacing."
+						>
+							<em aria-hidden="true">
+								<strong>
+									<u>
+										This text contains several exaggerated typographical
+										mistakes. Is it difficult for you to read? Can you point any
+										of these mistakes out? How does the appearance of this
+										section compare to the rest of this poster? Systems like
+										Iris can prevent these mistakes through documentation,
+										in-editor errors, and by making them impossible to begin
+										with.
+									</u>
+								</strong>
+							</em>
+						</p>
+					</figure>
+					<figure
+						className="label-figure px-2 py-1 group-[.print]:my-2!"
+						aria-label="Dyslexia"
+					>
+						<span className="label-figure__label" aria-hidden="true">
+							Dyslexia
+						</span>
+						<p
+							className="text-left text-sm mt-1! group-[.print]:text-[0.7rem]"
+							role="img"
+							aria-label="A paragraph displaying a simulation of dyslexia, with letters shifting around rapidly."
+						>
+							<span id="dyslexia" aria-hidden="true">
+								“But typography can enhance your writing. Typography can create
+								a better first impression. Typography can reinforce your key
+								points. Typography can extend reader attention. When you ignore
+								typography, you’re ignoring an opportunity to improve the
+								effectiveness of your writing.”
+							</span>
+						</p>
+						<figcaption>
+							An <em>approximation</em> of dyslexia by Victor Widell [2016].
+							Text by Matthew Butterick [2010]. View animation in interactive
+							poster.
+						</figcaption>
+					</figure>
+					<figure
+						className="label-figure px-2 py-1 group-[.print]:my-2!"
+						aria-label="Jargon"
+					>
+						<span className="label-figure__label" aria-hidden="true">
+							Jargon
+						</span>
+						<p className="text-left text-sm mt-1! group-[.print]:text-[0.62rem]">
+							“Each node’s value is calculated by the{' '}
+							<mark className="bg-iris-200 text-black px-0.5">
+								weighted sum
+							</mark>{' '}
+							of the values of the previous layer nodes plus a{' '}
+							<mark className="bg-iris-200 text-black px-0.5">
+								bias followed by an activation
+							</mark>
+							.”
+						</p>
+						<figcaption>
+							Would you understand this if you were new to the topic or a
+							non-native English speaker? Text from a CS2 assignment&nbsp;[5].
+						</figcaption>
+					</figure>
+					<figure
+						className="label-figure p-2 group-[.print]:my-2!"
+						style={{ gridArea: 'semantic' }}
+						aria-label="Semantics"
+					>
+						<span className="label-figure__label" aria-hidden="true">
+							Semantics
+						</span>
+						<div
+							role="img"
+							aria-label="Paragraph where an image of an Iris versicolor flower is mistakenly placed inline with the text, causing unnatural line spacing."
+						>
+							<p
+								className="group-[.print]:text-xs text-left my-0!"
+								aria-hidden="true"
+							>
+								It is possible in Markdown to accidentally <br /> do this:{' '}
+								<img
+									src="/page/iris-user-manual/credits/assets/iris-flower.webp"
+									alt="Iris versicolor flower, viewed from above."
+									className="inline w-24"
+								/>
+							</p>
+						</div>
+						<pre className="text-left whitespace-pre-wrap group-[.print]:text-[0.7rem]">
+							<code className="p-0! group-[.print]:text-[0.7rem]">
+								Because line breaks can be misleading:
+								<br />
+								![Iris versicolor flower viewed from above](/iris-flower.webp)
+							</code>
+						</pre>
+						<figcaption>
+							This mistake is impossible in Iris. (The correct Markdown code
+							should have two line breaks.)
+						</figcaption>
+					</figure>
+				</section>
 				<section style={{ gridArea: 'features' }}>
-					<h2>Features</h2>
+					<h2>Base Features</h2>
 					<ul>
-						<li>Follows accessibility, typographic guidelines</li>
 						<li>
-							Authors can create accessible content with minimal effort (e.g.,
-							styling taken care of)
+							Iris follows accessibility/typographic guidelines and universal
+							design principles [6]
 						</li>
-						<li>Follows universal design principles [6]</li>
 						<li>
-							Rigid yet flexible document format, editor
+							Authors can create accessible content with minimal effort:
+							Features are available throughout the platform by default
+						</li>
+						<li>
+							Provides a rigid yet flexible document format and editor
 							<ul>
 								<li>
 									Rigid: Many major mistakes (e.g., bad styling and HTML) are
 									impossible
 								</li>
-								<li>Flexible: New content types added easily</li>
+								<li>Flexible: New rich content types can be added easily</li>
 							</ul>
 						</li>
+						<li>Enforces consistent presentation for all documents</li>
 					</ul>
 				</section>
 				<figure
-					className="label-figure p-2"
-					style={{ gridArea: 'semantic' }}
-					aria-label="Semantics"
+					className="p-1 group-[.print]:my-0! border-[0.1rem] border-iris-300"
+					style={{ gridArea: 'studio' }}
 				>
-					<span className="label-figure__label" aria-hidden="true">
-						Semantics
-					</span>
-					<div
-						role="img"
-						aria-label="Paragraph where an image of an Iris versicolor flower is mistakenly placed inline with the text, causing unnatural line spacing."
-					>
-						<p
-							className="group-[.print]:text-xs text-left my-0!"
-							aria-hidden="true"
-						>
-							It is possible in Markdown to accidentally <br /> do this:{' '}
-							<img
-								src="/page/iris-user-manual/credits/assets/iris-flower.webp"
-								alt="Iris versicolor flower, viewed from above."
-								className="inline w-24"
-							/>
-						</p>
-					</div>
-					<pre className="text-left whitespace-pre-wrap group-[.print]:text-[0.7rem]">
-						<code className="p-0! group-[.print]:text-[0.7rem]">
-							Because line breaks in Markdown can be misleading:
-							<br />
-							![Iris versicolor flower viewed from above](/iris-flower.webp)
-						</code>
-					</pre>
-					<figcaption>
-						This mistake is impossible in Iris. (The correct Markdown code
-						should have two line breaks.)
+					<figcaption className="mt-0! mb-[calc(var(--paragraph-spacing)/2)] text-lg! group-[.print]:text-[0.8rem]! font-bold">
+						Iris Studio: Author/instructor front (editor)
 					</figcaption>
-				</figure>
-				<figure className="p-2 bg-blue-100" style={{ gridArea: 'studio' }}>
-					<div className="flex gap-13 group-[.print]:gap-11 mb-2 overflow-x-auto">
-						<Action
-							icon={
-								<Right className="group-[.print]:size-3" aria-hidden="true" />
-							}
-							text="Migrate"
-						/>
-						<Action
-							icon={
-								<Edit className="group-[.print]:size-3" aria-hidden="true" />
-							}
-							text="Edit"
-						/>
-						<Action
-							icon={
-								<Braces className="group-[.print]:size-3" aria-hidden="true" />
-							}
-							text="Preview"
-						/>
-					</div>
 					<Image
 						src={studio}
 						alt="Screenshot of Iris Studio editing the “Typographical Guidelines” article."
 					/>
-					<figcaption>
-						Author/instructor front: Iris Studio, Iris’s document editor.
-					</figcaption>
 				</figure>
-				<figure className="p-2 bg-red-100" style={{ gridArea: 'frontend' }}>
-					<div className="flex gap-6 mb-2 overflow-x-auto">
-						<Action
-							icon={
-								<Accessibility
-									className="group-[.print]:size-3"
-									aria-hidden="true"
-								/>
-							}
-							text="Access"
-						/>
-						<Action
-							icon={
-								<Navigate
-									className="group-[.print]:size-3"
-									aria-hidden="true"
-								/>
-							}
-							text="Navigate"
-						/>
-						<Action
-							icon={
-								<Brush className="group-[.print]:size-3" aria-hidden="true" />
-							}
-							text="Customize"
-						/>
-					</div>
+				<figure
+					className="p-1 group-[.print]:my-0! border-[0.1rem] border-iris-300"
+					style={{ gridArea: 'frontend' }}
+				>
+					<figcaption className="mt-0! mb-[calc(var(--paragraph-spacing)/2)] text-lg! group-[.print]:text-[0.8rem]! font-bold">
+						Website: Reader/student front
+					</figcaption>
 					<Image
 						src={frontend}
 						alt="Screenshot of the Iris webpage showing the “Typographical Guidelines” article."
 					/>
-					<figcaption>
-						Reader/student front: Iris’s frontend, showing the same document.
-					</figcaption>
 				</figure>
 				{/*
 				<figure className="p-1 w-full" style={{ gridArea: 'diagram' }}>
@@ -349,29 +295,30 @@ export function Component() {
 				>
 					<TextSettings />
 					<ul>
-						<li>
-							Aim to help readers with low vision, dyslexia, etc., allow
-							customization for all users
-						</li>
+						<li>Aim to help readers with low vision, dyslexia, etc.</li>
+						<li>Provide personalized, comfortable experience to all readers</li>
 					</ul>
 				</section>
 				<section style={{ gridArea: 'llm' }}>
-					<h2>LLM-Based Features</h2>
+					<h2>LLM Integration</h2>
 					<ul>
-						<li>Prompts LLM based on text selection</li>
-						<li>For English learners, students new to topic</li>
+						<li>User prompts LLM based on text selection</li>
 						<li>
-							Ethics: Supplement, not replace, course staff
-							<ul>
-								<li>One-click interface acts as a guardrail</li>
-							</ul>
+							Designed for non-native English speakers and students new to the
+							topic
 						</li>
-						<li>Security: No arbitrary prompts</li>
-						<li>Privacy: LLM is hosted on campus</li>
+						<li>
+							Not a replacement for teaching assistants; one-click interface
+							acts as a guardrail
+						</li>
+						<li>
+							No arbitrary prompts: Prompt is fetched/templated by the backend
+						</li>
+						<li>LLM is hosted on campus, ensuring privacy</li>
 					</ul>
 				</section>
 				<figure
-					className="label-figure px-2 py-1"
+					className="label-figure px-2 py-1 group-[.print]:my-0!"
 					style={{ gridArea: 'selectprompt' }}
 					aria-label="Select to Prompt"
 				>
@@ -456,7 +403,7 @@ export function Component() {
 					</div>
 				</figure>
 				<figure
-					className="label-figure px-2 py-1"
+					className="label-figure px-2 py-1 group-[.print]:my-0!"
 					style={{ gridArea: 'intextprompt' }}
 					aria-label="In-Text Prompt"
 				>
@@ -541,7 +488,14 @@ export function Component() {
 					</ul>
 				</section>
 				<section style={{ gridArea: 'results' }}>
-					<h2>Fall 2025 Results</h2>
+					<figure className="p-2 w-full">
+						<Image src={ueqComparison} alt="" />
+						<figcaption>
+							Comparison of pragmatic, hedonic, and overall UEQ-S scores between
+							Iris (left, purple) and Jekyll (right, red).
+						</figcaption>
+					</figure>
+					<h2>Fall 2025 Results & Discussion</h2>
 					<ul>
 						<li>
 							UEQ-S: Statistically significant preference for Iris (<em>N</em> =
@@ -550,32 +504,25 @@ export function Component() {
 						<li>
 							Students with disabilities were underrepresented (0 with dyslexia,
 							colorblindness)
+							<ul>
+								<li>
+									May be due to response bias and/or underrepresentation in
+									course population
+								</li>
+								<li>
+									We plan to conduct research targeted to students with
+									disabilities to address this
+								</li>
+							</ul>
 						</li>
-					</ul>
-				</section>
-				<figure className="p-2 w-full" style={{ gridArea: 'ueqs' }}>
-					<Image src={ueqComparison} alt="" />
-					<figcaption>
-						Comparison of pragmatic, hedonic, and overall UEQ-S scores between
-						Iris (left, blue) and Jekyll (right, red).
-					</figcaption>
-				</figure>
-				<section style={{ gridArea: 'discussion' }}>
-					<h2>Future work</h2>
-					<ul>
-						<li>Improvements to platform</li>
 						<li>Survey will be repeated in current and future quarters</li>
-						<li>
-							We plan to conduct targeted research for students with
-							disabilities
-						</li>
 					</ul>
 				</section>
 				<section style={{ gridArea: 'references' }}>
-					<h2 className="font-normal my-0! text-[0.7rem]! text-left! group-[.print]:text-[0.6rem]!">
+					<h2 className="font-normal my-0! text-[0.7rem]! text-left!">
 						References
 					</h2>
-					<div className="references text-xs group-[.print]:text-[0.4rem]">
+					<div className="references text-xs group-[.print]:text-[0.47rem]">
 						<div className="break-inside-avoid">
 							[1] Sheryl Burgstahler. 2021. What Higher Education Learned About
 							the Accessibility of Online Opportunities During a Pandemic.{' '}
@@ -591,14 +538,12 @@ export function Component() {
 							<a href="https://www.w3.org/TR/WCAG22/">
 								https://www.w3.org/TR/WCAG22/
 							</a>
-							.
 						</div>
 						<div className="break-inside-avoid">
 							[3] Victor Widell. 2016. Dsxyliea. Retrieved April 1, 2025 from{' '}
 							<a href="https://geon.github.io/programming/2016/03/03/dsxyliea">
 								https://geon.github.io/programming/2016/03/03/dsxyliea
 							</a>
-							.
 						</div>
 						<div className="break-inside-avoid">
 							[4] Matthew Butterick. 2010. <em>Practical Typography</em>.
@@ -606,7 +551,6 @@ export function Component() {
 							<a href="https://practicaltypography.com/">
 								https://practicaltypography.com/
 							</a>
-							.
 						</div>
 						<div className="break-inside-avoid">
 							[5] Zackary Glazewski and Diba Mirza. 2024. Lab 7 Tutorial: A

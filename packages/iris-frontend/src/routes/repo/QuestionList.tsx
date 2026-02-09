@@ -314,9 +314,12 @@ export default function QuestionList({ workspaces }: QuestionListParams) {
 										>
 											Edit
 										</Link>
-										<Button className="react-aria-Button p-0 px-1">
+										<a
+											className="react-aria-Button p-0 px-1"
+											href={`/api/repo/workspaces/${workspace}/questions/${q.id}/revs/latest/download`}
+										>
 											Download
-										</Button>
+										</a>
 										<Button
 											className="react-aria-Button p-0 px-1"
 											onPress={() =>

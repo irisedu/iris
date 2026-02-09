@@ -6,7 +6,8 @@ import {
 	getQuestionPreviewArchive,
 	uploadMediaFileFromForm,
 	getMediaFileStream,
-	type QuestionData
+	type QuestionData,
+	getQuestionArchive
 } from './utils.js';
 
 const router = Router();
@@ -408,6 +409,65 @@ router.get(
 );
 
 router.get(
+	'/:wid/questions/:qid/revs/:rev/download',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceGroup(['owner', 'member']),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, qid, rev } = req.params;
+
+		function sendQuestionTex(num: string, contents: string) {
+			res.contentType('tex/x-tex');
+			res.setHeader('Content-Disposition', `attachment; filename=${num}.tex`);
+			res.send(contents);
+		}
+
+		getQuestionRev(wid, qid, rev)
+			.then(async (result) => {
+				if (!result) {
+					const question2 = await db
+						.selectFrom('repo_question')
+						.where('workspace_id', '=', wid)
+						.where('id', '=', qid)
+						.select(['type', 'num'])
+						.executeTakeFirst();
+
+					if (question2) {
+						if (question2.type === 'latex') {
+							sendQuestionTex(question2.num, '');
+						} else {
+							res.sendStatus(500);
+						}
+					} else {
+						res.sendStatus(404);
+					}
+
+					return;
+				}
+
+				const data = result.data as QuestionData;
+				if (data.media && Object.keys(data.media).length) {
+					res.contentType('application/zip');
+					res.setHeader(
+						'Content-Disposition',
+						`attachment; filename=${result.num}.zip`
+					);
+					res.send(await getQuestionArchive(result.type, data));
+				} else {
+					if (result.type === 'latex') {
+						sendQuestionTex(result.num, String(data.code));
+					} else {
+						res.sendStatus(500);
+					}
+				}
+			})
+			.catch(next);
+	}
+);
+
+router.get(
 	'/:wid/questions/:qid/revs/:rev/preview/:type',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceGroup(['owner', 'member']),
@@ -688,8 +748,7 @@ router.get(
 			.then(async (result) => {
 				if (!result) return res.sendStatus(404);
 
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const media = (result.data as any).media;
+				const media = (result.data as QuestionData).media;
 				if (!media) return res.sendStatus(404);
 
 				const hash = media[filename];

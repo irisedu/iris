@@ -159,6 +159,44 @@ async function streamToBuffer(stream: ReadStream): Promise<Buffer> {
 	});
 }
 
+export async function getQuestionArchive(
+	type: string,
+	data: QuestionData
+): Promise<Buffer | null> {
+	const buffers: Buffer[] = [];
+
+	if (type === 'latex') {
+		const archive = archiver('zip');
+
+		await new Promise((res, rej) => {
+			archive.on('data', (data) => {
+				buffers.push(data);
+			});
+			archive.on('end', res);
+			archive.on('error', rej);
+
+			if (type === 'latex') {
+				archive.append(String(data.code), { name: 'question.tex' });
+			}
+
+			(async function () {
+				if (data.media) {
+					for (const [filename, hash] of Object.entries(data.media)) {
+						const strm = await getMediaFileStream(hash);
+						if (!strm) continue; // TODO
+
+						archive.append(await streamToBuffer(strm), { name: filename });
+					}
+				}
+
+				archive.finalize();
+			})();
+		});
+	}
+
+	return Buffer.concat(buffers);
+}
+
 export async function getQuestionPreviewArchive(
 	type: string,
 	data: QuestionData,

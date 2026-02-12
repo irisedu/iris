@@ -11,7 +11,9 @@ import {
 	Button,
 	Checkbox,
 	CheckboxGroup,
+	Dropdown,
 	Input,
+	ListBoxItem,
 	TextField
 } from 'iris-components';
 import { useMediaQuery } from 'react-responsive';
@@ -55,7 +57,8 @@ export function Component() {
 	const { workspaces, questionData } = useLoaderData();
 	const revalidator = useRevalidator();
 
-	const tags = workspaces.find((w: { id: string }) => w.id === wid)?.tags;
+	const workspace = workspaces.find((w: { id: string }) => w.id === wid);
+	const tags = workspace?.tags;
 
 	const editor = useRef<EditorView | null>(null);
 
@@ -67,6 +70,7 @@ export function Component() {
 	const [newTags, setNewTags] = useState<string[]>(
 		questionData.tags.map((t: { id: string }) => t.id)
 	);
+	const [newPrivilege, setNewPrivilege] = useState(questionData.privilege);
 
 	const previewTimeout = useRef<number>(null);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,7 +107,7 @@ export function Component() {
 	);
 
 	const saveMetadata = useCallback(
-		(comment: string, tags: string[]) => {
+		(comment: string, tags: string[], privilege: number) => {
 			fetchCsrf(`/api/repo/workspaces/${wid}/questions/${qid}`, {
 				body: JSON.stringify({
 					comment,
@@ -113,7 +117,24 @@ export function Component() {
 					'Content-Type': 'application/json'
 				}
 			})
-				.then(() => {
+				.then(async () => {
+					if (
+						workspace.userGroup === 'owner' &&
+						privilege !== questionData.privilege
+					) {
+						await fetchCsrf(
+							`/api/repo/workspaces/${wid}/questions/${qid}/privilege`,
+							{
+								body: JSON.stringify({
+									privilege
+								}),
+								headers: {
+									'Content-Type': 'application/json'
+								}
+							}
+						);
+					}
+
 					revalidator.revalidate();
 				})
 				.catch(() => {
@@ -252,11 +273,27 @@ export function Component() {
 					</>
 				)}
 
-				<dt>Privilege level</dt>
-				<dd>{questionData.privilege}</dd>
+				<dt id="privilegelevel">Privilege level</dt>
+				<dd>
+					{workspace.userGroup !== 'owner' && (
+						<p className="text-sm">
+							The privilege level can only be changed by workspace owners.
+						</p>
+					)}
+					<Dropdown
+						aria-labelledby="privilegelevel"
+						value={newPrivilege}
+						onChange={(key) => setNewPrivilege(key as number)}
+						isDisabled={workspace.userGroup !== 'owner'}
+					>
+						<ListBoxItem id={0}>Member</ListBoxItem>
+						<ListBoxItem id={128}>Privileged Member</ListBoxItem>
+						<ListBoxItem id={32767}>Owner</ListBoxItem>
+					</Dropdown>
+				</dd>
 			</dl>
 
-			<Button onPress={() => saveMetadata(newComment, newTags)}>
+			<Button onPress={() => saveMetadata(newComment, newTags, newPrivilege)}>
 				Save Metadata
 			</Button>
 

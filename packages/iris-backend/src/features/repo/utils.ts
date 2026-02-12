@@ -22,6 +22,7 @@ const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
 
 export type RepoGroup = 'owner' | 'privilegedmember' | 'member';
 
+// Sync with QuestionEdit.tsx
 export const privilegeLevels: Record<RepoGroup, number> = {
 	owner: 32767, // max smallint
 	privilegedmember: 128,
@@ -33,7 +34,7 @@ export interface QuestionData {
 	media?: Record<string, string>;
 }
 
-async function getUserWorkspaceGroup(uid: string, wid: string) {
+export async function getUserWorkspaceGroup(uid: string, wid: string) {
 	return (
 		await db
 			.selectFrom('repo_workspace_group')
@@ -73,6 +74,43 @@ export function requireWorkspaceAccess(minGroup: RepoGroup): RequestHandler {
 			.catch(next);
 	};
 }
+
+export const requireQuestionAccess: RequestHandler = (req, res, next) => {
+	if (req.session.user?.type !== 'registered') {
+		res.sendStatus(401);
+		return;
+	}
+
+	// Required when using this middleware
+	const { wid, qid } = req.params;
+	if (!wid || !qid) {
+		res.sendStatus(500);
+		return;
+	}
+
+	getUserWorkspaceGroup(req.session.user.id, wid)
+		.then(async (group) => {
+			const question = await db
+				.selectFrom('repo_question')
+				.where('workspace_id', '=', wid)
+				.where('id', '=', qid)
+				.select('privilege')
+				.executeTakeFirst();
+
+			if (!question) {
+				res.sendStatus(404);
+				return;
+			}
+
+			if (privilegeLevels[group as RepoGroup] < question.privilege) {
+				res.sendStatus(403);
+				return;
+			}
+
+			next();
+		})
+		.catch(next);
+};
 
 export async function uploadMediaFileFromForm(
 	req: IncomingMessage,

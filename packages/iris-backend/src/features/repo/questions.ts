@@ -3,11 +3,15 @@ import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
 import {
 	requireWorkspaceAccess,
+	requireQuestionAccess,
 	getQuestionPreviewArchive,
 	uploadMediaFileFromForm,
 	getMediaFileStream,
 	type QuestionData,
-	getQuestionArchive
+	getQuestionArchive,
+	getUserWorkspaceGroup,
+	privilegeLevels,
+	type RepoGroup
 } from './utils.js';
 
 const router = Router();
@@ -35,32 +39,35 @@ router.get(
 			tags = tagData;
 		}
 
-		const getQuestionData = tags.length
-			? db
-					.selectFrom('repo_question_tag')
-					.innerJoin(
-						'repo_question',
-						'repo_question_tag.question_id',
-						'repo_question.id'
-					)
-					.where('repo_question.workspace_id', '=', wid)
-					.where('repo_question.deleted', '=', recycle)
-					.where('tag_id', 'in', tags)
-					.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
-					.having((eb) => eb.fn.countAll(), '=', tags.length)
-					.orderBy('num', 'asc')
-					.selectAll('repo_question')
-					.execute()
-			: db
-					.selectFrom('repo_question')
-					.where('workspace_id', '=', wid)
-					.where('deleted', '=', recycle)
-					.orderBy('num', 'asc')
-					.selectAll()
-					.execute();
+		getUserWorkspaceGroup(req.session.user.id, wid)
+			.then(async (group) => {
+				const privilege = privilegeLevels[group as RepoGroup];
+				const questionData = tags.length
+					? await db
+							.selectFrom('repo_question_tag')
+							.innerJoin(
+								'repo_question',
+								'repo_question_tag.question_id',
+								'repo_question.id'
+							)
+							.where('repo_question.workspace_id', '=', wid)
+							.where('repo_question.deleted', '=', recycle)
+							.where('repo_question.privilege', '<=', privilege)
+							.where('tag_id', 'in', tags)
+							.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
+							.having((eb) => eb.fn.countAll(), '=', tags.length)
+							.orderBy('num', 'asc')
+							.selectAll('repo_question')
+							.execute()
+					: await db
+							.selectFrom('repo_question')
+							.where('workspace_id', '=', wid)
+							.where('deleted', '=', recycle)
+							.where('privilege', '<=', privilege)
+							.orderBy('num', 'asc')
+							.selectAll()
+							.execute();
 
-		getQuestionData
-			.then(async (questionData) => {
 				const tasks = [];
 
 				for (const question of questionData) {
@@ -157,6 +164,7 @@ router.post(
 	'/:wid/questions/:qid/recycle',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -180,6 +188,7 @@ router.post(
 	'/:wid/questions/:qid',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -228,9 +237,39 @@ router.post(
 );
 
 router.post(
+	'/:wid/questions/:qid/privilege',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('owner'),
+	requireQuestionAccess,
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, qid } = req.params;
+		const { privilege } = req.body ?? {};
+
+		if (privilege !== undefined && typeof privilege !== 'number') {
+			res.sendStatus(400);
+			return;
+		}
+
+		db.updateTable('repo_question')
+			.set({
+				privilege
+			})
+			.where('workspace_id', '=', wid)
+			.where('id', '=', qid)
+			.execute()
+			.then(() => res.sendStatus(200))
+			.catch(next);
+	}
+);
+
+router.post(
 	'/:wid/questions/:qid/revs/new',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -333,6 +372,7 @@ router.get(
 	'/:wid/questions/:qid/revs/:rev',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -412,6 +452,7 @@ router.get(
 	'/:wid/questions/:qid/revs/:rev/download',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -471,6 +512,7 @@ router.get(
 	'/:wid/questions/:qid/revs/:rev/preview/:type',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -584,6 +626,7 @@ router.post(
 	'/:wid/questions/:qid/editorPreview',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -685,6 +728,7 @@ router.post(
 	'/:wid/questions/:qid/media',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -738,6 +782,7 @@ router.get(
 	'/:wid/questions/:qid/media/:filename',
 	requireAuth({ group: 'repo:users' }),
 	requireWorkspaceAccess('member'),
+	requireQuestionAccess,
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;

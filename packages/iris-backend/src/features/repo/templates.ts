@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import {
-	requireWorkspaceGroup,
+	requireWorkspaceAccess,
 	getMediaFileStream,
 	uploadMediaFileFromForm
 } from './utils.js';
@@ -42,7 +42,7 @@ router.get(
 router.post(
 	'/:wid/templates/new',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -74,7 +74,7 @@ router.post(
 router.post(
 	'/:wid/templates/:tid/upload',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -103,7 +103,7 @@ router.post(
 router.get(
 	'/:wid/templates/:tid/download',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;

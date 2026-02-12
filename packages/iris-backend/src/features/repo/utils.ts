@@ -20,6 +20,14 @@ import type { IncomingMessage } from 'http';
 
 const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
 
+export type RepoGroup = 'owner' | 'privilegedmember' | 'member';
+
+export const privilegeLevels: Record<RepoGroup, number> = {
+	owner: 32767, // max smallint
+	privilegedmember: 128,
+	member: 0
+};
+
 export interface QuestionData {
 	code?: string;
 	media?: Record<string, string>;
@@ -36,7 +44,7 @@ async function getUserWorkspaceGroup(uid: string, wid: string) {
 	)?.group_name;
 }
 
-export function requireWorkspaceGroup(allowedGroups: string[]): RequestHandler {
+export function requireWorkspaceAccess(minGroup: RepoGroup): RequestHandler {
 	return (req, res, next) => {
 		if (req.session.user?.type !== 'registered') {
 			res.sendStatus(401);
@@ -52,7 +60,10 @@ export function requireWorkspaceGroup(allowedGroups: string[]): RequestHandler {
 
 		getUserWorkspaceGroup(req.session.user.id, wid)
 			.then(async (group) => {
-				if (!group || !allowedGroups.includes(group)) {
+				if (
+					!group ||
+					privilegeLevels[group as RepoGroup] < privilegeLevels[minGroup]
+				) {
 					res.sendStatus(403);
 					return;
 				}

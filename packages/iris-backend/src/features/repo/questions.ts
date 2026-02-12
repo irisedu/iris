@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
 import {
-	requireWorkspaceGroup,
+	requireWorkspaceAccess,
 	getQuestionPreviewArchive,
 	uploadMediaFileFromForm,
 	getMediaFileStream,
@@ -15,7 +15,7 @@ const router = Router();
 router.get(
 	'/:wid/questions',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -102,7 +102,7 @@ router.get(
 router.post(
 	'/:wid/questions/new',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -156,7 +156,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid/recycle',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -179,7 +179,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -230,7 +230,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid/revs/new',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -332,7 +332,7 @@ async function getQuestionRev(wid: string, qid: string, rev: string) {
 router.get(
 	'/:wid/questions/:qid/revs/:rev',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -411,7 +411,7 @@ router.get(
 router.get(
 	'/:wid/questions/:qid/revs/:rev/download',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -470,7 +470,7 @@ router.get(
 router.get(
 	'/:wid/questions/:qid/revs/:rev/preview/:type',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -583,7 +583,7 @@ router.get(
 router.post(
 	'/:wid/questions/:qid/editorPreview',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -684,7 +684,7 @@ router.post(
 router.post(
 	'/:wid/questions/:qid/media',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -737,7 +737,7 @@ router.post(
 router.get(
 	'/:wid/questions/:qid/media/:filename',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -774,7 +774,7 @@ router.get(
 router.delete(
 	'/:wid/questions/:qid/media/:filename',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;

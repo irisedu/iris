@@ -105,10 +105,11 @@ Note: Only one group can be assigned to a user.
 
 Groups that can be assigned under `repo_workspace_group`:
 
-| Group    | Grants                                                                  | Privilege level |
-| -------- | ----------------------------------------------------------------------- | --------------- |
-| `owner`  | Ability to manage members. Automatically assigned to workspace creator. | `255`           |
-| `member` | Ability to edit questions.                                              | `0`             |
+| Group              | Grants                                                                  | Privilege level |
+| ------------------ | ----------------------------------------------------------------------- | --------------- |
+| `owner`            | Ability to manage members. Automatically assigned to workspace creator. | `32767`         |
+| `privilegedmember` | Able to see some privileged questions.                                  | `128`           |
+| `member`           | Ability to edit questions.                                              | `0`             |
 
 Privilege levels govern access to privileged worksheets and questions.
 

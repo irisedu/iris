@@ -156,7 +156,7 @@ export function requireAuth({ group }: { group?: string }): RequestHandler {
 					if (group) {
 						next();
 					} else {
-						res.sendStatus(401);
+						res.sendStatus(403);
 					}
 				})
 				.catch(next);

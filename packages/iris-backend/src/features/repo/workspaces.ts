@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../auth/index.js';
 import { db } from '../../db/index.js';
-import { requireWorkspaceGroup } from './utils.js';
+import { requireWorkspaceAccess } from './utils.js';
 
 const router = Router();
 
@@ -133,7 +133,7 @@ router.post(
 router.post(
 	'/:wid/preview-template',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -172,7 +172,7 @@ router.post(
 router.post(
 	'/:wid/members/invite',
 	requireAuth({ group: 'repo:instructors' }),
-	requireWorkspaceGroup(['owner']),
+	requireWorkspaceAccess('owner'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -213,7 +213,7 @@ router.post(
 router.delete(
 	'/:wid/members/:uid',
 	requireAuth({ group: 'repo:instructors' }),
-	requireWorkspaceGroup(['owner']),
+	requireWorkspaceAccess('owner'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -232,7 +232,7 @@ router.delete(
 router.post(
 	'/:wid/members/:uid/group',
 	requireAuth({ group: 'repo:instructors' }),
-	requireWorkspaceGroup(['owner']),
+	requireWorkspaceAccess('owner'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -260,7 +260,7 @@ router.post(
 router.post(
 	'/:wid/tags/new',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;
@@ -295,7 +295,7 @@ router.post(
 router.delete(
 	'/:wid/tags/:tid',
 	requireAuth({ group: 'repo:users' }),
-	requireWorkspaceGroup(['owner', 'member']),
+	requireWorkspaceAccess('member'),
 	(req, res, next) => {
 		// Impossible
 		if (req.session.user?.type !== 'registered') return;

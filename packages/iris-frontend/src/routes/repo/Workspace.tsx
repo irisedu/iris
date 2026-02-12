@@ -225,6 +225,11 @@ export default function Workspace({
 											<Button onPress={() => setMemberGroup(m.id, 'owner')}>
 												Set as Owner
 											</Button>
+											<Button
+												onPress={() => setMemberGroup(m.id, 'privilegedmember')}
+											>
+												Set as Privileged Member
+											</Button>
 											<Button onPress={() => setMemberGroup(m.id, 'member')}>
 												Set as Member
 											</Button>

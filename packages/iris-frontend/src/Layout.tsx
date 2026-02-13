@@ -149,10 +149,10 @@ function Layout({ children }: { children?: ReactNode }) {
 						<span className="font-bold text-xl">Iris</span> •{' '}
 						<AriaLink
 							className="font-sans external"
-							href="https://cs.ucsb.edu/"
+							href="https://embeddedethics.cs.ucsb.edu/"
 							target="_blank"
 						>
-							CS @ UCSB
+							Embedded Ethics Lab @ UCSB
 						</AriaLink>
 					</div>
 					<p className="text-sm text-center my-1">

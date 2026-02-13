@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-	Form,
 	useLoaderData,
 	useParams,
 	useRevalidator,
@@ -8,13 +7,15 @@ import {
 } from 'react-router-dom';
 import useAuthorization from '$hooks/useAuthorization';
 import {
+	Form,
 	Button,
 	Checkbox,
 	CheckboxGroup,
 	Dropdown,
 	Input,
 	ListBoxItem,
-	TextField
+	TextField,
+	Label
 } from 'iris-components';
 import { useMediaQuery } from 'react-responsive';
 import { fetchCsrf } from '../../utils';
@@ -194,6 +195,7 @@ export function Component() {
 			<div className="flex flex-wrap gap-2 items-start">
 				{questionData.type === 'latex' && (
 					<CodeMirror
+						aria-label="Question Code"
 						className="basis-[40%] grow min-w-[60ch]"
 						theme={dark ? githubDark : githubLight}
 						value={questionData.data?.code ?? ''}
@@ -315,7 +317,7 @@ export function Component() {
 					});
 				}}
 			>
-				<Input name="file" type="file" required />
+				<Input name="file" type="file" aria-label="Media File" required />
 				<Button type="submit">Upload File</Button>
 			</Form>
 

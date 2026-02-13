@@ -84,7 +84,13 @@ export function Component() {
 					});
 				}}
 			>
-				<Input name="file" type="file" accept={'application/zip'} required />
+				<Input
+					name="file"
+					type="file"
+					accept={'application/zip'}
+					aria-label="Project File"
+					required
+				/>
 				<Button type="submit">Submit</Button>
 			</Form>
 		</>

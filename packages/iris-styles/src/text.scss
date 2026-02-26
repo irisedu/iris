@@ -1,0 +1,113 @@
+:root {
+	--text-padding-left: 0rem;
+	--text-padding-right: 0rem;
+	--parent-padding-left: 0rem;
+	--paragraph-spacing-scale: 1;
+
+	font-family: var(--font-main);
+	hyphens: auto;
+	overflow-wrap: break-word;
+	line-height: var(--leading-normal);
+	color: var(--color-foreground);
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	font-variant-ligatures: common-ligatures discretionary-ligatures;
+	font-feature-settings:
+		'kern' on,
+		'liga' on,
+		'calt' on,
+		'dlig' off,
+		'hlig' off,
+		'swsh' off,
+		'salt' off;
+}
+
+.article-container {
+	container-type: inline-size;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-heading);
+	hyphens: none;
+	margin-block-end: 1rem;
+}
+
+h1 {
+	font-family: var(--font-title);
+	font-size: 1.55rem;
+	margin-block-start: 3.5rem;
+}
+
+h1:first-child {
+	margin-block-start: 0;
+}
+
+h2 {
+	font-size: 1.4rem;
+	margin-block-start: 3.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-block-start: 3.5rem;
+}
+
+h4 {
+	font-size: 1.1rem;
+	margin-block-start: 3rem;
+}
+
+h5 {
+	font-size: 1rem;
+	margin-block-start: 3rem;
+}
+
+h6 {
+	font-size: 1rem;
+	font-weight: normal;
+	margin-block-start: 3rem;
+}
+
+p {
+	margin-block: calc(var(--paragraph-spacing) * var(--paragraph-spacing-scale));
+}
+
+:not(li) > p:first-child {
+	margin-block-start: 0;
+}
+
+:not(li) > p:last-child {
+	margin-block-end: 0;
+}
+
+blockquote {
+	--paragraph-spacing-scale: 0.75;
+	font-size: 0.9rem;
+	line-height: var(--leading-snug);
+
+	--text-padding-left: calc(
+		var(--callout-margin) + var(--callout-padding-x) +
+			var(--callout-border-width)
+	);
+	--text-padding-right: var(--text-padding-left);
+	--parent-padding-left: var(--text-padding-left);
+
+	margin: calc(var(--paragraph-spacing) * var(--paragraph-spacing-scale)) 0;
+	margin-left: var(--callout-margin);
+	padding: var(--callout-padding-y) var(--callout-padding-x);
+	padding-right: 0;
+	border-left: var(--callout-border-width) solid var(--color-blockquote-border);
+}
+
+code {
+	margin: 0 0.1rem;
+	font-family: var(--font-mono);
+	hyphens: none;
+	color: var(--color-inline-code);
+}

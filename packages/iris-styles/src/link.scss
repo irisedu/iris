@@ -1,0 +1,40 @@
+a[href]:not(.react-aria-Button),
+.react-aria-Link {
+	color: var(--color-link-base);
+	text-decoration: underline;
+	text-decoration-thickness: var(--link-underline-thickness);
+	text-underline-offset: var(--link-underline-offset);
+	text-decoration-color: var(--color-link-underline);
+	cursor: pointer;
+
+	&.link-obvious {
+		text-decoration: none;
+	}
+
+	&:hover,
+	&:focus-visible,
+	&[data-hovered],
+	&[data-focus-visible] {
+		color: var(--color-link-hover);
+		text-decoration: underline;
+		text-decoration-thickness: var(--link-underline-thickness);
+		text-underline-offset: var(--link-underline-offset);
+		text-decoration-color: var(--color-link-underline);
+	}
+
+	&:active,
+	&[data-pressed] {
+		color: var(--color-link-active);
+	}
+
+	&::after {
+		color: var(--color-link-indicator);
+	}
+
+	&.external::after,
+	&[href^='http://']::after,
+	&[href^='https://']::after,
+	&[href^='mailto:']::after {
+		content: '\FEFF' var(--link-external-indicator);
+	}
+}

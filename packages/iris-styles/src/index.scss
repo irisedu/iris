@@ -1,0 +1,26 @@
+@use 'main.scss';
+
+@import 'npm:@fontsource/alegreya-sans/latin.css';
+@import 'npm:@fontsource/alegreya-sans/latin-italic.css';
+@import 'npm:@fontsource/source-code-pro/latin.css';
+@import 'npm:@fontsource/source-code-pro/latin-italic.css';
+
+:root {
+	--font-main: Alegreya Sans, Helvetica, sans-serif;
+	--font-mono: Source Code Pro, monospace;
+	font-size: 125%;
+}
+
+body {
+	padding: 4rem;
+}
+
+code {
+	font-size: 0.9rem;
+}
+
+@media (max-width: 64em) {
+	body {
+		padding: 1rem;
+	}
+}

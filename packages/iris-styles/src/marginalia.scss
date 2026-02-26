@@ -1,0 +1,154 @@
+@use 'config' as c;
+
+// Inspired by Tufte CSS
+// https://github.com/edwardtufte/tufte-css
+// Copyright (c) 2014 Dave Liepmann
+// Licensed under the MIT license
+
+// Inspired by Bookish
+// https://github.com/amyjko/bookish
+// Copyright (c) 2020 Amy J. Ko
+// Licensed under the MIT license
+
+.article-body {
+	counter-reset: sidenote-counter;
+}
+
+aside,
+.sidenote {
+	--paragraph-spacing-scale: 0.75;
+	position: relative;
+	font-size: 0.9rem;
+	line-height: var(--leading-snug);
+}
+
+.sidenote-checkbox {
+	position: relative;
+	appearance: none;
+	margin: 0;
+	vertical-align: super;
+	font-family: inherit;
+	font-size: 0.9rem;
+	line-height: 0;
+	outline-offset: 0.4rem;
+}
+
+.sidenote-checkbox::after {
+	content: var(--sidenote-toggle);
+}
+
+.sidenote-checkbox:has(+ .sidenote.sidenote-numbered)::after {
+	counter-increment: sidenote-counter;
+	content: counter(sidenote-counter);
+}
+
+.sidenote.sidenote-numbered::before {
+	font-size: 0.7rem;
+	content: counter(sidenote-counter);
+	vertical-align: super;
+	margin-right: 0.1rem;
+}
+
+// TODO @container queries?
+@media (min-width: c.$marginalia-size-threshold) {
+	:is(.article-body, .article-body :not(aside, th, td)) {
+		& > :is(h1, h2, h3, h4, h5, h6, p, .katex-display),
+		li:not(:has(> :not(span, .sidenote-checkbox, ul, ol))),
+		li > p {
+			width: calc(
+				var(--prose-width) - var(--text-padding-left) - var(
+						--text-padding-right
+					)
+			);
+		}
+	}
+
+	aside,
+	.sidenote {
+		float: right;
+		clear: right;
+		margin-bottom: var(--marginalia-below);
+		width: var(--marginalia-width);
+	}
+
+	aside {
+		// float: right will result in the aside being on the right of
+		// .article-container.
+		// The distance from the right is 100%, minus everything else that takes
+		// up space.
+		margin-right: calc(
+			100% - var(--prose-width) - var(--marginalia-width) - var(
+					--marginalia-left
+				) +
+				var(--text-padding-left)
+		);
+	}
+
+	.sidenote {
+		// float: right will result in the aside being on the right of the
+		// containing paragraph
+		// -1 * var(--marginalia-width) places the sidenote at the edge of the
+		// containing paragraph. Subtract the spacing and padding.
+		margin-right: calc(
+			-1 *
+				var(--marginalia-width) - var(--marginalia-left) - var(
+					--text-padding-right
+				)
+		);
+	}
+
+	.sidenote-checkbox:not(:has(+ .sidenote.sidenote-numbered)) {
+		display: none;
+	}
+
+	.sidenote.sidenote-numbered::before {
+		position: absolute;
+		left: 0;
+		top: -0.2rem;
+		transform: translateX(calc(-100% - 0.1rem));
+	}
+}
+
+@media (max-width: c.$marginalia-size-threshold) {
+	aside,
+	.sidenote {
+		margin-block: var(--paragraph-spacing);
+		margin-left: var(--callout-margin);
+		margin-right: var(--callout-margin);
+		padding: var(--callout-padding-y) var(--callout-padding-x);
+		border-left: var(--callout-border-width) solid
+			var(--color-marginalia-border);
+		background: var(--color-marginalia-bg);
+	}
+
+	.sidenote {
+		display: none;
+	}
+
+	.sidenote-checkbox:checked + .sidenote {
+		display: block;
+		margin: 1rem 1.5rem;
+	}
+
+	.sidenote-checkbox {
+		cursor: pointer;
+	}
+
+	.sidenote-checkbox:checked::before {
+		display: inline-block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		content: '';
+		width: 2rem;
+		height: 2rem;
+		background: var(--color-sidenote-active-bg);
+		z-index: -1;
+		border-radius: 50%;
+	}
+
+	.sidenote-checkbox:checked::after {
+		color: var(--color-sidenote-active-fg);
+	}
+}

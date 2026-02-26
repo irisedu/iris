@@ -1,0 +1,51 @@
+:is(ul, ol) {
+	--list-nesting: 1;
+	--text-padding-left: calc(
+		var(--list-nesting) * var(--list-indent) + var(--parent-padding-left)
+	);
+	padding-left: var(--list-indent);
+
+	// ????????
+	&:is(ul) {
+		list-style-type: disc;
+	}
+	&:is(ol) {
+		list-style-type: decimal;
+	}
+
+	& > li > :is(ul, ol) {
+		--list-nesting: 2;
+		&:is(ul) {
+			list-style-type: circle;
+		}
+		&:is(ol) {
+			list-style-type: lower-alpha;
+		}
+
+		& > li > :is(ul, ol) {
+			--list-nesting: 3;
+			&:is(ul) {
+				list-style-type: square;
+			}
+			&:is(ol) {
+				list-style-type: lower-roman;
+			}
+
+			& > li > :is(ul, ol) {
+				--list-nesting: 4;
+				& > li > :is(ul, ol) {
+					--list-nesting: 5;
+					& > li > :is(ul, ol) {
+						--list-nesting: 6;
+						& > li > :is(ul, ol) {
+							--list-nesting: 7;
+							& > li > :is(ul, ol) {
+								--list-nesting: 8;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

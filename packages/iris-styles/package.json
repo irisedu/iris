@@ -1,0 +1,18 @@
+{
+	"name": "iris-styles",
+	"description": "Accessible, configurable stylesheets for publishing web content.",
+	"type": "module",
+	"exports": {
+		".": "./out/main.css"
+	},
+	"scripts": {
+		"dev": "parcel src/index.html",
+		"build": "parcel build src/main.scss --dist-dir out --no-source-maps",
+		"prepare": "parcel build src/main.scss --dist-dir out --no-source-maps"
+	},
+	"devDependencies": {
+		"@fontsource/alegreya-sans": "^5.2.8",
+		"@fontsource/source-code-pro": "^5.2.7",
+		"parcel": "^2.16.4"
+	}
+}

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Iris Stylesheets</title>
+		<link rel="stylesheet" href="./index.scss" />
+	</head>
+	<body>
+		<main class="article-container">
+			<article>
+				<div class="article-body">
+					<h1>Iris Stylesheets</h1>
+					<p>
+						Accessible, configurable stylesheets for publishing web content.
+					</p>
+
+					<h2>Article HTML layout</h2>
+					<p>
+						The main body of the article should be enclosed by an element with
+						<code>article-body</code> class. The
+						<code>article-body</code> should be enclosed by an element with
+						<code>article-container</code> class. This allows styles to be
+						scoped to the actual contents and for sidenote and aside
+						placement/sizing to work.
+					</p>
+
+					<h2>Text components</h2>
+
+					<h3>Headings</h3>
+					<p>
+						Headings are useful for semantically organizing sections of a
+						document. You should use them in favor of large or bold text that
+						carries no semantic meaning. Headings have levels that indicate a
+						parent–child relationship between sections. Except heading level 1
+						(the title), a heading of level <em>n</em> should be under by a
+						heading of level <em>n</em> − 1; do not skip levels. To avoid
+						confusion, you should avoid using heading levels greater than 3 or
+						4.<input
+							type="checkbox"
+							class="sidenote-checkbox"
+							aria-label="Show sidenote"
+						/><span class="sidenote sidenote-numbered"
+							><a
+								class="external"
+								href="https://practicaltypography.com/headings.html"
+								><em>Practical Typography</em>: Headings</a
+							></span
+						>
+					</p>
+
+					<h4>Heading level 4</h4>
+					<p>Spacing is a good way of making headings stand out.</p>
+
+					<h5>Heading level 5</h5>
+					<p>
+						If you’re using heading level 5, your text may be hard to follow!
+					</p>
+
+					<h6>Heading level 6</h6>
+					<p>
+						If you’re using heading level 6, your text may be hard to follow!
+					</p>
+
+					<h3>Links</h3>
+					<p>
+						<a href="#">Links</a> are distinguished by underline for
+						accessibility.
+					</p>
+					<p>
+						A
+						<a class="external" href="https://eff.org/"
+							>link to another website</a
+						>
+						that is annotated with the <code>external</code> class or has a URL
+						beginning with <code>http://</code>, <code>https://</code>, or
+						<code>mailto:</code> will have a different indicator.
+					</p>
+
+					<h3>Asides and sidenotes</h3>
+					<p>
+						Asides and sidenotes both appear in the right margin of the page.
+						However, they are different!
+					</p>
+					<aside>
+						<p>
+							This is an aside. It uses the HTML <code>aside</code> element.
+						</p>
+						<p>
+							Asides can contain block content, such as figures, lists, and
+							entire paragraphs.
+						</p>
+					</aside>
+					<p>
+						Asides can contain block content and are placed next to block-level
+						elements (i.e., you cannot align an aside with a specific line in a
+						paragraph). In the event that the screen size is too small, they
+						move into the main content flow, <em>above</em> the content they are
+						ordinarily placed next to.
+					</p>
+					<p>
+						In contrast, sidenotes can only contain inline content and are
+						placed inline with the text they refer to.<input
+							type="checkbox"
+							class="sidenote-checkbox"
+							aria-label="Show sidenote"
+						/><span class="sidenote sidenote-numbered"
+							>This is an example of a sidenote. Notice how, with a wide enough
+							screen, it’s vertically aligned with its number.</span
+						>
+						They are a replacement for footnotes, allowing readers to access
+						tangential content without scrolling to the bottom of the page. In
+						the margins, they are aligned with the line that they occur in (as
+						long as another element does not push it down). They can optionally
+						be numbered. In the event that the screen size is too small,
+						sidenotes disappear and must be expanded by clicking on their
+						corresponding indicator/number.
+					</p>
+					<p>
+						Don’t put sidenotes or asides inside of each other. Don’t put
+						sidenotes in tables; use asides or another form of annotation
+						instead.
+					</p>
+
+					<h3>Lists</h3>
+					<p>
+						List items can contain block elements. If they do, enclose all text
+						with <code>p</code> tags for consistent loose spacing. If all list
+						items are inline, then you can omit <code>p</code> around text for
+						compact spacing.
+					</p>
+					<ul>
+						<li>
+							Item<input
+								type="checkbox"
+								class="sidenote-checkbox"
+								aria-label="Show sidenote"
+							/><span class="sidenote"
+								>Sidenote for unordered list level 1</span
+							>
+							<ul>
+								<li>
+									Item<input
+										type="checkbox"
+										class="sidenote-checkbox"
+										aria-label="Show sidenote"
+									/><span class="sidenote"
+										>Sidenote for unordered list level 2</span
+									>
+									<ul>
+										<li>
+											Item<input
+												type="checkbox"
+												class="sidenote-checkbox"
+												aria-label="Show sidenote"
+											/><span class="sidenote"
+												>Sidenote for unordered list level 3</span
+											>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>Item</li>
+						<li>Item</li>
+						<li>Item</li>
+					</ul>
+					<ol>
+						<li>
+							<aside>
+								<p>Asides are placed correctly inside lists.</p>
+							</aside>
+							<p>
+								Block item<input
+									type="checkbox"
+									class="sidenote-checkbox"
+									aria-label="Show sidenote"
+								/><span class="sidenote"
+									>Sidenote for ordered list level 1</span
+								>
+							</p>
+							<ol>
+								<li>
+									<p>
+										Block item<input
+											type="checkbox"
+											class="sidenote-checkbox"
+											aria-label="Show sidenote"
+										/><span class="sidenote"
+											>Sidenote for ordered list level 2</span
+										>
+									</p>
+									<ol>
+										<li>
+											<p>
+												Block item<input
+													type="checkbox"
+													class="sidenote-checkbox"
+													aria-label="Show sidenote"
+												/><span class="sidenote"
+													>Sidenote for ordered list level 3</span
+												>
+											</p>
+										</li>
+									</ol>
+								</li>
+							</ol>
+						</li>
+						<li><p>Block item</p></li>
+						<li><p>Block item</p></li>
+						<li><p>Block item</p></li>
+					</ol>
+					<blockquote>
+						<ul>
+							<li>
+								Item<input
+									type="checkbox"
+									class="sidenote-checkbox"
+									aria-label="Show sidenote"
+								/><span class="sidenote"
+									>You can put a sidenote in a list in a block quote!</span
+								>
+							</li>
+						</ul>
+					</blockquote>
+
+					<h3>Block quotes</h3>
+					<blockquote>
+						<p>
+							Block quotes are good for including text from another author.
+							<a
+								class="external"
+								href="https://practicaltypography.com/block-quotations.html"
+								>Use block quotes wisely.</a
+							><input
+								type="checkbox"
+								class="sidenote-checkbox"
+								aria-label="Show sidenote"
+							/><span class="sidenote">Sidenote for block quote</span>
+						</p>
+					</blockquote>
+
+					<p>Don’t put block quotes inside other callout-style elements.</p>
+				</div>
+			</article>
+		</main>
+	</body>
+</html>

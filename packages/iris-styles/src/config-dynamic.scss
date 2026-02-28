@@ -39,10 +39,11 @@
 	// Marginalia: Asides and sidenotes
 	--prose-width: 60cqw;
 	--marginalia-width: 33cqw;
-	--marginalia-below: calc(var(--paragraph-spacing) * 1.75);
+	--marginalia-below: calc(var(--paragraph-spacing) * 2);
 	--marginalia-left: 3rem;
 
-	--color-marginalia-border: #333333;
+	--color-marginalia-border-left: #333333;
+	--color-marginalia-above: #e0e0e0;
 	--color-marginalia-bg: #f0f0f0;
 
 	--color-sidenote-active-bg: rgba(255, 0, 0, 30%);

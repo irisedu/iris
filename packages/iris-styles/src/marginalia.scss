@@ -10,6 +10,10 @@
 // Copyright (c) 2020 Amy J. Ko
 // Licensed under the MIT license
 
+// Inspired by sidenotes.js
+// Copyright (c) 2019 Said Achmiz
+// Licensed under the MIT license
+
 .article-body {
 	counter-reset: sidenote-counter;
 }
@@ -72,6 +76,8 @@ aside,
 	}
 
 	aside {
+		border-top: 0.25rem double var(--color-marginalia-above);
+		padding-top: 0.2rem;
 		// float: right will result in the aside being on the right of
 		// .article-container.
 		// The distance from the right is 100%, minus everything else that takes
@@ -85,6 +91,8 @@ aside,
 	}
 
 	.sidenote {
+		border-top: 0.1rem solid var(--color-marginalia-above);
+		padding-top: 0.2rem;
 		// float: right will result in the aside being on the right of the
 		// containing paragraph
 		// -1 * var(--marginalia-width) places the sidenote at the edge of the
@@ -102,10 +110,13 @@ aside,
 	}
 
 	.sidenote.sidenote-numbered::before {
+		border: 0.08rem solid var(--color-marginalia-above);
+		font-size: 1.2rem;
+		line-height: 1.2rem;
+		padding: 0 0.3rem;
 		position: absolute;
 		left: 0;
-		top: -0.2rem;
-		transform: translateX(calc(-100% - 0.1rem));
+		top: -1.75rem;
 	}
 }
 
@@ -117,7 +128,7 @@ aside,
 		margin-right: var(--callout-margin);
 		padding: var(--callout-padding-y) var(--callout-padding-x);
 		border-left: var(--callout-border-width) solid
-			var(--color-marginalia-border);
+			var(--color-marginalia-border-left);
 		background: var(--color-marginalia-bg);
 	}
 

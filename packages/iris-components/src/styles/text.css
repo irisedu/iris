@@ -1,55 +1,14 @@
 :root {
-	@apply font-body hyphens-auto break-words leading-[1.375];
-
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	font-variant-ligatures: common-ligatures discretionary-ligatures;
-	font-feature-settings:
-		'kern' on,
-		'liga' on,
-		'calt' on,
-		'dlig' off,
-		'hlig' off,
-		'swsh' off,
-		'salt' off;
-
 	font-size: 125%;
 }
 
 h1,
 h2,
 h3,
-h4 {
-	@apply hyphens-none;
-}
-
-h1 {
-	@apply text-2xl font-bold mb-3 mt-7;
-}
-
-h2 {
-	@apply text-xl font-bold mb-3 mt-7;
-}
-
-h3 {
-	@apply text-lg font-bold mb-2.5 mt-6;
-}
-
-h4 {
-	@apply font-bold mb-2.5 mt-6;
-}
-
-h5,
-h6 {
-	@apply font-bold after:font-bold after:font-sans after:text-red-600 after:ml-3 after:content-['Don\'t_use_headings_with_depth_>4!'];
-}
-
-p {
-	@apply my-3 first:mt-0 last:mb-0;
-}
-
-blockquote {
-	@apply p-3 my-1 text-iris-900 bg-iris-100 border-l-4 border-iris-900 leading-snug;
+h4,
+h5 {
+	/* Undo Tailwind default */
+	@apply font-bold;
 }
 
 pre code {
@@ -57,12 +16,6 @@ pre code {
 	&.hljs {
 		padding: 0.5rem !important;
 	}
-}
-
-p code,
-li code {
-	/* Try to match font sizes */
-	@apply text-sm text-blue-700 hyphens-none;
 }
 
 abbr {

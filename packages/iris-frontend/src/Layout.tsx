@@ -68,12 +68,18 @@ function Layout({ children }: { children?: ReactNode }) {
 				</Link>
 
 				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-8 items-center mx-4 mt-2 grow">
-					{features.includes('serve') && <Link to="/catalog">Catalog</Link>}
+					{features.includes('serve') && (
+						<Link className="link-obvious" to="/catalog">
+							Catalog
+						</Link>
+					)}
 					{user &&
 						user.type === 'registered' &&
 						features.includes('repo') &&
 						user.groups.includes('repo:users') && (
-							<Link to="/repo">Question Repo</Link>
+							<Link className="link-obvious" to="/repo">
+								Question Repo
+							</Link>
 						)}
 				</div>
 
@@ -94,7 +100,10 @@ function Layout({ children }: { children?: ReactNode }) {
 
 				{user && user.type === 'registered' ? (
 					<MenuTrigger>
-						<Button className="react-aria-Link" aria-label="Account menu">
+						<Button
+							className="react-aria-Link link-obvious"
+							aria-label="Account menu"
+						>
 							{user.data.name ?? 'Account'}{' '}
 							<ChevronDown className="inline w-4 h-4" />
 						</Button>
@@ -112,7 +121,9 @@ function Layout({ children }: { children?: ReactNode }) {
 						</Popover>
 					</MenuTrigger>
 				) : (
-					<Link to="/login">Log in</Link>
+					<Link className="link-obvious" to="/login">
+						Log in
+					</Link>
 				)}
 			</nav>
 
@@ -148,7 +159,7 @@ function Layout({ children }: { children?: ReactNode }) {
 					<div>
 						<span className="font-bold text-xl">Iris</span> •{' '}
 						<AriaLink
-							className="font-sans external"
+							className="font-sans"
 							href="https://embeddedethics.cs.ucsb.edu/"
 							target="_blank"
 						>
@@ -156,7 +167,7 @@ function Layout({ children }: { children?: ReactNode }) {
 						</AriaLink>
 					</div>
 					<p className="text-sm text-center my-1">
-						Please report accessibility issues or other complaints by emailing{' '}
+						Please report accessibility issues or other concerns by emailing{' '}
 						<AriaLink
 							href="mailto:wongzhao@ucsb.edu"
 							className="external"
@@ -169,6 +180,7 @@ function Layout({ children }: { children?: ReactNode }) {
 
 					<div className="flex flex-row flex-wrap items-center gap-1">
 						<AriaLink
+							className="after:hidden"
 							href="https://github.com/irisedu/iris"
 							target="_blank"
 							aria-label="GitHub"
@@ -176,6 +188,7 @@ function Layout({ children }: { children?: ReactNode }) {
 							<Git className="w-5 h-5" />
 						</AriaLink>
 						<AriaLink
+							className="after:hidden"
 							href="https://react.dev/"
 							target="_blank"
 							aria-label="React"

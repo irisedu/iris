@@ -25,8 +25,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@layer base {
+	@import 'iris-styles';
+}
+
 @theme {
-	--font-body: Vollkorn;
+	--font-body: var(--font-main);
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
 	--font-mono: Source Code Pro;
@@ -59,6 +63,12 @@
 	--t-iris-200: oklch(0.37 0.013 285.805);
 	--t-iris-100: oklch(0.274 0.006 286.033);
 	--t-iris-50: oklch(0.21 0.006 285.885);
+}
+
+:root {
+	--font-main: Vollkorn;
+
+	--color-inline-code: var(--color-blue-700);
 }
 
 body {

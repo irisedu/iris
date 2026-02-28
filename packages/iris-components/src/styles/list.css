@@ -1,35 +1,3 @@
-ul {
-	@apply list-disc list-outside pl-5 my-3;
-
-	ul {
-		@apply list-circle;
-
-		ul {
-			@apply list-square;
-		}
-	}
-}
-
-ol {
-	@apply list-decimal list-outside pl-5 my-3;
-
-	ol {
-		@apply list-lower-alpha;
-
-		ol {
-			@apply list-lower-roman;
-
-			ol {
-				@apply list-upper-alpha;
-			}
-		}
-	}
-}
-
-li {
-	@apply my-2;
-}
-
 dl {
 	dt {
 		@apply font-bold;
@@ -38,8 +6,4 @@ dl {
 	dd {
 		@apply ml-4;
 	}
-}
-
-li p {
-	@apply mb-0;
 }

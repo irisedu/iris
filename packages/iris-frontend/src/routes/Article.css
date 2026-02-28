@@ -1,6 +1,9 @@
 @reference '../index.css';
 
 article {
+	--prose-width: 68cqw;
+	--marginalia-width: 25cqw;
+
 	/* HEADINGS */
 
 	h1,
@@ -25,7 +28,7 @@ article {
 	}
 
 	.katex-display {
-		@apply w-full overflow-x-scroll overflow-y-hidden p-2;
+		@apply overflow-x-scroll overflow-y-hidden p-2;
 	}
 
 	.katex-display::-webkit-scrollbar {

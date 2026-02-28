@@ -14,8 +14,7 @@ import {
 	Dropdown,
 	Input,
 	ListBoxItem,
-	TextField,
-	Label
+	TextField
 } from 'iris-components';
 import { useMediaQuery } from 'react-responsive';
 import { fetchCsrf } from '../../utils';
@@ -142,7 +141,7 @@ export function Component() {
 					revalidator.revalidate();
 				});
 		},
-		[revalidator, wid, qid]
+		[revalidator, wid, qid, workspace.userGroup, questionData.privilege]
 	);
 
 	const deleteMedia = useCallback(

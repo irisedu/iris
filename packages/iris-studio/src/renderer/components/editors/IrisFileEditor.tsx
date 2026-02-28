@@ -61,7 +61,7 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 			<ProseMirrorEditor
 				attributes={{
 					class:
-						'relative outline-hidden max-w-[70ch] min-h-[1rem] box-content px-8 mr-[20ch]'
+						'article-body relative outline-hidden min-h-[1rem] box-content px-4'
 				}}
 				customNodeViews={docNodeViews}
 				nodeViews={docReactNodeViews}
@@ -81,7 +81,9 @@ function IrisFileEditor({ tabData }: { tabData: TabData }) {
 				<MenuBar />
 
 				<div className="grow w-full overflow-y-scroll bg-iris-100 p-16">
-					<ProseMirrorDoc spellCheck={false} />
+					<div className="article-container">
+						<ProseMirrorDoc spellCheck={false} />
+					</div>
 				</div>
 			</ProseMirrorEditor>
 		</div>

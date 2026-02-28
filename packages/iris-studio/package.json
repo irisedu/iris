@@ -94,6 +94,7 @@
 		"html-react-parser": "^5.2.15",
 		"iris-components": "workspace:^",
 		"iris-prosemirror": "workspace:^",
+		"iris-styles": "workspace:^",
 		"patchouli": "workspace:^",
 		"prosemirror-inputrules": "^1.5.1",
 		"prosemirror-model": "^1.25.4",

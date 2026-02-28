@@ -5,8 +5,6 @@ import { useMediaQuery } from 'react-responsive';
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
 
-import './StyleProvider.css';
-
 import hljsLight from 'highlight.js/styles/github.css?url';
 import hljsDark from 'highlight.js/styles/github-dark.css?url';
 
@@ -58,7 +56,7 @@ function StyleProvider({
 		const style = document.documentElement.style;
 
 		style.fontSize = fontSize + '%';
-		style.setProperty('--font-body', font);
+		style.setProperty('--font-main', font);
 		style.setProperty('--font-smallcaps', settings?.smallcaps ?? font);
 		style.setProperty('--font-sans', settings?.sans ?? font);
 		style.fontSynthesis = settings?.fontSynthesis ?? 'none';

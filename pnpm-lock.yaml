@@ -220,6 +220,9 @@ importers:
       iris-components:
         specifier: workspace:^
         version: link:../iris-components
+      iris-styles:
+        specifier: workspace:^
+        version: link:../iris-styles
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -506,6 +509,9 @@ importers:
       iris-prosemirror:
         specifier: workspace:^
         version: link:../iris-prosemirror
+      iris-styles:
+        specifier: workspace:^
+        version: link:../iris-styles
       patchouli:
         specifier: workspace:^
         version: link:../patchouli

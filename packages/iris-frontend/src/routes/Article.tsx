@@ -52,7 +52,10 @@ function ArticleOutline({
 			{outline.map((heading) => (
 				<Fragment key={heading.id}>
 					<li className="mb-1 text-gray-800">
-						<AriaLink onPress={() => goToAnchor(heading.id)}>
+						<AriaLink
+							className="react-aria-Link link-obvious"
+							onPress={() => goToAnchor(heading.id)}
+						>
 							<IriscInlineContent nodes={heading.content} ctx={articleData} />
 						</AriaLink>
 					</li>
@@ -228,7 +231,7 @@ export function Component() {
 
 	return (
 		<DevContext.Provider value={{ dev }}>
-			<article className="relative flex flex-col lg:flex-row max-lg:gap-4 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
+			<article className="relative flex flex-col lg:flex-row gap-8 mb-8 w-full max-lg:mx-auto max-lg:max-w-[60ch]">
 				{features.includes('llm') && user?.type === 'registered' && !dev && (
 					<SelectionMenu articleData={articleData} />
 				)}
@@ -238,64 +241,71 @@ export function Component() {
 				)}
 
 				<div
-					className="lg:px-8 lg:w-[58%] max-w-[65ch] min-h-72"
+					className="grow min-h-72"
 					data-indexing-boundary={
 						seriesData
 							? `/page/${routePath}.irisc`
 							: `/page/${routePath}/SUMMARY.irisc`
 					}
 				>
-					<h1 className="mt-0 mb-4">
-						<IriscInlineContent
-							nodes={articleData.meta.title ?? []}
-							ctx={articleData}
-						/>
-					</h1>
+					<div className="article-container">
+						<div className="article-body">
+							<h1 className="mt-0 mb-4">
+								<IriscInlineContent
+									nodes={articleData.meta.title ?? []}
+									ctx={articleData}
+								/>
+							</h1>
 
-					<IriscBlockContent nodes={articleData.data} ctx={articleData} />
+							<IriscBlockContent nodes={articleData.data} ctx={articleData} />
 
-					<div className="text-sm mt-5">
-						{articleData.meta.unlinkedPages &&
-							articleData.meta.unlinkedPages.length === 1 && (
-								<>
-									<AriaLink onPress={() => setUnlinkedVisible((vis) => !vis)}>
-										Show {articleData.meta.unlinkedPages[0].children?.length}{' '}
-										unlinked page(s)
-									</AriaLink>
+							<div className="text-sm mt-5">
+								{articleData.meta.unlinkedPages &&
+									articleData.meta.unlinkedPages.length === 1 && (
+										<>
+											<AriaLink
+												onPress={() => setUnlinkedVisible((vis) => !vis)}
+											>
+												Show{' '}
+												{articleData.meta.unlinkedPages[0].children?.length}{' '}
+												unlinked page(s)
+											</AriaLink>
 
-									{unlinkedVisible && (
-										<Summary
-											summary={articleData.meta.unlinkedPages}
-											ctx={articleData}
-										/>
+											{unlinkedVisible && (
+												<Summary
+													summary={articleData.meta.unlinkedPages}
+													ctx={articleData}
+												/>
+											)}
+										</>
 									)}
-								</>
-							)}
+							</div>
+
+							<hr className="my-3 last:mb-0" />
+
+							{articleData.meta.docAttrs?.authors &&
+								articleData.meta.docAttrs.authors.length > 0 && (
+									<p className="text-sm mb-0">
+										By {articleData.meta.docAttrs.authors.join(', ')}
+									</p>
+								)}
+
+							{articleData.meta.docAttrs?.tags &&
+								articleData.meta.docAttrs.tags.length > 0 && (
+									<TagGroup
+										selectionMode="none"
+										className="react-aria-TagGroup my-2"
+									>
+										<Label>Tags:</Label>
+										<TagList>
+											{articleData.meta.docAttrs.tags.map((t, i) => (
+												<Tag key={i}>{t}</Tag>
+											))}
+										</TagList>
+									</TagGroup>
+								)}
+						</div>
 					</div>
-
-					<hr className="my-3 last:mb-0" />
-
-					{articleData.meta.docAttrs?.authors &&
-						articleData.meta.docAttrs.authors.length > 0 && (
-							<p className="text-sm mb-0">
-								By {articleData.meta.docAttrs.authors.join(', ')}
-							</p>
-						)}
-
-					{articleData.meta.docAttrs?.tags &&
-						articleData.meta.docAttrs.tags.length > 0 && (
-							<TagGroup
-								selectionMode="none"
-								className="react-aria-TagGroup my-2"
-							>
-								<Label>Tags:</Label>
-								<TagList>
-									{articleData.meta.docAttrs.tags.map((t, i) => (
-										<Tag key={i}>{t}</Tag>
-									))}
-								</TagList>
-							</TagGroup>
-						)}
 				</div>
 			</article>
 		</DevContext.Provider>

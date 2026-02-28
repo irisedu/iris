@@ -36,8 +36,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@layer base {
+	@import 'iris-styles';
+}
+
 @theme {
-	--font-body: var(--font-body);
+	--font-body: var(--font-main);
 	--font-smallcaps: var(--font-smallcaps);
 	--font-sans: var(--font-sans);
 	--font-mono: Source Code Pro;
@@ -72,9 +76,16 @@
 }
 
 :root {
-	--font-body: Vollkorn;
+	--font-main: Vollkorn;
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
+
+	--color-link-base: var(--t-iris-900);
+	--color-link-hover: var(--t-iris-800);
+	--color-link-active: var(--t-iris-900);
+	--color-link-indicator: var(--t-iris-950);
+
+	--color-inline-code: var(--color-blue-700);
 
 	--color-sat: calc(
 		70% - var(--hue-shift) * 0.333% + var(--hue-shift) * var(--hue-shift) *

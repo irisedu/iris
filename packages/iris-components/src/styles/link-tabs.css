@@ -6,7 +6,7 @@
 	}
 
 	.react-aria-Tab {
-		/* See link.css. */
+		@apply text-iris-900 hover:text-iris-800 hover:underline focus-visible:underline decoration-2 underline-offset-2 cursor-pointer hyphens-none;
 		&[data-selected] {
 			@apply font-bold underline;
 		}

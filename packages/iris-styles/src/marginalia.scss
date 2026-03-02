@@ -57,7 +57,25 @@ aside,
 @media (min-width: c.$marginalia-size-threshold) {
 	:is(.article-body, .article-body :not(aside, th, td)) {
 		& > :is(h1, h2, h3, h4, h5, h6, p, .katex-display),
-		li:not(:has(> :not(span, .sidenote-checkbox, ul, ol))),
+		li:not(
+			:has(
+				> :is(
+					// Relevant block elements, except ul and ol
+					aside,
+					blockquote,
+					div,
+					dl,
+					figure,
+					form,
+					iframe,
+					img,
+					p,
+					pre,
+					table,
+					video
+				)
+			)
+		),
 		li > p {
 			width: calc(
 				var(--prose-width) - var(--text-padding-left) - var(

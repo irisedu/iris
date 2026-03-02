@@ -12,7 +12,7 @@ import {
 } from 'iris-components';
 import { fetchCsrf } from '../../utils';
 
-export default function TemplateList({
+export default function Templates({
 	workspaces,
 	templates,
 	onRevalidate

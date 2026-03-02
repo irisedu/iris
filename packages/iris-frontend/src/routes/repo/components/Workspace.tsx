@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import useAuthorization from '$hooks/useAuthorization';
-import { fetchCsrf } from '../../utils';
+import { fetchCsrf } from '../../../utils';
 import {
 	Button,
 	DeleteDialog,

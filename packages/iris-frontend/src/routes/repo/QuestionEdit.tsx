@@ -18,6 +18,7 @@ import {
 } from 'iris-components';
 import { useMediaQuery } from 'react-responsive';
 import { fetchCsrf } from '../../utils';
+import { QuestionPreview } from './components/QuestionPreview';
 
 import { useSelector } from 'react-redux';
 import { type RootState } from '$state/store';
@@ -26,7 +27,6 @@ import CodeMirror from '@uiw/react-codemirror';
 import { EditorView } from '@codemirror/view';
 import { latex } from 'codemirror-lang-latex';
 import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
-import { QuestionPreview } from './QuestionPreview';
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { wid, qid } = params;

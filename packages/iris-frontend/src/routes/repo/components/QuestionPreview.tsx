@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Dialog, Heading, Modal, Switch } from 'iris-components';
 
 import X from '~icons/tabler/x';
-import { fetchCsrf } from '../../utils';
+import { fetchCsrf } from '../../../utils';
 
 export interface QuestionPreviewProps {
 	wid: string;

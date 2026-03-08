@@ -102,20 +102,22 @@ export default function QuestionList({
 				ref={previewHover}
 				className={`${showPreview ? 'fixed' : 'hidden'} bg-[white] border-[1px] border-[black] top-[1em] bottom-[1em] right-[1em] z-100 min-w-128`}
 			>
-				{previewQuestion.length &&
-					(previewFailed ? (
-						<p className="mx-2 my-0 text-lg text-[black]">
-							Compilation failed. Please see full preview for details.
-						</p>
-					) : (
+				{previewQuestion.length && (
+					<>
 						<img
 							src={`/api/repo/workspaces/${workspace}/questions/${previewQuestion}/revs/latest/preview/svg`}
 							onLoad={() => setPreviewFailed(false)}
 							onError={() => setPreviewFailed(true)}
 							alt="Question preview"
-							className="h-full"
+							className={previewFailed ? 'hidden' : 'h-full'}
 						/>
-					))}
+						{previewFailed && (
+							<p className="mx-2 my-0 text-lg text-[black]">
+								Compilation failed. Please see full preview for details.
+							</p>
+						)}
+					</>
+				)}
 			</div>
 
 			<div className="flex flex-wrap gap-6">

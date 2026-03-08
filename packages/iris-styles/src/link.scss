@@ -31,7 +31,7 @@ a[href]:not(.react-aria-Button),
 		color: var(--color-link-indicator);
 	}
 
-	&.external::after,
+	&.link-external::after,
 	&[href^='http://']::after,
 	&[href^='https://']::after,
 	&[href^='mailto:']::after {

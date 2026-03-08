@@ -1,0 +1,14 @@
+.focus-outline,
+*:not([data-rac]):not(.react-aria-Dialog):not(.no-focus-outline) {
+	&:focus-visible {
+		outline: 0.1rem solid var(--color-focus-outline);
+	}
+}
+
+*[data-rac] {
+	outline: none;
+
+	&[data-focus-visible] {
+		outline: 0.1rem solid var(--color-focus-outline);
+	}
+}

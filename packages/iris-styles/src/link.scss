@@ -38,3 +38,16 @@ a[href]:not(.react-aria-Button),
 		content: '\FEFF' var(--link-external-indicator);
 	}
 }
+
+/* Increase the specificity */
+a.anchor-link.anchor-link {
+	color: var(--color-anchor-link);
+	text-decoration: none;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+		text-decoration-thickness: var(--link-underline-thickness);
+		text-underline-offset: var(--link-underline-offset);
+	}
+}

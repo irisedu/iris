@@ -346,12 +346,17 @@ export function IriscNode({
 
 			const children = (
 				<>
+					{getInlineContent()}{' '}
 					{id && (
-						<a onClick={() => goToAnchor(id)} tabIndex={-1}>
-							<span className="anchor-link"></span>
+						<a
+							onClick={() => goToAnchor(id)}
+							tabIndex={-1}
+							aria-hidden="true"
+							className="anchor-link"
+						>
+							#
 						</a>
 					)}
-					{getInlineContent()}
 				</>
 			);
 

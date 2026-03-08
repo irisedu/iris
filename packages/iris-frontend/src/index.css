@@ -85,6 +85,7 @@
 	--color-link-active: var(--t-iris-900);
 	--color-link-indicator: var(--t-iris-950);
 
+	--color-anchor-link: var(--color-iris-900);
 	--color-inline-code: var(--color-blue-700);
 
 	--color-sat: calc(

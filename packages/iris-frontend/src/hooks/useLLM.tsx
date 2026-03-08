@@ -2,7 +2,6 @@ import { useState, useRef, useCallback } from 'react';
 import { fetchCsrf } from '../utils';
 import { marked } from 'marked';
 import markedKatex from 'marked-katex-extension';
-import parse from 'html-react-parser';
 
 import './useLLM.css';
 
@@ -54,17 +53,16 @@ export default function useLLM() {
 				className={
 					'llm-output' + (outputDone ? '' : ' llm-output--in-progress')
 				}
-			>
-				{parse(
-					marked.parse(
+				dangerouslySetInnerHTML={{
+					__html: marked.parse(
 						output
 							.replaceAll('\\(', '$')
 							.replaceAll('\\)', '$')
 							.replaceAll('\\[', '$$')
 							.replaceAll('\\]', '$$')
 					) as string
-				)}
-			</div>
+				}}
+			></div>
 		) : (
 			<div>Loading…</div>
 		);

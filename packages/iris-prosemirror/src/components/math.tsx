@@ -18,7 +18,6 @@ import {
 	widget,
 	type WidgetViewComponentProps
 } from '@handlewithcare/react-prosemirror';
-import parse from 'html-react-parser';
 
 const pluginKey = new PluginKey('katex');
 
@@ -58,9 +57,12 @@ function getKaTeXDecorations(doc: Node, preview: boolean) {
 				}
 
 				return (
-					<span ref={ref} className={className} data-pos={$head.pos.toString()}>
-						{parse(html)}
-					</span>
+					<span
+						ref={ref}
+						className={className}
+						data-pos={$head.pos.toString()}
+						dangerouslySetInnerHTML={{ __html: html }}
+					></span>
 				);
 			}
 		);

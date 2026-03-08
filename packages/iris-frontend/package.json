@@ -22,7 +22,6 @@
 		"codemirror-lang-latex": "^0.2.0",
 		"deep-equal": "^2.2.3",
 		"highlight.js": "^11.10.0",
-		"html-react-parser": "^5.2.15",
 		"iris-components": "workspace:^",
 		"iris-styles": "workspace:^",
 		"js-cookie": "^3.0.5",

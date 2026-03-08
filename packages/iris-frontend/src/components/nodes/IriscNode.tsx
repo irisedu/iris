@@ -9,7 +9,6 @@ import deepEqual from 'deep-equal';
 import { goToAnchor, Link as AriaLink, Input } from 'iris-components';
 import { Link } from 'react-router-dom';
 import Image from './Image';
-import parse from 'html-react-parser';
 import { NetQuestionComponent } from '$components/QuestionComponent';
 import HintPrompt from '$components/HintPrompt';
 
@@ -50,7 +49,14 @@ function InlineNode({
 			return <br />;
 
 		case 'math_inline':
-			return node.html?.code && <span {...props}>{parse(node.html.code)}</span>;
+			return (
+				node.html?.code && (
+					<span
+						{...props}
+						dangerouslySetInnerHTML={{ __html: node.html.code }}
+					></span>
+				)
+			);
 
 		case 'fill_in_blank': {
 			const id = node.attrs?.id as string;
@@ -533,7 +539,14 @@ export function IriscNode({
 			);
 
 		case 'math_display':
-			return node.html?.code && <div {...props}>{parse(node.html.code)}</div>;
+			return (
+				node.html?.code && (
+					<div
+						{...props}
+						dangerouslySetInnerHTML={{ __html: node.html.code }}
+					></div>
+				)
+			);
 
 		case 'summary':
 			if (!ctx?.meta?.summary) return null;

@@ -1,5 +1,9 @@
-import { useEffect } from 'react';
-import { useRevalidator, useLoaderData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import {
+	useRevalidator,
+	useLoaderData,
+	useSearchParams
+} from 'react-router-dom';
 import useAuthorization from '$hooks/useAuthorization';
 import { Tabs, TabList, Tab, TabPanel } from 'iris-components';
 
@@ -37,6 +41,16 @@ export function Component() {
 
 	const { workspaces, templates } = useLoaderData();
 	const revalidator = useRevalidator();
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	const [currentTab, setCurrentTabInternal] = useState(
+		searchParams.get('tab') ?? 'questions'
+	);
+
+	function setCurrentTab(key: string) {
+		setSearchParams((prev) => ({ ...Object.fromEntries(prev), tab: key }));
+		setCurrentTabInternal(key);
+	}
 
 	useEffect(() => {
 		document.title = 'Question Repo • Iris';
@@ -52,7 +66,11 @@ export function Component() {
 		<>
 			<h1 className="mt-0">Question Repo</h1>
 
-			<Tabs className="link-tabs">
+			<Tabs
+				className="link-tabs"
+				selectedKey={currentTab}
+				onSelectionChange={(key) => setCurrentTab(key as string)}
+			>
 				<TabList>
 					<Tab id="questions">Questions</Tab>
 					<Tab id="worksheets">Worksheets</Tab>

@@ -229,10 +229,10 @@ export default function QuestionList({
 										<Button
 											className="react-aria-Button p-0 px-1"
 											onPress={() =>
-												recycleQuestion(actualWorkspace, q.id, !recycleFilter)
+												recycleQuestion(actualWorkspace, q.id, !q.deleted)
 											}
 										>
-											{recycleFilter ? 'Restore' : 'Delete'}
+											{q.deleted ? 'Restore' : 'Delete'}
 										</Button>
 									</td>
 								</tr>

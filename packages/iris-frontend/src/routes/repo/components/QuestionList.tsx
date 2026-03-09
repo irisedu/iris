@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom';
 import { QuestionPreviewDialog } from './QuestionPreview';
 
 export interface QuestionListParams {
+	currentWorkspace?: string;
 	workspaces: {
 		id: string;
 		name: string;
@@ -33,26 +34,36 @@ export interface QuestionListParams {
 }
 
 export default function QuestionList({
+	currentWorkspace,
 	workspaces,
 	questionsInvalidate,
 	setQuestionsInvalidate
 }: QuestionListParams) {
-	const [workspace, setWorkspaceInternal] = useState('');
+	const [workspace, setWorkspace] = useState('');
 	const [recycleFilter, setRecycleFilter] = useState(false);
 	const [tagFilter, setTagFilter] = useState<string[]>([]);
-	const tags = workspace.length
-		? (workspaces.find((w) => w.id === workspace)?.tags ?? [])
+
+	const actualWorkspace = currentWorkspace ?? workspace;
+
+	const tags = actualWorkspace.length
+		? (workspaces.find((w) => w.id === actualWorkspace)?.tags ?? [])
 		: [];
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [questions, setQuestions] = useState<any[]>([]);
 
-	if (!workspace.length && questions.length) {
+	if (!actualWorkspace.length && questions.length) {
 		setQuestions([]);
 	}
 
+	if (!tagFilter.every((t) => tags.some((tag) => tag.id === t))) {
+		setTagFilter((curr) =>
+			curr.filter((tagId) => tags.some((tagData) => tagData.id === tagId))
+		);
+	}
+
 	useEffect(() => {
-		if (!workspace.length) {
+		if (!actualWorkspace.length) {
 			return;
 		}
 
@@ -61,10 +72,10 @@ export default function QuestionList({
 			params.set('recycle', '1');
 		}
 		tagFilter.forEach((t) => params.append('tags', t));
-		fetch(`/api/repo/workspaces/${workspace}/questions?${params}`)
+		fetch(`/api/repo/workspaces/${actualWorkspace}/questions?${params}`)
 			.then((res) => res.json())
 			.then(setQuestions);
-	}, [questionsInvalidate, workspace, recycleFilter, tagFilter]);
+	}, [questionsInvalidate, actualWorkspace, recycleFilter, tagFilter]);
 
 	function recycleQuestion(workspace: string, qid: string, recycle: boolean) {
 		let route = `/api/repo/workspaces/${workspace}/questions/${qid}/recycle`;
@@ -73,11 +84,6 @@ export default function QuestionList({
 		fetchCsrf(route).then(() => {
 			setQuestionsInvalidate((n) => n + 1);
 		});
-	}
-
-	function setWorkspace(newWorkspace: string) {
-		setWorkspaceInternal(newWorkspace);
-		setTagFilter([]);
 	}
 
 	const [showPreview, setShowPreview] = useState(false);
@@ -92,7 +98,7 @@ export default function QuestionList({
 	return (
 		<div>
 			<QuestionPreviewDialog
-				wid={workspace}
+				wid={actualWorkspace}
 				question={previewDialogQuestion}
 				isOpen={previewDialogOpen}
 				setIsOpen={setPreviewDialogOpen}
@@ -105,7 +111,7 @@ export default function QuestionList({
 				{previewQuestion.length && (
 					<>
 						<img
-							src={`/api/repo/workspaces/${workspace}/questions/${previewQuestion}/revs/latest/preview/svg`}
+							src={`/api/repo/workspaces/${actualWorkspace}/questions/${previewQuestion}/revs/latest/preview/svg`}
 							onLoad={() => setPreviewFailed(false)}
 							onError={() => setPreviewFailed(true)}
 							alt="Question preview"
@@ -124,17 +130,19 @@ export default function QuestionList({
 				<div className="basis-[18%]">
 					<h2 className="m-0!">Filter</h2>
 
-					<Dropdown
-						label="Workspace"
-						value={workspace}
-						onChange={(key) => setWorkspace(key as string)}
-					>
-						{workspaces?.map((w) => (
-							<ListBoxItem key={w.id} id={w.id}>
-								{w.name}
-							</ListBoxItem>
-						))}
-					</Dropdown>
+					{!currentWorkspace && (
+						<Dropdown
+							label="Workspace"
+							value={workspace}
+							onChange={(key) => setWorkspace(key as string)}
+						>
+							{workspaces?.map((w) => (
+								<ListBoxItem key={w.id} id={w.id}>
+									{w.name}
+								</ListBoxItem>
+							))}
+						</Dropdown>
+					)}
 
 					<Switch isSelected={recycleFilter} onChange={setRecycleFilter}>
 						View recycle bin
@@ -208,20 +216,20 @@ export default function QuestionList({
 										</Button>
 										<Link
 											className="react-aria-Button p-0 px-1"
-											to={`/repo/workspaces/${workspace}/questions/${q.id}`}
+											to={`/repo/workspaces/${actualWorkspace}/questions/${q.id}`}
 										>
 											Edit
 										</Link>
 										<a
 											className="react-aria-Button p-0 px-1"
-											href={`/api/repo/workspaces/${workspace}/questions/${q.id}/revs/latest/download`}
+											href={`/api/repo/workspaces/${actualWorkspace}/questions/${q.id}/revs/latest/download`}
 										>
 											Download
 										</a>
 										<Button
 											className="react-aria-Button p-0 px-1"
 											onPress={() =>
-												recycleQuestion(workspace, q.id, !recycleFilter)
+												recycleQuestion(actualWorkspace, q.id, !recycleFilter)
 											}
 										>
 											{recycleFilter ? 'Restore' : 'Delete'}

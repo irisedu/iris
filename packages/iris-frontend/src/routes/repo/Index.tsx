@@ -5,7 +5,14 @@ import {
 	useSearchParams
 } from 'react-router-dom';
 import useAuthorization from '$hooks/useAuthorization';
-import { Tabs, TabList, Tab, TabPanel } from 'iris-components';
+import {
+	Tabs,
+	TabList,
+	Tab,
+	TabPanel,
+	Dropdown,
+	ListBoxItem
+} from 'iris-components';
 
 import store from '$state/store';
 
@@ -52,6 +59,25 @@ export function Component() {
 		setCurrentTabInternal(key);
 	}
 
+	let initialWorkspace = searchParams.get('workspace');
+	if (
+		!initialWorkspace ||
+		!workspaces.some((w: { id: string }) => w.id === initialWorkspace)
+	) {
+		initialWorkspace = workspaces.length ? workspaces[0].id : '';
+	}
+	const [currentWorkspace, setCurrentWorkspaceInternal] = useState<string>(
+		initialWorkspace as string
+	);
+
+	function setCurrentWorkspace(key: string) {
+		setSearchParams((prev) => ({
+			...Object.fromEntries(prev),
+			workspace: key
+		}));
+		setCurrentWorkspaceInternal(key);
+	}
+
 	useEffect(() => {
 		document.title = 'Question Repo • Iris';
 	}, []);
@@ -64,7 +90,20 @@ export function Component() {
 
 	return (
 		<>
-			<h1 className="mt-0">Question Repo</h1>
+			<div className="flex flex-wrap gap-4 items-center">
+				<h1 className="my-0">Question Repo</h1>
+				<Dropdown
+					aria-label="Current Workspace"
+					value={currentWorkspace}
+					onChange={(key) => setCurrentWorkspace(key as string)}
+				>
+					{workspaces?.map((w: { id: string; name: string }) => (
+						<ListBoxItem key={w.id} id={w.id}>
+							{w.name}
+						</ListBoxItem>
+					))}
+				</Dropdown>
+			</div>
 
 			<Tabs
 				className="link-tabs"
@@ -79,14 +118,17 @@ export function Component() {
 				</TabList>
 
 				<TabPanel id="questions">
-					<Questions workspaces={workspaces} />
+					<Questions
+						currentWorkspace={currentWorkspace}
+						workspaces={workspaces}
+					/>
 				</TabPanel>
 
 				<TabPanel id="worksheets">Worksheets</TabPanel>
 
 				<TabPanel id="templates">
 					<Templates
-						workspaces={workspaces}
+						currentWorkspace={currentWorkspace}
 						templates={templates}
 						onRevalidate={() => revalidator.revalidate()}
 					/>

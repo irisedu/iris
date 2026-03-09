@@ -4,11 +4,9 @@ import {
 	Checkbox,
 	CheckboxGroup,
 	Dialog,
-	Dropdown,
 	Heading,
 	Input,
 	Label,
-	ListBoxItem,
 	Modal,
 	TextField
 } from 'iris-components';
@@ -18,15 +16,15 @@ import QuestionList, {
 import { fetchCsrf } from '../../utils';
 
 export default function Questions({
+	currentWorkspace,
 	workspaces
 }: {
+	currentWorkspace: string;
 	workspaces: QuestionListParams['workspaces'];
 }) {
 	const [isCreateOpen, setCreateIsOpen] = useState(false);
-	const [createWorkspace, setCreateWorkspace] = useState('');
-	const createWorkspaceTags = createWorkspace.length
-		? (workspaces.find((w) => w.id === createWorkspace)?.tags ?? [])
-		: [];
+	const currentWorkspaceTags =
+		workspaces.find((w) => w.id === currentWorkspace)?.tags ?? [];
 	const [createTags, setCreateTags] = useState<string[]>([]);
 	const [createComment, setCreateComment] = useState('');
 
@@ -64,22 +62,10 @@ export default function Questions({
 				<Dialog>
 					<Heading slot="title">Create question</Heading>
 
-					<Dropdown
-						label="Workspace"
-						value={createWorkspace}
-						onChange={(key) => setCreateWorkspace(key as string)}
-					>
-						{workspaces?.map((w) => (
-							<ListBoxItem key={w.id} id={w.id}>
-								{w.name}
-							</ListBoxItem>
-						))}
-					</Dropdown>
-
 					<CheckboxGroup value={createTags} onChange={setCreateTags}>
 						<Label>Tags</Label>
 						<div className="flex flex-wrap gap-x-4 text-sm">
-							{createWorkspaceTags.map((t) => (
+							{currentWorkspaceTags.map((t) => (
 								<Checkbox
 									className="react-aria-Checkbox small"
 									key={t.id}
@@ -108,10 +94,10 @@ export default function Questions({
 						<Button
 							autoFocus
 							onPress={() => {
-								if (!createWorkspace.length) return;
+								if (!currentWorkspace.length) return;
 
 								createQuestion(
-									createWorkspace,
+									currentWorkspace,
 									createTags,
 									createComment,
 									'latex'
@@ -137,6 +123,7 @@ export default function Questions({
 			</div>
 
 			<QuestionList
+				currentWorkspace={currentWorkspace}
 				workspaces={workspaces}
 				questionsInvalidate={questionsInvalidate}
 				setQuestionsInvalidate={setQuestionsInvalidate}

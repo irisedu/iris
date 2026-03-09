@@ -47,6 +47,10 @@ const router = createBrowserRouter(
 					path="/repo/workspaces/:wid/questions/:qid"
 					lazy={() => import('./routes/repo/QuestionEdit')}
 				/>
+				<Route
+					path="/repo/workspaces/:wid/worksheets/:wsid"
+					lazy={() => import('./routes/repo/WorksheetEdit')}
+				/>
 			</Route>
 
 			<Route path="/poster" lazy={() => import('./routes/poster/Index')} />

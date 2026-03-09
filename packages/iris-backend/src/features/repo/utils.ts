@@ -112,6 +112,43 @@ export const requireQuestionAccess: RequestHandler = (req, res, next) => {
 		.catch(next);
 };
 
+export const requireWorksheetAccess: RequestHandler = (req, res, next) => {
+	if (req.session.user?.type !== 'registered') {
+		res.sendStatus(401);
+		return;
+	}
+
+	// Required when using this middleware
+	const { wid, wsid } = req.params;
+	if (!wid || !wsid) {
+		res.sendStatus(500);
+		return;
+	}
+
+	getUserWorkspaceGroup(req.session.user.id, wid)
+		.then(async (group) => {
+			const worksheet = await db
+				.selectFrom('repo_worksheet')
+				.where('workspace_id', '=', wid)
+				.where('id', '=', wsid)
+				.select('privilege')
+				.executeTakeFirst();
+
+			if (!worksheet) {
+				res.sendStatus(404);
+				return;
+			}
+
+			if (privilegeLevels[group as RepoGroup] < worksheet.privilege) {
+				res.sendStatus(403);
+				return;
+			}
+
+			next();
+		})
+		.catch(next);
+};
+
 export async function uploadMediaFileFromForm(
 	req: IncomingMessage,
 	validateMime?: (mime: string | null) => boolean

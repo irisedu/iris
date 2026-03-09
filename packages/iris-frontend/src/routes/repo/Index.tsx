@@ -18,6 +18,7 @@ import store from '$state/store';
 
 import Questions from './Questions';
 import Templates from './Templates';
+import Worksheets from './Worksheets';
 import Workspaces from './Workspaces';
 
 export async function loader() {
@@ -124,7 +125,9 @@ export function Component() {
 					/>
 				</TabPanel>
 
-				<TabPanel id="worksheets">Worksheets</TabPanel>
+				<TabPanel id="worksheets">
+					<Worksheets currentWorkspace={currentWorkspace} />
+				</TabPanel>
 
 				<TabPanel id="templates">
 					<Templates

@@ -70,6 +70,25 @@ export default function Templates({
 				</Form>
 			</Modal>
 
+			<div className="flex flex-wrap gap-2 mb-3">
+				<TextField
+					value={createName}
+					onChange={setCreateName}
+					className="react-aria-TextField m-0 max-w-full"
+				>
+					<Input placeholder="Template Name" />
+				</TextField>
+
+				<Button
+					onPress={() => {
+						if (!currentWorkspace.length || !createName.length) return;
+						createTemplate(currentWorkspace, createName);
+					}}
+				>
+					New Template
+				</Button>
+			</div>
+
 			<table className="w-full hyphens-none">
 				<thead>
 					<tr>
@@ -116,24 +135,6 @@ export default function Templates({
 						))}
 				</tbody>
 			</table>
-
-			<hr />
-
-			<TextField value={createName} onChange={setCreateName}>
-				<Input
-					placeholder="Template Name"
-					className="react-aria-Input max-w-full"
-				/>
-			</TextField>
-
-			<Button
-				onPress={() => {
-					if (!currentWorkspace.length || !createName.length) return;
-					createTemplate(currentWorkspace, createName);
-				}}
-			>
-				New Template
-			</Button>
 		</>
 	);
 }

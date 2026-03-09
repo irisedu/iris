@@ -68,6 +68,15 @@ router.get(
 							.selectAll()
 							.execute();
 
+				const creatorIds = [...new Set(questionData.map((q) => q.creator))];
+				const creators = creatorIds.length
+					? await db
+							.selectFrom('user_account')
+							.where('id', 'in', creatorIds)
+							.select(['id', 'name'])
+							.execute()
+					: [];
+
 				const tasks = [];
 
 				for (const question of questionData) {
@@ -84,16 +93,9 @@ router.get(
 								.select(['repo_tag.id', 'repo_tag.name'])
 								.execute();
 
-							const creator = await db
-								.selectFrom('user_account')
-								.where('id', '=', question.creator)
-								.select(['id', 'name'])
-								.executeTakeFirstOrThrow();
-
 							return {
 								...question,
-								creator,
-								created: +question.created,
+								creator: creators.find((c) => c.id === question.creator),
 								tags
 							};
 						})()

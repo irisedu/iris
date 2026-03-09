@@ -51,7 +51,9 @@ export default function Workspaces({
 					>
 						<Input placeholder="Workspace Name" aria-label="Workspace Name" />
 					</TextField>
-					<Button onPress={() => newWorkspace(newWorkspaceName)}>Create</Button>
+					<Button onPress={() => newWorkspace(newWorkspaceName)}>
+						New Workspace
+					</Button>
 				</div>
 			)}
 			<ul className="flex flex-col gap-3 p-0">

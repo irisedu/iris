@@ -132,9 +132,15 @@ export interface RepoWorksheet {
   creator: string;
   id: Generated<string>;
   name: string;
+  num: Generated<Int8>;
   privilege: Generated<number>;
   template_id: string | null;
   workspace_id: string;
+}
+
+export interface RepoWorksheetQuestion {
+  question_id: string;
+  worksheet_id: string;
 }
 
 export interface RepoWorksheetRev {
@@ -200,6 +206,7 @@ export interface DB {
   repo_tag: RepoTag;
   repo_template: RepoTemplate;
   repo_worksheet: RepoWorksheet;
+  repo_worksheet_question: RepoWorksheetQuestion;
   repo_worksheet_rev: RepoWorksheetRev;
   repo_workspace: RepoWorkspace;
   repo_workspace_group: RepoWorkspaceGroup;

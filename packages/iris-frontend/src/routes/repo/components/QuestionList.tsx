@@ -97,12 +97,15 @@ export default function QuestionList({
 
 	return (
 		<div>
-			<QuestionPreviewDialog
-				wid={actualWorkspace}
-				question={previewDialogQuestion}
-				isOpen={previewDialogOpen}
-				setIsOpen={setPreviewDialogOpen}
-			/>
+			{previewDialogQuestion && (
+				<QuestionPreviewDialog
+					wid={actualWorkspace}
+					qid={previewDialogQuestion.id}
+					num={previewDialogQuestion.num}
+					isOpen={previewDialogOpen}
+					setIsOpen={setPreviewDialogOpen}
+				/>
+			)}
 
 			<div
 				ref={previewHover}

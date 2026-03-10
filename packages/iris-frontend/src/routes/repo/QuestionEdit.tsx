@@ -218,7 +218,8 @@ export function Component() {
 				<div className="flex flex-col grow basis-[50%] h-172">
 					<QuestionPreview
 						wid={wid!}
-						question={{ id: qid!, num: questionData.num }}
+						qid={qid!}
+						num={questionData.num}
 						editorContents={previewContents}
 					/>
 				</div>

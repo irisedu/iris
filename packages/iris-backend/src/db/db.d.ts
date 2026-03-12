@@ -134,7 +134,6 @@ export interface RepoWorksheet {
   name: string;
   num: Generated<Int8>;
   privilege: Generated<number>;
-  template_id: string | null;
   workspace_id: string;
 }
 
@@ -148,6 +147,7 @@ export interface RepoWorksheetRev {
   creator: string;
   data: Json | null;
   id: Generated<string>;
+  template_id: string;
   worksheet_id: string;
 }
 

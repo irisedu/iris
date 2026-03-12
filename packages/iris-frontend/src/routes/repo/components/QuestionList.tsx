@@ -1,4 +1,5 @@
 import {
+	type ReactNode,
 	type SetStateAction,
 	useEffect,
 	useRef,
@@ -31,13 +32,17 @@ export interface QuestionListParams {
 	}[];
 	questionsInvalidate: number;
 	setQuestionsInvalidate: Dispatch<SetStateAction<number>>;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getActions?: (q: any) => ReactNode;
 }
 
 export default function QuestionList({
 	currentWorkspace,
 	workspaces,
 	questionsInvalidate,
-	setQuestionsInvalidate
+	setQuestionsInvalidate,
+	getActions
 }: QuestionListParams) {
 	const [workspace, setWorkspace] = useState('');
 	const [recycleFilter, setRecycleFilter] = useState(false);
@@ -208,6 +213,7 @@ export default function QuestionList({
 									<td>{q.creator.name}</td>
 									<td>{q.comment}</td>
 									<td className="flex flex-wrap gap-1">
+										{getActions?.(q)}
 										<Button
 											className="react-aria-Button p-0 px-1"
 											onPress={() => {

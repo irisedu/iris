@@ -1,6 +1,5 @@
 import unzipper from 'unzipper';
 import { type Readable } from 'stream';
-import stream from 'stream/promises';
 import { promises as fs } from 'fs';
 import { execFile as execFileCb } from 'node:child_process';
 import util from 'node:util';
@@ -10,8 +9,11 @@ export async function extractStream(
 	outDir: string
 ): Promise<void> {
 	await fs.mkdir(outDir, { recursive: true });
-	const un = unzipper.Extract({ path: outDir });
-	await stream.pipeline(read, un);
+
+	return new Promise((res, rej) => {
+		const un = unzipper.Extract({ path: outDir });
+		read.pipe(un).on('close', res).on('error', rej);
+	});
 }
 
 export const execFile = util.promisify(execFileCb);

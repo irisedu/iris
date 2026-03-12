@@ -9,9 +9,11 @@ import {
 	Dropdown,
 	Input,
 	ListBoxItem,
-	NumberField
+	NumberField,
+	arrayMoveBy,
+	arrayRemove,
+	arrayUpdate
 } from 'iris-components';
-import { arrayMoveBy, arrayRemove, arrayUpdate } from './arrayUtils';
 
 import IrisQuestionNodeEditor from './IrisQuestionNodeEditor';
 import MultipleChoiceQuestionNodeEditor from './MultipleChoiceQuestionNodeEditor';

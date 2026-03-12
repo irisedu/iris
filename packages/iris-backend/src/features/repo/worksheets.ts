@@ -6,7 +6,9 @@ import {
 	privilegeLevels,
 	type RepoGroup,
 	requireWorksheetAccess,
-	getUserWorkspaceGroup
+	getUserWorkspaceGroup,
+	type WorksheetData,
+	getWorksheetPreviewArchive
 } from './utils.js';
 
 const router = Router();
@@ -35,9 +37,9 @@ router.get(
 						'name',
 						'creator',
 						'created',
-						'template_id',
 						'privilege'
 					])
+					.orderBy('num', 'asc')
 					.execute();
 
 				const creatorIds = [...new Set(worksheets.map((w) => w.creator))];
@@ -104,7 +106,8 @@ async function getWorksheetRev(wid: string, wsid: string, rev: string) {
 					'repo_worksheet.privilege',
 					'repo_worksheet_rev.creator as rev_creator',
 					'repo_worksheet_rev.created as updated',
-					'repo_worksheet_rev.data'
+					'repo_worksheet_rev.data',
+					'repo_worksheet_rev.template_id'
 				])
 				.orderBy('updated', 'desc')
 				.executeTakeFirst()
@@ -127,10 +130,133 @@ async function getWorksheetRev(wid: string, wsid: string, rev: string) {
 					'repo_worksheet.privilege',
 					'repo_worksheet_rev.creator as rev_creator',
 					'repo_worksheet_rev.created as updated',
-					'repo_worksheet_rev.data'
+					'repo_worksheet_rev.data',
+					'repo_worksheet_rev.template_id'
 				])
 				.executeTakeFirst();
 }
+
+router.post(
+	'/:wid/worksheets/:wsid',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('member'),
+	requireWorksheetAccess,
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, wsid } = req.params;
+		const { name } = req.body ?? {};
+
+		if (name !== undefined && typeof name !== 'string') {
+			res.sendStatus(400);
+			return;
+		}
+
+		db.updateTable('repo_worksheet')
+			.set({
+				name
+			})
+			.where('workspace_id', '=', wid)
+			.where('id', '=', wsid)
+			.execute()
+			.then(() => res.sendStatus(200))
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:wid/worksheets/:wsid/privilege',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('owner'),
+	requireWorksheetAccess,
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, wsid } = req.params;
+		const { privilege } = req.body ?? {};
+
+		if (privilege !== undefined && typeof privilege !== 'number') {
+			res.sendStatus(400);
+			return;
+		}
+
+		db.updateTable('repo_worksheet')
+			.set({
+				privilege
+			})
+			.where('workspace_id', '=', wid)
+			.where('id', '=', wsid)
+			.execute()
+			.then(() => res.sendStatus(200))
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:wid/worksheets/:wsid/revs/new',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('member'),
+	requireWorksheetAccess,
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+		const user = req.session.user;
+
+		const { wid, wsid } = req.params;
+		const { data, template_id } = req.body ?? {};
+
+		if (typeof data !== 'object' || typeof template_id !== 'string') {
+			res.sendStatus(400);
+			return;
+		}
+
+		db.selectFrom('repo_worksheet')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', wsid)
+			.executeTakeFirst()
+			.then(async (worksheet) => {
+				if (!worksheet) {
+					res.sendStatus(404);
+					return;
+				}
+
+				await db.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('repo_worksheet_rev')
+						.values({
+							worksheet_id: wsid,
+							creator: user.id,
+							data,
+							template_id
+						})
+						.execute();
+
+					await trx
+						.deleteFrom('repo_worksheet_question')
+						.where('worksheet_id', '=', wsid)
+						.execute();
+
+					const { questions } = data as WorksheetData;
+					const questionIds = [...new Set(questions.map((q) => q.id))];
+
+					for (const id of questionIds) {
+						await trx
+							.insertInto('repo_worksheet_question')
+							.values({
+								worksheet_id: wsid,
+								question_id: id
+							})
+							.execute();
+					}
+				});
+
+				res.sendStatus(200);
+			})
+			.catch(next);
+	}
+);
 
 router.get(
 	'/:wid/worksheets/:wsid/revs/:rev',
@@ -191,11 +317,108 @@ router.get(
 					.select(['id', 'name'])
 					.executeTakeFirstOrThrow();
 
+				const data = result.data as unknown as WorksheetData;
+				const questionIds = [...new Set(data.questions.map((q) => q.id))];
+				const questionData = await db
+					.selectFrom('repo_question')
+					.where('id', 'in', questionIds)
+					.select(['id', 'workspace_id', 'num', 'comment'])
+					.execute();
+
 				res.json({
 					...result,
 					creator,
-					rev_creator: revCreator
+					rev_creator: revCreator,
+					data: {
+						...data,
+						questions: data.questions.map((q1) =>
+							questionData.find((q2) => q1.id === q2.id)
+						)
+					}
 				});
+			})
+			.catch(next);
+	}
+);
+
+router.post(
+	'/:wid/worksheets/:wsid/editorPreview',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('member'),
+	requireWorksheetAccess,
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+		const user = req.session.user;
+
+		const { wid, wsid } = req.params;
+		const showAnswer = req.query.showAnswer === '1';
+
+		getWorksheetRev(wid, wsid, 'latest')
+			.then(async (result) => {
+				if (!result) {
+					res.sendStatus(404);
+					return;
+				}
+
+				// TODO: question access control
+
+				const template = await db
+					.selectFrom('repo_template')
+					.where('id', '=', result.template_id)
+					.select('hash')
+					.executeTakeFirst();
+
+				if (!template || !template.hash) {
+					res.sendStatus(400);
+					return;
+				}
+
+				const jobId = `worksheet-editor-${user.id}-${template.hash}`;
+
+				const archiveData = await getWorksheetPreviewArchive(
+					req.body,
+					template.hash,
+					{
+						'${[SHOW_ANSWER]}': !!showAnswer
+					}
+				);
+
+				if (!archiveData) {
+					// TODO: better error handling
+					res.sendStatus(500);
+					return;
+				}
+
+				const fetchRes = await fetch(
+					`${process.env.LATEXER_URL!}/job/latex/${jobId}/submit?engine=lualatex`,
+					{
+						method: 'POST',
+						body: new Blob([archiveData as BlobPart]),
+						headers: {
+							'Content-Type': 'application/zip'
+						}
+					}
+				);
+
+				if (fetchRes.status !== 200) {
+					res.status(fetchRes.status).json(await fetchRes.json());
+					return;
+				}
+
+				const jobRes = await fetch(
+					`${process.env.LATEXER_URL!}/job/latex/${jobId}/result/pdf`
+				);
+
+				if (jobRes.status === 404) {
+					res.sendStatus(500);
+					return;
+				}
+
+				res.contentType(
+					jobRes.headers.get('Content-Type') ?? 'application/octet-stream'
+				);
+				res.send(Buffer.from(await jobRes.arrayBuffer()));
 			})
 			.catch(next);
 	}

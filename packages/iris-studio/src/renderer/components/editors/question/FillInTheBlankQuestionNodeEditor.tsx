@@ -27,9 +27,11 @@ import {
 	Input,
 	Label,
 	TextField,
-	useDragAndDrop
+	useDragAndDrop,
+	arrayRemove,
+	arrayReorder,
+	arrayUpdate
 } from 'iris-components';
-import { arrayRemove, arrayReorder, arrayUpdate } from './arrayUtils';
 
 import Add from '~icons/tabler/plus';
 import Remove from '~icons/tabler/trash';

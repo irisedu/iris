@@ -259,7 +259,7 @@ export function Component() {
 				<dt>Question type</dt>
 				<dd>{questionData.type}</dd>
 
-				<dt>Question created by</dt>
+				<dt>Initially created by</dt>
 				<dd>
 					{questionData.creator.name} on{' '}
 					{new Date(questionData.created + 'Z').toLocaleString()}

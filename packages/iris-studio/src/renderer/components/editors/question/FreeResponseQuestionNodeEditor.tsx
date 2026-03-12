@@ -9,10 +9,12 @@ import {
 	Switch,
 	TextArea,
 	TextField,
-	useDragAndDrop
+	useDragAndDrop,
+	arrayRemove,
+	arrayReorder,
+	arrayUpdate
 } from 'iris-components';
 import { ProseMirrorField, useCellEditMode } from './components';
-import { arrayRemove, arrayReorder, arrayUpdate } from './arrayUtils';
 
 import Add from '~icons/tabler/plus';
 import Remove from '~icons/tabler/trash';

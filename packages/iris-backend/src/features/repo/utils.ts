@@ -1,5 +1,5 @@
 import { db } from '../../db/index.js';
-import archiver from 'archiver';
+import archiver, { type Archiver } from 'archiver';
 import unzipper from 'unzipper';
 import { type RequestHandler } from 'express';
 import os from 'os';
@@ -22,7 +22,7 @@ const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
 
 export type RepoGroup = 'owner' | 'privilegedmember' | 'member';
 
-// Sync with QuestionEdit.tsx
+// Sync with QuestionEdit.tsx and WorksheetEdit.tsx
 export const privilegeLevels: Record<RepoGroup, number> = {
 	owner: 32767, // max smallint
 	privilegedmember: 128,
@@ -32,6 +32,13 @@ export const privilegeLevels: Record<RepoGroup, number> = {
 export interface QuestionData {
 	code?: string;
 	media?: Record<string, string>;
+}
+
+export interface WorksheetData {
+	questions: {
+		id: string;
+		rev?: string;
+	}[];
 }
 
 export async function getUserWorkspaceGroup(uid: string, wid: string) {
@@ -283,63 +290,159 @@ export async function getQuestionArchive(
 	return Buffer.concat(buffers);
 }
 
+export async function populateTemplate(
+	templateHash: string,
+	replaceFilePath: string,
+	getTemplateReplacements: (
+		archive: Archiver
+	) => Promise<Record<string, unknown>>
+): Promise<Buffer> {
+	const buffers: Buffer[] = [];
+	const archive = archiver('zip');
+
+	await new Promise((res, rej) => {
+		archive.on('data', (data) => {
+			buffers.push(data);
+		});
+		archive.on('end', res);
+		archive.on('error', rej);
+
+		getMediaFileStream(templateHash)
+			.then((st) => st?.pipe(unzipper.Parse({ forceStream: true })))
+			.then(async (zip) => {
+				if (!zip) {
+					rej();
+					return;
+				}
+
+				for await (const entry of zip) {
+					if (entry.path === replaceFilePath) {
+						let contents = (await entry.buffer()).toString('utf-8');
+
+						const replacements = await getTemplateReplacements(archive);
+						for (const [k, v] of Object.entries(replacements)) {
+							contents = contents.replace(k, String(v));
+						}
+
+						archive.append(contents, { name: replaceFilePath });
+					} else {
+						archive.append(await entry.buffer(), { name: entry.path });
+					}
+				}
+
+				archive.finalize();
+			});
+	});
+
+	return Buffer.concat(buffers);
+}
+
+function wrapQuestionContents(code: string) {
+	return `\\begin{samepage}\\par\\nobreak\\vfil\\penalty0\\vfilneg\n${code}\n\\end{samepage}\\filbreak\n`;
+}
+
 export async function getQuestionPreviewArchive(
 	type: string,
 	data: QuestionData,
 	template: string,
 	templateReplacements: Record<string, unknown>
 ): Promise<Buffer | null> {
-	const buffers: Buffer[] = [];
-
 	if (type === 'latex') {
-		const archive = archiver('zip');
+		return populateTemplate(template, 'main.tex', async (archive) => {
+			if (data.media) {
+				for (const [filename, hash] of Object.entries(data.media)) {
+					const strm = await getMediaFileStream(hash);
+					if (!strm) continue; // TODO
 
-		await new Promise((res, rej) => {
-			archive.on('data', (data) => {
-				buffers.push(data);
-			});
-			archive.on('end', res);
-			archive.on('error', rej);
+					archive.append(await streamToBuffer(strm), { name: filename });
+				}
+			}
 
-			getMediaFileStream(template)
-				.then((st) => st?.pipe(unzipper.Parse({ forceStream: true })))
-				.then(async (zip) => {
-					if (!zip) {
-						rej();
-						return;
-					}
-
-					for await (const entry of zip) {
-						if (entry.path === 'main.tex') {
-							const template = (await entry.buffer()).toString('utf-8');
-							let populatedTemplate = template.replace(
-								'${[INCLUDE_CONTENT]}',
-								data.code
-							);
-
-							for (const [k, v] of Object.entries(templateReplacements)) {
-								populatedTemplate = populatedTemplate.replace(k, String(v));
-							}
-
-							archive.append(populatedTemplate, { name: 'main.tex' });
-						} else {
-							archive.append(await entry.buffer(), { name: entry.path });
-						}
-					}
-
-					if (data.media) {
-						for (const [filename, hash] of Object.entries(data.media)) {
-							const strm = await getMediaFileStream(hash);
-							if (!strm) continue; // TODO
-
-							archive.append(await streamToBuffer(strm), { name: filename });
-						}
-					}
-
-					archive.finalize();
-				});
+			return {
+				...templateReplacements,
+				'${[INCLUDE_CONTENT]}': wrapQuestionContents(data.code ?? '')
+			};
 		});
 	}
 
-	return Buffer.concat(buffers);
+	return null;
+}
+
+export async function getWorksheetPreviewArchive(
+	data: WorksheetData,
+	template: string,
+	templateReplacements: Record<string, unknown>
+): Promise<Buffer> {
+	return populateTemplate(template, 'main.tex', async (archive) => {
+		let includeContent = '';
+
+		for (const q of data.questions) {
+			const questionData =
+				q.rev === 'latest' || q.rev === undefined
+					? await db
+							.selectFrom('repo_question')
+							.innerJoin(
+								'repo_question_rev',
+								'repo_question.id',
+								'repo_question_rev.question_id'
+							)
+							.where('repo_question.id', '=', q.id)
+							.select([
+								'repo_question.num',
+								'repo_question.type',
+								'repo_question_rev.created as updated',
+								'repo_question_rev.data'
+							])
+							.orderBy('updated', 'desc')
+							.executeTakeFirst()
+					: await db
+							.selectFrom('repo_question_rev')
+							.innerJoin(
+								'repo_question',
+								'repo_question_rev.question_id',
+								'repo_question.id'
+							)
+							.where('repo_question_rev.id', '=', q.rev)
+							.where('repo_question.id', '=', q.id)
+							.select([
+								'repo_question.num',
+								'repo_question.type',
+								'repo_question_rev.created as updated',
+								'repo_question_rev.data'
+							])
+							.executeTakeFirst();
+
+			if (!questionData) continue;
+
+			if (questionData.type === 'latex') {
+				const { code, media } = questionData.data as unknown as QuestionData;
+				// Put every question into its own directory. Avoids media filename clashing
+				archive.append(code ?? '', { name: `${questionData.num}/main.tex` });
+
+				if (media) {
+					for (const [filename, hash] of Object.entries(media)) {
+						const strm = await getMediaFileStream(hash);
+						if (!strm) continue; // TODO
+
+						archive.append(await streamToBuffer(strm), {
+							name: `${questionData.num}/${filename}`
+						});
+					}
+				}
+
+				includeContent += wrapQuestionContents(
+					`\\import{${questionData.num}/}{main.tex}`
+				);
+			}
+		}
+
+		const preDocumentInject = '\\usepackage{import}';
+
+		return {
+			...templateReplacements,
+			// HACK
+			'\\begin{document}': `${preDocumentInject}\n\n\\begin{document}`,
+			'${[INCLUDE_CONTENT]}': includeContent
+		};
+	});
 }

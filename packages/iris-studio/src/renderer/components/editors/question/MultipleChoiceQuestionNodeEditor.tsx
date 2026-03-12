@@ -8,14 +8,16 @@ import {
 	GridList,
 	GridListItem,
 	Switch,
-	useDragAndDrop
+	useDragAndDrop,
+	arrayRemove,
+	arrayReorder,
+	arrayUpdate
 } from 'iris-components';
 
 import Add from '~icons/tabler/plus';
 import Remove from '~icons/tabler/trash';
 import Menu from '~icons/tabler/menu';
 import { ProseMirrorField, useCellEditMode } from './components';
-import { arrayRemove, arrayReorder, arrayUpdate } from './arrayUtils';
 
 export interface MultipleChoiceQuestionNodeEditorProps {
 	node: MultipleChoiceQuestionNode;

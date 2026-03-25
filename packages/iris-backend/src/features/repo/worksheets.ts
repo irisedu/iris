@@ -319,11 +319,13 @@ router.get(
 
 				const data = result.data as unknown as WorksheetData;
 				const questionIds = [...new Set(data.questions.map((q) => q.id))];
-				const questionData = await db
-					.selectFrom('repo_question')
-					.where('id', 'in', questionIds)
-					.select(['id', 'workspace_id', 'num', 'comment'])
-					.execute();
+				const questionData = questionIds.length
+					? await db
+							.selectFrom('repo_question')
+							.where('id', 'in', questionIds)
+							.select(['id', 'workspace_id', 'num', 'comment'])
+							.execute()
+					: [];
 
 				res.json({
 					...result,
@@ -353,19 +355,68 @@ router.post(
 
 		const { wid, wsid } = req.params;
 		const showAnswer = req.query.showAnswer === '1';
+		const { data, template: templateId } = req.body;
 
-		getWorksheetRev(wid, wsid, 'latest')
+		if (typeof data !== 'object' || typeof templateId !== 'string') {
+			return res.sendStatus(400);
+		}
+
+		db.selectFrom('repo_worksheet')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', wsid)
+			.selectAll()
+			.execute()
 			.then(async (result) => {
 				if (!result) {
 					res.sendStatus(404);
 					return;
 				}
 
-				// TODO: question access control
+				const questions = data.questions.length
+					? await db
+							.selectFrom('repo_question')
+							.where('id', 'in', [
+								...new Set((data as WorksheetData).questions.map((q) => q.id))
+							])
+							.selectAll()
+							.execute()
+					: [];
+				const groups = questions.length
+					? await db
+							.selectFrom('repo_workspace_group')
+							.where('user_id', '=', user.id)
+							.where('workspace_id', 'in', [
+								...new Set(questions.map((q) => q.workspace_id))
+							])
+							.selectAll()
+							.execute()
+					: [];
+				const privileges: Record<string, number> = Object.fromEntries(
+					groups.map((g) => [
+						g.workspace_id,
+						privilegeLevels[g.group_name as RepoGroup]
+					])
+				);
+
+				if (
+					questions.some(
+						(q) =>
+							privileges[q.workspace_id] === undefined ||
+							q.privilege > privileges[q.workspace_id]
+					)
+				) {
+					res.status(403).json({
+						type: 'forbidden',
+						error:
+							'You do not have access to one or more of the questions in this worksheet. Contact your workspace owner (instructor) if you think this is a mistake.'
+					});
+
+					return;
+				}
 
 				const template = await db
 					.selectFrom('repo_template')
-					.where('id', '=', result.template_id)
+					.where('id', '=', templateId)
 					.select('hash')
 					.executeTakeFirst();
 
@@ -377,7 +428,7 @@ router.post(
 				const jobId = `worksheet-editor-${user.id}-${template.hash}`;
 
 				const archiveData = await getWorksheetPreviewArchive(
-					req.body,
+					data,
 					template.hash,
 					{
 						'${[SHOW_ANSWER]}': !!showAnswer

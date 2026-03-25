@@ -72,13 +72,15 @@ export function QuestionPreview({
 			{errData ? (
 				<>
 					<p className="my-0">
-						<strong>Build failed. See compilation log below:</strong>
+						<strong>{errData.error}</strong>
 					</p>
-					<div className="grow overflow-y-auto bg-iris-50 text-black p-2 max-w-full">
-						<pre>
-							<code>{errData.stdout}</code>
-						</pre>
-					</div>
+					{errData.stdout && (
+						<div className="grow overflow-y-auto bg-iris-50 text-black p-2 max-w-full">
+							<pre>
+								<code>{errData.stdout}</code>
+							</pre>
+						</div>
+					)}
 				</>
 			) : (
 				data && (

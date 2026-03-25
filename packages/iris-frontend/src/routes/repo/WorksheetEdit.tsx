@@ -137,9 +137,12 @@ export function Component() {
 	);
 
 	const getWorksheetData = useCallback(
-		(questions: typeof selectedQuestions) => {
+		(questions: typeof selectedQuestions, templateId: string) => {
 			return {
-				questions: questions.map((q) => ({ id: q.qid, rev: q.rev }))
+				template: templateId,
+				data: {
+					questions: questions.map((q) => ({ id: q.qid, rev: q.rev }))
+				}
 			};
 		},
 		[]
@@ -149,7 +152,7 @@ export function Component() {
 		(questions: typeof selectedQuestions, templateId: string) => {
 			fetchCsrf(`/api/repo/workspaces/${wid}/worksheets/${wsid}/revs/new`, {
 				body: JSON.stringify({
-					data: getWorksheetData(questions),
+					data: getWorksheetData(questions, templateId),
 					template_id: templateId
 				}),
 				headers: {
@@ -250,7 +253,7 @@ export function Component() {
 						<WorksheetPreview
 							wid={wid!}
 							wsid={wsid!}
-							editorContents={getWorksheetData(selectedQuestions)}
+							editorContents={getWorksheetData(selectedQuestions, template)}
 						/>
 					</div>
 				) : (

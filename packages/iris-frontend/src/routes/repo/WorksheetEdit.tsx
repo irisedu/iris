@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	type LoaderFunctionArgs,
 	useLoaderData,
@@ -17,7 +17,8 @@ import {
 	ListBoxItem,
 	TextField,
 	Text,
-	useDragAndDrop
+	useDragAndDrop,
+	Label
 } from 'iris-components';
 import { WorksheetPreview } from './components/WorksheetPreview';
 import { fetchCsrf } from '../../utils';
@@ -51,6 +52,29 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	return out;
 }
 
+type SelectedQuestions = {
+	id: string;
+	workspace_id: string;
+	qid: string;
+	rev?: string;
+	num: number;
+	comment: string;
+}[];
+
+function getWorksheetData(
+	questions: SelectedQuestions,
+	templateId: string,
+	vars: Record<string, string>
+) {
+	return {
+		template: templateId,
+		data: {
+			questions: questions.map((q) => ({ id: q.qid, rev: q.rev })),
+			vars
+		}
+	};
+}
+
 export function Component() {
 	const { wid, wsid } = useParams();
 	const { workspaces, templates, worksheetData } = useLoaderData();
@@ -68,21 +92,26 @@ export function Component() {
 	const [newPrivilege, setNewPrivilege] = useState(worksheetData.privilege);
 
 	const [template, setTemplate] = useState(worksheetData.template_id ?? '');
-	const [selectedQuestions, setSelectedQuestions] = useState<
-		{
-			id: string;
-			workspace_id: string;
-			qid: string;
-			rev?: string;
-			num: number;
-			comment: string;
-		}[]
-	>(
+	const [selectedQuestions, setSelectedQuestions] = useState<SelectedQuestions>(
 		worksheetData.data?.questions.map((q: { id: string }) => ({
 			...q,
 			id: crypto.randomUUID(),
 			qid: q.id
 		})) ?? []
+	);
+
+	const [varsInternal, setVars] = useState<string[]>([]);
+	const vars = template.length
+		? varsInternal.filter((v) => v !== 'SHOW_ANSWER' && v !== 'INCLUDE_CONTENT')
+		: [];
+	useEffect(() => {
+		fetch(`/api/repo/workspaces/${wid}/templates/${template}/vars`)
+			.then((res) => res.json())
+			.then(setVars);
+	}, [wid, template]);
+
+	const [varValues, setVarValues] = useState<Record<string, string>>(
+		worksheetData.data?.vars ?? {}
 	);
 
 	const { dragAndDropHooks } = useDragAndDrop({
@@ -95,7 +124,9 @@ export function Component() {
 				};
 			}),
 		onReorder(e) {
-			setSelectedQuestions(arrayReorder(selectedQuestions, e));
+			const newQuestions = arrayReorder(selectedQuestions, e);
+			setSelectedQuestions(newQuestions);
+			setPreviewContents(getWorksheetData(newQuestions, template, varValues));
 		}
 	});
 
@@ -136,25 +167,14 @@ export function Component() {
 		[revalidator, wid, wsid, workspace.userGroup, worksheetData.privilege]
 	);
 
-	const getWorksheetData = useCallback(
-		(questions: typeof selectedQuestions, templateId: string) => {
-			return {
-				template: templateId,
-				data: {
-					questions: questions.map((q) => ({ id: q.qid, rev: q.rev }))
-				}
-			};
-		},
-		[]
-	);
-
 	const save = useCallback(
-		(questions: typeof selectedQuestions, templateId: string) => {
+		(
+			questions: typeof selectedQuestions,
+			templateId: string,
+			vars: Record<string, string>
+		) => {
 			fetchCsrf(`/api/repo/workspaces/${wid}/worksheets/${wsid}/revs/new`, {
-				body: JSON.stringify({
-					data: getWorksheetData(questions, templateId),
-					template_id: templateId
-				}),
+				body: JSON.stringify(getWorksheetData(questions, templateId, vars)),
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -166,8 +186,20 @@ export function Component() {
 					revalidator.revalidate();
 				});
 		},
-		[revalidator, wid, wsid, getWorksheetData]
+		[revalidator, wid, wsid]
 	);
+
+	const previewTimeout = useRef<number>(null);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const [previewContents, setPreviewContents] = useState<any>(
+		getWorksheetData(selectedQuestions, template, varValues)
+	);
+	function setPreviewTimeout(data: unknown) {
+		if (previewTimeout.current !== null) clearTimeout(previewTimeout.current);
+		previewTimeout.current = window.setTimeout(() => {
+			setPreviewContents(data);
+		}, 1000);
+	}
 
 	return (
 		<>
@@ -178,7 +210,7 @@ export function Component() {
 			<div className="flex flex-wrap gap-8 items-start">
 				<div className="basis-[40%] grow min-w-[35ch]">
 					<Button
-						onPress={() => save(selectedQuestions, template)}
+						onPress={() => save(selectedQuestions, template, varValues)}
 						isDisabled={!template.length}
 					>
 						Save
@@ -186,7 +218,12 @@ export function Component() {
 					<Dropdown
 						label="Template"
 						value={template}
-						onChange={(key) => setTemplate(key as string)}
+						onChange={(key) => {
+							setTemplate(key as string);
+							setPreviewContents(
+								getWorksheetData(selectedQuestions, key as string, varValues)
+							);
+						}}
 					>
 						{templates
 							.filter(
@@ -200,7 +237,34 @@ export function Component() {
 							))}
 					</Dropdown>
 
-					<h2 className="mt-4">Selected questions</h2>
+					<h2 className="mt-4">Template variables</h2>
+
+					{vars.length ? (
+						vars.map((v) => (
+							<TextField
+								key={v}
+								value={varValues[v]}
+								onChange={(newVal) => {
+									setVarValues((old) => {
+										const newValues = { ...old, [v]: newVal };
+										setPreviewTimeout(
+											getWorksheetData(selectedQuestions, template, newValues)
+										);
+										return newValues;
+									});
+								}}
+							>
+								<Label>
+									<code>{v}</code>
+								</Label>
+								<Input />
+							</TextField>
+						))
+					) : (
+						<p>No template variables found.</p>
+					)}
+
+					<h2>Selected questions</h2>
 
 					{selectedQuestions.length ? (
 						<GridList
@@ -231,9 +295,19 @@ export function Component() {
 											</Link>
 											<Button
 												onPress={() => {
-													setSelectedQuestions((qs) =>
-														qs.filter((other) => other.id !== q.id)
-													);
+													setSelectedQuestions((qs) => {
+														const newQuestions = qs.filter(
+															(other) => other.id !== q.id
+														);
+														setPreviewContents(
+															getWorksheetData(
+																newQuestions,
+																template,
+																varValues
+															)
+														);
+														return newQuestions;
+													});
 												}}
 											>
 												Remove
@@ -253,7 +327,7 @@ export function Component() {
 						<WorksheetPreview
 							wid={wid!}
 							wsid={wsid!}
-							editorContents={getWorksheetData(selectedQuestions, template)}
+							editorContents={previewContents}
 						/>
 					</div>
 				) : (
@@ -322,14 +396,21 @@ export function Component() {
 								<Button
 									className="react-aria-Button p-0 px-1"
 									onPress={() => {
-										setSelectedQuestions((qs) => [
-											...qs,
-											{
-												...q,
-												qid: q.id,
-												id: crypto.randomUUID()
-											}
-										]);
+										setSelectedQuestions((qs) => {
+											const newQuestions = [
+												...qs,
+												{
+													...q,
+													qid: q.id,
+													id: crypto.randomUUID()
+												}
+											];
+
+											setPreviewContents(
+												getWorksheetData(newQuestions, template, varValues)
+											);
+											return newQuestions;
+										});
 									}}
 								>
 									Add

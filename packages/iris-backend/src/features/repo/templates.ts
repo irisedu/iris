@@ -3,7 +3,8 @@ import { requireAuth } from '../auth/index.js';
 import {
 	requireWorkspaceAccess,
 	getMediaFileStream,
-	uploadMediaFileFromForm
+	uploadMediaFileFromForm,
+	getTemplateVariables
 } from './utils.js';
 import { db } from '../../db/index.js';
 
@@ -133,6 +134,38 @@ router.get(
 				);
 				res.contentType('application/zip');
 				strm.pipe(res);
+			})
+			.catch(next);
+	}
+);
+
+router.get(
+	'/:wid/templates/:tid/vars',
+	requireAuth({ group: 'repo:users' }),
+	requireWorkspaceAccess('member'),
+	(req, res, next) => {
+		// Impossible
+		if (req.session.user?.type !== 'registered') return;
+
+		const { wid, tid } = req.params;
+
+		db.selectFrom('repo_template')
+			.where('workspace_id', '=', wid)
+			.where('id', '=', tid)
+			.selectAll()
+			.executeTakeFirst()
+			.then(async (template) => {
+				if (!template) {
+					res.sendStatus(404);
+					return;
+				}
+
+				if (!template.hash) {
+					res.json([]);
+					return;
+				}
+
+				res.json(await getTemplateVariables(template.hash));
 			})
 			.catch(next);
 	}

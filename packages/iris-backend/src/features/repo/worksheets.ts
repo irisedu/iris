@@ -205,9 +205,9 @@ router.post(
 		const user = req.session.user;
 
 		const { wid, wsid } = req.params;
-		const { data, template_id } = req.body ?? {};
+		const { data, template } = req.body ?? {};
 
-		if (typeof data !== 'object' || typeof template_id !== 'string') {
+		if (typeof data !== 'object' || typeof template !== 'string') {
 			res.sendStatus(400);
 			return;
 		}
@@ -229,7 +229,7 @@ router.post(
 							worksheet_id: wsid,
 							creator: user.id,
 							data,
-							template_id
+							template_id: template
 						})
 						.execute();
 
@@ -355,7 +355,10 @@ router.post(
 
 		const { wid, wsid } = req.params;
 		const showAnswer = req.query.showAnswer === '1';
-		const { data, template: templateId } = req.body;
+		const {
+			data,
+			template: templateId
+		}: { data: WorksheetData; template: string } = req.body;
 
 		if (typeof data !== 'object' || typeof templateId !== 'string') {
 			return res.sendStatus(400);
@@ -375,9 +378,7 @@ router.post(
 				const questions = data.questions.length
 					? await db
 							.selectFrom('repo_question')
-							.where('id', 'in', [
-								...new Set((data as WorksheetData).questions.map((q) => q.id))
-							])
+							.where('id', 'in', [...new Set(data.questions.map((q) => q.id))])
 							.selectAll()
 							.execute()
 					: [];
@@ -427,12 +428,20 @@ router.post(
 
 				const jobId = `worksheet-editor-${user.id}-${template.hash}`;
 
+				const replacements: Record<string, unknown> = {
+					'${[SHOW_ANSWER]}': !!showAnswer
+				};
+
+				if (data.vars) {
+					for (const [k, v] of Object.entries(data.vars)) {
+						replacements['${[' + k + ']}'] = v;
+					}
+				}
+
 				const archiveData = await getWorksheetPreviewArchive(
 					data,
 					template.hash,
-					{
-						'${[SHOW_ANSWER]}': !!showAnswer
-					}
+					replacements
 				);
 
 				if (!archiveData) {

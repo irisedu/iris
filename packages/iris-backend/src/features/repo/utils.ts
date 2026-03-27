@@ -19,6 +19,7 @@ import { Upload } from '@aws-sdk/lib-storage';
 import type { IncomingMessage } from 'http';
 
 const cacheDir = path.join(os.tmpdir(), 'iris-repo-cache');
+const templateFileExts = ['.tex', '.sty'];
 
 export type RepoGroup = 'owner' | 'privilegedmember' | 'member';
 
@@ -39,6 +40,7 @@ export interface WorksheetData {
 		id: string;
 		rev?: string;
 	}[];
+	vars?: Record<string, string>;
 }
 
 export async function getUserWorkspaceGroup(uid: string, wid: string) {
@@ -290,9 +292,38 @@ export async function getQuestionArchive(
 	return Buffer.concat(buffers);
 }
 
+function getTemplateFileVariables(contents: string): string[] {
+	const parts = contents.split('${[');
+	const vars = [];
+	for (const part of parts) {
+		if (part.includes(']}')) vars.push(part.slice(0, part.indexOf(']}')));
+	}
+
+	return vars;
+}
+
+export async function getTemplateVariables(
+	templateHash: string
+): Promise<string[]> {
+	const st = await getMediaFileStream(templateHash);
+	if (!st) return [];
+	const zip = st.pipe(unzipper.Parse({ forceStream: true }));
+
+	const vars: string[] = [];
+
+	for await (const entry of zip) {
+		if (templateFileExts.some((ext) => entry.path.endsWith(ext))) {
+			vars.push(
+				...getTemplateFileVariables((await entry.buffer()).toString('utf-8'))
+			);
+		}
+	}
+
+	return vars;
+}
+
 export async function populateTemplate(
 	templateHash: string,
-	replaceFilePath: string,
 	getTemplateReplacements: (
 		archive: Archiver
 	) => Promise<Record<string, unknown>>
@@ -315,16 +346,24 @@ export async function populateTemplate(
 					return;
 				}
 
-				for await (const entry of zip) {
-					if (entry.path === replaceFilePath) {
-						let contents = (await entry.buffer()).toString('utf-8');
+				const replacements = await getTemplateReplacements(archive);
 
-						const replacements = await getTemplateReplacements(archive);
+				for await (const entry of zip) {
+					if (templateFileExts.some((ext) => entry.path.endsWith(ext))) {
+						let contents = (await entry.buffer()).toString('utf-8');
+						const vars = getTemplateFileVariables(contents);
+
 						for (const [k, v] of Object.entries(replacements)) {
 							contents = contents.replace(k, String(v));
 						}
 
-						archive.append(contents, { name: replaceFilePath });
+						for (const v of vars) {
+							const toReplace = '${[' + v + ']}';
+							if (replacements[toReplace] !== undefined) continue;
+							contents = contents.replace(toReplace, '');
+						}
+
+						archive.append(contents, { name: entry.path });
 					} else {
 						archive.append(await entry.buffer(), { name: entry.path });
 					}
@@ -348,7 +387,7 @@ export async function getQuestionPreviewArchive(
 	templateReplacements: Record<string, unknown>
 ): Promise<Buffer | null> {
 	if (type === 'latex') {
-		return populateTemplate(template, 'main.tex', async (archive) => {
+		return populateTemplate(template, async (archive) => {
 			if (data.media) {
 				for (const [filename, hash] of Object.entries(data.media)) {
 					const strm = await getMediaFileStream(hash);
@@ -373,7 +412,7 @@ export async function getWorksheetPreviewArchive(
 	template: string,
 	templateReplacements: Record<string, unknown>
 ): Promise<Buffer> {
-	return populateTemplate(template, 'main.tex', async (archive) => {
+	return populateTemplate(template, async (archive) => {
 		let includeContent = '';
 
 		for (const q of data.questions) {

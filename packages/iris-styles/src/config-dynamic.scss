@@ -38,6 +38,7 @@
 
 	// Lists
 	--list-indent: 1.5rem;
+	--list-spacing: calc(var(--paragraph-spacing) / 3);
 
 	// Marginalia: Asides and sidenotes
 	--prose-width: 60cqw;

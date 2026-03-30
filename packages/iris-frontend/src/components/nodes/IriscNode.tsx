@@ -21,6 +21,8 @@ import Exercise from '~icons/tabler/pencil';
 export interface IriscContext {
 	meta?: IriscMetadata;
 
+	_tightList?: boolean;
+
 	getBlankValue?: (id: string) => string;
 	setBlankValue?: (id: string, val: string) => void;
 	getBlankValidator?: (id: string) => string | undefined;
@@ -320,6 +322,21 @@ function NoteIcon({ noteType }: { noteType: string }) {
 	}
 }
 
+function tightList(node: IriscNodeT) {
+	return node.content?.every((node) => {
+		const listChildren = node.content?.filter(
+			(n) => n.type === 'ordered_list' || n.type === 'bullet_list'
+		);
+		const nonListChildren = node.content?.filter(
+			(n) => n.type !== 'ordered_list' && n.type !== 'bullet_list'
+		);
+		return (
+			(!listChildren || listChildren.every(tightList)) &&
+			(nonListChildren?.length ?? 0) <= 1
+		);
+	});
+}
+
 export function IriscNode({
 	node,
 	ctx,
@@ -333,13 +350,19 @@ export function IriscNode({
 		'data-index': index
 	};
 
-	function getBlockContent() {
-		return node.content && <IriscBlockContent nodes={node.content} ctx={ctx} />;
+	function getBlockContent(addCtx?: Partial<IriscContext>) {
+		return (
+			node.content && (
+				<IriscBlockContent nodes={node.content} ctx={{ ...ctx, ...addCtx }} />
+			)
+		);
 	}
 
-	function getInlineContent() {
+	function getInlineContent(addCtx?: Partial<IriscContext>) {
 		return (
-			node.content && <IriscInlineContent nodes={node.content} ctx={ctx} />
+			node.content && (
+				<IriscInlineContent nodes={node.content} ctx={{ ...ctx, ...addCtx }} />
+			)
 		);
 	}
 
@@ -477,13 +500,31 @@ export function IriscNode({
 			const order = node.attrs?.order as number | undefined;
 			return (
 				<ol {...props} start={order}>
-					{getBlockContent()}
+					{getBlockContent({ _tightList: tightList(node) })}
 				</ol>
 			);
 		}
 		case 'bullet_list':
-			return <ul {...props}>{getBlockContent()}</ul>;
+			return (
+				<ul {...props}>{getBlockContent({ _tightList: tightList(node) })}</ul>
+			);
 		case 'list_item':
+			if (ctx?._tightList) {
+				return (
+					<li {...props}>
+						{node.content?.length && (
+							<>
+								<IriscInlineContent
+									nodes={node.content[0].content ?? []}
+									ctx={ctx}
+								/>
+								<IriscBlockContent nodes={node.content.slice(1)} ctx={ctx} />
+							</>
+						)}
+					</li>
+				);
+			}
+
 			return <li {...props}>{getBlockContent()}</li>;
 
 		case 'table': {

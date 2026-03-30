@@ -56,82 +56,90 @@ function Layout({ children }: { children?: ReactNode }) {
 
 			<CookieConsent />
 
-			<nav
-				className="flex flex-col items-center md:flex-row md:pr-6 gap-1 border-t-[0.25rem] border-iris-600"
-				data-hide-reading-ruler
-			>
-				<Link to="/" className="h-12">
-					<IrisWord
-						aria-label="Iris logo"
-						className="text-black iris-rotate h-full"
-					/>
-				</Link>
+			<header>
+				<nav
+					className="flex flex-col items-center md:flex-row md:pr-6 gap-1 border-t-[0.25rem] border-iris-600"
+					data-hide-reading-ruler
+				>
+					<Link to="/" className="h-12">
+						<IrisWord
+							aria-label="Iris logo"
+							className="text-black iris-rotate h-full"
+						/>
+					</Link>
 
-				<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-8 items-center mx-4 mt-2 grow">
-					{features.includes('serve') && (
-						<Link className="link-obvious" to="/catalog">
-							Catalog
-						</Link>
-					)}
-					{user &&
-						user.type === 'registered' &&
-						features.includes('repo') &&
-						user.groups.includes('repo:users') && (
-							<Link className="link-obvious" to="/repo">
-								Question Repo
+					<div className="flex flex-row max-md:justify-center max-md:flex-wrap gap-8 items-center mx-4 mt-2 grow">
+						{features.includes('serve') && (
+							<Link className="link-obvious" to="/catalog">
+								Catalog
 							</Link>
 						)}
-				</div>
+						{user &&
+							user.type === 'registered' &&
+							features.includes('repo') &&
+							user.groups.includes('repo:users') && (
+								<Link className="link-obvious" to="/repo">
+									Question Repo
+								</Link>
+							)}
+					</div>
 
-				<div className="grow" />
+					<div className="grow" />
 
-				<TooltipTrigger delay={200}>
-					<ToggleButton
-						aria-label="Text & Accessibility Settings"
-						className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full bg-iris-100 data-[hovered]:bg-iris-200 data-[selected]:bg-iris-200 data-[pressed]:bg-iris-300! border-2 border-iris-200"
-						isSelected={textSettingsVisible}
-						onChange={setTextSettingsVisible}
-					>
-						<Settings className="w-4 h-4 m-auto text-iris-900" />
-						<Accessible className="w-4 h-4 m-auto text-iris-900" />
-					</ToggleButton>
-					<Tooltip placement="bottom">Text & Accessibility Settings</Tooltip>
-				</TooltipTrigger>
-
-				{user && user.type === 'registered' ? (
-					<MenuTrigger>
-						<Button
-							className="react-aria-Link link-obvious"
-							aria-label="Account menu"
+					<TooltipTrigger delay={200}>
+						<ToggleButton
+							aria-label="Toggle Text & Accessibility Settings"
+							aria-expanded={textSettingsVisible}
+							aria-controls="text-settings"
+							className="flex flex-row gap-2 mx-4 px-2 h-6 rounded-full bg-iris-100 data-[hovered]:bg-iris-200 data-[selected]:bg-iris-200 data-[pressed]:bg-iris-300! border-2 border-iris-200"
+							isSelected={textSettingsVisible}
+							onChange={setTextSettingsVisible}
 						>
-							{user.data.name ?? 'Account'}{' '}
-							<ChevronDown className="inline w-4 h-4" />
-						</Button>
+							<Settings className="w-4 h-4 m-auto text-iris-900" />
+							<Accessible className="w-4 h-4 m-auto text-iris-900" />
+						</ToggleButton>
+						<Tooltip placement="bottom">Text & Accessibility Settings</Tooltip>
+					</TooltipTrigger>
 
-						<Popover>
-							<Menu>
-								{features.includes('serve') &&
-									user.groups.includes('cms:authors') && (
-										<MenuItem onAction={() => navigate('/author-dashboard')}>
-											Author Dashboard
-										</MenuItem>
-									)}
-								<MenuItem onAction={logOut}>Log out</MenuItem>
-							</Menu>
-						</Popover>
-					</MenuTrigger>
-				) : (
-					<Link className="link-obvious" to="/login">
-						Log in
-					</Link>
-				)}
-			</nav>
+					{user && user.type === 'registered' ? (
+						<MenuTrigger>
+							<Button
+								className="react-aria-Link link-obvious"
+								aria-label="Account menu"
+							>
+								{user.data.name ?? 'Account'}{' '}
+								<ChevronDown className="inline w-4 h-4" />
+							</Button>
 
-			{textSettingsVisible && (
-				<div className="my-2 p-8 w-full bg-iris-100">
-					<TextSettings />
-				</div>
-			)}
+							<Popover>
+								<Menu>
+									{features.includes('serve') &&
+										user.groups.includes('cms:authors') && (
+											<MenuItem onAction={() => navigate('/author-dashboard')}>
+												Author Dashboard
+											</MenuItem>
+										)}
+									<MenuItem onAction={logOut}>Log out</MenuItem>
+								</Menu>
+							</Popover>
+						</MenuTrigger>
+					) : (
+						<Link className="link-obvious" to="/login">
+							Log in
+						</Link>
+					)}
+				</nav>
+			</header>
+
+			<div
+				id="text-settings"
+				role="region"
+				aria-label="Text & Accessibility Settings"
+				className="my-2 p-8 w-full bg-iris-100"
+				hidden={!textSettingsVisible}
+			>
+				<TextSettings />
+			</div>
 
 			<DevAlert className="m-4" />
 

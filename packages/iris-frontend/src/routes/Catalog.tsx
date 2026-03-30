@@ -25,33 +25,35 @@ export function loader() {
 
 function SeriesCollection({ seriesData }: { seriesData: SeriesInfo[] }) {
 	return (
-		<div className="flex flex-col md:flex-row md:flex-wrap gap-4 p-2">
+		<ul className="list-none flex flex-col md:flex-row md:flex-wrap gap-4 p-2">
 			{seriesData.map((series, i) => (
-				<Link key={i} className="text-black no-underline" to={series.href}>
-					<IrisCard className="group w-full md:w-80">
-						<span className="block text-xl">
-							<IriscInlineContent nodes={series.title} />
-						</span>
+				<li key={i}>
+					<Link key={i} className="text-black no-underline" to={series.href}>
+						<IrisCard className="group w-full md:w-80">
+							<span className="block text-xl">
+								<IriscInlineContent nodes={series.title} />
+							</span>
 
-						{series.tags.length > 0 && (
-							<TagGroup
-								selectionMode="none"
-								aria-label="Tags"
-								className="react-aria-TagGroup my-2"
-							>
-								<TagList>
-									{series.tags.map((t, i) => (
-										<Tag key={i}>{t}</Tag>
-									))}
-								</TagList>
-							</TagGroup>
-						)}
+							{series.tags.length > 0 && (
+								<TagGroup
+									selectionMode="none"
+									aria-label="Tags"
+									className="react-aria-TagGroup my-2"
+								>
+									<TagList>
+										{series.tags.map((t, i) => (
+											<Tag key={i}>{t}</Tag>
+										))}
+									</TagList>
+								</TagGroup>
+							)}
 
-						<ArrowRight className="absolute w-8 h-8 inset-y-1/2 my-auto right-4 text-iris-300 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200" />
-					</IrisCard>
-				</Link>
+							<ArrowRight className="absolute w-8 h-8 inset-y-1/2 my-auto right-4 text-iris-300 opacity-0 md:group-hover:opacity-100 transition-opacity duration-200" />
+						</IrisCard>
+					</Link>
+				</li>
 			))}
-		</div>
+		</ul>
 	);
 }
 

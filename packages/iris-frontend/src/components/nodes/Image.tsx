@@ -43,15 +43,22 @@ function ImageInternal({ src, alt, className }: ImageProps) {
 function Image(props: ImageProps) {
 	return (
 		<DialogTrigger>
-			<Button className="cursor-pointer w-full" excludeFromTabOrder>
+			<Button
+				className="cursor-pointer w-full"
+				excludeFromTabOrder
+				aria-label="Open image viewer"
+			>
 				<ImageInternal {...props} />
 			</Button>
 			{/* Sizing nightmare: Try to maximize image size based on height */}
 			<Modal isDismissable className="size-full">
-				<Dialog className="react-aria-Dialog h-full flex flex-col items-center">
+				<Dialog
+					className="react-aria-Dialog h-full flex flex-col items-center"
+					aria-label="Image viewer"
+				>
 					<Button
 						className="fixed top-5 right-5 rounded-full text-black bg-iris-100 data-[hovered]:bg-iris-200 data-[pressed]:bg-iris-300 p-1 cursor-pointer"
-						aria-label="Close image popup"
+						aria-label="Close image viewer"
 						slot="close"
 					>
 						<X />

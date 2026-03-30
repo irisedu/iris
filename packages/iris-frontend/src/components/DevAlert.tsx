@@ -19,6 +19,8 @@ function DevAlert({ className }: { className?: string }) {
 		devEnabled && (
 			<div
 				className={`dev-alert relative font-sans text-sm border-2 border-red-200 p-2 ${className ?? ''}`}
+				role="region"
+				aria-label="Preview mode banner"
 			>
 				<p className="my-0 text-red-600">
 					<strong>Preview mode is enabled.</strong>

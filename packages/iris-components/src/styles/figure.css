@@ -26,3 +26,13 @@ figure {
 		}
 	}
 }
+
+/* TODO: TEMPORARY SOLUTION */
+@media (min-width: 64em) {
+	figure:not(.figure-left):not(.figure-right) {
+		max-width: var(--prose-width);
+		transform: translateX(
+			calc(-0.5 * var(--marginalia-width) - 0.5 * var(--marginalia-left))
+		);
+	}
+}

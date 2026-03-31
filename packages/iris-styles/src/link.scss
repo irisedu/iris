@@ -1,6 +1,6 @@
 a[href]:not(.react-aria-Button),
 .react-aria-Link {
-	color: var(--color-link-base);
+	color: var(--color-link);
 	text-decoration: underline;
 	text-decoration-thickness: var(--link-underline-thickness);
 	text-underline-offset: var(--link-underline-offset);
@@ -46,8 +46,13 @@ a.anchor-link.anchor-link {
 	cursor: pointer;
 
 	&:hover {
+		color: var(--color-anchor-link-hover);
 		text-decoration: underline;
 		text-decoration-thickness: var(--link-underline-thickness);
 		text-underline-offset: var(--link-underline-offset);
+	}
+
+	&:active {
+		color: var(--color-anchor-link-active);
 	}
 }

@@ -89,13 +89,17 @@ aside,
 	.sidenote {
 		float: right;
 		clear: right;
+		margin-top: calc(var(--paragraph-spacing) / 2);
+		// Make intruding wide elements smaller (if this happens, the aside/note
+		// is too close to it)
+		margin-left: var(--marginalia-left);
+		padding-top: 0.2rem;
 		margin-bottom: var(--marginalia-below);
 		width: var(--marginalia-width);
 	}
 
 	aside {
 		border-top: 0.25rem double var(--color-marginalia-above);
-		padding-top: 0.2rem;
 		// float: right will result in the aside being on the right of
 		// .article-container.
 		// The distance from the right is 100%, minus everything else that takes
@@ -110,7 +114,6 @@ aside,
 
 	.sidenote {
 		border-top: 0.1rem solid var(--color-marginalia-above);
-		padding-top: 0.2rem;
 		// float: right will result in the aside being on the right of the
 		// containing paragraph
 		// -1 * var(--marginalia-width) places the sidenote at the edge of the

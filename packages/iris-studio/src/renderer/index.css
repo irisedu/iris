@@ -33,7 +33,7 @@
 	--font-body: var(--font-main);
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
-	--font-mono: Source Code Pro;
+	--font-mono: var(--font-mono);
 }
 
 :root {
@@ -67,6 +67,11 @@
 
 :root {
 	--font-main: Vollkorn;
+	--font-mono: Source Code Pro;
+	--color-link: var(--color-blue-800);
+	--color-link-hover: var(--color-blue-900);
+	--color-link-active: var(--color-blue-950);
+	--color-link-indicator: var(--color-blue-950);
 
 	--color-inline-code: var(--color-blue-700);
 }

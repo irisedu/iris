@@ -25,16 +25,18 @@
 	// Links
 	--link-hue: 270;
 	--link-saturation: 100%;
-	--color-link-base: hsl(var(--link-hue), var(--link-saturation), 40%);
-	--color-link-hover: hsl(var(--link-hue), var(--link-saturation), 50%);
-	--color-link-active: hsl(var(--link-hue), var(--link-saturation), 40%);
+	--color-link: hsl(var(--link-hue), var(--link-saturation), 40%);
+	--color-link-hover: hsl(var(--link-hue), var(--link-saturation), 35%);
+	--color-link-active: hsl(var(--link-hue), var(--link-saturation), 25%);
 	--color-link-indicator: hsl(var(--link-hue), var(--link-saturation), 20%);
 	--color-link-underline: var(--color-link-indicator);
 	--link-underline-thickness: 0.05rem;
 	--link-underline-offset: 0.15rem;
 	--link-external-indicator: '↗';
 
-	--color-anchor-link: hsl(270, 100%, 35%);
+	--color-anchor-link: var(--color-link);
+	--color-anchor-link-hover: var(--color-link-hover);
+	--color-anchor-link-active: var(--color-link-active);
 
 	// Lists
 	--list-indent: 1.5rem;

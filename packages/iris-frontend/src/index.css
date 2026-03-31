@@ -44,7 +44,7 @@
 	--font-body: var(--font-main);
 	--font-smallcaps: var(--font-smallcaps);
 	--font-sans: var(--font-sans);
-	--font-mono: Source Code Pro;
+	--font-mono: var(--font-mono);
 }
 
 :root {
@@ -77,15 +77,15 @@
 
 :root {
 	--font-main: Vollkorn;
+	--font-mono: Source Code Pro;
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
 
-	--color-link-base: var(--t-iris-900);
-	--color-link-hover: var(--t-iris-800);
-	--color-link-active: var(--t-iris-900);
-	--color-link-indicator: var(--t-iris-950);
+	--color-link: var(--color-iris-800);
+	--color-link-hover: var(--color-iris-900);
+	--color-link-active: var(--color-iris-950);
+	--color-link-indicator: var(--color-iris-950);
 
-	--color-anchor-link: var(--color-iris-900);
 	--color-inline-code: var(--color-blue-700);
 
 	--color-sat: calc(

@@ -1,0 +1,50 @@
+# https://pnpm.io/docker
+FROM node:22-trixie-slim AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+RUN apt update && \
+    apt install -y texlive-full
+
+COPY . /iris
+
+#################
+# Latexer build #
+#################
+
+FROM base AS latexer-build
+
+WORKDIR /iris/packages/latexer
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter latexer... install --frozen-lockfile
+RUN pnpm run build
+
+# Output: /iris/packages/latexer/out
+
+###################################
+# Latexer production dependencies #
+###################################
+
+FROM base AS latexer-prod-deps
+
+WORKDIR /iris/packages/latexer
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm --filter latexer... install --prod --frozen-lockfile --ignore-scripts
+
+# Output: /iris/node_modules
+
+################
+# Final output #
+################
+
+FROM base AS latexer
+
+WORKDIR /iris/packages/latexer
+
+COPY --from=latexer-prod-deps /iris/node_modules /iris/node_modules
+
+COPY --from=latexer-build /iris/packages/latexer/out ./out
+
+CMD ["pnpm", "start"]

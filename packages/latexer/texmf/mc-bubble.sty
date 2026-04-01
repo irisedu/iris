@@ -1,0 +1,24 @@
+\ExplSyntaxOn
+    \newcounter{answer}
+    \NewDocumentCommand{\answergrid}{ m m m }{
+        \begin{tikzpicture}[x=0.75cm, baseline]
+            \seq_set_split:Nnn \l_azetina_answers_split_seq { ; } { #3 }
+            \setcounter{answer}{ \int_eval:n { #1 - 1 } }
+            \int_step_inline:nnnn { \int_eval:n { \value{answer} + 1 } } { 1 } { #2 } {
+                \stepcounter{answer}
+                \seq_if_in:NnTF \l_azetina_answers_split_seq { ##1 } {
+                    \tikzset{answer~node/.style={fill=gray!50}}
+                }{
+                    \tikzset{answer~node/.style={fill=none}}
+                }
+                \node[answer~node, draw, circle, inner~sep=1pt, anchor=base] at (##1, 0) {\Alph{answer}};
+            }
+        \end{tikzpicture}
+    }
+
+    \NewDocumentCommand{\bubble}{m}{
+        \tikz[baseline=(char.base)]{
+            \node[shape=circle, draw, inner~sep=1pt] (char) {\scriptsize{#1}};
+        }
+    }
+\ExplSyntaxOff

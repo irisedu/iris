@@ -419,7 +419,7 @@ export function Component() {
 							className="text-left flex gap-4 items-center"
 							aria-hidden="true"
 						>
-							<div className="text-[0.6rem] w-[25ch]">
+							<div className="text-[0.6rem] w-[35ch]">
 								<p>Implement the following functions:</p>
 								<ul>
 									<li>
@@ -434,19 +434,19 @@ export function Component() {
 									<div className="font-bold mb-1">Hint</div>
 									<div className="flex gap-1 items-center">
 										<Button
-											className="react-aria-Button px-1 py-0.5 text-black"
+											className="react-aria-Button px-1 py-0.5 text-sm"
 											excludeFromTabOrder
 										>
 											Task?
 										</Button>
 										<Button
-											className="react-aria-Button px-1 py-0.5 text-black"
+											className="react-aria-Button px-1 py-0.5 text-sm"
 											excludeFromTabOrder
 										>
 											Purpose?
 										</Button>
 										<Button
-											className="relative react-aria-Button px-1 py-0.5 text-black"
+											className="relative react-aria-Button px-1 py-0.5 text-sm"
 											excludeFromTabOrder
 										>
 											Breakdown?

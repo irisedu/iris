@@ -193,8 +193,7 @@ export async function uploadMediaFileFromForm(
 				params: {
 					Bucket: process.env.S3_QUESTION_REPO_BUCKET!,
 					Key: fileHash,
-					Body: createReadStream(filepath),
-					ContentType: 'application/zip'
+					Body: createReadStream(filepath)
 				}
 			});
 

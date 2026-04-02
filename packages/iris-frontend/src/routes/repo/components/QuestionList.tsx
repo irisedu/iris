@@ -4,7 +4,9 @@ import {
 	useEffect,
 	useRef,
 	useState,
-	type Dispatch
+	type Dispatch,
+	useCallback,
+	memo
 } from 'react';
 import {
 	Button,
@@ -36,6 +38,106 @@ export interface QuestionListParams {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getActions?: (q: any) => ReactNode;
 }
+
+const QuestionTable = memo(function QuestionTable({
+	wid,
+	questions,
+	showPreviewHover,
+	showPreviewDialog,
+	getActions,
+	setQuestionsInvalidate
+}: {
+	wid: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	questions: any[];
+	showPreviewHover: (qid: string, vis: boolean) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	showPreviewDialog: (q: any) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getActions?: (q: any) => ReactNode;
+	setQuestionsInvalidate: Dispatch<SetStateAction<number>>;
+}) {
+	function recycleQuestion(workspace: string, qid: string, recycle: boolean) {
+		let route = `/api/repo/workspaces/${workspace}/questions/${qid}/recycle`;
+		if (recycle) route += '?recycle=1';
+
+		fetchCsrf(route).then(() => {
+			setQuestionsInvalidate((n) => n + 1);
+		});
+	}
+
+	return (
+		<table className="w-full hyphens-none">
+			<thead>
+				<tr>
+					<th className="text-left w-[4ch]">ID</th>
+					<th className="text-left w-[6ch]">Type</th>
+					<th className="text-left">Tags</th>
+					<th className="text-left">Creator</th>
+					<th className="text-left">Comment</th>
+					<th className="text-left">Operation</th>
+				</tr>
+			</thead>
+			<tbody>
+				{questions.map((q) => (
+					<tr key={q.id}>
+						<td
+							onMouseEnter={() => {
+								showPreviewHover(q.id, true);
+							}}
+							onMouseLeave={() => {
+								showPreviewHover(q.id, false);
+							}}
+						>
+							{q.num}
+						</td>
+						<td>{q.type}</td>
+						<td>
+							<TagGroup selectionMode="none" aria-label="Tags">
+								<TagList>
+									{q.tags.map((t: { id: string; name: string }) => (
+										<Tag key={t.id}>{t.name}</Tag>
+									))}
+								</TagList>
+							</TagGroup>
+						</td>
+						<td>{q.creator.name}</td>
+						<td>{q.comment}</td>
+						<td className="flex flex-wrap gap-1">
+							{getActions?.(q)}
+							<Button
+								className="react-aria-Button p-0 px-1"
+								onPress={() => {
+									showPreviewDialog(q);
+								}}
+							>
+								Preview
+							</Button>
+							<Link
+								className="react-aria-Button p-0 px-1"
+								to={`/repo/workspaces/${wid}/questions/${q.id}`}
+							>
+								Edit
+							</Link>
+							<a
+								className="react-aria-Button p-0 px-1"
+								href={`/api/repo/workspaces/${wid}/questions/${q.id}/revs/latest/download`}
+							>
+								Download
+							</a>
+							<Button
+								className="react-aria-Button p-0 px-1"
+								onPress={() => recycleQuestion(wid, q.id, !q.deleted)}
+							>
+								{q.deleted ? 'Restore' : 'Delete'}
+							</Button>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
+});
 
 export default function QuestionList({
 	currentWorkspace,
@@ -82,23 +184,37 @@ export default function QuestionList({
 			.then(setQuestions);
 	}, [questionsInvalidate, actualWorkspace, recycleFilter, tagFilter]);
 
-	function recycleQuestion(workspace: string, qid: string, recycle: boolean) {
-		let route = `/api/repo/workspaces/${workspace}/questions/${qid}/recycle`;
-		if (recycle) route += '?recycle=1';
-
-		fetchCsrf(route).then(() => {
-			setQuestionsInvalidate((n) => n + 1);
-		});
-	}
-
-	const [showPreview, setShowPreview] = useState(false);
+	const [hoverPreviewState, setHoverPreviewState] = useState<{
+		qid: string;
+		vis: boolean;
+	}>({ qid: '', vis: false });
 	const previewHover = useRef<HTMLDivElement>(null);
-	const [previewQuestion, setPreviewQuestion] = useState('');
 	const [previewFailed, setPreviewFailed] = useState(false);
 
 	const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [previewDialogQuestion, setPreviewDialogQuestion] = useState<any>(null);
+
+	const showPreviewHover = useCallback((qid: string, vis: boolean) => {
+		if (vis) {
+			setHoverPreviewState({ qid, vis });
+		} else {
+			setHoverPreviewState((prev) =>
+				prev.qid === qid
+					? {
+							qid,
+							vis: false
+						}
+					: prev
+			);
+		}
+	}, []);
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const showPreviewDialog = useCallback((question: any) => {
+		setPreviewDialogQuestion(question);
+		setPreviewDialogOpen(true);
+	}, []);
 
 	return (
 		<div>
@@ -114,12 +230,12 @@ export default function QuestionList({
 
 			<div
 				ref={previewHover}
-				className={`${showPreview ? 'fixed' : 'hidden'} bg-[white] border-[1px] border-[black] top-[1em] bottom-[1em] right-[1em] z-100 min-w-128`}
+				className={`${hoverPreviewState.vis ? 'fixed' : 'hidden'} bg-[white] border-[1px] border-[black] top-[1em] bottom-[1em] right-[1em] z-100`}
 			>
-				{previewQuestion.length && (
+				{hoverPreviewState.qid.length && (
 					<>
 						<img
-							src={`/api/repo/workspaces/${actualWorkspace}/questions/${previewQuestion}/revs/latest/preview/svg`}
+							src={`/api/repo/workspaces/${actualWorkspace}/questions/${hoverPreviewState.qid}/revs/latest/preview/svg`}
 							onLoad={() => setPreviewFailed(false)}
 							onError={() => setPreviewFailed(true)}
 							alt="Question preview"
@@ -172,82 +288,16 @@ export default function QuestionList({
 					</CheckboxGroup>
 				</div>
 
-				<div className="basis-[78%]">
+				<div className="basis-[78%] grow">
 					<h2 className="m-0!">Questions</h2>
-
-					<table className="w-full hyphens-none">
-						<thead>
-							<tr>
-								<th className="text-left w-[4ch]">ID</th>
-								<th className="text-left w-[6ch]">Type</th>
-								<th className="text-left">Tags</th>
-								<th className="text-left">Creator</th>
-								<th className="text-left">Comment</th>
-								<th className="text-left">Operation</th>
-							</tr>
-						</thead>
-						<tbody>
-							{questions.map((q) => (
-								<tr key={q.id}>
-									<td
-										onMouseEnter={() => {
-											setPreviewQuestion(q.id);
-											setShowPreview(true);
-										}}
-										onMouseLeave={() => {
-											if (previewQuestion === q.id) setShowPreview(false);
-										}}
-									>
-										{q.num}
-									</td>
-									<td>{q.type}</td>
-									<td>
-										<TagGroup selectionMode="none" aria-label="Tags">
-											<TagList>
-												{q.tags.map((t: { id: string; name: string }) => (
-													<Tag key={t.id}>{t.name}</Tag>
-												))}
-											</TagList>
-										</TagGroup>
-									</td>
-									<td>{q.creator.name}</td>
-									<td>{q.comment}</td>
-									<td className="flex flex-wrap gap-1">
-										{getActions?.(q)}
-										<Button
-											className="react-aria-Button p-0 px-1"
-											onPress={() => {
-												setPreviewDialogQuestion(q);
-												setPreviewDialogOpen(true);
-											}}
-										>
-											Preview
-										</Button>
-										<Link
-											className="react-aria-Button p-0 px-1"
-											to={`/repo/workspaces/${actualWorkspace}/questions/${q.id}`}
-										>
-											Edit
-										</Link>
-										<a
-											className="react-aria-Button p-0 px-1"
-											href={`/api/repo/workspaces/${actualWorkspace}/questions/${q.id}/revs/latest/download`}
-										>
-											Download
-										</a>
-										<Button
-											className="react-aria-Button p-0 px-1"
-											onPress={() =>
-												recycleQuestion(actualWorkspace, q.id, !q.deleted)
-											}
-										>
-											{q.deleted ? 'Restore' : 'Delete'}
-										</Button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<QuestionTable
+						wid={actualWorkspace}
+						questions={questions}
+						showPreviewHover={showPreviewHover}
+						showPreviewDialog={showPreviewDialog}
+						getActions={getActions}
+						setQuestionsInvalidate={setQuestionsInvalidate}
+					/>
 				</div>
 			</div>
 		</div>

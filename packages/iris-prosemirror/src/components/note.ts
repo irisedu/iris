@@ -50,7 +50,7 @@ export const noteComponent = {
 			attrs: { type: { default: 'info', validate: 'string' } },
 			content: 'note_label block+',
 			toDOM(node) {
-				return ['div', { class: `note ${node.attrs.type}` }, 0];
+				return ['div', { class: `note ${node.attrs.type}`, role: 'note' }, 0];
 			}
 		} as NodeSpec,
 		note_label: {

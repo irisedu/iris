@@ -310,15 +310,20 @@ export function Summary({
 function NoteIcon({ noteType }: { noteType: string }) {
 	switch (noteType) {
 		case 'info':
-			return <Info className="inline w-4 h-4" />;
+			return <Info className="inline w-4 h-4" aria-label="Info icon" />;
 		case 'warning':
-			return <Warning className="inline w-4 h-4" />;
+			return <Warning className="inline w-4 h-4" aria-label="Warning icon" />;
 		case 'tip':
-			return <Tip className="inline w-4 h-4" />;
+			return <Tip className="inline w-4 h-4" aria-label="Tip icon" />;
 		case 'problem':
-			return <Problem className="inline w-5 h-5" />;
+			return (
+				<Problem
+					className="inline w-5 h-5"
+					aria-label="Problem statement icon"
+				/>
+			);
 		case 'exercise':
-			return <Exercise className="inline w-5 h-5" />;
+			return <Exercise className="inline w-5 h-5" aria-label="Exercise icon" />;
 	}
 }
 
@@ -476,7 +481,7 @@ export function IriscNode({
 			if (!label.content || label.type !== 'note_label') return null;
 
 			return (
-				<div {...props} className={`note ${noteType}`}>
+				<div {...props} className={`note ${noteType}`} role="note">
 					<span
 						data-index={0}
 						className="note__label flex flex-row gap-2 items-center"

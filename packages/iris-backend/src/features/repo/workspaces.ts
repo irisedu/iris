@@ -195,14 +195,25 @@ router.post(
 					return;
 				}
 
-				await db
-					.insertInto('repo_workspace_group')
-					.values({
-						workspace_id: wid,
-						user_id: user.id,
-						group_name: 'member'
-					})
-					.execute();
+				await db.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('user_group')
+						.values({
+							user_id: user.id,
+							group_name: 'repo:users'
+						})
+						.onConflict((c) => c.doNothing())
+						.execute();
+
+					await trx
+						.insertInto('repo_workspace_group')
+						.values({
+							workspace_id: wid,
+							user_id: user.id,
+							group_name: 'member'
+						})
+						.execute();
+				});
 
 				res.sendStatus(200);
 			})
@@ -220,11 +231,40 @@ router.delete(
 
 		const { wid, uid } = req.params;
 
-		db.deleteFrom('repo_workspace_group')
-			.where('workspace_id', '=', wid)
+		db.selectFrom('user_group')
 			.where('user_id', '=', uid)
+			.selectAll()
 			.execute()
-			.then(() => res.sendStatus(200))
+			.then(async (groups) => {
+				const otherWorkspaces = await db
+					.selectFrom('repo_workspace_group')
+					.where('user_id', '=', uid)
+					.where('workspace_id', '<>', wid)
+					.selectAll()
+					.execute();
+
+				await db.transaction().execute(async (trx) => {
+					if (
+						!otherWorkspaces.length &&
+						!groups.some((g) => g.group_name === 'repo:instructors')
+					) {
+						await trx
+							.deleteFrom('user_group')
+							.where('user_id', '=', uid)
+							.where('group_name', '=', 'repo:users')
+							.execute();
+					}
+
+					await trx
+						.deleteFrom('repo_workspace_group')
+						.where('workspace_id', '=', wid)
+						.where('user_id', '=', uid)
+						.execute()
+						.catch(next);
+				});
+
+				res.sendStatus(200);
+			})
 			.catch(next);
 	}
 );

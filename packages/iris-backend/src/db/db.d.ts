@@ -103,7 +103,7 @@ export interface RepoQuestion {
 export interface RepoQuestionRev {
   created: Generated<Timestamp>;
   creator: string;
-  data: Json | null;
+  data: Json;
   derived_from: string | null;
   id: Generated<string>;
   question_id: string;
@@ -130,6 +130,7 @@ export interface RepoTemplate {
 export interface RepoWorksheet {
   created: Generated<Timestamp>;
   creator: string;
+  deleted: Generated<boolean>;
   id: Generated<string>;
   name: string;
   num: Generated<Int8>;
@@ -145,7 +146,7 @@ export interface RepoWorksheetQuestion {
 export interface RepoWorksheetRev {
   created: Generated<Timestamp>;
   creator: string;
-  data: Json | null;
+  data: Json;
   id: Generated<string>;
   template_id: string;
   worksheet_id: string;

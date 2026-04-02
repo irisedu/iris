@@ -9,16 +9,19 @@ import {
 	memo
 } from 'react';
 import {
+	Autocomplete,
 	Button,
-	Checkbox,
-	CheckboxGroup,
 	Dropdown,
+	Input,
 	Label,
 	ListBoxItem,
+	SearchField,
 	Switch,
 	Tag,
 	TagGroup,
-	TagList
+	TagList,
+	useFilter,
+	type Selection
 } from 'iris-components';
 import { fetchCsrf } from '../../../utils';
 import { Link } from 'react-router-dom';
@@ -148,7 +151,7 @@ export default function QuestionList({
 }: QuestionListParams) {
 	const [workspace, setWorkspace] = useState('');
 	const [recycleFilter, setRecycleFilter] = useState(false);
-	const [tagFilter, setTagFilter] = useState<string[]>([]);
+	const [tagFilter, setTagFilter] = useState<Selection>(new Set());
 
 	const actualWorkspace = currentWorkspace ?? workspace;
 
@@ -163,9 +166,14 @@ export default function QuestionList({
 		setQuestions([]);
 	}
 
-	if (!tagFilter.every((t) => tags.some((tag) => tag.id === t))) {
-		setTagFilter((curr) =>
-			curr.filter((tagId) => tags.some((tagData) => tagData.id === tagId))
+	if (![...tagFilter].every((t) => tags.some((tag) => tag.id === t))) {
+		setTagFilter(
+			(curr) =>
+				new Set(
+					[...curr].filter((tagId) =>
+						tags.some((tagData) => tagData.id === tagId)
+					)
+				)
 		);
 	}
 
@@ -178,7 +186,7 @@ export default function QuestionList({
 		if (recycleFilter) {
 			params.set('recycle', '1');
 		}
-		tagFilter.forEach((t) => params.append('tags', t));
+		[...tagFilter].forEach((t) => params.append('tags', t as string));
 		fetch(`/api/repo/workspaces/${actualWorkspace}/questions?${params}`)
 			.then((res) => res.json())
 			.then(setQuestions);
@@ -216,6 +224,8 @@ export default function QuestionList({
 		setPreviewDialogOpen(true);
 	}, []);
 
+	const { contains } = useFilter({ sensitivity: 'base' });
+
 	return (
 		<div>
 			{previewDialogQuestion && (
@@ -251,7 +261,7 @@ export default function QuestionList({
 			</div>
 
 			<div className="flex flex-wrap gap-6">
-				<div className="basis-[18%]">
+				<div className="basis-[18%] grow">
 					<h2 className="m-0!">Filter</h2>
 
 					{!currentWorkspace && (
@@ -272,20 +282,25 @@ export default function QuestionList({
 						View recycle bin
 					</Switch>
 
-					<CheckboxGroup value={tagFilter} onChange={setTagFilter}>
-						<Label>Tags</Label>
-						<div className="flex flex-wrap gap-x-4 text-sm">
-							{tags.map((t) => (
-								<Checkbox
-									className="react-aria-Checkbox small"
-									key={t.id}
-									value={t.id}
-								>
-									{t.name}
-								</Checkbox>
-							))}
-						</div>
-					</CheckboxGroup>
+					<Autocomplete filter={contains}>
+						<SearchField className="react-aria-SearchField mb-2 flex flex-col gap-1">
+							<Label>Tags</Label>
+							<Input placeholder="Filter tags" />
+						</SearchField>
+						<TagGroup
+							selectionMode="multiple"
+							selectedKeys={tagFilter}
+							onSelectionChange={setTagFilter}
+						>
+							<TagList>
+								{tags.map((t) => (
+									<Tag key={t.id} id={t.id}>
+										{t.name}
+									</Tag>
+								))}
+							</TagList>
+						</TagGroup>
+					</Autocomplete>
 				</div>
 
 				<div className="basis-[78%] grow">

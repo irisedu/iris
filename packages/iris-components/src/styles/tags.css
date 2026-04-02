@@ -8,4 +8,8 @@
 
 .react-aria-Tag {
 	@apply bg-iris-200 rounded-lg px-2 border-2 border-iris-300;
+
+	&[data-selected] {
+		@apply bg-iris-100;
+	}
 }

@@ -14,6 +14,9 @@ import {
 	type RepoGroup
 } from './utils.js';
 
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 200;
+
 const router = Router();
 
 router.get(
@@ -25,7 +28,7 @@ router.get(
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid } = req.params;
-		const { tags: tagData } = req.query;
+		const { tags: tagData, pageSize, offset } = req.query;
 		const recycle = req.query.recycle === '1';
 
 		let tags: string[] = [];
@@ -38,6 +41,12 @@ router.get(
 		) {
 			tags = tagData;
 		}
+
+		const actualPageSize = Math.min(
+			parseInt(String(pageSize)) || DEFAULT_PAGE_SIZE,
+			MAX_PAGE_SIZE
+		);
+		const actualOffset = parseInt(String(offset)) || 0;
 
 		getUserWorkspaceGroup(req.session.user.id, wid)
 			.then(async (group) => {
@@ -56,16 +65,22 @@ router.get(
 							.where('tag_id', 'in', tags)
 							.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
 							.having((eb) => eb.fn.countAll(), '=', tags.length)
-							.orderBy('num', 'asc')
+							.orderBy('num', 'desc')
 							.selectAll('repo_question')
+							.select(db.fn.countAll().over().as('totalNumQuestions'))
+							.limit(actualPageSize)
+							.offset(actualOffset)
 							.execute()
 					: await db
 							.selectFrom('repo_question')
 							.where('workspace_id', '=', wid)
 							.where('deleted', '=', recycle)
 							.where('privilege', '<=', privilege)
-							.orderBy('num', 'asc')
+							.orderBy('num', 'desc')
 							.selectAll()
+							.select(db.fn.countAll().over().as('totalNumQuestions'))
+							.limit(actualPageSize)
+							.offset(actualOffset)
 							.execute();
 
 				const creatorIds = [...new Set(questionData.map((q) => q.creator))];
@@ -80,6 +95,9 @@ router.get(
 				const tasks = [];
 
 				for (const question of questionData) {
+					const { totalNumQuestions: _totalNumQuestions, ...restQuestion } =
+						question;
+
 					tasks.push(
 						(async function () {
 							const tags = await db
@@ -94,7 +112,7 @@ router.get(
 								.execute();
 
 							return {
-								...question,
+								...restQuestion,
 								creator: creators.find((c) => c.id === question.creator),
 								tags
 							};
@@ -102,7 +120,11 @@ router.get(
 					);
 				}
 
-				res.json(await Promise.all(tasks));
+				res.json({
+					questions: await Promise.all(tasks),
+					totalNum: questionData.length ? questionData[0].totalNumQuestions : 0,
+					pageSize: actualPageSize
+				});
 			})
 			.catch(next);
 	}

@@ -24,7 +24,7 @@ import {
 	type Selection
 } from 'iris-components';
 import { fetchCsrf } from '../../../utils';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 import { QuestionPreviewDialog } from './QuestionPreview';
 
@@ -142,6 +142,165 @@ const QuestionTable = memo(function QuestionTable({
 	);
 });
 
+function Pager({
+	totalNum,
+	pageSize,
+	offset
+}: {
+	totalNum: number;
+	pageSize: number;
+	offset: number;
+}) {
+	const location = useLocation();
+	const [searchParams] = useSearchParams();
+
+	const currentPageIdx = Math.floor(offset / pageSize);
+
+	const pagesToShow = 9;
+	const numPages = Math.ceil(totalNum / pageSize);
+
+	let firstPageToShow: number;
+	let lastPageToShow: number;
+
+	if (currentPageIdx < Math.floor(pagesToShow / 2)) {
+		firstPageToShow = Math.max(0, currentPageIdx - Math.floor(pagesToShow / 2));
+		lastPageToShow = Math.min(numPages - 1, firstPageToShow + pagesToShow - 1);
+	} else {
+		lastPageToShow = Math.min(
+			numPages - 1,
+			currentPageIdx + Math.floor(pagesToShow / 2)
+		);
+		firstPageToShow = Math.max(0, lastPageToShow - pagesToShow + 1);
+	}
+
+	const pages: number[] = [];
+	for (let i = firstPageToShow; i <= lastPageToShow; i++) {
+		pages.push(i);
+	}
+
+	const pageSizes = [50, 100, 150, 200];
+
+	return (
+		<nav aria-label="Page control" className="flex flex-row items-center gap-6">
+			<ul className="list-none flex gap-6 grow justify-center">
+				{numPages > pagesToShow && (
+					<li>
+						<Link
+							to={{
+								pathname: location.pathname,
+								search:
+									'?' +
+									new URLSearchParams({
+										...Object.fromEntries(searchParams),
+										pageOffset: '0'
+									})
+							}}
+						>
+							First
+						</Link>
+					</li>
+				)}
+				{currentPageIdx > 0 && (
+					<li>
+						<Link
+							to={{
+								pathname: location.pathname,
+								search:
+									'?' +
+									new URLSearchParams({
+										...Object.fromEntries(searchParams),
+										pageOffset: String(offset - pageSize)
+									})
+							}}
+						>
+							Prev
+						</Link>
+					</li>
+				)}
+				{pages.map((p) => (
+					<li key={p}>
+						<Link
+							to={{
+								pathname: location.pathname,
+								search:
+									'?' +
+									new URLSearchParams({
+										...Object.fromEntries(searchParams),
+										pageOffset: String(p * pageSize)
+									})
+							}}
+							aria-current={p === currentPageIdx}
+							className={p === currentPageIdx ? 'font-bold' : ''}
+						>
+							{p + 1}
+						</Link>
+					</li>
+				))}
+				{currentPageIdx < numPages - 1 && (
+					<li>
+						<Link
+							to={{
+								pathname: location.pathname,
+								search:
+									'?' +
+									new URLSearchParams({
+										...Object.fromEntries(searchParams),
+										pageOffset: String(offset + pageSize)
+									})
+							}}
+						>
+							Next
+						</Link>
+					</li>
+				)}
+				{numPages > pagesToShow && (
+					<li>
+						<Link
+							to={{
+								pathname: location.pathname,
+								search:
+									'?' +
+									new URLSearchParams({
+										...Object.fromEntries(searchParams),
+										pageOffset: String((numPages - 1) * pageSize)
+									})
+							}}
+						>
+							Last
+						</Link>
+					</li>
+				)}
+			</ul>
+			<div className="flex gap-2 items-center justify-center">
+				<span>Show results</span>
+				<ul className="list-none flex gap-6 justify-center">
+					{pageSizes.map((sz) => (
+						<li key={sz}>
+							<Link
+								to={{
+									pathname: location.pathname,
+									search:
+										'?' +
+										new URLSearchParams({
+											...Object.fromEntries(searchParams),
+											pageSize: String(sz),
+											pageOffset: '0'
+										})
+								}}
+								aria-current={pageSize === sz}
+								className={pageSize === sz ? 'font-bold' : ''}
+							>
+								{sz}
+							</Link>
+						</li>
+					))}
+				</ul>
+			</div>
+			<div>Results: {totalNum}</div>
+		</nav>
+	);
+}
+
 export default function QuestionList({
 	currentWorkspace,
 	workspaces,
@@ -149,9 +308,11 @@ export default function QuestionList({
 	setQuestionsInvalidate,
 	getActions
 }: QuestionListParams) {
+	const [searchParams, setSearchParams] = useSearchParams();
+
 	const [workspace, setWorkspace] = useState('');
-	const [recycleFilter, setRecycleFilter] = useState(false);
-	const [tagFilter, setTagFilter] = useState<Selection>(new Set());
+	const [recycleFilter, setRecycleFilterInternal] = useState(false);
+	const [tagFilter, setTagFilterInternal] = useState<Selection>(new Set());
 
 	const actualWorkspace = currentWorkspace ?? workspace;
 
@@ -160,10 +321,31 @@ export default function QuestionList({
 		: [];
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [questions, setQuestions] = useState<any[]>([]);
+	const [questionData, setQuestionData] = useState<any>({});
+	const { questions = [], totalNum = 0, pageSize = 0 } = questionData;
+	const requestedPageSize = parseInt(searchParams.get('pageSize') ?? '') || 50;
+	const pageOffset = parseInt(searchParams.get('pageOffset') ?? '') || 0;
+
+	function setPageOffset(newPageOffset: number) {
+		setSearchParams((prev) => ({
+			...Object.fromEntries(prev),
+			pageOffset: newPageOffset.toString()
+		}));
+	}
+
+	function setRecycleFilter(ch: SetStateAction<boolean>) {
+		setRecycleFilterInternal(ch);
+		setPageOffset(0);
+	}
+
+	function setTagFilter(ch: SetStateAction<Selection>) {
+		setTagFilterInternal(ch);
+		setPageOffset(0);
+	}
 
 	if (!actualWorkspace.length && questions.length) {
-		setQuestions([]);
+		setQuestionData({});
+		setPageOffset(0);
 	}
 
 	if (![...tagFilter].every((t) => tags.some((tag) => tag.id === t))) {
@@ -175,6 +357,8 @@ export default function QuestionList({
 					)
 				)
 		);
+
+		setPageOffset(0);
 	}
 
 	useEffect(() => {
@@ -187,10 +371,19 @@ export default function QuestionList({
 			params.set('recycle', '1');
 		}
 		[...tagFilter].forEach((t) => params.append('tags', t as string));
+		if (pageOffset) params.set('offset', String(pageOffset));
+		params.set('pageSize', String(requestedPageSize));
 		fetch(`/api/repo/workspaces/${actualWorkspace}/questions?${params}`)
 			.then((res) => res.json())
-			.then(setQuestions);
-	}, [questionsInvalidate, actualWorkspace, recycleFilter, tagFilter]);
+			.then(setQuestionData);
+	}, [
+		questionsInvalidate,
+		actualWorkspace,
+		recycleFilter,
+		tagFilter,
+		pageOffset,
+		requestedPageSize
+	]);
 
 	const [hoverPreviewState, setHoverPreviewState] = useState<{
 		qid: string;
@@ -305,6 +498,7 @@ export default function QuestionList({
 
 				<div className="basis-[78%] grow">
 					<h2 className="m-0!">Questions</h2>
+					<Pager totalNum={totalNum} pageSize={pageSize} offset={pageOffset} />
 					<QuestionTable
 						wid={actualWorkspace}
 						questions={questions}
@@ -313,6 +507,7 @@ export default function QuestionList({
 						getActions={getActions}
 						setQuestionsInvalidate={setQuestionsInvalidate}
 					/>
+					<Pager totalNum={totalNum} pageSize={pageSize} offset={pageOffset} />
 				</div>
 			</div>
 		</div>

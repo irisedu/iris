@@ -1,6 +1,7 @@
 \usepackage{ifthen}
 \usepackage{environ}
 \usepackage{draftwatermark}
+\usepackage{tcolorbox}
 \SetWatermarkText{\textbf{}}
 \SetWatermarkScale{2}
 
@@ -24,16 +25,23 @@
   {#1} % Optional supplimentary content to show if solution is disabled
 }
 
-\newenvironment{Solution}{\color{red}}{}
+\newenvironment{Solution}{
+\begin{tcolorbox}[standard jigsaw, opacityback=0, colframe=black, width=6.7in, arc=0mm, boxrule=1pt]
+\color{red}
+}{
+\end{tcolorbox}
+}
 \newenvironment{Question}{}{}
+\newenvironment{AnswerArea}{
+\begin{tcolorbox}[standard jigsaw, opacityback=0, colframe=black, width=6.7in, arc=0mm, boxrule=1pt]
+}{
+\end{tcolorbox}
+}
 
 \ifsolution
   \SetWatermarkText{\textbf{SOLUTION}}
-  \NewEnviron{hide}{}
-  \let\Question\hide
-  \let\endQuestion\endhide
+  \RenewEnviron{Question}{}
+  \RenewEnviron{AnswerArea}{}
 \else
-  \NewEnviron{hide}{}
-  \let\Solution\hide
-  \let\endSolution\endhide
+  \RenewEnviron{Solution}{}
 \fi

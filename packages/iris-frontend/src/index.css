@@ -78,6 +78,8 @@
 :root {
 	--font-main: Vollkorn;
 	--font-mono: Source Code Pro;
+	--font-ui: var(--font-sans);
+
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
 
@@ -87,6 +89,21 @@
 	--color-link-indicator: var(--color-iris-950);
 
 	--color-inline-code: var(--color-blue-700);
+
+	--color-button-bg: var(--color-iris-800);
+	--color-button-fg: var(--color-white);
+	--color-button-hover-bg: var(--color-iris-900);
+	--color-button-pressed-bg: var(--color-iris-950);
+
+	--color-button-alt-bg: var(--color-iris-300);
+	--color-button-alt-fg: var(--color-black);
+	--color-button-alt-hover-bg: var(--color-iris-200);
+	--color-button-alt-pressed-bg: var(--color-iris-50);
+
+	--color-button-danger-bg: var(--color-red-600);
+	--color-button-danger-fg: var(--color-white);
+	--color-button-danger-hover-bg: var(--color-red-700);
+	--color-button-danger-pressed-bg: var(--color-red-800);
 
 	--color-sat: calc(
 		70% - var(--hue-shift) * 0.333% + var(--hue-shift) * var(--hue-shift) *

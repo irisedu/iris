@@ -1,7 +1,8 @@
 :root {
 	--font-main: system-ui;
 	--font-title: var(--font-main);
-	--font-heading: var(--font-heading);
+	--font-heading: var(--font-main);
+	--font-ui: var(--font-main);
 	--font-mono: monospace;
 
 	--leading-normal: 1.4;
@@ -41,6 +42,30 @@
 	// Lists
 	--list-indent: 1.5rem;
 	--list-spacing: calc(var(--paragraph-spacing) / 3);
+
+	// Buttons
+	--button-rounding: 0.25rem;
+
+	--color-button-bg: hsl(270, 100%, 35%);
+	--color-button-fg: white;
+	--color-button-hover-bg: hsl(270, 100%, 30%);
+	--color-button-hover-fg: var(--color-button-fg);
+	--color-button-pressed-bg: hsl(270, 100%, 22%);
+	--color-button-pressed-fg: var(--color-button-fg);
+
+	--color-button-alt-bg: #e0e0e0;
+	--color-button-alt-fg: black;
+	--color-button-alt-hover-bg: #e7e7e7;
+	--color-button-alt-hover-fg: var(--color-button-alt-fg);
+	--color-button-alt-pressed-bg: #f0f0f0;
+	--color-button-alt-pressed-fg: var(--color-button-alt-fg);
+
+	--color-button-danger-bg: hsl(0, 100%, 45%);
+	--color-button-danger-fg: white;
+	--color-button-danger-hover-bg: hsl(0, 100%, 40%);
+	--color-button-danger-hover-fg: var(--color-button-danger-fg);
+	--color-button-danger-pressed-bg: hsl(0, 100%, 37%);
+	--color-button-danger-pressed-fg: var(--color-button-danger-fg);
 
 	// Marginalia: Asides and sidenotes
 	--prose-width: 60cqw;

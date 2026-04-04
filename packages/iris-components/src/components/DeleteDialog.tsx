@@ -23,13 +23,13 @@ export function DeleteDialog({
 
 				<div className="flex flex-row gap-2">
 					<Button
-						className="react-aria-Button border-iris-300"
+						className="react-aria-Button button-alt"
 						onPress={() => setIsOpen(false)}
 					>
 						Cancel
 					</Button>
 					<Button
-						className="react-aria-Button button-alert"
+						className="react-aria-Button button-danger"
 						autoFocus
 						onPress={() => {
 							if (callbackRef.current) callbackRef.current();

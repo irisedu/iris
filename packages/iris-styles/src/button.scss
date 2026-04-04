@@ -1,0 +1,70 @@
+button:not([data-rac]),
+.react-aria-Button {
+	font-family: var(--font-ui);
+	font-size: 0.9rem;
+	background-color: var(--color-button-bg);
+	color: var(--color-button-fg);
+	cursor: pointer;
+	border: none;
+	padding: 0.3em 0.6em;
+	border-radius: var(--button-rounding);
+
+	outline-offset: 0.1rem;
+
+	&:hover,
+	&[data-hovered],
+	&:focus-visible,
+	&[data-focus-visible] {
+		background-color: var(--color-button-hover-bg);
+		color: var(--color-button-hover-fg);
+	}
+
+	&:active,
+	&[data-pressed] {
+		background-color: var(--color-button-pressed-bg);
+		color: var(--color-button-pressed-fg);
+	}
+}
+
+.button-pill.button-pill {
+	border-radius: 100vw;
+	padding: 0.3em 0.8em;
+}
+
+.button-alt.button-alt {
+	background-color: var(--color-button-alt-bg);
+	color: var(--color-button-alt-fg);
+
+	&:hover,
+	&[data-hovered],
+	&:focus-visible,
+	&[data-focus-visible] {
+		background-color: var(--color-button-alt-hover-bg);
+		color: var(--color-button-alt-hover-fg);
+	}
+
+	&:active,
+	&[data-pressed] {
+		background-color: var(--color-button-alt-pressed-bg);
+		color: var(--color-button-alt-pressed-fg);
+	}
+}
+
+.button-danger.button-danger {
+	background-color: var(--color-button-danger-bg);
+	color: var(--color-button-danger-fg);
+
+	&:hover,
+	&[data-hovered],
+	&:focus-visible,
+	&[data-focus-visible] {
+		background-color: var(--color-button-danger-hover-bg);
+		color: var(--color-button-danger-hover-fg);
+	}
+
+	&:active,
+	&[data-pressed] {
+		background-color: var(--color-button-danger-pressed-bg);
+		color: var(--color-button-danger-pressed-fg);
+	}
+}

@@ -179,7 +179,6 @@ function LinkDialog({ isOpen, setIsOpen }: DialogProps) {
 				</TextField>
 
 				<Button
-					className="react-aria-Button border-iris-300"
 					autoFocus
 					onPress={() => {
 						updateLinkMark();

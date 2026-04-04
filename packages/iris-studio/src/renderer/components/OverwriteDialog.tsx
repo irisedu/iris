@@ -41,7 +41,7 @@ function OverwriteDialog({
 						Cancel
 					</Button>
 					<Button
-						className="react-aria-Button button-alert"
+						className="react-aria-Button button-danger"
 						autoFocus
 						onPress={() => {
 							if (callbackRef.current) callbackRef.current();

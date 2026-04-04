@@ -81,8 +81,8 @@
 	--font-smallcaps: Vollkorn SC;
 	--font-sans: Atkinson Hyperlegible;
 
-	--color-link: var(--color-iris-800);
-	--color-link-hover: var(--color-iris-900);
+	--color-link: var(--color-iris-900);
+	--color-link-hover: var(--color-iris-950);
 	--color-link-active: var(--color-iris-950);
 	--color-link-indicator: var(--color-iris-950);
 

@@ -11,5 +11,6 @@ packages/iris-backend/.pg/
 packages/iris-backend/src/db/db.d.ts
 packages/iris-backend/obj/
 packages/iris-backend/spa/
+packages/iris-backend/src/migration/dump.json
 
 docs/

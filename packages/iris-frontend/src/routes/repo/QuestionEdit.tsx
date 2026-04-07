@@ -31,23 +31,18 @@ import { githubDark, githubLight } from '@uiw/codemirror-theme-github';
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { wid, qid } = params;
 
-	const out: {
-		workspaces?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-		questionData?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-	} = {};
-
-	out.workspaces = await fetch('/api/repo/workspaces', {
-		cache: 'no-store'
-	}).then((res) => res.json());
-
-	out.questionData = await fetch(
-		`/api/repo/workspaces/${wid}/questions/${qid}/revs/latest`,
-		{
+	// TODO: handle non-200 response codes
+	return {
+		workspaces: await fetch('/api/repo/workspaces', {
 			cache: 'no-store'
-		}
-	).then((res) => res.json());
-
-	return out;
+		}).then((res) => res.json()),
+		questionData: await fetch(
+			`/api/repo/workspaces/${wid}/questions/${qid}/revs/latest`,
+			{
+				cache: 'no-store'
+			}
+		).then((res) => res.json())
+	};
 }
 
 export function Component() {

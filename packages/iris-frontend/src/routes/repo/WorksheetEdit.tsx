@@ -28,28 +28,21 @@ import Menu from '~icons/tabler/menu';
 export async function loader({ params }: LoaderFunctionArgs) {
 	const { wid, wsid } = params;
 
-	const out: {
-		workspaces?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-		templates?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-		worksheetData?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-	} = {};
-
-	out.workspaces = await fetch('/api/repo/workspaces', {
-		cache: 'no-store'
-	}).then((res) => res.json());
-
-	out.templates = await fetch('/api/repo/workspaces/all/templates', {
-		cache: 'no-store'
-	}).then((res) => res.json());
-
-	out.worksheetData = await fetch(
-		`/api/repo/workspaces/${wid}/worksheets/${wsid}/revs/latest`,
-		{
+	// TODO: handle non-200 response codes
+	return {
+		workspaces: await fetch('/api/repo/workspaces', {
 			cache: 'no-store'
-		}
-	).then((res) => res.json());
-
-	return out;
+		}).then((res) => res.json()),
+		templates: await fetch('/api/repo/workspaces/all/templates', {
+			cache: 'no-store'
+		}).then((res) => res.json()),
+		worksheetData: await fetch(
+			`/api/repo/workspaces/${wid}/worksheets/${wsid}/revs/latest`,
+			{
+				cache: 'no-store'
+			}
+		).then((res) => res.json())
+	};
 }
 
 type SelectedQuestions = {

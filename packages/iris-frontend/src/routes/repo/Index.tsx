@@ -14,32 +14,21 @@ import {
 	ListBoxItem
 } from 'iris-components';
 
-import store from '$state/store';
-
 import Questions from './Questions';
 import Templates from './Templates';
 import Worksheets from './Worksheets';
 import Workspaces from './Workspaces';
 
 export async function loader() {
-	const { user } = store.getState().user;
-
-	const out: {
-		workspaces?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-		templates?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-	} = {};
-
-	if (user?.type !== 'registered') return out;
-
-	out.workspaces = await fetch('/api/repo/workspaces', {
-		cache: 'no-store'
-	}).then((res) => res.json());
-
-	out.templates = await fetch('/api/repo/workspaces/all/templates', {
-		cache: 'no-store'
-	}).then((res) => res.json());
-
-	return out;
+	// TODO: handle non-200 response codes
+	return {
+		workspaces: await fetch('/api/repo/workspaces', {
+			cache: 'no-store'
+		}).then((res) => res.json()),
+		templates: await fetch('/api/repo/workspaces/all/templates', {
+			cache: 'no-store'
+		}).then((res) => res.json())
+	};
 }
 
 export function Component() {

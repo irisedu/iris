@@ -19,7 +19,59 @@ const features: string[] = [];
 
 // Core functionality
 app.use(express.json());
+app.disable('x-powered-by');
 
+if (process.env.NODE_ENV === 'development') {
+	const spec = (await import('./openapi.js')).default;
+	const swaggerUi = (await import('swagger-ui-express')).default;
+
+	expressLogger.info(`Generating OpenAPI documentation...`);
+
+	/**
+	 * @openapi
+	 *
+	 * /api:
+	 *   get:
+	 *     summary: "[DEV] Get OpenAPI description"
+	 *     description: Get the OpenAPI description for this API. Available only in development.
+	 *     tags:
+	 *     - base
+	 *     responses:
+	 *       200:
+	 *         description: OK
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 */
+	app.get('/api', (_, res) => {
+		res.json(spec);
+	});
+
+	app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(spec));
+}
+
+/**
+ * @openapi
+ *
+ * /api/features:
+ *   get:
+ *     summary: Get supported features
+ *     description: Get a list of Iris features supported by the backend.
+ *     tags:
+ *     - base
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               examples:
+ *               - [auth, obj, serve, judge, llm, repo, spa]
+ */
 app.get('/api/features', (_, res) => {
 	res.json(features);
 });

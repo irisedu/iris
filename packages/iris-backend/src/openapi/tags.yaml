@@ -1,0 +1,3 @@
+tags:
+  - name: base
+    description: Endpoints available regardless of enabled features.

@@ -42,7 +42,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			'^\\/(page\\/[^.]+\\..*)|(series\\/?)|(auth\\/.*)|(api\\/.*)$': {
+			'^\\/(page\\/[^.]+\\..*)|(series\\/?)|(auth\\/.*)|(api(\\/.*)?)$': {
 				target: 'http://localhost:58063',
 				changeOrigin: true
 			}

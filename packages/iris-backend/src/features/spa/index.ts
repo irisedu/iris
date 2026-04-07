@@ -1,7 +1,8 @@
 import { type BackendFeature } from '../../feature.js';
 import express from 'express';
 import path from 'path';
-import { spaRoot } from '../../constants.js';
+
+const spaRoot = process.env.SPA_ROOT || path.join(process.cwd(), 'spa');
 
 export const spaFeature = {
 	name: 'spa',

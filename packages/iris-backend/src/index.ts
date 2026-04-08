@@ -1,7 +1,9 @@
-import express, { type Express } from 'express';
+import express, { type Express, type ErrorRequestHandler } from 'express';
 import { type BackendFeature } from './feature.js';
 import { expressLogger } from './logger.js';
 import { migrateToLatest } from './db/migrator.js';
+import OpenApiValidator from 'express-openapi-validator';
+import path from 'node:path';
 
 import { authFeature } from './features/auth/index.js';
 import { objFeature } from './features/obj/index.js';
@@ -20,6 +22,17 @@ const features: string[] = [];
 // Core functionality
 app.use(express.json());
 app.disable('x-powered-by');
+
+app.use(
+	OpenApiValidator.middleware({
+		apiSpec: path.join(import.meta.dirname, 'openapi.json'),
+		validateRequests: true,
+		validateResponses: true,
+		validateSecurity: true,
+		validateApiSpec: true,
+		ignoreUndocumented: true
+	})
+);
 
 if (process.env.NODE_ENV === 'development') {
 	const spec = (await import('./openapi.js')).default;
@@ -103,6 +116,14 @@ await registerFeature(app, spaFeature);
 
 expressLogger.info({ features }, `Features: ${features}`);
 
+app.use(((err, _req, res, _next) => {
+	res.status(err.status ?? 500).json({
+		type: 'internalError',
+		error: err.message,
+		errorData: err.errors
+	});
+}) as ErrorRequestHandler);
+
 // Start
 const port = process.env.PORT || 58063;
 
@@ -112,5 +133,4 @@ app.listen(port, () => {
 	expressLogger.info({ port }, `Listening on port ${port}`);
 });
 
-// Expose some types to the frontend
-export type * from './features/auth/index.js';
+export type * from './types.d.js';

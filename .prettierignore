@@ -9,6 +9,7 @@ packages/iris-components/src/hooks/highlightMergeHTMLPlugin.js
 
 packages/iris-backend/.pg/
 packages/iris-backend/src/openapi.json
+packages/iris-backend/src/openapi.d.ts
 packages/iris-backend/src/db/db.d.ts
 packages/iris-backend/obj/
 packages/iris-backend/spa/

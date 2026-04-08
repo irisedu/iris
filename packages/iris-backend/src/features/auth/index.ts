@@ -5,50 +5,42 @@ import session from 'express-session';
 import { RedisStore } from 'connect-redis';
 import { Redis } from 'ioredis';
 import { db } from '../../db/index.js';
-import { InferResult } from 'kysely';
 import { doubleCsrfProtection, generateCsrfToken } from './csrf.js';
+import { type PendingFederationSessionData } from '../../types.js';
 
 import { googleRouter } from './google.js';
 import { casRouter } from './cas.js';
 
-export interface RegisteredSessionData {
-	type: 'registered';
-	id: string;
-}
-
-export interface PendingFederationSessionData {
-	type: 'pendingFederation';
-	provider: string;
-	providerName: string;
-	data: {
-		existingAccount?: string;
-		id: string;
-		email: string;
-		name?: string;
-	};
-}
-
 declare module 'express-session' {
 	interface SessionData {
-		user: RegisteredSessionData | PendingFederationSessionData;
+		user:
+			| {
+					type: 'registered';
+					id: string;
+			  }
+			| PendingFederationSessionData;
 	}
 }
 
-const _userQuery = db.selectFrom('user_account').selectAll();
-
-export type UserInfoResult =
-	| {
-			type: 'registered';
-			data: InferResult<typeof _userQuery>[0];
-			groups: string[];
-	  }
-	| {
-			type: 'loggedOut';
-	  }
-	| PendingFederationSessionData;
-
 const router = Router();
 
+/**
+ * @openapi
+ *
+ * /auth/info:
+ *   get:
+ *     summary: Current user information
+ *     description: Get information about the currently logged-in user.
+ *     tags:
+ *     - auth
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserInfoResult'
+ */
 router.get('/info', (req, res, next) => {
 	const user = req.session.user;
 	if (!user) {
@@ -59,7 +51,7 @@ router.get('/info', (req, res, next) => {
 	if (user.type === 'registered') {
 		db.selectFrom('user_account')
 			.where('id', '=', user.id)
-			.selectAll()
+			.select(['id', 'email', 'name'])
 			.executeTakeFirst()
 			.then(async (dbUser) => {
 				if (!dbUser) {

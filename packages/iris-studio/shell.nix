@@ -11,10 +11,8 @@
       systemd libdrm mesa libGL vulkan-loader stdenv.cc.cc alsa-lib at-spi2-atk
       cairo cups dbus expat gdk-pixbuf glib gtk3 nspr nss pango libxkbcommon
       libnotify zlib libgbm
-    ]
-  ) ++ (with pkgs.xorg;
-    [
-      libXdamage libXext libXfixes libXrandr libX11 libXcomposite libxshmfence
+
+      libxdamage libxext libxfixes libxrandr libx11 libxcomposite libxshmfence
       libxcb
     ]
   );

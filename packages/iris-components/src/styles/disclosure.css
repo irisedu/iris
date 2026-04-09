@@ -1,0 +1,9 @@
+.react-aria-Disclosure {
+	.disclosure-icon {
+		@apply rotate-none;
+	}
+
+	&[data-expanded] .disclosure-icon {
+		@apply rotate-90;
+	}
+}

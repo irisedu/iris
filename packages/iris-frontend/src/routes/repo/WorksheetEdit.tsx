@@ -18,7 +18,10 @@ import {
 	TextField,
 	Text,
 	useDragAndDrop,
-	Label
+	Label,
+	Disclosure,
+	DisclosurePanel,
+	DisclosureHeader
 } from 'iris-components';
 import { WorksheetPreview } from './components/WorksheetPreview';
 import { fetchCsrf } from '../../utils';
@@ -98,6 +101,10 @@ export function Component() {
 		? varsInternal.filter((v) => v !== 'SHOW_ANSWER' && v !== 'INCLUDE_CONTENT')
 		: [];
 	useEffect(() => {
+		if (!template.length) {
+			return;
+		}
+
 		fetch(`/api/repo/workspaces/${wid}/templates/${template}/vars`)
 			.then((res) => res.json())
 			.then(setVars);
@@ -208,111 +215,133 @@ export function Component() {
 					>
 						Save
 					</Button>
-					<Dropdown
-						label="Template"
-						value={template}
-						onChange={(key) => {
-							setTemplate(key as string);
-							setPreviewContents(
-								getWorksheetData(selectedQuestions, key as string, varValues)
-							);
-						}}
+
+					<Disclosure
+						defaultExpanded={!template.length}
+						className="react-aria-Disclosure my-4"
 					>
-						{templates
-							.filter(
-								(t: { workspace_id: string; name: string }) =>
-									t.workspace_id === wid
-							)
-							.map((t: { id: string; name: string }) => (
-								<ListBoxItem key={t.id} id={t.id}>
-									{t.name}
-								</ListBoxItem>
-							))}
-					</Dropdown>
+						<DisclosureHeader level={2}>Template</DisclosureHeader>
 
-					<h2 className="mt-4">Template variables</h2>
-
-					{vars.length ? (
-						vars.map((v) => (
-							<TextField
-								key={v}
-								value={varValues[v]}
-								onChange={(newVal) => {
-									setVarValues((old) => {
-										const newValues = { ...old, [v]: newVal };
-										setPreviewTimeout(
-											getWorksheetData(selectedQuestions, template, newValues)
-										);
-										return newValues;
-									});
+						<DisclosurePanel>
+							<Dropdown
+								label="Template"
+								value={template}
+								onChange={(key) => {
+									setTemplate(key as string);
+									setPreviewContents(
+										getWorksheetData(
+											selectedQuestions,
+											key as string,
+											varValues
+										)
+									);
 								}}
 							>
-								<Label>
-									<code>{v}</code>
-								</Label>
-								<Input />
-							</TextField>
-						))
-					) : (
-						<p>No template variables found.</p>
-					)}
+								{templates
+									.filter(
+										(t: { workspace_id: string; name: string }) =>
+											t.workspace_id === wid
+									)
+									.map((t: { id: string; name: string }) => (
+										<ListBoxItem key={t.id} id={t.id}>
+											{t.name}
+										</ListBoxItem>
+									))}
+							</Dropdown>
 
-					<h2>Selected questions</h2>
+							{!!vars.length && (
+								<>
+									<h3 className="my-4">Variables</h3>
+									{vars.map((v) => (
+										<TextField
+											key={v}
+											value={varValues[v]}
+											onChange={(newVal) => {
+												setVarValues((old) => {
+													const newValues = { ...old, [v]: newVal };
+													setPreviewTimeout(
+														getWorksheetData(
+															selectedQuestions,
+															template,
+															newValues
+														)
+													);
+													return newValues;
+												});
+											}}
+										>
+											<Label>
+												<code>{v}</code>
+											</Label>
+											<Input />
+										</TextField>
+									))}
+								</>
+							)}
+						</DisclosurePanel>
+					</Disclosure>
 
-					{selectedQuestions.length ? (
-						<GridList
-							aria-label="Selected Questions"
-							selectionMode="multiple"
-							dragAndDropHooks={dragAndDropHooks}
-						>
-							{selectedQuestions.map((q) => (
-								<GridListItem
-									key={q.id}
-									id={q.id}
-									textValue={`${q.num} — ${q.comment}`}
-									className="react-aria-GridListItem border-2 border-iris-200 p-2"
+					<Disclosure defaultExpanded className="react-aria-Disclosure my-4">
+						<DisclosureHeader level={2}>Selected questions</DisclosureHeader>
+
+						<DisclosurePanel>
+							{selectedQuestions.length ? (
+								<GridList
+									aria-label="Selected Questions"
+									selectionMode="multiple"
+									dragAndDropHooks={dragAndDropHooks}
+									className="react-aria-GridList my-4"
 								>
-									<Button slot="drag" className="text-iris-400 float-right">
-										<Menu />
-									</Button>
-									<div className="flex flex-col gap-2">
-										<Text slot="description">
-											<strong>#{q.num}</strong> — {q.comment}
-										</Text>
-										<div className="flex flex-wrap gap-2">
-											<Link
-												className="react-aria-Button"
-												to={`/repo/workspaces/${q.workspace_id}/questions/${q.qid}`}
-											>
-												Edit
-											</Link>
-											<Button
-												onPress={() => {
-													setSelectedQuestions((qs) => {
-														const newQuestions = qs.filter(
-															(other) => other.id !== q.id
-														);
-														setPreviewContents(
-															getWorksheetData(
-																newQuestions,
-																template,
-																varValues
-															)
-														);
-														return newQuestions;
-													});
-												}}
-											>
-												Remove
+									{selectedQuestions.map((q) => (
+										<GridListItem
+											key={q.id}
+											id={q.id}
+											textValue={`${q.num} — ${q.comment}`}
+											className="react-aria-GridListItem border-2 border-iris-200 p-2"
+										>
+											<Button slot="drag" className="text-iris-400 float-right">
+												<Menu />
 											</Button>
-										</div>
-									</div>
-								</GridListItem>
-							))}
-						</GridList>
-					) : (
-						<p className="my-0">No questions selected.</p>
-					)}
+											<div className="flex flex-col gap-2">
+												<Text slot="description">
+													<strong>#{q.num}</strong> — {q.comment}
+												</Text>
+												<div className="flex flex-wrap gap-2">
+													<Link
+														className="react-aria-Button"
+														to={`/repo/workspaces/${q.workspace_id}/questions/${q.qid}`}
+													>
+														Edit
+													</Link>
+													<Button
+														onPress={() => {
+															setSelectedQuestions((qs) => {
+																const newQuestions = qs.filter(
+																	(other) => other.id !== q.id
+																);
+																setPreviewContents(
+																	getWorksheetData(
+																		newQuestions,
+																		template,
+																		varValues
+																	)
+																);
+																return newQuestions;
+															});
+														}}
+													>
+														Remove
+													</Button>
+												</div>
+											</div>
+										</GridListItem>
+									))}
+								</GridList>
+							) : (
+								<p className="my-4">No questions selected.</p>
+							)}
+						</DisclosurePanel>
+					</Disclosure>
 				</div>
 
 				{template.length ? (

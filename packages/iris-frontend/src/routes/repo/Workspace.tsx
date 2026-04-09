@@ -232,56 +232,94 @@ export default function Workspaces({
 					))}
 			</Dropdown>
 
-			<h3 className="m-0 mt-2">Members</h3>
+			<h3 className="m-0 my-2">Members</h3>
 
-			<div className="flex flex-wrap gap-2 mb-3">
-				<TextField
-					value={addMemberEmail}
-					onChange={setAddMemberEmail}
-					className="react-aria-TextField m-0 max-w-full"
-				>
-					<Input placeholder="Email" aria-label="Email" />
-				</TextField>
-				<Button onPress={() => addMember(addMemberEmail)}>Add Member</Button>
-			</div>
+			{workspace.userGroup === 'owner' && (
+				<>
+					<p className="my-2">
+						New workspace members must have an Iris account prior to being
+						added.
+					</p>
 
-			<ul className="m-0!">
-				{workspace.members.map(
-					(
-						m: any // eslint-disable-line @typescript-eslint/no-explicit-any
-					) => (
-						<li key={m.id}>
-							{user?.type === 'registered' && user.data.id === m.id ? (
-								<strong>
-									{m.name} (you) — {m.group}
-								</strong>
-							) : (
-								`${m.name} — ${m.group}`
-							)}
-							{user?.type === 'registered' &&
-								workspace.userGroup === 'owner' &&
-								user.data.id !== m.id && (
-									<span className="mx-4 inline-flex flex-wrap gap-2">
-										<Button onPress={() => removeMember(m.id)}>Remove</Button>
-										<Button onPress={() => setMemberGroup(m.id, 'owner')}>
-											Set as Owner
-										</Button>
-										<Button
-											onPress={() => setMemberGroup(m.id, 'privilegedmember')}
+					<div className="flex flex-wrap gap-2 mb-3">
+						<TextField
+							value={addMemberEmail}
+							onChange={setAddMemberEmail}
+							className="react-aria-TextField m-0 max-w-full"
+						>
+							<Input placeholder="Email" aria-label="Email" />
+						</TextField>
+						<Button onPress={() => addMember(addMemberEmail)}>
+							Add Member
+						</Button>
+					</div>
+				</>
+			)}
+
+			<table className="mx-0">
+				<thead className="text-left">
+					<tr>
+						<th>Name</th>
+						<th>Group</th>
+						{workspace.userGroup === 'owner' && <th>Operation</th>}
+					</tr>
+				</thead>
+				<tbody>
+					{workspace.members.map(
+						(
+							m: any // eslint-disable-line @typescript-eslint/no-explicit-any
+						) => (
+							<tr key={m.id}>
+								<td>
+									{user?.type === 'registered' && user.data.id === m.id ? (
+										<strong>{m.name} (you)</strong>
+									) : (
+										m.name
+									)}
+								</td>
+								<td>
+									{user?.type === 'registered' &&
+									workspace.userGroup === 'owner' &&
+									user.data.id !== m.id ? (
+										<Dropdown
+											aria-label="Group"
+											value={m.group}
+											onChange={(key) => setMemberGroup(m.id, key as string)}
+											isDisabled={
+												workspace.userGroup !== 'owner' ||
+												(user?.type === 'registered' && user.data.id === m.id)
+											}
+											className="react-aria-Select my-0"
 										>
-											Set as Privileged Member
-										</Button>
-										<Button onPress={() => setMemberGroup(m.id, 'member')}>
-											Set as Member
-										</Button>
-									</span>
-								)}
-						</li>
-					)
-				)}
-			</ul>
+											<ListBoxItem id="member">Member</ListBoxItem>
+											<ListBoxItem id="privilegedmember">
+												Privileged Member
+											</ListBoxItem>
+											<ListBoxItem id="owner">Owner</ListBoxItem>
+										</Dropdown>
+									) : (
+										m.group
+									)}
+								</td>
+								{user?.type === 'registered' &&
+									workspace.userGroup === 'owner' && (
+										<td className="flex flex-wrap gap-1">
+											{user.data.id !== m.id ? (
+												<Button onPress={() => removeMember(m.id)}>
+													Remove
+												</Button>
+											) : (
+												<em>you cannot operate on yourself</em>
+											)}
+										</td>
+									)}
+							</tr>
+						)
+					)}
+				</tbody>
+			</table>
 
-			<h3 className="m-0 mt-2">Tags</h3>
+			<h3 className="m-0 my-2">Tags</h3>
 
 			<div className="flex flex-wrap gap-2 mb-3">
 				<TextField
@@ -294,25 +332,37 @@ export default function Workspaces({
 				<Button onPress={() => addTag(addTagName)}>Add Tag</Button>
 			</div>
 
-			<ul className="m-0!">
-				{workspace.tags.map(
-					(
-						t: any // eslint-disable-line @typescript-eslint/no-explicit-any
-					) => (
-						<li key={t.id}>
-							{t.name} —{' '}
-							<span className="text-sm">{t.numQuestions} question(s)</span>
-							<span className="mx-4 inline-flex flex-wrap gap-2">
-								<Button
-									onPress={() => deleteTagPrompt(t.id, t.name, t.numQuestions)}
-								>
-									Delete
-								</Button>
-							</span>
-						</li>
-					)
-				)}
-			</ul>
+			<table className="mx-0">
+				<thead className="text-left">
+					<tr>
+						<th>Name</th>
+						<th>Question count</th>
+						<th>Operation</th>
+					</tr>
+				</thead>
+				<tbody>
+					{workspace.tags.map(
+						(
+							t: any // eslint-disable-line @typescript-eslint/no-explicit-any
+						) => (
+							<tr key={t.id}>
+								<td>{t.name}</td>
+								<td>{t.numQuestions}</td>
+								<td className="flex flex-wrap gap-1">
+									<Button
+										className="react-aria-Button p-0 px-1"
+										onPress={() =>
+											deleteTagPrompt(t.id, t.name, t.numQuestions)
+										}
+									>
+										Delete
+									</Button>
+								</td>
+							</tr>
+						)
+					)}
+				</tbody>
+			</table>
 		</>
 	);
 }

@@ -17,7 +17,7 @@ import {
 import Questions from './Questions';
 import Templates from './Templates';
 import Worksheets from './Worksheets';
-import Workspaces from './Workspaces';
+import Workspace from './Workspace';
 
 export async function loader() {
 	// TODO: handle non-200 response codes
@@ -104,7 +104,7 @@ export function Component() {
 					<Tab id="questions">Questions</Tab>
 					<Tab id="worksheets">Worksheets</Tab>
 					<Tab id="templates">Templates</Tab>
-					<Tab id="workspaces">Workspaces</Tab>
+					<Tab id="workspace">Workspace</Tab>
 				</TabList>
 
 				<TabPanel id="questions">
@@ -126,9 +126,11 @@ export function Component() {
 					/>
 				</TabPanel>
 
-				<TabPanel id="workspaces">
-					<Workspaces
-						workspaces={workspaces}
+				<TabPanel id="workspace">
+					<Workspace
+						workspace={workspaces.find(
+							(w: { id: string }) => w.id === currentWorkspace
+						)}
 						templates={templates}
 						isInstructor={isInstructor}
 						onRevalidate={() => revalidator.revalidate()}

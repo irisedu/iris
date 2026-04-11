@@ -15,3 +15,15 @@ thead tr,
 tbody tr {
 	@apply border-t-[1px] border-iris-200;
 }
+
+.react-aria-Table {
+	.react-aria-Column {
+		&[data-allows-sorting] {
+			@apply cursor-pointer;
+		}
+
+		&:not([data-sort-direction]) .sort-indicator {
+			@apply hidden;
+		}
+	}
+}

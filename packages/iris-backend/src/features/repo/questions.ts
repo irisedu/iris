@@ -28,7 +28,7 @@ router.get(
 		if (req.session.user?.type !== 'registered') return;
 
 		const { wid } = req.params;
-		const { tags: tagData, pageSize, offset } = req.query;
+		const { tags: tagData, pageSize, offset, sortBy, sortDir } = req.query;
 		const recycle = req.query.recycle === '1';
 
 		let tags: string[] = [];
@@ -48,6 +48,34 @@ router.get(
 		);
 		const actualOffset = parseInt(String(offset)) || 0;
 
+		// TODO: OpenAPI validation
+		type AllowedColumns = 'num' | 'type' | 'creator' | 'comment';
+		type AllowedDirections = 'asc' | 'desc';
+		let actualSortBy: AllowedColumns;
+		let actualSortDir: AllowedDirections;
+
+		if (sortBy === undefined) {
+			actualSortBy = 'num';
+		} else if (
+			typeof sortBy === 'string' &&
+			['num', 'type', 'creator', 'comment'].includes(sortBy)
+		) {
+			actualSortBy = sortBy as AllowedColumns;
+		} else {
+			return res.sendStatus(400);
+		}
+
+		if (sortDir === undefined) {
+			actualSortDir = 'desc';
+		} else if (
+			typeof sortDir === 'string' &&
+			['asc', 'desc'].includes(sortDir)
+		) {
+			actualSortDir = sortDir as AllowedDirections;
+		} else {
+			return res.sendStatus(400);
+		}
+
 		getUserWorkspaceGroup(req.session.user.id, wid)
 			.then(async (group) => {
 				const privilege = privilegeLevels[group as RepoGroup];
@@ -65,7 +93,10 @@ router.get(
 							.where('tag_id', 'in', tags)
 							.groupBy(['repo_question_tag.question_id', 'repo_question.id'])
 							.having((eb) => eb.fn.countAll(), '=', tags.length)
-							.orderBy('num', 'desc')
+							.orderBy(
+								actualSortBy as AllowedColumns,
+								actualSortDir as AllowedDirections
+							)
 							.selectAll('repo_question')
 							.select(db.fn.countAll().over().as('totalNumQuestions'))
 							.limit(actualPageSize)
@@ -76,7 +107,10 @@ router.get(
 							.where('workspace_id', '=', wid)
 							.where('deleted', '=', recycle)
 							.where('privilege', '<=', privilege)
-							.orderBy('num', 'desc')
+							.orderBy(
+								actualSortBy as AllowedColumns,
+								actualSortDir as AllowedDirections
+							)
 							.selectAll()
 							.select(db.fn.countAll().over().as('totalNumQuestions'))
 							.limit(actualPageSize)

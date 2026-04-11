@@ -8,3 +8,4 @@ export * from './Disclosure';
 // Overrides
 export { Checkbox, Switch, ColorPicker } from './input';
 export { Menu } from './menu';
+export { Column } from './Table';

@@ -11,12 +11,19 @@ import {
 import {
 	Autocomplete,
 	Button,
+	Cell,
+	Column,
 	Dropdown,
 	Input,
 	Label,
 	ListBoxItem,
+	Row,
 	SearchField,
+	type SortDescriptor,
 	Switch,
+	Table,
+	TableBody,
+	TableHeader,
 	Tag,
 	TagGroup,
 	TagList,
@@ -49,7 +56,9 @@ const QuestionTable = memo(function QuestionTable({
 	showPreviewHover,
 	showPreviewDialog,
 	getActions,
-	setQuestionsInvalidate
+	setQuestionsInvalidate,
+	sortDescriptor,
+	setSortDescriptor
 }: {
 	wid: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,6 +69,8 @@ const QuestionTable = memo(function QuestionTable({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getActions?: (q: any) => ReactNode;
 	setQuestionsInvalidate: Dispatch<SetStateAction<number>>;
+	sortDescriptor: SortDescriptor;
+	setSortDescriptor: Dispatch<SetStateAction<SortDescriptor>>;
 }) {
 	function recycleQuestion(workspace: string, qid: string, recycle: boolean) {
 		let route = `/api/repo/workspaces/${workspace}/questions/${qid}/recycle`;
@@ -71,21 +82,41 @@ const QuestionTable = memo(function QuestionTable({
 	}
 
 	return (
-		<table className="w-full hyphens-none">
-			<thead>
-				<tr>
-					<th className="text-left w-[4ch]">ID</th>
-					<th className="text-left w-[6ch]">Type</th>
-					<th className="text-left">Tags</th>
-					<th className="text-left">Creator</th>
-					<th className="text-left">Comment</th>
-					<th className="text-left">Operation</th>
-				</tr>
-			</thead>
-			<tbody>
+		<Table
+			className="react-aria-Table w-full hyphens-none"
+			aria-label="Questions"
+			sortDescriptor={sortDescriptor}
+			onSortChange={setSortDescriptor}
+		>
+			<TableHeader>
+				<Column
+					id="num"
+					className="text-left w-[4ch]"
+					allowsSorting
+					isRowHeader
+				>
+					ID
+				</Column>
+				<Column id="type" className="text-left w-[6ch]" allowsSorting>
+					Type
+				</Column>
+				<Column id="tags" className="text-left">
+					Tags
+				</Column>
+				<Column id="creator" className="text-left" allowsSorting>
+					Creator
+				</Column>
+				<Column id="comment" className="text-left" allowsSorting>
+					Comment
+				</Column>
+				<Column id="operation" className="text-left">
+					Operation
+				</Column>
+			</TableHeader>
+			<TableBody>
 				{questions.map((q) => (
-					<tr key={q.id}>
-						<td
+					<Row key={q.id}>
+						<Cell
 							onMouseEnter={() => {
 								showPreviewHover(q.id, true);
 							}}
@@ -94,9 +125,9 @@ const QuestionTable = memo(function QuestionTable({
 							}}
 						>
 							{q.num}
-						</td>
-						<td>{q.type}</td>
-						<td>
+						</Cell>
+						<Cell>{q.type}</Cell>
+						<Cell>
 							<TagGroup selectionMode="none" aria-label="Tags">
 								<TagList>
 									{q.tags.map((t: { id: string; name: string }) => (
@@ -104,10 +135,10 @@ const QuestionTable = memo(function QuestionTable({
 									))}
 								</TagList>
 							</TagGroup>
-						</td>
-						<td>{q.creator.name}</td>
-						<td>{q.comment}</td>
-						<td className="flex flex-wrap gap-1">
+						</Cell>
+						<Cell>{q.creator.name}</Cell>
+						<Cell>{q.comment}</Cell>
+						<Cell className="flex flex-wrap gap-1">
 							{getActions?.(q)}
 							<Button
 								className="react-aria-Button p-0 px-1"
@@ -135,11 +166,11 @@ const QuestionTable = memo(function QuestionTable({
 							>
 								{q.deleted ? 'Restore' : 'Delete'}
 							</Button>
-						</td>
-					</tr>
+						</Cell>
+					</Row>
 				))}
-			</tbody>
-		</table>
+			</TableBody>
+		</Table>
 	);
 });
 
@@ -168,6 +199,11 @@ export default function QuestionList({
 	const requestedPageSize = parseInt(searchParams.get('pageSize') ?? '') || 50;
 	const pageOffset = parseInt(searchParams.get('pageOffset') ?? '') || 0;
 
+	const [sortDescriptor, setSortDescriptorInternal] = useState<SortDescriptor>({
+		column: 'num',
+		direction: 'descending'
+	});
+
 	function setPageOffset(newPageOffset: number) {
 		setSearchParams((prev) => ({
 			...Object.fromEntries(prev),
@@ -182,6 +218,11 @@ export default function QuestionList({
 
 	function setTagFilter(ch: SetStateAction<Selection>) {
 		setTagFilterInternal(ch);
+		setPageOffset(0);
+	}
+
+	function setSortDescriptor(ch: SetStateAction<SortDescriptor>) {
+		setSortDescriptorInternal(ch);
 		setPageOffset(0);
 	}
 
@@ -215,6 +256,11 @@ export default function QuestionList({
 		[...tagFilter].forEach((t) => params.append('tags', t as string));
 		if (pageOffset) params.set('offset', String(pageOffset));
 		params.set('pageSize', String(requestedPageSize));
+		params.set('sortBy', sortDescriptor.column as string);
+		params.set(
+			'sortDir',
+			sortDescriptor.direction === 'ascending' ? 'asc' : 'desc'
+		);
 		fetch(`/api/repo/workspaces/${actualWorkspace}/questions?${params}`)
 			.then((res) => res.json())
 			.then(setQuestionData);
@@ -224,7 +270,8 @@ export default function QuestionList({
 		recycleFilter,
 		tagFilter,
 		pageOffset,
-		requestedPageSize
+		requestedPageSize,
+		sortDescriptor
 	]);
 
 	const [hoverPreviewState, setHoverPreviewState] = useState<{
@@ -348,6 +395,8 @@ export default function QuestionList({
 						showPreviewDialog={showPreviewDialog}
 						getActions={getActions}
 						setQuestionsInvalidate={setQuestionsInvalidate}
+						sortDescriptor={sortDescriptor}
+						setSortDescriptor={setSortDescriptor}
 					/>
 					<Pager totalNum={totalNum} pageSize={pageSize} offset={pageOffset} />
 				</div>

@@ -97,9 +97,6 @@ const QuestionTable = memo(function QuestionTable({
 				>
 					ID
 				</Column>
-				<Column id="type" className="text-left w-[6ch]" allowsSorting>
-					Type
-				</Column>
 				<Column id="tags" className="text-left">
 					Tags
 				</Column>
@@ -126,7 +123,6 @@ const QuestionTable = memo(function QuestionTable({
 						>
 							{q.num}
 						</Cell>
-						<Cell>{q.type}</Cell>
 						<Cell>
 							<TagGroup selectionMode="none" aria-label="Tags">
 								<TagList>
